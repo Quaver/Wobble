@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Wobble.Bindables
 {
@@ -28,13 +29,7 @@ namespace Wobble.Bindables
             set
             {
                 var previousVal = _value;
-
-                if (value < MinValue)
-                    _value = MinValue;
-                else if (value > MaxValue)
-                    _value = MaxValue;
-                else
-                    _value = value;
+                _value = MathHelper.Clamp(value, MinValue, MaxValue);
 
                 if (_value != previousVal)
                     ValueChanged?.Invoke(this, new BindableValueChangedEventArgs<int>(_value, previousVal));
