@@ -43,14 +43,29 @@ namespace Wobble.Bindables
 
         /// <inheritdoc />
         /// <summary>
-        ///     Contructor - Creates a BindableInt.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="defaultVal"></param>
         /// <param name="min"></param>
         /// <param name="max"></param>
         /// <param name="action"></param>
-        public BindableInt(string name, int defaultVal, int min, int max, EventHandler<BindableValueChangedEventArgs<int>> action = null) 
+        public BindableInt(int defaultVal, int min, int max, EventHandler<BindableValueChangedEventArgs<int>> action = null)
+            : base(defaultVal, action)
+        {
+            MinValue = min;
+            MaxValue = max;
+            Value = defaultVal;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="defaultVal"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <param name="action"></param>
+        public BindableInt(string name, int defaultVal, int min, int max, EventHandler<BindableValueChangedEventArgs<int>> action = null)
             : base(name, defaultVal, action)
         {
             MinValue = min;

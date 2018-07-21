@@ -41,7 +41,18 @@ namespace Wobble.Bindables
         }
 
         /// <summary>
-        ///     Constructor that takes in an action to call upon changing the value Bindable.
+        /// </summary>
+        /// <param name="defaultVal"></param>
+        /// <param name="action"></param>
+        public Bindable(T defaultVal, EventHandler<BindableValueChangedEventArgs<T>> action = null)
+        {
+            if (action != null)
+                ValueChanged += action;
+
+            Default = defaultVal;
+        }
+
+        /// <summary>
         /// </summary>
         /// <param name="name"></param>
         /// <param name="defaultVal"></param>
