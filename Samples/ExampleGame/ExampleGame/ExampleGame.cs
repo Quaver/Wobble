@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble;
 using Wobble.Audio;
+using Wobble.Audio.Samples;
 using Wobble.Input;
 using Wobble.Resources;
 using Wobble.Screens;

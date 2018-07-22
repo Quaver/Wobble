@@ -1,9 +1,8 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using ManagedBass;
 
-namespace Wobble.Audio
+namespace Wobble.Audio.Samples
 {
     /// <inheritdoc />
     /// <summary>

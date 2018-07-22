@@ -1,7 +1,7 @@
 ﻿using System;
 using ManagedBass;
 
-namespace Wobble.Audio
+namespace Wobble.Audio.Samples
 {
     /// <summary>
     ///     A sample channel instance for a given audio sample.
@@ -30,7 +30,7 @@ namespace Wobble.Audio
         /// <param name="sample"></param>
         public AudioSampleChannel(AudioSample sample)
         {
-            Sample = sample;
+            Sample = sample ?? throw new ArgumentNullException();
 
             if (Sample.IsDisposed)
                 throw new PlayableAudioDisposedException("Cannot create an AudioSampleChannel from a sample that is already disposed.");
