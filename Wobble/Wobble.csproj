@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Audio\AudioEngine.cs" />
     <Compile Include="Audio\AudioEngineException.cs" />
+    <Compile Include="Audio\AudioSample.cs" />
     <Compile Include="Bindables\Bindable.cs" />
     <Compile Include="Bindables\BindableInt.cs" />
     <Compile Include="Bindables\BindableValueChangedEventArgs.cs" />
