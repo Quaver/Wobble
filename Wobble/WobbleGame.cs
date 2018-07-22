@@ -16,23 +16,6 @@ namespace Wobble
     public abstract class WobbleGame : Game
     {
         /// <summary>
-        ///     The singleton instance of the game.
-        /// </summary>
-        // ReSharper disable once InconsistentNaming (What?)
-        private static WobbleGame _instance { get; set; }
-        public static WobbleGame Instance
-        {
-            get => _instance;
-            set
-            {
-                if (_instance != null)
-                    throw new InvalidOperationException("There can only ever be one game in existence.");
-
-                _instance = value;
-            }
-        }
-
-        /// <summary>
         /// </summary>
         public GraphicsDeviceManager Graphics { get; }
 
@@ -57,7 +40,7 @@ namespace Wobble
         protected WobbleGame()
         {
             Graphics = new GraphicsDeviceManager(this);
-            Instance = this;
+            GameBase.Game = this;
         }
 
         /// <summary>

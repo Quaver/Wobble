@@ -24,7 +24,7 @@ namespace ExampleGame
 
         public void Draw(GameTime gameTime)
         {
-            var game = (ExampleGame)WobbleGame.Instance;
+            var game = (ExampleGame)GameBase.Game;
             game.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             game.SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, WindowManager.Scale);

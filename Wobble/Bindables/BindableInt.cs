@@ -7,23 +7,23 @@ namespace Wobble.Bindables
     /// <summary>
     ///     Bindable Int32 value. Contains extra stuff such as Max/Min values.
     /// </summary>
-    internal class BindableInt : Bindable<int>
+    public class BindableInt : Bindable<int>
     {
         /// <summary>
         ///     The mininimum value that it will be clamped to.
         /// </summary>
-        internal int MinValue { get; }
+        public int MinValue { get; }
 
         /// <summary>
         ///     The maximum value that it will be clamped to
         /// </summary>
-        internal int MaxValue { get; }
+        public int MaxValue { get; }
 
         /// <summary>
         ///     The value of this BindedInt
         /// </summary>
         private int _value;
-        internal new int Value
+        public new int Value
         {
             get => _value;
             set

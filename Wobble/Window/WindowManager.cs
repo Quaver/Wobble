@@ -9,7 +9,7 @@ namespace Wobble.Window
         /// <summary>
         /// </summary>
         private static Vector3 ScalingFactor { get; set; }
-        
+
         /// <summary>
         ///     The back buffer's width
         /// </summary>
@@ -53,7 +53,7 @@ namespace Wobble.Window
         public static void Update()
         {
             // Grab the GraphicsDeviceManager from the game instance.
-            var gdm = WobbleGame.Instance.Graphics;
+            var gdm = GameBase.Game.Graphics;
 
             if (gdm == null)
                 throw new ArgumentNullException($"GraphicsDeviceManager");
@@ -61,15 +61,15 @@ namespace Wobble.Window
             // Grab the back buffer's dimensions.
             PreferredBackBufferWidth = gdm.PreferredBackBufferWidth;
             PreferredBackBufferHeight = gdm.PreferredBackBufferHeight;
-           
+
             // Calculate screen scale and aspect ratio.
             ScreenScale = new Vector2(PreferredBackBufferWidth / VirtualScreen.X, PreferredBackBufferHeight / VirtualScreen.Y);
             ScreenAspectRatio = new Vector2(ScreenScale.X / ScreenScale.Y);
-            
+
             // Create the matrix at which we'll be drawing sprites.
             ScalingFactor = new Vector3(ScreenScale.X, ScreenScale.Y, 1);
             Scale = Matrix.CreateScale(ScalingFactor);
-            
+
             gdm.ApplyChanges();
         }
 
@@ -83,7 +83,7 @@ namespace Wobble.Window
         /// </summary>
         /// <param name="newScreenSize"></param>
         public static void ChangeVirtualScreenSize(Vector2 newScreenSize) => VirtualScreen = newScreenSize;
-        
+
         /// <summary>
         ///     Determines the draw scaling.
         ///     Used to make the mouse scale correctly according to the virtual resolution,
@@ -106,7 +106,7 @@ namespace Wobble.Window
         /// <param name="resolution">The resolution to change to</param>
         public static void ChangeScreenResolution(Point resolution)
         {
-            var gdm = WobbleGame.Instance.Graphics;
+            var gdm = GameBase.Game.Graphics;
 
             var oldResolution = new Point(gdm.PreferredBackBufferWidth, gdm.PreferredBackBufferHeight);
 
@@ -130,10 +130,8 @@ namespace Wobble.Window
         /// </summary>
         private static void UpdateBackBufferSize()
         {
-            var game = WobbleGame.Instance;
-
-            game.Graphics.PreferredBackBufferWidth = game.Window.ClientBounds.Width;
-            game.Graphics.PreferredBackBufferHeight = game.Window.ClientBounds.Height;
+            GameBase.Game.Graphics.PreferredBackBufferWidth = GameBase.Game.Window.ClientBounds.Width;
+            GameBase.Game.Graphics.PreferredBackBufferHeight = GameBase.Game.Window.ClientBounds.Height;
         }
     }
 }

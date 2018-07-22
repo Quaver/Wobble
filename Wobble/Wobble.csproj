@@ -57,6 +57,7 @@
     <Compile Include="Bindables\Bindable.cs" />
     <Compile Include="Bindables\BindableInt.cs" />
     <Compile Include="Bindables\BindableValueChangedEventArgs.cs" />
+    <Compile Include="GameBase.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />

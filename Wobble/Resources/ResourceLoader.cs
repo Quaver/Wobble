@@ -25,7 +25,7 @@ namespace Wobble.Resources
             using (var stream = new MemoryStream())
             {
                 image.Save(stream, format);
-                return Texture2D.FromStream(WobbleGame.Instance.GraphicsDevice, stream);
+                return Texture2D.FromStream(GameBase.Game.GraphicsDevice, stream);
             }
         }
 
@@ -36,7 +36,7 @@ namespace Wobble.Resources
         public static SoundEffect LoadSoundEffect<T>(string name) => SoundEffect.FromStream((UnmanagedMemoryStream)GetProperty<T>(name));
 
         /// <summary>
-        ///     Loads in a resource store property with a given name 
+        ///     Loads in a resource store property with a given name
         /// </summary>
         /// <param name="name">The name of the file to load</param>
         /// <typeparam name="T">The resx resource store to load from.</typeparam>

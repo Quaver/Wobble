@@ -11,7 +11,7 @@ namespace Wobble.Bindables
     ///     EventArgs containing the value that was changed.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class BindableValueChangedEventArgs<T> : EventArgs
+    public class BindableValueChangedEventArgs<T> : EventArgs
     {
         /// <inheritdoc />
         /// <summary>
