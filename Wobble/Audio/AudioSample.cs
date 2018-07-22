@@ -29,7 +29,12 @@ namespace Wobble.Audio
         /// <summary>
         ///     Determines if the audio stream can only be played one time.
         /// </summary>
-        public bool OnlyCanPlayOnce { get; private set; }
+        public bool OnlyCanPlayOnce { get; }
+
+        /// <summary>
+        ///     Keeps track of if the sample has been disposed of.
+        /// </summary>
+        public bool IsDisposed { get; private set; }
 
         /// <summary>
         ///     Creates an audio sample from a local file.
@@ -84,9 +89,14 @@ namespace Wobble.Audio
         /// <returns></returns>
         private static int Load(byte[] data, int concurrentPlaybacks) => Bass.SampleLoad(data, 0, data.Length, concurrentPlaybacks,
                                                                             BassFlags.Default | BassFlags.SampleOverrideLongestPlaying);
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public void Dispose() => Bass.SampleFree(Id);
+        public void Dispose()
+        {
+            Bass.SampleFree(Id);
+            IsDisposed = true;
+        }
     }
 }

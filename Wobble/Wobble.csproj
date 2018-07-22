@@ -55,6 +55,8 @@
     <Compile Include="Audio\AudioEngineException.cs" />
     <Compile Include="Audio\AudioSample.cs" />
     <Compile Include="Audio\AudioSampleChannel.cs" />
+    <Compile Include="Audio\IPlayableAudio.cs" />
+    <Compile Include="Audio\PlayableAudioDisposedException.cs" />
     <Compile Include="Bindables\Bindable.cs" />
     <Compile Include="Bindables\BindableInt.cs" />
     <Compile Include="Bindables\BindableValueChangedEventArgs.cs" />

@@ -7,7 +7,7 @@ namespace Wobble.Audio
     ///     A sample channel instance for a given audio sample.
     ///     Used to play sound effects.
     /// </summary>
-    public class AudioSampleChannel
+    public class AudioSampleChannel : IPlayableAudio
     {
         /// <summary>
         ///     The audio sample that the channel is for.
@@ -31,6 +31,10 @@ namespace Wobble.Audio
         public AudioSampleChannel(AudioSample sample)
         {
             Sample = sample;
+
+            if (Sample.IsDisposed)
+                throw new PlayableAudioDisposedException("Cannot create an AudioSampleChannel from a sample that is already disposed.");
+
             Id = Bass.SampleGetChannel(sample.Id);
         }
 
@@ -42,9 +46,17 @@ namespace Wobble.Audio
             if (Sample.HasPlayed && Sample.OnlyCanPlayOnce)
                 throw new AudioEngineException($"You cannot play a sample more than once");
 
+            if (Sample.IsDisposed)
+                throw new PlayableAudioDisposedException("Cannot play a sample channel that is already disposed.");
+
             Bass.ChannelPlay(Id);
             Sample.HasPlayed = true;
         }
+
+        /// <summary>
+        ///     Pauses the sample channel.
+        /// </summary>
+        public void Pause() => Bass.ChannelPause(Id);
 
         /// <summary>
         ///     Stop the sample channel.
@@ -52,7 +64,10 @@ namespace Wobble.Audio
         public void Stop()
         {
             if (HasStopped)
-                throw new AudioEngineException("Cannot stop sample channel while it is already stopped. Did you mean to dispoe the sample?");
+                throw new AudioEngineException("Cannot stop sample channel while it is already stopped. Did you mean to dispose the sample?");
+
+            if (Sample.IsDisposed)
+                throw new PlayableAudioDisposedException("Cannot stop a sample channel that is already disposed.");
 
             Bass.ChannelStop(Id);
             HasStopped = true;
