@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing.Imaging;
 using System.Threading;
 using Microsoft.Xna.Framework;
@@ -38,7 +38,7 @@ namespace ExampleGame
             base.LoadContent();
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
-            Song = new AudioSample(@"c:\users\admin\desktop\no title.mp3");
+            Song = new AudioSample(ResourceStore.Valence___Infinite);
             Song?.Play();
         }
 
@@ -60,9 +60,6 @@ namespace ExampleGame
                 WindowManager.ChangeScreenResolution(new Point(800, 600));
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-        }
+        protected override void Draw(GameTime gameTime) => base.Draw(gameTime);
     }
 }
