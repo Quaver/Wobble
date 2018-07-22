@@ -17,7 +17,7 @@ namespace ExampleGame
     {
         public Texture2D Spongebob;
 
-        public AudioSample Song;
+        public AudioSample Sample;
 
         public ExampleGame()
         {
@@ -38,8 +38,10 @@ namespace ExampleGame
             base.LoadContent();
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
-            Song = new AudioSample(ResourceStore.Valence___Infinite);
-            Song?.Play();
+            Sample = new AudioSample(ResourceStore.Valence___Infinite, false);
+
+            // Create a sample channel for it to play
+            Sample.CreateChannel().Play();
         }
 
         protected override void UnloadContent()
