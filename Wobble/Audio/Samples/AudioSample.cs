@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using ManagedBass;
+using Microsoft.Xna.Framework;
 
 namespace Wobble.Audio.Samples
 {
@@ -34,6 +35,16 @@ namespace Wobble.Audio.Samples
         ///     Keeps track of if the sample has been disposed of.
         /// </summary>
         public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        ///     The global audio sample volume. When setting this,
+        ///     it takes a value from 1-100%.
+        /// </summary>
+        public static int GlobalVolume
+        {
+            get => Bass.GlobalSampleVolume / 100;
+            set => Bass.GlobalSampleVolume = MathHelper.Clamp(value, 0, 100) * 100;
+        }
 
         /// <summary>
         ///     Creates an audio sample from a local file.
