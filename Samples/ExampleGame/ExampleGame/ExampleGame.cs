@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Drawing.Imaging;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble;
+using Wobble.Audio;
 using Wobble.Input;
 using Wobble.Resources;
 using Wobble.Screens;
@@ -14,6 +16,8 @@ namespace ExampleGame
     public class ExampleGame : WobbleGame
     {
         public Texture2D Spongebob;
+
+        public AudioSample Song;
 
         public ExampleGame()
         {
@@ -33,6 +37,9 @@ namespace ExampleGame
         {
             base.LoadContent();
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
+
+            Song = new AudioSample(@"c:\users\admin\desktop\no title.mp3");
+            Song?.Play();
         }
 
         protected override void UnloadContent()
@@ -52,7 +59,6 @@ namespace ExampleGame
             else if (MouseManager.IsUniqueClick(MouseButton.Middle))
                 WindowManager.ChangeScreenResolution(new Point(800, 600));
         }
-
 
         protected override void Draw(GameTime gameTime)
         {
