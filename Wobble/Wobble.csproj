@@ -57,6 +57,7 @@
     <Compile Include="Audio\PlayableAudioDisposedException.cs" />
     <Compile Include="Audio\Samples\AudioSample.cs" />
     <Compile Include="Audio\Samples\AudioSampleChannel.cs" />
+    <Compile Include="Audio\Tracks\AudioTrack.cs" />
     <Compile Include="Bindables\Bindable.cs" />
     <Compile Include="Bindables\BindableInt.cs" />
     <Compile Include="Bindables\BindableValueChangedEventArgs.cs" />
@@ -140,9 +141,6 @@
     <Content Include="x86\soft_oal.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Audio\Tracks" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

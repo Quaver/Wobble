@@ -53,7 +53,7 @@ namespace Wobble.Audio.Samples
         /// <param name="onlyCanPlayOnce">If this sample is set to only play one time. (Default is true)</param>
         /// <param name="concurrentPlaybacks">The amount of concurrent playbacks possible for this sample</param>
         /// <exception cref="FileNotFoundException"></exception>
-        public AudioSample(string path, bool onlyCanPlayOnce = true, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
+        public AudioSample(string path, bool onlyCanPlayOnce = false, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
         {
             OnlyCanPlayOnce = onlyCanPlayOnce;
             Id = Load(path, concurrentPlaybacks);
@@ -65,7 +65,7 @@ namespace Wobble.Audio.Samples
         /// <param name="data">The byte array data of the sample</param>
         /// <param name="onlycanPlayOnce">If this sample is set to play only one time. (Default is true)</param>
         /// <param name="concurrentPlaybacks">The amount of concurrent playbacks possible for this sample</param>
-        public AudioSample(byte[] data, bool onlycanPlayOnce = true, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
+        public AudioSample(byte[] data, bool onlycanPlayOnce = false, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
         {
             OnlyCanPlayOnce = onlycanPlayOnce;
             Id = Load(data, concurrentPlaybacks);

@@ -39,7 +39,12 @@ namespace Wobble.Audio.Samples
         }
 
         /// <summary>
-        ///     Plays the sample channel.
+        ///     If the audio track has
+        /// </summary>
+        public bool HasPlayed { get; private set; }
+
+        /// <inheritdoc />
+        /// <summary>
         /// </summary>
         public void Play()
         {
@@ -51,15 +56,16 @@ namespace Wobble.Audio.Samples
 
             Bass.ChannelPlay(Id);
             Sample.HasPlayed = true;
+            HasPlayed = true;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Pauses the sample channel.
         /// </summary>
         public void Pause() => Bass.ChannelPause(Id);
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Stop the sample channel.
         /// </summary>
         public void Stop()
         {

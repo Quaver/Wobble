@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Wobble;
 using Wobble.Audio;
 using Wobble.Audio.Samples;
+using Wobble.Audio.Tracks;
 using Wobble.Input;
 using Wobble.Resources;
 using Wobble.Screens;
@@ -18,7 +19,7 @@ namespace ExampleGame
     {
         public Texture2D Spongebob;
 
-        public AudioSample Sample;
+        public AudioTrack Song;
 
         public ExampleGame()
         {
@@ -39,10 +40,19 @@ namespace ExampleGame
             base.LoadContent();
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
-            Sample = new AudioSample(ResourceStore.Valence___Infinite, false);
-
-            // Create a sample channel for it to play
-            Sample.CreateChannel().Play();
+            Song = new AudioTrack(ResourceStore.Valence___Infinite);
+            Console.WriteLine(Song.Length);
+            Song.Seek(3000);
+            Console.WriteLine(Song.Position);
+            Song.Play();
+            Thread.Sleep(1000);
+            Song.Pause();
+            Thread.Sleep(2000);
+            Song.Seek(15000);
+            Song.Play();
+            Thread.Sleep(2000);
+            Song.Stop();
+            Console.WriteLine(Song.IsDisposed);
         }
 
         protected override void UnloadContent()
