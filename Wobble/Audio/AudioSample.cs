@@ -5,6 +5,10 @@ using ManagedBass;
 
 namespace Wobble.Audio
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     Should be used for small audio files such as sound effects.
+    /// </summary>
     public class AudioSample : IDisposable
     {
         /// <summary>
@@ -20,7 +24,7 @@ namespace Wobble.Audio
         /// <summary>
         ///     If the sample has already previously played.
         /// </summary>
-        public bool HasPlayed { get; private set; }
+        public bool HasPlayed { get; internal set; }
 
         /// <summary>
         ///     Determines if the audio stream can only be played one time.
@@ -53,22 +57,10 @@ namespace Wobble.Audio
         }
 
         /// <summary>
-        ///     Plays the audio sample.
+        ///     Creates an audio sample channel to be played.
         /// </summary>
-        public void Play()
-        {
-            // Only allow the sample to play once if specified.
-            if (HasPlayed && OnlyCanPlayOnce)
-                throw new AudioEngineException($"You cannot play a sample more than once");
-
-            // Create a new channel for the sample to play on.
-            var id = Bass.SampleGetChannel(Id);
-
-            // Play the sample.
-            Bass.ChannelPlay(id);
-
-            HasPlayed = true;
-        }
+        /// <returns></returns>
+        public AudioSampleChannel CreateChannel() => new AudioSampleChannel(this);
 
         /// <summary>
         ///     Loads an audio sample from a file path and returns an Id to it.
