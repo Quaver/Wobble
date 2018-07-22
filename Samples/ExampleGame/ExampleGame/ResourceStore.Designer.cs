@@ -69,5 +69,15 @@ namespace ExampleGame {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Valence___Infinite {
+            get {
+                object obj = ResourceManager.GetObject("Valence___Infinite", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
