@@ -175,7 +175,7 @@ namespace Wobble.Audio.Tracks
         private void CheckIfDisposed()
         {
             if (!StreamLoaded || IsDisposed)
-                throw new AudioEngineException("You cannot change a disposed/unloaded track's position.");
+                throw new PlayableAudioDisposedException("You cannot change a disposed/unloaded track's position.");
         }
     }
 }
