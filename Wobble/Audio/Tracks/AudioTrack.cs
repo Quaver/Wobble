@@ -170,7 +170,7 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
-        ///
+        ///    Checks if the audio stream is disposed and/or unloaded.
         /// </summary>
         private void CheckIfDisposed()
         {
