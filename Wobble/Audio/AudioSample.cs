@@ -25,7 +25,7 @@ namespace Wobble.Audio
         /// <summary>
         ///     Determines if the audio stream can only be played one time.
         /// </summary>
-        private bool OnlyCanPlayOnce { get; set; }
+        public bool OnlyCanPlayOnce { get; private set; }
 
         /// <summary>
         ///     Creates an audio sample from a local file.
