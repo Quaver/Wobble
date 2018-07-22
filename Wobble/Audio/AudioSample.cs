@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using ManagedBass;
@@ -46,7 +46,7 @@ namespace Wobble.Audio
         /// <param name="data">The byte array data of the sample</param>
         /// <param name="onlycanPlayOnce">If this sample is set to play only one time. (Default is true)</param>
         /// <param name="concurrentPlaybacks">The amount of concurrent playbacks possible for this sample</param>
-        public AudioSample(byte[] data, bool onlycanPlayOnce, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
+        public AudioSample(byte[] data, bool onlycanPlayOnce = true, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
         {
             OnlyCanPlayOnce = onlycanPlayOnce;
             Id = Load(data, concurrentPlaybacks);
