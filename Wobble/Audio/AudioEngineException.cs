@@ -8,6 +8,7 @@ namespace Wobble.Audio
 {
     public class AudioEngineException : Exception
     {
+        public AudioEngineException() {}
         public AudioEngineException(string message) : base(message) {}
     }
 }
