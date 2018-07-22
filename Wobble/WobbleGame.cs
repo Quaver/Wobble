@@ -32,7 +32,7 @@ namespace Wobble
             }
         }
 
-        /// <summary> 
+        /// <summary>
         /// </summary>
         public GraphicsDeviceManager Graphics { get; }
 
@@ -91,6 +91,7 @@ namespace Wobble
         protected override void UnloadContent()
         {
             WindowManager.UnHookEvents();
+            AudioEngine.Dispose();
         }
 
         /// <summary>
@@ -103,14 +104,14 @@ namespace Wobble
             // Update the time since the last frame and the game's clock.
             TimeSinceLastFrame = gameTime.ElapsedGameTime.TotalMilliseconds;
             TimeRunning = gameTime.TotalGameTime.Milliseconds;
-            
+
             // Keep the window updated with the current resolution.
             WindowManager.Update();
-            
+
             // Keep the current and previous mouse/keyboard states up-to-date.
             MouseManager.Update();
             KeyboardManager.Update();
-            
+
             // Update the current game screen.
             ScreenManager.Update(gameTime);
 
