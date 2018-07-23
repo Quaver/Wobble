@@ -31,7 +31,7 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
-        ///     The position of the current audio stream in milliseconds
+        ///     The position of the current audio stream in milliseconds (from BASS library)
         /// </summary>
         public double Position
         {
@@ -43,6 +43,12 @@ namespace Wobble.Audio.Tracks
                 return Bass.ChannelBytes2Seconds(Stream, Bass.ChannelGetPosition(Stream)) * 1000;
             }
         }
+
+        /// <summary>
+        ///     The true position of the audio, taking into frame times. Use this for more accurate
+        ///     results (such as for rhythm games, or things where the audio time really matters)
+        /// </summary>
+        public double Time { get; private set; }
 
         /// <summary>
         ///     If the stream is currently loaded.
@@ -78,6 +84,11 @@ namespace Wobble.Audio.Tracks
         ///     If the audio track is currently pitched based on the rate.
         /// </summary>
         public bool IsPitched { get; private set; } = true;
+
+        /// <summary>
+        ///     If the audio track has played and is now stopped.
+        /// </summary>
+        public bool IsLeftOver => HasPlayed && IsStopped;
 
         /// <summary>
         ///     The rate at which the audio plays at.
@@ -205,6 +216,27 @@ namespace Wobble.Audio.Tracks
                 Bass.ChannelSetAttribute(Stream, ChannelAttribute.Pitch, 0);
         }
 
+        /// <summary>
+        ///     Corrects the true time of the track with the actual passed frame time.
+        /// </summary>
+        /// <param name="timeSinceLastFrame"></param>
+        internal void CorrectTime(double timeSinceLastFrame)
+        {
+            if (!StreamLoaded || IsStopped)
+            {
+                Time = 0;
+                return;
+            }
+
+            if (!IsPlaying)
+            {
+                Time = Position;
+                return;
+            }
+
+            Time = (Position + (Time + timeSinceLastFrame * Rate)) / 2;
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -214,6 +246,8 @@ namespace Wobble.Audio.Tracks
             Bass.StreamFree(Stream);
             Stream = 0;
             IsDisposed = true;
+
+            AudioManager.Tracks.Remove(this);
         }
 
         /// <summary>
@@ -224,6 +258,8 @@ namespace Wobble.Audio.Tracks
         {
             if (!StreamLoaded)
                 throw new AudioEngineException("Cannot call AfterLoad if stream isn't loaded.");
+
+            AudioManager.Tracks.Add(this);
 
             Stream = BassFx.TempoCreate(Stream, BassFlags.FxFreeSource);
             Bass.ChannelAddFlag(Stream, BassFlags.AutoFree);

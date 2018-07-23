@@ -40,7 +40,7 @@ namespace ExampleGame
             base.LoadContent();
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
-            Song = new AudioTrack(ResourceStore.Valence___Infinite) { Rate = 1.2f };
+            Song = new AudioTrack(ResourceStore.Valence___Infinite) { Rate = 10.0f };
             Song.Seek(5000);
             Song.Play();
 

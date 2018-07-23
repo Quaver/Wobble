@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\AudioEngine.cs" />
+    <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\AudioEngineException.cs" />
     <Compile Include="Audio\IPlayableAudio.cs" />
     <Compile Include="Audio\PlayableAudioDisposedException.cs" />

@@ -51,7 +51,7 @@ namespace Wobble
         /// </summary>
         protected override void Initialize()
         {
-            AudioEngine.Initialize();
+            AudioManager.Initialize();
             Window.ClientSizeChanged += WindowManager.OnClientSizeChanged;
 
             base.Initialize();
@@ -74,7 +74,7 @@ namespace Wobble
         protected override void UnloadContent()
         {
             WindowManager.UnHookEvents();
-            AudioEngine.Dispose();
+            AudioManager.Dispose();
         }
 
         /// <summary>
@@ -90,13 +90,10 @@ namespace Wobble
 
             // Keep the window updated with the current resolution.
             WindowManager.Update();
-
-            // Keep the current and previous mouse/keyboard states up-to-date.
             MouseManager.Update();
             KeyboardManager.Update();
-
-            // Update the current game screen.
             ScreenManager.Update(gameTime);
+            AudioManager.Update();
 
             base.Update(gameTime);
         }
