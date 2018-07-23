@@ -177,6 +177,15 @@ namespace Wobble.Graphics.Sprites
             base.Draw(gameTime);
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public override void Destroy()
+        {
+            Shader?.Dispose();
+            base.Destroy();
+        }
+
         /// <summary>
         ///     Recalculate Origin + Rotation of sprite
         /// </summary>
