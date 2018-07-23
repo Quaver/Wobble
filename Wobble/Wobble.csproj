@@ -120,6 +120,7 @@
     <Compile Include="GameBase.cs" />
     <Compile Include="Graphics\Alignment.cs" />
     <Compile Include="Graphics\Drawable.cs" />
+    <Compile Include="Graphics\DrawRectangle.cs" />
     <Compile Include="Graphics\GraphicsHelper.cs" />
     <Compile Include="Graphics\IDrawable.cs" />
     <Compile Include="Graphics\ScalableVector.cs" />

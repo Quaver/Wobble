@@ -61,12 +61,12 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
         /// </summary>
-        public Rectangle ScreenRectangle { get; private set; }
+        public DrawRectangle ScreenRectangle { get; private set; }
 
         /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
-        public Rectangle RelativeRectangle { get; private set; }
+        public DrawRectangle RelativeRectangle { get; private set; }
 
         /// <summary>
         ///     The position of the drawable
@@ -297,23 +297,23 @@ namespace Wobble.Graphics
             // Make it relative to the parent.
             if (Parent != null)
             {
-                var width = (int) (Size.X.Value + Parent.ScreenRectangle.Width * WidthScale);
-                var height = (int) (Size.Y.Value + Parent.ScreenRectangle.Height * HeightScale);
-                var x = (int) Position.X.Value;
-                var y = (int) Position.Y.Value;
+                var width = Size.X.Value + Parent.ScreenRectangle.Width * WidthScale;
+                var height = Size.Y.Value + Parent.ScreenRectangle.Height * HeightScale;
+                var x = Position.X.Value;
+                var y = Position.Y.Value;
 
-                RelativeRectangle = new Rectangle(x, y, width, height);
+                RelativeRectangle = new DrawRectangle(x, y, width, height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle);
             }
             // Make it relative to the screen size.
             else
             {
-                var width = (int) (Size.X.Value + WindowManager.VirtualScreen.X * WidthScale);
-                var height = (int) (Size.Y.Value + WindowManager.VirtualScreen.Y * HeightScale);
-                var x = (int) Position.X.Value;
-                var y = (int) Position.Y.Value;
+                var width = Size.X.Value + WindowManager.VirtualScreen.X * WidthScale;
+                var height = Size.Y.Value + WindowManager.VirtualScreen.Y * HeightScale;
+                var x = Position.X.Value;
+                var y = Position.Y.Value;
 
-                RelativeRectangle = new Rectangle(x, y, width, height);
+                RelativeRectangle = new DrawRectangle(x, y, width, height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
             }
 

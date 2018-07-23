@@ -26,7 +26,7 @@ namespace Wobble.Graphics
         /// <param name="objectRect">The size of the object.</param>
         /// <param name="boundary">The Rectangle of the boundary.</param>
         /// <returns></returns>
-        internal static Rectangle AlignRect(Alignment objectAlignment, Rectangle objectRect, Rectangle boundary)
+        internal static DrawRectangle AlignRect(Alignment objectAlignment, DrawRectangle objectRect, DrawRectangle boundary)
         {
             float alignX = 0;
             float alignY = 0;
@@ -69,7 +69,7 @@ namespace Wobble.Graphics
             alignX = Align(alignX, objectRect.Width, boundary.X, boundary.X + boundary.Width, objectRect.X);
             alignY = Align(alignY, objectRect.Height, boundary.Y, boundary.Y + boundary.Height, objectRect.Y);
 
-            return new Rectangle((int) alignX, (int) alignY, objectRect.Width, objectRect.Height);
+            return new DrawRectangle((int) alignX, (int) alignY, objectRect.Width, objectRect.Height);
         }
     }
 }

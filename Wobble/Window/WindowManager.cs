@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using OpenGL;
+using Wobble.Graphics;
 
 namespace Wobble.Window
 {
@@ -29,7 +30,7 @@ namespace Wobble.Window
         /// <summary>
         ///     Rectangle object for the screen size.
         /// </summary>
-        public static Rectangle Rectangle  => new Rectangle(0, 0, (int) VirtualScreen.X, (int) VirtualScreen.Y);
+        public static DrawRectangle Rectangle  => new DrawRectangle(0, 0, (int) VirtualScreen.X, (int) VirtualScreen.Y);
 
         /// <summary>
         ///     The result of merging VirtualScreen with WindowScreen
