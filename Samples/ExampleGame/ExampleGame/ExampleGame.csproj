@@ -57,6 +57,7 @@
   <ItemGroup>
     <None Include="MonoGame.Framework.dll.config" />
     <None Include="packages.config" />
+    <None Include="Resources\Shaders\semi-transparent.mgfxo" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ResourceStore.resx">

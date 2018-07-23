@@ -124,4 +124,7 @@
   <data name="Valence___Infinite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\tracks\valence - infinite.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="semi_transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\shaders\semi-transparent.mgfxo;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>
