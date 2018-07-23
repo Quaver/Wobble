@@ -30,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DiscordRPC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\DiscordRPC.dll</HintPath>
-    </Reference>
     <Reference Include="ManagedBass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ManagedBass.2.0.4\lib\net45\ManagedBass.dll</HintPath>
     </Reference>
@@ -65,6 +61,7 @@
     <Compile Include="Bindables\Bindable.cs" />
     <Compile Include="Bindables\BindableInt.cs" />
     <Compile Include="Bindables\BindableValueChangedEventArgs.cs" />
+    <Compile Include="Discord\DiscordManager.cs" />
     <Compile Include="GameBase.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
@@ -121,7 +118,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DiscordRPC.dll" />
     <Content Include="x64\bass.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
