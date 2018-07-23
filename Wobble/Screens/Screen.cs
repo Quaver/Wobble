@@ -19,6 +19,9 @@ namespace Wobble.Screens
 
         /// <inheritdoc />
         /// <summary>
+        ///     Abstract draw class. When using this, you'll need to implement drawing for the container.
+        ///     This can vary depending on if you're using shaders or have any other logic. So it is
+        ///     best to implement it per-screen.
         /// </summary>
         /// <param name="gameTime"></param>
         public abstract void Draw(GameTime gameTime);
