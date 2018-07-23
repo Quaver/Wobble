@@ -27,6 +27,11 @@ namespace Wobble.Window
         public static Vector2 VirtualScreen { get; private set; } = new Vector2(1366, 768);
 
         /// <summary>
+        ///     Rectangle object for the screen size.
+        /// </summary>
+        public static Rectangle Rectangle  => new Rectangle(0, 0, (int) VirtualScreen.X, (int) VirtualScreen.Y);
+
+        /// <summary>
         ///     The result of merging VirtualScreen with WindowScreen
         /// </summary>
         public static Vector2 ScreenScale { get; private set; }

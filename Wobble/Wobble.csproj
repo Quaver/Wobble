@@ -118,6 +118,12 @@
     <Compile Include="Discord\RPC\User.cs" />
     <Compile Include="Discord\RPC\Web\WebRPC.cs" />
     <Compile Include="GameBase.cs" />
+    <Compile Include="Graphics\Alignment.cs" />
+    <Compile Include="Graphics\Drawable.cs" />
+    <Compile Include="Graphics\GraphicsHelper.cs" />
+    <Compile Include="Graphics\IDrawable.cs" />
+    <Compile Include="Graphics\ScalableVector.cs" />
+    <Compile Include="Graphics\ScalableVector2.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />
