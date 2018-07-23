@@ -18,7 +18,7 @@ namespace ExampleGame
         /// <summary>
         ///     Test sprite
         /// </summary>
-        public Sprite PersonWithShader { get; }
+        public Sprite SpriteWithShader { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -31,7 +31,7 @@ namespace ExampleGame
             var game = (ExampleGame) GameBase.Game;
 
             // Create new sprite to be drawn.
-            PersonWithShader = new Sprite
+            SpriteWithShader = new Sprite
             {
                 Image = game.Spongebob,
                 Size = new ScalableVector2(400, 400),
@@ -85,15 +85,15 @@ namespace ExampleGame
             if (KeyboardManager.CurrentState.IsKeyDown(Keys.Left))
             {
                 // Grab the current shader parameter.
-                var currentRect = (Vector2) PersonWithShader.Shader.Parameters["p_rectangle"];
-                ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X - 20, 0, PersonWithShader.Width));
+                var currentRect = (Vector2) SpriteWithShader.Shader.Parameters["p_rectangle"];
+                ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X - 20, 0, SpriteWithShader.Width));
             }
 
             // Make shader transparency rect larger.
             if (KeyboardManager.CurrentState.IsKeyDown(Keys.Right))
             {
-                var currentRect = (Vector2) PersonWithShader.Shader.Parameters["p_rectangle"];
-                ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X + 20, 0, PersonWithShader.Width));
+                var currentRect = (Vector2) SpriteWithShader.Shader.Parameters["p_rectangle"];
+                ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X + 20, 0, SpriteWithShader.Width));
             }
         }
 
@@ -104,10 +104,10 @@ namespace ExampleGame
         private void ChangeShaderRectWidth(float width)
         {
             // Change the parameters in the dictionary.
-            PersonWithShader.Shader.Parameters["p_rectangle"] = new Vector2(width, PersonWithShader.Height);
+            SpriteWithShader.Shader.Parameters["p_rectangle"] = new Vector2(width, SpriteWithShader.Height);
 
             // Be sure to re-set parameters after changing.
-            PersonWithShader.Shader.SetParameters();
+            SpriteWithShader.Shader.SetParameters();
         }
     }
 }
