@@ -52,6 +52,7 @@
       <DependentUpon>ResourceStore.resx</DependentUpon>
     </Compile>
     <Compile Include="SampleScreen.cs" />
+    <Compile Include="SampleScreenInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MonoGame.Framework.dll.config" />

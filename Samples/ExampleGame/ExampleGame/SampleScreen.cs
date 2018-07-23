@@ -17,60 +17,14 @@ namespace ExampleGame
 {
     public class SampleScreen : Screen
     {
-        public Sprite Person;
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public sealed override ScreenInterface Interface { get; protected set; }
 
-        public SampleScreen()
-        {
-            var game = (ExampleGame) GameBase.Game;
-
-            Person = new Sprite
-            {
-                Image = game.Spongebob,
-                Size = new ScalableVector2(400, 400),
-                Alignment = Alignment.MidCenter,
-                Tint = Color.Blue,
-                Parent = Container
-            };
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
-            {
-                Person.Size = new ScalableVector2(700, 700);
-            }
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
-                Person.Size = new ScalableVector2(400, 400);
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
-            {
-                Person.Alignment = Alignment.TopLeft;
-                Person.Position = new ScalableVector2(400, 0);
-            }
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Down))
-            {
-                Person.Alignment = Alignment.MidRight;
-                Person.Position = new ScalableVector2(-400, 0);
-            }
-
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            var game = (ExampleGame)GameBase.Game;
-            game.GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            game.SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, WindowManager.Scale);
-            Container.Draw(gameTime);
-            game.SpriteBatch.End();
-        }
-
-        public override void Destroy()
-        {
-            base.Destroy();
-        }
+        /// <summary>
+        ///     Ctor - Sample screen for the game.
+        /// </summary>
+        public SampleScreen() => Interface = new SampleScreenInterface(this);
     }
 }
