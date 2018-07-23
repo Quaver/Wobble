@@ -12,7 +12,7 @@ namespace Wobble.Discord
         public static DiscordRpcClient Client { get; private set; }
 
         /// <summary>
-        ///
+        ///    The application id received from https://discordapp.com/developers.
         /// </summary>
         public static string AppId { get; private set; }
 
