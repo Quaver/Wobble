@@ -149,6 +149,20 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
+        ///     Restarts the track from the beginning.
+        /// </summary>
+        public void Restart()
+        {
+            CheckIfDisposed();
+
+            if (IsPlaying)
+                Pause();
+
+            Seek(0);
+            Play();
+        }
+
+        /// <summary>
         ///     Seeks to a position in the track
         /// </summary>
         /// <param name="pos"></param>

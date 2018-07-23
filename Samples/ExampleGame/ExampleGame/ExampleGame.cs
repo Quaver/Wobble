@@ -41,8 +41,11 @@ namespace ExampleGame
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
             Song = new AudioTrack(ResourceStore.Valence___Infinite) { Rate = 1.2f };
-            Song.Seek(2000);
+            Song.Seek(5000);
             Song.Play();
+
+            Thread.Sleep(1000);
+            Song.Restart();
         }
 
         protected override void UnloadContent()
