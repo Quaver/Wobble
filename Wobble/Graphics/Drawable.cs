@@ -330,5 +330,11 @@ namespace Wobble.Graphics
             // Raise recalculated event.
             RectangleRecalculated?.Invoke(this, EventArgs.Empty);
         }
+
+        /// <summary>
+        ///     Resets the count of total drawn objects.
+        ///     This is usually performed once every initial draw call.
+        /// </summary>
+        internal static void ResetTotalDrawnCount() => TotalDrawn = 0;
     }
 }

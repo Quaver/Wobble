@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Audio;
+using Wobble.Graphics;
 using Wobble.Input;
 using Wobble.Screens;
 using Wobble.Window;
@@ -105,6 +106,8 @@ namespace Wobble
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            Drawable.ResetTotalDrawnCount();
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
