@@ -126,6 +126,8 @@
     <Compile Include="Graphics\IDrawable.cs" />
     <Compile Include="Graphics\ScalableVector.cs" />
     <Compile Include="Graphics\ScalableVector2.cs" />
+    <Compile Include="Graphics\Shaders\InvalidTypeParameterException.cs" />
+    <Compile Include="Graphics\Shaders\Shader.cs" />
     <Compile Include="Graphics\Sprites\Sprite.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
