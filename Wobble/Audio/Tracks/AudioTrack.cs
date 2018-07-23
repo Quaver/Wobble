@@ -111,6 +111,24 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
+        ///     The master volume of all audio streams
+        /// </summary>
+        public static int GlobalVolume
+        {
+            get => Bass.GlobalStreamVolume;
+            set => Bass.GlobalStreamVolume = value * 100;
+        }
+
+        /// <summary>
+        ///     The volume of the current stream as a percentage.
+        /// </summary>
+        public double Volume
+        {
+            get => Bass.ChannelGetAttribute(Stream, ChannelAttribute.Volume);
+            set => Bass.ChannelSlideAttribute(Stream, ChannelAttribute.Volume, (float)(value / 100f), 50);
+        }
+
+        /// <summary>
         ///    Loads an audio track from a file.
         /// </summary>
         /// <param name="path"></param>
