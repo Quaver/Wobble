@@ -15,5 +15,10 @@ namespace Wobble.Graphics
         /// </summary>
         /// <param name="gameTime"></param>
         void Draw(GameTime gameTime);
+
+        /// <summary>
+        ///     Destroys the object.
+        /// </summary>
+        void Destroy();
     }
 }
