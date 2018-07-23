@@ -15,21 +15,22 @@ namespace ExampleGame
 {
     public class SampleScreenInterface : ScreenInterface
     {
-        public Sprite PersonWithShader;
+        /// <summary>
+        ///     Test sprite
+        /// </summary>
+        public Sprite PersonWithShader { get; }
 
+        /// <inheritdoc />
+        /// <summary>
+        ///     Ctor
+        /// </summary>
+        /// <param name="screen"></param>
         public SampleScreenInterface(SampleScreen screen) : base(screen)
         {
+            // Grab the game instance.
             var game = (ExampleGame) GameBase.Game;
 
-            // ReSharper disable once ObjectCreationAsStatement
-            new Sprite
-            {
-                Image = game.Spongebob,
-                Size = new ScalableVector2(100, 100),
-                Alignment = Alignment.TopLeft,
-                Parent = Container,
-            };
-
+            // Create new sprite to be drawn.
             PersonWithShader = new Sprite
             {
                 Image = game.Spongebob,
@@ -45,50 +46,72 @@ namespace ExampleGame
                     {"p_alpha", 0f}
                 })
             };
-
-            // ReSharper disable once ObjectCreationAsStatement
-            new Sprite
-            {
-                Image = game.Spongebob,
-                Size = new ScalableVector2(100, 100),
-                Alignment = Alignment.MidLeft,
-                Parent = Container,
-            };
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
-            {
-                PersonWithShader.Size = new ScalableVector2(700, 700);
-            }
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
-                PersonWithShader.Size = new ScalableVector2(400, 400);
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
-            {
-                PersonWithShader.Alignment = Alignment.TopLeft;
-                PersonWithShader.Position = new ScalableVector2(400, 0);
-            }
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Down))
-            {
-                PersonWithShader.Alignment = Alignment.MidRight;
-                PersonWithShader.Position = new ScalableVector2(-400, 0);
-            }
-
+            HandleInput();
             Container.Update(gameTime);
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             GameBase.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
+
             GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, WindowManager.Scale);
             Container.Draw(gameTime);
             GameBase.Game.SpriteBatch.End();
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public override void Destroy() => Container.Destroy();
+
+        /// <summary>
+        ///     In this example, it when the user presses down a key, it'll change the shader's parameters.
+        /// </summary>
+        private void HandleInput()
+        {
+            // Make shader transparency rect smaller.
+            if (KeyboardManager.CurrentState.IsKeyDown(Keys.Left))
+            {
+                // Grab the current shader parameter.
+                var currentRect = (Vector2) PersonWithShader.Shader.Parameters["p_rectangle"];
+
+                // Grab the new width and set it.
+                var newWidth = MathHelper.Clamp(currentRect.X - 20, 0, PersonWithShader.Width);
+
+                // Change the parameters in the dictionary.
+                PersonWithShader.Shader.Parameters["p_rectangle"] = new Vector2(newWidth, PersonWithShader.Height);
+
+                // Be sure to re-set parameters after changing.
+                PersonWithShader.Shader.SetParameters();
+            }
+
+            // Make shader transparency rect larger.
+            if (KeyboardManager.CurrentState.IsKeyDown(Keys.Right))
+            {
+                // Grab the current shader parameter.
+                var currentRect = (Vector2) PersonWithShader.Shader.Parameters["p_rectangle"];
+
+                // Grab the new width and set it.
+                var newWidth = MathHelper.Clamp(currentRect.X + 20, 0, PersonWithShader.Width);
+
+                // Change the parameters in the dictionary.
+                PersonWithShader.Shader.Parameters["p_rectangle"] = new Vector2(newWidth, PersonWithShader.Height);
+
+                // Be sure to re-set parameters after changing.
+                PersonWithShader.Shader.SetParameters();
+            }
+        }
     }
 }
