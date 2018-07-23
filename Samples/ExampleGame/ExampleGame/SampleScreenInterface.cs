@@ -1,8 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble;
 using Wobble.Graphics;
+using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Input;
 using Wobble.Screens;
@@ -12,19 +15,44 @@ namespace ExampleGame
 {
     public class SampleScreenInterface : ScreenInterface
     {
-        public Sprite Person;
+        public Sprite PersonWithShader;
 
         public SampleScreenInterface(SampleScreen screen) : base(screen)
         {
             var game = (ExampleGame) GameBase.Game;
 
-            Person = new Sprite
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sprite
+            {
+                Image = game.Spongebob,
+                Size = new ScalableVector2(100, 100),
+                Alignment = Alignment.TopLeft,
+                Parent = Container,
+            };
+
+            PersonWithShader = new Sprite
             {
                 Image = game.Spongebob,
                 Size = new ScalableVector2(400, 400),
                 Alignment = Alignment.MidCenter,
                 Tint = Color.Blue,
-                Parent = Container
+                Parent = Container,
+                Shader = new Shader(ResourceStore.semi_transparent, new Dictionary<string, object>
+                {
+                    {"p_dimensions", new Vector2(400, 400)},
+                    {"p_position", new Vector2(0, 0)},
+                    {"p_rectangle", new Vector2(200, 400)},
+                    {"p_alpha", 0f}
+                })
+            };
+
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sprite
+            {
+                Image = game.Spongebob,
+                Size = new ScalableVector2(100, 100),
+                Alignment = Alignment.MidLeft,
+                Parent = Container,
             };
         }
 
@@ -32,22 +60,22 @@ namespace ExampleGame
         {
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
             {
-                Person.Size = new ScalableVector2(700, 700);
+                PersonWithShader.Size = new ScalableVector2(700, 700);
             }
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
-                Person.Size = new ScalableVector2(400, 400);
+                PersonWithShader.Size = new ScalableVector2(400, 400);
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
             {
-                Person.Alignment = Alignment.TopLeft;
-                Person.Position = new ScalableVector2(400, 0);
+                PersonWithShader.Alignment = Alignment.TopLeft;
+                PersonWithShader.Position = new ScalableVector2(400, 0);
             }
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Down))
             {
-                Person.Alignment = Alignment.MidRight;
-                Person.Position = new ScalableVector2(-400, 0);
+                PersonWithShader.Alignment = Alignment.MidRight;
+                PersonWithShader.Position = new ScalableVector2(-400, 0);
             }
 
             Container.Update(gameTime);
