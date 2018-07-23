@@ -15,16 +15,13 @@ using Wobble.Window;
 
 namespace ExampleGame
 {
-    public class SampleScreen : IGameScreen
+    public class SampleScreen : Screen
     {
-        public Container Container;
         public Sprite Person;
 
         public SampleScreen()
         {
             var game = (ExampleGame) GameBase.Game;
-
-            Container = new Container();
 
             Person = new Sprite
             {
@@ -36,10 +33,8 @@ namespace ExampleGame
             };
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            Container.Update(gameTime);
-
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
             {
                 Person.Size = new ScalableVector2(700, 700);
@@ -59,9 +54,11 @@ namespace ExampleGame
                 Person.Alignment = Alignment.MidRight;
                 Person.Position = new ScalableVector2(-400, 0);
             }
+
+            base.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             var game = (ExampleGame)GameBase.Game;
             game.GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -71,8 +68,9 @@ namespace ExampleGame
             game.SpriteBatch.End();
         }
 
-        public void Destroy()
+        public override void Destroy()
         {
+            base.Destroy();
         }
     }
 }

@@ -132,7 +132,7 @@
     <Compile Include="Input\EnhancedMouseState.cs" />
     <Compile Include="Input\MouseButton.cs" />
     <Compile Include="Input\MouseManager.cs" />
-    <Compile Include="Screens\IGameScreen.cs" />
+    <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\ScreenManager.cs" />
     <Compile Include="Window\WindowManager.cs" />
     <Compile Include="Window\WindowResolutionChangedEventArgs.cs" />

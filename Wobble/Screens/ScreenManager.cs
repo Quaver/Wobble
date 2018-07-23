@@ -14,14 +14,14 @@ namespace Wobble.Screens
         ///     way where the screen on top will be the one being updated/drawn, and will also be the
         ///     first to be removed.
         /// </summary>
-        private static Stack<IGameScreen> Screens { get; } = new Stack<IGameScreen>();
+        private static Stack<Screen> Screens { get; } = new Stack<Screen>();
 
         /// <summary>
         ///     Adds a screen to the stack. This screen will become the new main screen, but
         ///     the ones under it will still persist at the same state.
         /// </summary>
         /// <param name="screen"></param>
-        public static void AddScreen(IGameScreen screen) => Screens.Push(screen);
+        public static void AddScreen(Screen screen) => Screens.Push(screen);
 
         /// <summary>
         ///     If there are currently any screens in the stack.
@@ -59,7 +59,7 @@ namespace Wobble.Screens
         ///     Removes all screens and places this one in the stack.
         /// </summary>
         /// <param name="screen"></param>
-        public static void ChangeScreen(IGameScreen screen)
+        public static void ChangeScreen(Screen screen)
         {
             RemoveAllScreens();
             AddScreen(screen);
