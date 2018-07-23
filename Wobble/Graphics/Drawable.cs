@@ -61,17 +61,17 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
         /// </summary>
-        public DrawRectangle ScreenRectangle { get; private set; }
+        public DrawRectangle ScreenRectangle { get; private set; } = new DrawRectangle();
 
         /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
-        public DrawRectangle RelativeRectangle { get; private set; }
+        public DrawRectangle RelativeRectangle { get; private set; } = new DrawRectangle();
 
         /// <summary>
         ///     The position of the drawable
         /// </summary>
-        private ScalableVector2 _position = new ScalableVector2();
+        private ScalableVector2 _position = new ScalableVector2(0, 0);
         public ScalableVector2 Position
         {
             get => _position;
@@ -85,7 +85,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The size of the drawable.
         /// </summary>
-        private ScalableVector2 _size = new ScalableVector2();
+        private ScalableVector2 _size = new ScalableVector2(0, 0);
         public ScalableVector2 Size
         {
             get => _size;
@@ -226,6 +226,11 @@ namespace Wobble.Graphics
         /// </summary>
         public bool IsDisposed { get; private set; }
 
+        /// <summary>
+        ///     Event raised when the rectangle has been recalculated.
+        /// </summary>
+        protected event EventHandler RectangleRecalculated;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -285,13 +290,17 @@ namespace Wobble.Graphics
         ///     Any derivatives should implement this disposition methods and then call
         ///     this base method to signify that it actually has been disposed of.
         /// </summary>
-        public virtual void Dispose() => IsDisposed = true;
+        public virtual void Dispose()
+        {
+            RectangleRecalculated = null;
+            IsDisposed = true;
+        }
 
         /// <summary>
         ///     Recalculates the local and global rectangles of the object. Makes sure that the position
         ///     and sizes are relative to the parent if the drawable has one.
         /// </summary>
-        private void RecalculateRectangles()
+        protected void RecalculateRectangles()
         {
             // Make it relative to the parent.
             if (Parent != null)
@@ -317,6 +326,9 @@ namespace Wobble.Graphics
             }
 
             Children.ForEach(x => x.RecalculateRectangles());
+
+            // Raise recalculated event.
+            RectangleRecalculated?.Invoke(this, EventArgs.Empty);
         }
     }
 }

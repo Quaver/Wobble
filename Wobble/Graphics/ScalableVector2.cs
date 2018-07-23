@@ -8,12 +8,12 @@
         /// <summary>
         ///    The X value
         /// </summary>
-        public ScalableVector X { get; set; }
+        public ScalableVector X { get; }
 
         /// <summary>
         ///     The y value.
         /// </summary>
-        public ScalableVector Y { get; set; }
+        public ScalableVector Y { get; }
 
         /// <summary>
         ///     Constructor
@@ -22,7 +22,7 @@
         /// <param name="yVal"></param>
         /// <param name="xScale"></param>
         /// <param name="yScale"></param>
-        public ScalableVector2(float xVal = 0, float yVal = 0, float xScale = 0, float yScale = 0)
+        public ScalableVector2(float xVal, float yVal, float xScale = 0, float yScale = 0)
         {
             X = new ScalableVector(xVal, xScale);
             Y = new ScalableVector(yVal, yScale);

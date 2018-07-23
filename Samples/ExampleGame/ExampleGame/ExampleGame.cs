@@ -11,6 +11,8 @@ using Wobble.Audio.Tracks;
 using Wobble.Discord;
 using Wobble.Discord.RPC;
 using Wobble.Discord.RPC.Logging;
+using Wobble.Graphics;
+using Wobble.Graphics.Sprites;
 using Wobble.Input;
 using Wobble.Resources;
 using Wobble.Screens;
@@ -42,8 +44,6 @@ namespace ExampleGame
                     Details = "Test"
                 });
             */
-
-            ScreenManager.AddScreen(new SampleScreen());
         }
 
         protected override void LoadContent()
@@ -58,6 +58,7 @@ namespace ExampleGame
             };
 
             Song.Play();
+            ScreenManager.AddScreen(new SampleScreen());
         }
 
         protected override void UnloadContent()
@@ -76,8 +77,14 @@ namespace ExampleGame
                 WindowManager.ChangeScreenResolution(new Point(1920, 1080));
             else if (MouseManager.IsUniqueClick(MouseButton.Middle))
                 WindowManager.ChangeScreenResolution(new Point(800, 600));
+
+            //Person.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime) => base.Draw(gameTime);
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+            //Person.Draw(gameTime);
+        }
     }
 }
