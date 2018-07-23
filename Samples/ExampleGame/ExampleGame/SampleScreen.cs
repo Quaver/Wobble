@@ -17,24 +17,28 @@ namespace ExampleGame
 {
     public class SampleScreen : IGameScreen
     {
+        public Container Container;
         public Sprite Person;
 
         public SampleScreen()
         {
             var game = (ExampleGame) GameBase.Game;
 
+            Container = new Container();
+
             Person = new Sprite
             {
                 Image = game.Spongebob,
                 Size = new ScalableVector2(400, 400),
                 Alignment = Alignment.MidCenter,
-                Tint = Color.Blue
+                Tint = Color.Blue,
+                Parent = Container
             };
         }
 
         public void Update(GameTime gameTime)
         {
-            Person.Update(gameTime);
+            Container.Update(gameTime);
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
             {
@@ -63,7 +67,7 @@ namespace ExampleGame
             game.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             game.SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, WindowManager.Scale);
-            Person.Draw(gameTime);
+            Container.Draw(gameTime);
             game.SpriteBatch.End();
         }
 
