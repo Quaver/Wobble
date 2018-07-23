@@ -4,4 +4,4 @@
   <img src="https://eggplants.org/lfsd4v.png">
 </p>
 
-The barebones MonoGame-based framework for creating cross-platform games.
+>A bare-bones MonoGame-based framework for developing cross-platform games.
