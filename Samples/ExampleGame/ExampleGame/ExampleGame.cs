@@ -45,6 +45,8 @@ namespace ExampleGame
             Song.Play();
 
             Thread.Sleep(1000);
+
+            Song.ToggleRatePitching(false);
             Song.Restart();
         }
 
