@@ -1,6 +1,6 @@
 ﻿using System;
-using DiscordRPC;
-using DiscordRPC.Logging;
+using Wobble.Discord.RPC;
+using Wobble.Discord.RPC.Logging;
 
 namespace Wobble.Discord
 {

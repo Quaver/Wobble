@@ -8,6 +8,9 @@ using Wobble;
 using Wobble.Audio;
 using Wobble.Audio.Samples;
 using Wobble.Audio.Tracks;
+using Wobble.Discord;
+using Wobble.Discord.RPC;
+using Wobble.Discord.RPC.Logging;
 using Wobble.Input;
 using Wobble.Resources;
 using Wobble.Screens;
@@ -32,6 +35,12 @@ namespace ExampleGame
             MouseManager.ShowCursor();
             Window.AllowUserResizing = true;
 
+            DiscordManager.CreateClient("376180410490552320", LogLevel.Info);
+            DiscordManager.Client.SetPresence(new RichPresence()
+            {
+                Details = "Test"
+            });
+
             ScreenManager.AddScreen(new SampleScreen());
         }
 
@@ -45,7 +54,7 @@ namespace ExampleGame
                 Rate = 1.5f,
                 Volume = 5
             };
-            
+
             Song.Play();
         }
 
