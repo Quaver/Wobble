@@ -86,32 +86,28 @@ namespace ExampleGame
             {
                 // Grab the current shader parameter.
                 var currentRect = (Vector2) PersonWithShader.Shader.Parameters["p_rectangle"];
-
-                // Grab the new width and set it.
-                var newWidth = MathHelper.Clamp(currentRect.X - 20, 0, PersonWithShader.Width);
-
-                // Change the parameters in the dictionary.
-                PersonWithShader.Shader.Parameters["p_rectangle"] = new Vector2(newWidth, PersonWithShader.Height);
-
-                // Be sure to re-set parameters after changing.
-                PersonWithShader.Shader.SetParameters();
+                ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X - 20, 0, PersonWithShader.Width));
             }
 
             // Make shader transparency rect larger.
             if (KeyboardManager.CurrentState.IsKeyDown(Keys.Right))
             {
-                // Grab the current shader parameter.
                 var currentRect = (Vector2) PersonWithShader.Shader.Parameters["p_rectangle"];
-
-                // Grab the new width and set it.
-                var newWidth = MathHelper.Clamp(currentRect.X + 20, 0, PersonWithShader.Width);
-
-                // Change the parameters in the dictionary.
-                PersonWithShader.Shader.Parameters["p_rectangle"] = new Vector2(newWidth, PersonWithShader.Height);
-
-                // Be sure to re-set parameters after changing.
-                PersonWithShader.Shader.SetParameters();
+                ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X + 20, 0, PersonWithShader.Width));
             }
+        }
+
+        /// <summary>
+        ///     Changes the rectangle parameter of the shader and applies it.
+        /// </summary>
+        /// <param name="width"></param>
+        private void ChangeShaderRectWidth(float width)
+        {
+            // Change the parameters in the dictionary.
+            PersonWithShader.Shader.Parameters["p_rectangle"] = new Vector2(width, PersonWithShader.Height);
+
+            // Be sure to re-set parameters after changing.
+            PersonWithShader.Shader.SetParameters();
         }
     }
 }
