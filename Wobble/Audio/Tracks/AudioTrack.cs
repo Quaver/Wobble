@@ -75,6 +75,23 @@ namespace Wobble.Audio.Tracks
         public bool IsStopped => Bass.ChannelIsActive(Stream) == PlaybackState.Stopped;
 
         /// <summary>
+        ///     The rate at which the audio plays at.
+        /// </summary>
+        private float _rate = 1.0f;
+        public float Rate
+        {
+            get => _rate;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentException("Cannot set rate to 0 or below.");
+
+                _rate = value;
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Tempo, _rate * 100 - 100);
+            }
+        }
+
+        /// <summary>
         ///    Loads an audio track from a file.
         /// </summary>
         /// <param name="path"></param>

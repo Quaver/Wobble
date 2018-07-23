@@ -40,19 +40,9 @@ namespace ExampleGame
             base.LoadContent();
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
-            Song = new AudioTrack(ResourceStore.Valence___Infinite);
-            Console.WriteLine(Song.Length);
-            Song.Seek(3000);
-            Console.WriteLine(Song.Position);
+            Song = new AudioTrack(ResourceStore.Valence___Infinite) { Rate = 1.2f };
+            Song.Seek(2000);
             Song.Play();
-            Thread.Sleep(1000);
-            Song.Pause();
-            Thread.Sleep(2000);
-            Song.Seek(15000);
-            Song.Play();
-            Thread.Sleep(2000);
-            Song.Stop();
-            Console.WriteLine(Song.IsDisposed);
         }
 
         protected override void UnloadContent()
