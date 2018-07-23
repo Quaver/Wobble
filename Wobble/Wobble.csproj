@@ -119,6 +119,7 @@
     <Compile Include="Discord\RPC\Web\WebRPC.cs" />
     <Compile Include="GameBase.cs" />
     <Compile Include="Graphics\Alignment.cs" />
+    <Compile Include="Graphics\Container.cs" />
     <Compile Include="Graphics\Drawable.cs" />
     <Compile Include="Graphics\DrawRectangle.cs" />
     <Compile Include="Graphics\GraphicsHelper.cs" />
