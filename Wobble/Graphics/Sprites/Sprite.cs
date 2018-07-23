@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Graphics.Shaders;
+using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -101,6 +104,23 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
+        ///     Custom shader for this sprite.
+        /// </summary>
+        private Shader _shader;
+        public Shader Shader
+        {
+            get => _shader;
+            set
+            {
+                // Dispose the shader if we already have one loaded.
+                if (Shader != null && !Shader.IsDisposed)
+                    Shader.Dispose();
+
+                _shader = value;
+            }
+        }
+
+        /// <summary>
         ///     Dictates if we want to set the alpha of the children as well.
         /// </summary>
         public bool SetChildrenAlpha { get; set; }
@@ -118,7 +138,41 @@ namespace Wobble.Graphics.Sprites
         {
             // Draw only if the image isn't null.
             if (Image != null)
-                GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+            {
+                if (Shader != null)
+                {
+                    try
+                    {
+                        // Begin the spritebatch with the new shader.
+                        GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied,
+                            SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, Shader.ShaderEffect, WindowManager.Scale);
+                    }
+                    // If an exception is thrown here, we'll want to begin the spritebatch with our shader.
+                    catch (Exception e)
+                    {
+                        // End the old spritebatch.
+                        GameBase.Game.SpriteBatch.End();
+
+                        // Begin a new spritebatch with the new shader.
+                        GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied,
+                            SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, Shader.ShaderEffect, WindowManager.Scale);
+                    }
+                    finally
+                    {
+                        // Draw and end spritebatch.
+                        GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+                        GameBase.Game.SpriteBatch.End();
+
+                        // Begin the spritebatch again with the default settings.
+                        GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, WindowManager.Scale);
+                    }
+                }
+                // If there isn't  shader, just draw normally.
+                else
+                {
+                    GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+                }
+            }
 
             base.Draw(gameTime);
         }
