@@ -221,7 +221,6 @@ namespace Wobble.Graphics
         /// </summary>
         public bool SetChildrenVisibility { get; set; }
 
-
         /// <summary>
         ///     If the drawable has been disposed of already.
         /// </summary>
