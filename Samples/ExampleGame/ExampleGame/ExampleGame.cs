@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Threading;
 using Microsoft.Xna.Framework;
@@ -26,6 +27,8 @@ namespace ExampleGame
 
         public AudioTrack Song;
 
+        public List<Texture2D> TestSpritesheet;
+        
         public ExampleGame()
         {
         }
@@ -50,6 +53,9 @@ namespace ExampleGame
         {
             base.LoadContent();
             Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
+
+            var line = ResourceLoader.LoadTexture2D(ResourceStore.test_spritesheet, ImageFormat.Png);
+            TestSpritesheet = ResourceLoader.LoadSpritesheetFromTexture(line, 1, 12);
 
             Song = new AudioTrack(ResourceStore.Valence___Infinite)
             {

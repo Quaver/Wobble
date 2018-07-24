@@ -120,6 +120,7 @@
     <Compile Include="GameBase.cs" />
     <Compile Include="Graphics\Alignment.cs" />
     <Compile Include="Graphics\Container.cs" />
+    <Compile Include="Graphics\Direction.cs" />
     <Compile Include="Graphics\Drawable.cs" />
     <Compile Include="Graphics\DrawRectangle.cs" />
     <Compile Include="Graphics\GraphicsHelper.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Graphics\ScalableVector2.cs" />
     <Compile Include="Graphics\Shaders\InvalidTypeParameterException.cs" />
     <Compile Include="Graphics\Shaders\Shader.cs" />
+    <Compile Include="Graphics\Sprites\AnimatableSprite.cs" />
     <Compile Include="Graphics\Sprites\Sprite.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />

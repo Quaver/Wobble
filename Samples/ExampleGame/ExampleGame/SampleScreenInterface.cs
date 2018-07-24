@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,6 +19,8 @@ namespace ExampleGame
         ///     Test sprite
         /// </summary>
         public Sprite SpriteWithShader { get; }
+
+        public AnimatableSprite AnimatedSprite { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -45,6 +47,14 @@ namespace ExampleGame
                     {"p_rectangle", new Vector2(200, 400)},
                     {"p_alpha", 0f}
                 })
+            };
+
+            AnimatedSprite = new AnimatableSprite(game.TestSpritesheet)
+            {
+                Alignment = Alignment.MidLeft,
+                Size = new ScalableVector2(300, 300),
+                Parent = Container,
+                X = 150
             };
         }
 
@@ -94,6 +104,14 @@ namespace ExampleGame
             {
                 var currentRect = (Vector2) SpriteWithShader.Shader.Parameters["p_rectangle"];
                 ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X + 20, 0, SpriteWithShader.Width));
+            }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Space))
+            {
+                if (AnimatedSprite.IsLooping)
+                    AnimatedSprite.StopLoop();
+                else
+                    AnimatedSprite.StartLoop(Direction.Forward, 240);
             }
         }
 
