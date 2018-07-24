@@ -22,6 +22,8 @@ namespace ExampleGame
 
         public AnimatableSprite AnimatedSprite { get; }
 
+        public SpriteText SampleText { get; }
+
         /// <inheritdoc />
         /// <summary>
         ///     Ctor
@@ -55,6 +57,16 @@ namespace ExampleGame
                 Size = new ScalableVector2(300, 300),
                 Parent = Container,
                 X = 150
+            };
+
+            SampleText = new SpriteText()
+            {
+                Font = game.Aller,
+                Text = "hey sample text",
+                Parent = Container,
+                TextColor = Color.White,
+                Alignment = Alignment.MidCenter,
+                X = 100
             };
         }
 

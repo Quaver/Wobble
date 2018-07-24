@@ -130,7 +130,9 @@
     <Compile Include="Graphics\Shaders\InvalidTypeParameterException.cs" />
     <Compile Include="Graphics\Shaders\Shader.cs" />
     <Compile Include="Graphics\Sprites\AnimatableSprite.cs" />
+    <Compile Include="Graphics\Sprites\BakeableSprite.cs" />
     <Compile Include="Graphics\Sprites\Sprite.cs" />
+    <Compile Include="Graphics\Sprites\SpriteText.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Resources\ResourceLoader.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />
@@ -212,5 +214,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

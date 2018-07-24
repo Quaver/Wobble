@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Resources;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -69,12 +70,34 @@ namespace Wobble.Resources
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        internal static Texture2D LoadTexture2DFromFile(string path)
+        public static Texture2D LoadTexture2DFromFile(string path)
         {
             using (var fileStream = new FileStream(path, FileMode.Open))
             {
                 return Texture2D.FromStream(GameBase.Game.GraphicsDevice, fileStream);
             }
+        }
+
+        /// <summary>
+        ///     Loads a SpriteFont from an embedded resource.
+        /// </summary>
+        /// <returns></returns>
+        public static SpriteFont LoadFont(ResourceManager manager, string fontName)
+        {
+            // Grab the current content manager.
+            var oldManager = GameBase.Game.Content;
+
+            // Set the new content manager.
+            var resxContent = new ResourceContentManager(GameBase.Game.Services,manager);
+            GameBase.Game.Content = resxContent;
+
+            // Load up the font.
+            var font = GameBase.Game.Content.Load<SpriteFont>(fontName);
+
+            // Reset the content manager back to what it was.
+            GameBase.Game.Content = oldManager;
+
+            return font;
         }
 
         /// <summary>

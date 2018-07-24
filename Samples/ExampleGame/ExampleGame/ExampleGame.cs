@@ -28,7 +28,9 @@ namespace ExampleGame
         public AudioTrack Song;
 
         public List<Texture2D> TestSpritesheet;
-        
+
+        public SpriteFont Aller;
+
         public ExampleGame()
         {
         }
@@ -57,6 +59,7 @@ namespace ExampleGame
             var line = ResourceLoader.LoadTexture2D(ResourceStore.test_spritesheet, ImageFormat.Png);
             TestSpritesheet = ResourceLoader.LoadSpritesheetFromTexture(line, 1, 12);
 
+            Aller = ResourceLoader.LoadFont(ResourceStore.ResourceManager, "aller_regular_16");
             Song = new AudioTrack(ResourceStore.Valence___Infinite)
             {
                 Rate = 1.5f,

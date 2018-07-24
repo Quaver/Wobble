@@ -63,6 +63,16 @@ namespace ExampleGame {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] aller_regular_16 {
+            get {
+                object obj = ResourceManager.GetObject("aller_regular_16", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] semi_transparent {
             get {
                 object obj = ResourceManager.GetObject("semi_transparent", resourceCulture);

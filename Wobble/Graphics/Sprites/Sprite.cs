@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -97,8 +97,11 @@ namespace Wobble.Graphics.Sprites
                         var sprite = (Sprite) x;
                         sprite.Alpha = value;
                     }
-
-                    // TODO: SpriteText
+                    else if (t == typeof(SpriteText))
+                    {
+                        var text = (SpriteText)x;
+                        text.Alpha = value;
+                    }
                 });
             }
         }

@@ -57,6 +57,7 @@
   <ItemGroup>
     <None Include="MonoGame.Framework.dll.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Fonts\aller_regular_16.xnb" />
     <None Include="Resources\Shaders\semi-transparent.mgfxo" />
   </ItemGroup>
   <ItemGroup>
