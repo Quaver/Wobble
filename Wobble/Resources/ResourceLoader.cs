@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Resources;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace Wobble.Resources
 {
@@ -16,7 +19,6 @@ namespace Wobble.Resources
         /// <summary>
         ///     Loads a texture of a given format from an embedded resource store.
         /// </summary>
-        /// <param name="gd"></param>
         /// <param name="image"></param>
         /// <param name="format"></param>
         /// <returns></returns>
@@ -30,10 +32,50 @@ namespace Wobble.Resources
         }
 
         /// <summary>
-        ///     Loads a SoundEffect from a .wav of a resource store.
+        ///     Loads a spritesheet in from a texture 2d given the number of rows and columns.
         /// </summary>
+        /// <param name="tex"></param>
+        /// <param name="rows"></param>
+        /// <param name="columns"></param>
         /// <returns></returns>
-        public static SoundEffect LoadSoundEffect<T>(string name) => SoundEffect.FromStream((UnmanagedMemoryStream)GetProperty<T>(name));
+        public static List<Texture2D> LoadSpritesheetFromTexture(Texture2D tex, int rows, int columns)
+        {
+            var frames = new List<Texture2D>();
+
+            // Get the width and height of each individual texture.
+            var imgWidth = tex.Width / columns;
+            var imgHeight = tex.Height / rows;
+
+            for (var i = 0; i < rows * columns; i++)
+            {
+                // Get the specific row and column from the index.
+                var column = i / rows;
+                var row = i % rows;
+
+                var sourceRect = new Rectangle(imgWidth * column, imgHeight * row, imgWidth, imgHeight);
+                var cropTexture = new Texture2D(GameBase.Game.GraphicsDevice, sourceRect.Width, sourceRect.Height);
+                var data = new Color[sourceRect.Width * sourceRect.Height];
+                tex.GetData(0, sourceRect, data, 0, data.Length);
+                cropTexture.SetData(data);
+
+                frames.Add(cropTexture);
+            }
+
+            return frames;
+        }
+
+        /// <summary>
+        ///     Loads an image into a Texture2D from a local file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        internal static Texture2D LoadTexture2DFromFile(string path)
+        {
+            using (var fileStream = new FileStream(path, FileMode.Open))
+            {
+                return Texture2D.FromStream(GameBase.Game.GraphicsDevice, fileStream);
+            }
+        }
 
         /// <summary>
         ///     Loads in a resource store property with a given name
