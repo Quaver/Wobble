@@ -135,7 +135,7 @@
     <Compile Include="Graphics\Sprites\BakeableSprite.cs" />
     <Compile Include="Graphics\Sprites\Sprite.cs" />
     <Compile Include="Graphics\Sprites\SpriteText.cs" />
-    <Compile Include="Graphics\UI\Debug\FpsCounter.cs" />
+    <Compile Include="Graphics\UI\Debugging\FpsCounter.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />
     <Compile Include="Input\MouseButton.cs" />

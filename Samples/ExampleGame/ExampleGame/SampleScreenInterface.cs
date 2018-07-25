@@ -7,7 +7,7 @@ using Wobble;
 using Wobble.Graphics;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.UI.Debug;
+using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
 using Wobble.Screens;
 using Wobble.Window;
