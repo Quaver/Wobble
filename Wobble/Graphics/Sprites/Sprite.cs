@@ -107,23 +107,6 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
-        ///     Custom shader for this sprite.
-        /// </summary>
-        private Shader _shader;
-        public Shader Shader
-        {
-            get => _shader;
-            set
-            {
-                // Dispose the shader if we already have one loaded.
-                if (Shader != null && !Shader.IsDisposed)
-                    Shader.Dispose();
-
-                _shader = value;
-            }
-        }
-
-        /// <summary>
         ///     Dictates if we want to set the alpha of the children as well.
         /// </summary>
         public bool SetChildrenAlpha { get; set; }
@@ -142,35 +125,41 @@ namespace Wobble.Graphics.Sprites
             // Draw only if the image isn't null.
             if (Image != null)
             {
-                if (Shader != null)
+                if (SpriteBatchOptions != null)
                 {
+                    // If we actually have new SpriteBatchOptions to use,then
+                    // we want to end the previous SpriteBatch.
                     try
                     {
-                        // Begin the spritebatch with the new shader.
-                        GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied,
-                            SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, Shader.ShaderEffect, WindowManager.Scale);
+                        GameBase.Game.SpriteBatch.End();
                     }
-                    // If an exception is thrown here, we'll want to begin the spritebatch with our shader.
                     catch (Exception e)
                     {
-                        // End the old spritebatch.
-                        GameBase.Game.SpriteBatch.End();
-
-                        // Begin a new spritebatch with the new shader.
-                        GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied,
-                            SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, Shader.ShaderEffect, WindowManager.Scale);
+                        // ignored
                     }
-                    finally
-                    {
-                        // Draw and end spritebatch.
-                        GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
-                        GameBase.Game.SpriteBatch.End();
 
-                        // Begin the spritebatch again with the default settings.
-                        GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, WindowManager.Scale);
-                    }
+                    GameBase.DefaultSpriteBatchInUse = false;
+
+                    // Begin the new SpriteBatch
+                    SpriteBatchOptions.Begin();
+
+                    // Draw the object.
+                    GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
                 }
-                // If there isn't  shader, just draw normally.
+                // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
+                else if (!GameBase.DefaultSpriteBatchInUse)
+                {
+                    // End the previous SpriteBatch.
+                    GameBase.Game.SpriteBatch.End();
+
+                    // Begin the default spriteBatch
+                    GameBase.DefaultSpriteBatchOptions.Begin();
+                    GameBase.DefaultSpriteBatchInUse = true;
+
+                    // Draw the object.
+                    GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+                }
+                // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
                 else
                 {
                     GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
@@ -185,7 +174,7 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public override void Destroy()
         {
-            Shader?.Dispose();
+            SpriteBatchOptions?.Shader?.Dispose();
             base.Destroy();
         }
 

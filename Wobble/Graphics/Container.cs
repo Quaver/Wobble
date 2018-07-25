@@ -1,4 +1,5 @@
-﻿using Wobble.Window;
+﻿using Microsoft.Xna.Framework;
+using Wobble.Window;
 
 namespace Wobble.Graphics
 {

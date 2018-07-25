@@ -42,13 +42,16 @@ namespace ExampleGame
                 Alignment = Alignment.MidCenter,
                 Tint = Color.Blue,
                 Parent = Container,
-                Shader = new Shader(ResourceStore.semi_transparent, new Dictionary<string, object>
+                SpriteBatchOptions = new SpriteBatchOptions()
                 {
-                    {"p_dimensions", new Vector2(400, 400)},
-                    {"p_position", new Vector2(0, 0)},
-                    {"p_rectangle", new Vector2(200, 400)},
-                    {"p_alpha", 0f}
-                })
+                    Shader = new Shader(ResourceStore.semi_transparent, new Dictionary<string, object>
+                    {
+                        {"p_dimensions", new Vector2(400, 400)},
+                        {"p_position", new Vector2(0, 0)},
+                        {"p_rectangle", new Vector2(200, 400)},
+                        {"p_alpha", 0f}
+                    })
+                }
             };
 
             AnimatedSprite = new AnimatableSprite(game.TestSpritesheet)
@@ -56,7 +59,19 @@ namespace ExampleGame
                 Alignment = Alignment.MidLeft,
                 Size = new ScalableVector2(300, 300),
                 Parent = Container,
-                X = 150
+                X = 150,
+                SpriteBatchOptions = new SpriteBatchOptions()
+                {
+                    BlendState = BlendState.Additive
+                }
+            };
+
+            new Sprite()
+            {
+                Alignment = Alignment.TopRight,
+                Parent = Container,
+                Image = game.Spongebob,
+                Size = new ScalableVector2(150, 80)
             };
 
             SampleText = new SpriteText
@@ -88,8 +103,7 @@ namespace ExampleGame
         public override void Draw(GameTime gameTime)
         {
             GameBase.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, WindowManager.Scale);
+;
             Container.Draw(gameTime);
             GameBase.Game.SpriteBatch.End();
         }
@@ -108,14 +122,14 @@ namespace ExampleGame
             if (KeyboardManager.CurrentState.IsKeyDown(Keys.Left))
             {
                 // Grab the current shader parameter.
-                var currentRect = (Vector2) SpriteWithShader.Shader.Parameters["p_rectangle"];
+                var currentRect = (Vector2) SpriteWithShader.SpriteBatchOptions.Shader.Parameters["p_rectangle"];
                 ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X - 20, 0, SpriteWithShader.Width));
             }
 
             // Make shader transparency rect larger.
             if (KeyboardManager.CurrentState.IsKeyDown(Keys.Right))
             {
-                var currentRect = (Vector2) SpriteWithShader.Shader.Parameters["p_rectangle"];
+                var currentRect = (Vector2) SpriteWithShader.SpriteBatchOptions.Shader.Parameters["p_rectangle"];
                 ChangeShaderRectWidth(MathHelper.Clamp(currentRect.X + 20, 0, SpriteWithShader.Width));
             }
 
@@ -145,7 +159,7 @@ namespace ExampleGame
         /// <param name="width"></param>
         private void ChangeShaderRectWidth(float width)
         {
-            SpriteWithShader.Shader.SetParameter("p_rectangle", new Vector2(width, SpriteWithShader.Height), true);
+            SpriteWithShader.SpriteBatchOptions.Shader.SetParameter("p_rectangle", new Vector2(width, SpriteWithShader.Height), true);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Wobble.Graphics;
 
 namespace Wobble
 {
@@ -23,5 +24,16 @@ namespace Wobble
                 _game = value;
             }
         }
+
+         /// <summary>
+        ///    The default SpriteBatch options that'd be used on every drawable that doesn't
+        ///    have it overwritten.
+        /// </summary>
+        public static SpriteBatchOptions DefaultSpriteBatchOptions { get; } = new SpriteBatchOptions();
+
+        /// <summary>
+        ///     Dictates if the default SpriteBatch is currently in use.
+        /// </summary>
+        public static bool DefaultSpriteBatchInUse { get; internal set; }
     }
 }
