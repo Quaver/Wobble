@@ -239,39 +239,43 @@ namespace Wobble.Graphics.Sprites
         /// <returns></returns>
         private string WrapText(string text, bool multiLine, bool overflow = false)
         {
-            //Check if text is not short enough to fit on its on box
-            if (Font.MeasureString(text).X < Width) return text;
+            // Check if text is not short enough to fit on its on box
+            if (Font.MeasureString(text).X < Width)
+                return text;
 
-            //Reference Variables
+            // Reference Variables
             var words = text.Split(' ');
             var wrappedText = new StringBuilder();
             var linewidth = 0f;
             var spaceWidth = Font.MeasureString(" ").X;
             var textline = 0;
-            var MaxTextLines = 99; //todo: remove
+            const int maxTextLines = 99;
 
             //Update Text
             foreach (var a in words)
             {
                 var size = Font.MeasureString(a);
+
                 if (linewidth + size.X < AbsoluteSize.X)
                 {
                     linewidth += size.X + spaceWidth;
                 }
                 else if (multiLine)
                 {
-                    //Add new line
+                    // Add new line
                     wrappedText.Append("\n");
                     linewidth = size.X + spaceWidth;
 
-                    //Check if text wrap should continue
+                    // Check if text wrap should continue
                     textline++;
-                    if (textline >= MaxTextLines) break;
+
+                    if (textline >= maxTextLines)
+                        break;
                 }
                 else break;
                 wrappedText.Append(a + " ");
             }
-            //Console.WriteLine("MAX: {0}, TOTAL {1}", MaxTextLines, textline);
+
             return wrappedText.ToString();
         }
 
