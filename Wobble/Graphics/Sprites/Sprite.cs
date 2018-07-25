@@ -122,6 +122,10 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
+            // If there is no image set, create a dummy 1px one.
+            if (Image == null)
+                Image = new Texture2D(GameBase.Game.GraphicsDevice, 1, 1);
+
             if (SpriteBatchOptions != null)
             {
                 // If we actually have new SpriteBatchOptions to use,then
