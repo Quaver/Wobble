@@ -122,48 +122,44 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            // Draw only if the image isn't null.
-            if (Image != null)
+            if (SpriteBatchOptions != null)
             {
-                if (SpriteBatchOptions != null)
+                // If we actually have new SpriteBatchOptions to use,then
+                // we want to end the previous SpriteBatch.
+                try
                 {
-                    // If we actually have new SpriteBatchOptions to use,then
-                    // we want to end the previous SpriteBatch.
-                    try
-                    {
-                        GameBase.Game.SpriteBatch.End();
-                    }
-                    catch (Exception e)
-                    {
-                        // ignored
-                    }
-
-                    GameBase.DefaultSpriteBatchInUse = false;
-
-                    // Begin the new SpriteBatch
-                    SpriteBatchOptions.Begin();
-
-                    // Draw the object.
-                    DrawToSpriteBatch();
-                }
-                // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
-                else if (!GameBase.DefaultSpriteBatchInUse && !UsePreviousSpriteBatchOptions)
-                {
-                    // End the previous SpriteBatch.
                     GameBase.Game.SpriteBatch.End();
-
-                    // Begin the default spriteBatch
-                    GameBase.DefaultSpriteBatchOptions.Begin();
-                    GameBase.DefaultSpriteBatchInUse = true;
-
-                    // Draw the object.
-                    DrawToSpriteBatch();
                 }
-                // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
-                else
+                catch (Exception)
                 {
-                    DrawToSpriteBatch();
+                    // ignored
                 }
+
+                GameBase.DefaultSpriteBatchInUse = false;
+
+                // Begin the new SpriteBatch
+                SpriteBatchOptions.Begin();
+
+                // Draw the object.
+                DrawToSpriteBatch();
+            }
+            // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
+            else if (!GameBase.DefaultSpriteBatchInUse && !UsePreviousSpriteBatchOptions)
+            {
+                // End the previous SpriteBatch.
+                GameBase.Game.SpriteBatch.End();
+
+                // Begin the default spriteBatch
+                GameBase.DefaultSpriteBatchOptions.Begin();
+                GameBase.DefaultSpriteBatchInUse = true;
+
+                // Draw the object.
+                DrawToSpriteBatch();
+            }
+            // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
+            else
+            {
+                DrawToSpriteBatch();
             }
 
             base.Draw(gameTime);

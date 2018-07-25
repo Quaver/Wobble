@@ -7,6 +7,7 @@ using Wobble;
 using Wobble.Graphics;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.UI.Debug;
 using Wobble.Input;
 using Wobble.Screens;
 using Wobble.Window;
@@ -59,7 +60,7 @@ namespace ExampleGame
             };
 
             // ReSharper disable once ObjectCreationAsStatement
-            new Sprite()
+            new FpsCounter(game.Aller, 1.0f)
             {
                 Alignment = Alignment.TopLeft,
                 Parent = SpriteWithShader,
@@ -74,9 +75,9 @@ namespace ExampleGame
                 Text = "hey sample text",
                 Parent = SpriteWithShader,
                 TextColor = Color.White,
-                Alignment = Alignment.MidCenter,
+                Alignment = Alignment.BotCenter,
                 X = 0,
-                TextScale = 4.5f,
+                TextScale = 1.25f,
             };
 
             AnimatedSprite = new AnimatableSprite(game.TestSpritesheet)

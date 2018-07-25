@@ -41,14 +41,6 @@ namespace ExampleGame
 
             MouseManager.ShowCursor();
             Window.AllowUserResizing = true;
-
-            /*
-                DiscordManager.CreateClient("376180410490552320", LogLevel.Info);
-                DiscordManager.Client.SetPresence(new RichPresence()
-                {
-                    Details = "Test"
-                });
-            */
         }
 
         protected override void LoadContent()
