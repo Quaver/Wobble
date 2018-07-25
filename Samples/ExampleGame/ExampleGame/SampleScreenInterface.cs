@@ -40,10 +40,14 @@ namespace ExampleGame
                 Image = game.Spongebob,
                 Size = new ScalableVector2(400, 400),
                 Alignment = Alignment.MidCenter,
-                Tint = Color.Blue,
                 Parent = Container,
                 SpriteBatchOptions = new SpriteBatchOptions()
                 {
+                    SortMode = SpriteSortMode.Deferred,
+                    BlendState = BlendState.NonPremultiplied,
+                    SamplerState = SamplerState.PointClamp,
+                    DepthStencilState = DepthStencilState.Default,
+                    RasterizerState = RasterizerState.CullNone,
                     Shader = new Shader(ResourceStore.semi_transparent, new Dictionary<string, object>
                     {
                         {"p_dimensions", new Vector2(400, 400)},
