@@ -26,5 +26,11 @@ namespace Wobble.Graphics
             Size = new ScalableVector2(width, height);
             Position = new ScalableVector2(x, y);
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Simply a container. There's no need to draw it to spritebatch.
+        /// </summary>
+        protected override void DrawToSpriteBatch() {}
     }
 }

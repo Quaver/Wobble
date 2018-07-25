@@ -144,7 +144,7 @@ namespace Wobble.Graphics.Sprites
                     SpriteBatchOptions.Begin();
 
                     // Draw the object.
-                    GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+                    DrawToSpriteBatch();
                 }
                 // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
                 else if (!GameBase.DefaultSpriteBatchInUse)
@@ -157,17 +157,23 @@ namespace Wobble.Graphics.Sprites
                     GameBase.DefaultSpriteBatchInUse = true;
 
                     // Draw the object.
-                    GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+                    DrawToSpriteBatch();
                 }
                 // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
                 else
                 {
-                    GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+                    DrawToSpriteBatch();
                 }
             }
 
             base.Draw(gameTime);
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        protected override void DrawToSpriteBatch() => GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle,
+                                                                null, _color, _rotation, Origin, SpriteEffect, 0f);
 
         /// <inheritdoc />
         /// <summary>

@@ -237,7 +237,7 @@ namespace Wobble.Graphics
         ///     The options that'll be used on SpriteBatch.Begin();
         ///     for this particular drawable. If left null, it'll use the default parameters and won't
         ///     create a new SpriteBatch.
-        /// 
+        ///
         ///     This should only be set if you want extra functionality such as shaders or different
         ///     blend states for example.
         /// </summary>
@@ -349,9 +349,15 @@ namespace Wobble.Graphics
         }
 
         /// <summary>
+        ///
+        /// </summary>
+        protected abstract void DrawToSpriteBatch();
+
+        /// <summary>
         ///     Resets the count of total drawn objects.
         ///     This is usually performed once every initial draw call.
         /// </summary>
         internal static void ResetTotalDrawnCount() => TotalDrawn = 0;
+
     }
 }

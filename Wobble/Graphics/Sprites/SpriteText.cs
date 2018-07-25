@@ -185,7 +185,7 @@ namespace Wobble.Graphics.Sprites
                 SpriteBatchOptions.Begin();
 
                 // Draw the object.
-                DrawText();
+                DrawToSpriteBatch();
             }
             // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
             else if (!GameBase.DefaultSpriteBatchInUse)
@@ -198,21 +198,22 @@ namespace Wobble.Graphics.Sprites
                 GameBase.DefaultSpriteBatchInUse = true;
 
                 // Draw the object.
-                DrawText();
+                DrawToSpriteBatch();
             }
             // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
             else
             {
-                DrawText();
+                DrawToSpriteBatch();
             }
 
             base.Draw(gameTime);
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Draws the text to the SpriteBatch.
         /// </summary>
-        private void DrawText()
+        protected override void DrawToSpriteBatch()
         {
             if (Math.Abs(_textScale - 1) < 0.01)
                 GameBase.Game.SpriteBatch.DrawString(Font, _text, TextPosition, _color);
