@@ -189,7 +189,7 @@ namespace Wobble.Graphics.Sprites
             switch (Style)
             {
                 case TextStyle.OverflowMultiLine:
-                    _text = WrapText(Text, true, true);
+                    _text = WrapText(Text, true);
                     break;
                 case TextStyle.WordwrapMultiLine:
                     _text = WrapText(Text, true);
@@ -235,9 +235,8 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         /// <param name="text"></param>
         /// <param name="multiLine"></param>
-        /// <param name="overflow"></param>
         /// <returns></returns>
-        private string WrapText(string text, bool multiLine, bool overflow = false)
+        private string WrapText(string text, bool multiLine)
         {
             // Check if text is not short enough to fit on its on box
             if (Font.MeasureString(text).X < Width)
@@ -251,7 +250,6 @@ namespace Wobble.Graphics.Sprites
             var textline = 0;
             const int maxTextLines = 99;
 
-            //Update Text
             foreach (var a in words)
             {
                 var size = Font.MeasureString(a);
