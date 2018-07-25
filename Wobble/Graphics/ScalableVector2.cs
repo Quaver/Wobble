@@ -3,7 +3,7 @@
     /// <summary>
     ///     2 Dimensional ScalableVector
     /// </summary>
-    public class ScalableVector2
+    public struct ScalableVector2
     {
         /// <summary>
         ///    The X value

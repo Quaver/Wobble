@@ -154,7 +154,7 @@ namespace Wobble.Graphics.Sprites
         ///     The size of the rendered text box in a single row.
         /// </summary>
         private Vector2 TextSize { get; set; }
-        
+
         /// <summary>
         ///    When a SpriteText is created, when want to hook onto whenever the rect is being recalced event
         ///    and update the text accordingly with the new values.

@@ -1,6 +1,6 @@
 ﻿namespace Wobble.Graphics
 {
-    public class ScalableVector
+    public struct ScalableVector
     {
         /// <summary>
         ///     The value of the vector.

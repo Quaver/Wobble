@@ -133,6 +133,10 @@ namespace ExampleGame
                 SampleText.TextScale = 1f;
                 SampleText.TextColor = Color.White;
             }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
+                AnimatedSprite.Size = new ScalableVector2(AnimatedSprite.Width, AnimatedSprite.Height / 1.5f);
+           
         }
 
         /// <summary>

@@ -91,7 +91,10 @@ namespace Wobble.Graphics
             get => _size;
             set
             {
-                _size = value;
+                var width = MathHelper.Clamp(value.X.Value, 0, int.MaxValue);
+                var height = MathHelper.Clamp(value.Y.Value, 0, int.MaxValue);
+
+                _size = new ScalableVector2(width, height, value.X.Scale, value.Y.Scale);
                 RecalculateRectangles();
             }
         }
@@ -104,7 +107,7 @@ namespace Wobble.Graphics
             get => Position.X.Value;
             set
             {
-                Position.X.Value = value;
+                Position = new ScalableVector2(value, Position.Y.Value, Position.X.Scale, Position.Y.Scale);
                 RecalculateRectangles();
             }
         }
@@ -117,7 +120,7 @@ namespace Wobble.Graphics
             get => Position.Y.Value;
             set
             {
-                Position.Y.Value = value;
+                Position = new ScalableVector2(Position.X.Value, value, Position.X.Scale, Position.Y.Scale);
                 RecalculateRectangles();
             }
         }
@@ -130,7 +133,9 @@ namespace Wobble.Graphics
             get => Size.X.Value;
             set
             {
-                Size.X.Value = value;
+                value = MathHelper.Clamp(value, 0, int.MaxValue);
+
+                Size = new ScalableVector2(value, Size.Y.Value, Size.X.Scale, Size.Y.Scale);
                 RecalculateRectangles();
             }
         }
@@ -143,7 +148,7 @@ namespace Wobble.Graphics
             get => Size.X.Scale;
             set
             {
-                Size.X.Scale = value;
+                Size = new ScalableVector2(Size.X.Value, Size.Y.Value, value, Size.Y.Scale);
                 RecalculateRectangles();
             }
         }
@@ -156,7 +161,9 @@ namespace Wobble.Graphics
             get => Size.Y.Value;
             set
             {
-                Size.Y.Value = value;
+                value = MathHelper.Clamp(value, 0, int.MaxValue);
+
+                Size = new ScalableVector2(Size.X.Value, value, Size.X.Scale, Size.Y.Scale);
                 RecalculateRectangles();
             }
         }
@@ -169,7 +176,7 @@ namespace Wobble.Graphics
             get => Size.Y.Scale;
             set
             {
-                Size.Y.Scale = value;
+                Size = new ScalableVector2(Size.X.Value, Size.Y.Value, Size.X.Scale, value);
                 RecalculateRectangles();
             }
         }
