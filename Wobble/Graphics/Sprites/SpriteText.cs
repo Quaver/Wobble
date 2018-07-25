@@ -82,26 +82,6 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
-        ///     The Rectangle of the rendered text inside the TextSprite
-        /// </summary>
-        private DrawRectangle TextScreenRectangle { get; set; } = new DrawRectangle();
-
-        /// <summary>
-        ///     The position of the text box
-        /// </summary>
-        private Vector2 TextPosition { get; set; } = Vector2.Zero;
-
-        /// <summary>
-        ///     The Local Rectangle of the rendered text inside the SpriteText. Used to reference Text Size.
-        /// </summary>
-        private DrawRectangle TextRelativeRectangle { get; set; } = new DrawRectangle();
-
-        /// <summary>
-        ///     The size of the rendered text box in a single row.
-        /// </summary>
-        private Vector2 TextSize { get; set; }
-
-        /// <summary>
         ///     The tint this Text Object will inherit.
         /// </summary>
         private Color _tint = Color.White;
@@ -155,6 +135,26 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public bool SetChildrenAlpha { get; set; }
 
+        /// <summary>
+        ///     The Rectangle of the rendered text inside the TextSprite
+        /// </summary>
+        private DrawRectangle TextScreenRectangle { get; set; } = new DrawRectangle();
+
+        /// <summary>
+        ///     The position of the text box
+        /// </summary>
+        private Vector2 TextPosition { get; set; } = Vector2.Zero;
+
+        /// <summary>
+        ///     The Local Rectangle of the rendered text inside the SpriteText. Used to reference Text Size.
+        /// </summary>
+        private DrawRectangle TextRelativeRectangle { get; set; } = new DrawRectangle();
+
+        /// <summary>
+        ///     The size of the rendered text box in a single row.
+        /// </summary>
+        private Vector2 TextSize { get; set; }
+        
         /// <summary>
         ///    When a SpriteText is created, when want to hook onto whenever the rect is being recalced event
         ///    and update the text accordingly with the new values.
