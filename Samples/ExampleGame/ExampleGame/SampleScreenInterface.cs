@@ -60,14 +60,21 @@ namespace ExampleGame
             };
 
             // ReSharper disable once ObjectCreationAsStatement
-            new FpsCounter(game.Aller, 1.0f)
+            var fpsCounter = new FpsCounter(game.Aller, 1.0f)
             {
-                Alignment = Alignment.TopLeft,
-                Parent = SpriteWithShader,
-                Image = game.Spongebob,
-                Size = new ScalableVector2(150, 80),
-                UsePreviousSpriteBatchOptions = true
+                Alignment = Alignment.BotRight,
+                Parent = Container,
+                Size = new ScalableVector2(0, 0),
+                UsePreviousSpriteBatchOptions = true,
+                TextFps =
+                {
+                    TextColor = Color.LimeGreen,
+                    TextScale = 1.1f
+                }
             };
+
+            fpsCounter.X -= fpsCounter.TextFps.MeasureString().X;
+            fpsCounter.Y = -20;
 
             SampleText = new SpriteText
             {
