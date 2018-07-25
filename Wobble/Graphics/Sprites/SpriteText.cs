@@ -166,12 +166,58 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
+            if (SpriteBatchOptions != null)
+            {
+                // If we actually have new SpriteBatchOptions to use,then
+                // we want to end the previous SpriteBatch.
+                try
+                {
+                    GameBase.Game.SpriteBatch.End();
+                }
+                catch (Exception e)
+                {
+                    // ignored
+                }
+
+                GameBase.DefaultSpriteBatchInUse = false;
+
+                // Begin the new SpriteBatch
+                SpriteBatchOptions.Begin();
+
+                // Draw the object.
+                DrawText();
+            }
+            // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
+            else if (!GameBase.DefaultSpriteBatchInUse)
+            {
+                // End the previous SpriteBatch.
+                GameBase.Game.SpriteBatch.End();
+
+                // Begin the default spriteBatch
+                GameBase.DefaultSpriteBatchOptions.Begin();
+                GameBase.DefaultSpriteBatchInUse = true;
+
+                // Draw the object.
+                DrawText();
+            }
+            // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
+            else
+            {
+                DrawText();
+            }
+
+            base.Draw(gameTime);
+        }
+
+        /// <summary>
+        ///     Draws the text to the SpriteBatch.
+        /// </summary>
+        private void DrawText()
+        {
             if (Math.Abs(_textScale - 1) < 0.01)
                 GameBase.Game.SpriteBatch.DrawString(Font, _text, TextPosition, _color);
             else
                 GameBase.Game.SpriteBatch.DrawString(Font, _text, TextPosition, _color, 0, Vector2.One, Vector2.One * _textScale, SpriteEffects.None, 0);
-
-            base.Draw(gameTime);
         }
 
         /// <summary>
