@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AssetLoader.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\AudioEngineException.cs" />
     <Compile Include="Audio\IPlayableAudio.cs" />
@@ -135,7 +136,6 @@
     <Compile Include="Graphics\Sprites\Sprite.cs" />
     <Compile Include="Graphics\Sprites\SpriteText.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
-    <Compile Include="Resources\ResourceLoader.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />
     <Compile Include="Input\MouseButton.cs" />
     <Compile Include="Input\MouseManager.cs" />
@@ -215,6 +215,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

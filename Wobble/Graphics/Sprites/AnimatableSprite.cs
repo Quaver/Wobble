@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Wobble.Resources;
+using Wobble.Assets;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -71,7 +71,7 @@ namespace Wobble.Graphics.Sprites
         /// <param name="columns"></param>
         public AnimatableSprite(Texture2D spritesheet, int rows, int columns)
         {
-            Frames = ResourceLoader.LoadSpritesheetFromTexture(spritesheet, rows, columns);
+            Frames = AssetLoader.LoadSpritesheetFromTexture(spritesheet, rows, columns);
             Image = Frames[CurrentFrame];
         }
 

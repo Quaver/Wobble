@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble;
+using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Audio.Samples;
 using Wobble.Audio.Tracks;
@@ -15,7 +16,6 @@ using Wobble.Discord.RPC.Logging;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
 using Wobble.Input;
-using Wobble.Resources;
 using Wobble.Screens;
 using Wobble.Window;
 
@@ -54,12 +54,12 @@ namespace ExampleGame
         protected override void LoadContent()
         {
             base.LoadContent();
-            Spongebob = ResourceLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
+            Spongebob = AssetLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
-            var line = ResourceLoader.LoadTexture2D(ResourceStore.test_spritesheet, ImageFormat.Png);
-            TestSpritesheet = ResourceLoader.LoadSpritesheetFromTexture(line, 1, 12);
+            var line = AssetLoader.LoadTexture2D(ResourceStore.test_spritesheet, ImageFormat.Png);
+            TestSpritesheet = AssetLoader.LoadSpritesheetFromTexture(line, 1, 12);
 
-            Aller = ResourceLoader.LoadFont(ResourceStore.ResourceManager, "aller_regular_16");
+            Aller = AssetLoader.LoadFont(ResourceStore.ResourceManager, "aller_regular_16");
             Song = new AudioTrack(ResourceStore.Valence___Infinite)
             {
                 Rate = 1.5f,

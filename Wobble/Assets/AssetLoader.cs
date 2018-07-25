@@ -1,21 +1,19 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Resources;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
-namespace Wobble.Resources
+namespace Wobble.Assets
 {
     /// <summary>
     ///     A way to load assets directly from embedded resources.
     /// </summary>
-    public static class ResourceLoader
+    public static class AssetLoader
     {
         /// <summary>
         ///     Loads a texture of a given format from an embedded resource store.
