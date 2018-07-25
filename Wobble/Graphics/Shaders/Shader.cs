@@ -32,7 +32,7 @@ namespace Wobble.Graphics.Shaders
         {
             ShaderEffect = new Effect(GameBase.Game.GraphicsDevice, data);
             Parameters = parameters;
-            SetParameters();
+            SetParameters(false);
         }
 
         /// <inheritdoc />
@@ -47,43 +47,58 @@ namespace Wobble.Graphics.Shaders
         /// <summary>
         ///     Sets all the shader parameters based on what's in the dictionary.
         /// </summary>
-        public void SetParameters()
+        public void SetParameters(bool setDictionaryValues)
         {
             foreach (var param in Parameters)
-            {
-                var type = param.Value.GetType();
+                SetParameter(param.Key, param.Value, setDictionaryValues);
+        }
 
-                if (type == typeof(bool))
-                    ShaderEffect.Parameters[param.Key].SetValue((bool) param.Value);
-                else if (type == typeof(float))
-                    ShaderEffect.Parameters[param.Key].SetValue((float) param.Value);
-                else if (type == typeof(float[]))
-                    ShaderEffect.Parameters[param.Key].SetValue((float[]) param.Value);
-                else if (type == typeof(int))
-                    ShaderEffect.Parameters[param.Key].SetValue((int) param.Value);
-                else if (type == typeof(Texture))
-                    ShaderEffect.Parameters[param.Key].SetValue((Texture) param.Value);
-                else if (type == typeof(Matrix))
-                    ShaderEffect.Parameters[param.Key].SetValue((Matrix) param.Value);
-                else if (type == typeof(Matrix[]))
-                    ShaderEffect.Parameters[param.Key].SetValue((Matrix[]) param.Value);
-                else if (type == typeof(Quaternion))
-                    ShaderEffect.Parameters[param.Key].SetValue((Quaternion) param.Value);
-                else if (type == typeof(Vector2))
-                    ShaderEffect.Parameters[param.Key].SetValue((Vector2) param.Value);
-                else if (type == typeof(Vector2[]))
-                    ShaderEffect.Parameters[param.Key].SetValue((Vector2[]) param.Value);
-                else if (type == typeof(Vector3))
-                    ShaderEffect.Parameters[param.Key].SetValue((Vector3) param.Value);
-                else if (type == typeof(Vector3[]))
-                    ShaderEffect.Parameters[param.Key].SetValue((Vector3[]) param.Value);
-                else if (type == typeof(Vector4))
-                    ShaderEffect.Parameters[param.Key].SetValue((Vector4) param.Value);
-                else if (type == typeof(Vector4[]))
-                    ShaderEffect.Parameters[param.Key].SetValue((Vector4[]) param.Value);
-                else
-                    throw new InvalidTypeParameterException($"ShaderEffect Parameter {param.Key} has invalid type: {type}");
-            }
+        /// <summary>
+        ///     Sets an individual parameter
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="setDictionaryValue"></param>
+        /// <exception cref="InvalidTypeParameterException"></exception>
+        public void SetParameter(string key, object value, bool setDictionaryValue)
+        {
+            // Set the parameter in the dictionary.
+            if (setDictionaryValue)
+                Parameters[key] = value;
+
+            var type = value.GetType();
+
+            // Set the parameter in the shader.
+            if (type == typeof(bool))
+                ShaderEffect.Parameters[key].SetValue((bool) value);
+            else if (type == typeof(float))
+                ShaderEffect.Parameters[key].SetValue((float) value);
+            else if (type == typeof(float[]))
+                ShaderEffect.Parameters[key].SetValue((float[]) value);
+            else if (type == typeof(int))
+                ShaderEffect.Parameters[key].SetValue((int) value);
+            else if (type == typeof(Texture))
+                ShaderEffect.Parameters[key].SetValue((Texture) value);
+            else if (type == typeof(Matrix))
+                ShaderEffect.Parameters[key].SetValue((Matrix) value);
+            else if (type == typeof(Matrix[]))
+                ShaderEffect.Parameters[key].SetValue((Matrix[]) value);
+            else if (type == typeof(Quaternion))
+                ShaderEffect.Parameters[key].SetValue((Quaternion) value);
+            else if (type == typeof(Vector2))
+                ShaderEffect.Parameters[key].SetValue((Vector2) value);
+            else if (type == typeof(Vector2[]))
+                ShaderEffect.Parameters[key].SetValue((Vector2[]) value);
+            else if (type == typeof(Vector3))
+                ShaderEffect.Parameters[key].SetValue((Vector3) value);
+            else if (type == typeof(Vector3[]))
+                ShaderEffect.Parameters[key].SetValue((Vector3[]) value);
+            else if (type == typeof(Vector4))
+                ShaderEffect.Parameters[key].SetValue((Vector4) value);
+            else if (type == typeof(Vector4[]))
+                ShaderEffect.Parameters[key].SetValue((Vector4[]) value);
+            else
+                throw new InvalidTypeParameterException($"ShaderEffect Parameter {key} has invalid type: {type}");
         }
     }
 }

@@ -136,7 +136,7 @@ namespace ExampleGame
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
                 AnimatedSprite.Size = new ScalableVector2(AnimatedSprite.Width, AnimatedSprite.Height / 1.5f);
-           
+
         }
 
         /// <summary>
@@ -146,10 +146,11 @@ namespace ExampleGame
         private void ChangeShaderRectWidth(float width)
         {
             // Change the parameters in the dictionary.
-            SpriteWithShader.Shader.Parameters["p_rectangle"] = new Vector2(width, SpriteWithShader.Height);
+            //SpriteWithShader.Shader.Parameters["p_rectangle"] = new Vector2(width, SpriteWithShader.Height);
+            //SpriteWithShader.Shader.SetParameters();
 
             // Be sure to re-set parameters after changing.
-            SpriteWithShader.Shader.SetParameters();
+            SpriteWithShader.Shader.SetParameter("p_rectangle", new Vector2(width, SpriteWithShader.Height), true);
         }
     }
 }
