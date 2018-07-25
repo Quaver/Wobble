@@ -12,58 +12,9 @@ namespace Wobble.Graphics.Sprites
     public class SpriteText : Drawable
     {
         /// <summary>
-        ///     The Actual text of the text Box.
+        ///     The string of text to be displayed.
         /// </summary>
         private string _text = "";
-
-        /// <summary>
-        ///     The alignment of the text.
-        /// </summary>
-        public Alignment TextAlignment { get; set; } = Alignment.MidCenter;
-
-        /// <summary>
-        ///     The target scale of the text.
-        /// </summary>
-        public float TextScale { get; set; } = 1;
-
-        /// <summary>
-        ///     How the text will wrap/scale inside the text box
-        /// </summary>
-        public TextStyle TextBoxStyle { get; set; } = TextStyle.OverflowSingleLine;
-
-        /// <summary>
-        ///     The Rectangle of the rendered text inside the QuaverTextSprite.
-        /// </summary>
-        private DrawRectangle _globalTextVect = new DrawRectangle();
-
-        /// <summary>
-        ///     The position of the text box
-        /// </summary>
-        private Vector2 _textPos = Vector2.Zero;
-
-        /// <summary>
-        ///     The Local Rectangle of the rendered text inside the QuaverTextSprite. Used to reference Text Size.
-        /// </summary>
-        private DrawRectangle _textVect = new DrawRectangle();
-
-        /// <summary>
-        ///     The size of the rendered text box in a single row.
-        /// </summary>
-        private Vector2 _textSize;
-
-        /// <summary>
-        ///     The scale of the text.
-        /// </summary>
-        private float _textScale { get; set; } = 1;
-
-        /// <summary>
-        ///     The font of this object
-        /// </summary>
-        public SpriteFont Font { get; set; }
-
-        /// <summary>
-        ///     The text of this QuaverTextSprite
-        /// </summary>
         public string Text
         {
             get => _text;
@@ -75,8 +26,86 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
+        ///     The font used for this text.
+        /// </summary>
+        private SpriteFont _font;
+        public SpriteFont Font
+        {
+            get => _font;
+            set
+            {
+                _font = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     The alignment of the text.
+        /// </summary>
+        private Alignment _textAlignment = Alignment.MidCenter;
+        public Alignment TextAlignment
+        {
+            get => _textAlignment;
+            set
+            {
+                _textAlignment = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        private float _textScale = 1;
+        public float TextScale
+        {
+            get => _textScale;
+            set
+            {
+                _textScale = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     How the text will wrap/scale inside the text box
+        /// </summary>
+        private TextStyle _style = TextStyle.OverflowSingleLine;
+        public TextStyle Style
+        {
+            get => _style;
+            set
+            {
+                _style = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     The Rectangle of the rendered text inside the TextSprite
+        /// </summary>
+        private DrawRectangle TextScreenRectangle { get; set; } = new DrawRectangle();
+
+        /// <summary>
+        ///     The position of the text box
+        /// </summary>
+        private Vector2 TextPosition { get; set; } = Vector2.Zero;
+
+        /// <summary>
+        ///     The Local Rectangle of the rendered text inside the SpriteText. Used to reference Text Size.
+        /// </summary>
+        private DrawRectangle TextRelativeRectangle { get; set; } = new DrawRectangle();
+
+        /// <summary>
+        ///     The size of the rendered text box in a single row.
+        /// </summary>
+        private Vector2 TextSize { get; set; }
+
+        /// <summary>
         ///     The tint this Text Object will inherit.
         /// </summary>
+        private Color _tint = Color.White;
+        private Color _color = Color.White;
         public Color TextColor
         {
             get => _tint;
@@ -86,11 +115,11 @@ namespace Wobble.Graphics.Sprites
                 _color = _tint * _alpha;
             }
         }
-        private Color _tint = Color.White;
 
         /// <summary>
         ///     The transparency of this Text Object.
         /// </summary>
+       private float _alpha = 1f;
         public float Alpha
         {
             get => _alpha;
@@ -120,52 +149,44 @@ namespace Wobble.Graphics.Sprites
             }
         }
 
-        private float _alpha = 1f;
-
-        /// <summary>
-        ///     The color of this Text Object.
-        /// </summary>
-        private Color _color = Color.White;
-
         /// <summary>
         ///     Dictates if we want to set the alpha of the children to this one
         ///     if it is changed.
         /// </summary>
         public bool SetChildrenAlpha { get; set; }
 
+        /// <summary>
+        ///    When a SpriteText is created, when want to hook onto whenever the rect is being recalced event
+        ///    and update the text accordingly with the new values.
+        /// </summary>
         public SpriteText() => RectangleRecalculated += (o, e) => UpdateText();
 
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        /// <param name="dt"></param>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
-        /// <summary>
-        ///     Draws the sprite to the screen.
-        /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            if (_textScale == 1)
-                GameBase.Game.SpriteBatch.DrawString(Font, _text, _textPos, _color);
+            if (Math.Abs(_textScale - 1) < 0.01)
+                GameBase.Game.SpriteBatch.DrawString(Font, _text, TextPosition, _color);
             else
-                GameBase.Game.SpriteBatch.DrawString(Font, _text, _textPos, _color, 0, Vector2.One, Vector2.One * _textScale, SpriteEffects.None, 0);
+                GameBase.Game.SpriteBatch.DrawString(Font, _text, TextPosition, _color, 0, Vector2.One, Vector2.One * _textScale, SpriteEffects.None, 0);
 
             base.Draw(gameTime);
         }
 
+        /// <summary>
+        ///     Updates the text to make sure it's size, text, scale, and position are correct
+        ///     This is usually called whenever a property of the text is changed.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private void UpdateText()
         {
-            //Update TextSize
-            _textSize = Font.MeasureString(Text);
+            // Update TextSize
+            TextSize = Font.MeasureString(Text);
             _textScale = TextScale;
 
             // Update text with given textbox style
-            switch (TextBoxStyle)
+            switch (Style)
             {
                 case TextStyle.OverflowMultiLine:
                     _text = WrapText(Text, true, true);
@@ -181,29 +202,41 @@ namespace Wobble.Graphics.Sprites
                     break;
                 case TextStyle.ScaledSingleLine:
                     _text = Text;
-                    _textScale = ScaleText(AbsoluteSize, _textSize * TextScale) * TextScale;
+                    _textScale = ScaleText(AbsoluteSize, TextSize * TextScale) * TextScale;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
-            //Update TextRect
-            _textVect.Width = _textSize.X * _textScale;
-            _textVect.Height = _textSize.Y * _textScale;
+            // Update Relative Text Rectangle
+            TextRelativeRectangle.Width = TextSize.X * _textScale;
+            TextRelativeRectangle.Height = TextSize.Y * _textScale;
 
-            //Update GlobalTextRect
-            _globalTextVect = GraphicsHelper.AlignRect(TextAlignment, _textVect, ScreenRectangle);
-            _textPos.X = _globalTextVect.X;
-            _textPos.Y = _globalTextVect.Y;
+            // Update Screen Text Rectangle
+            TextScreenRectangle = GraphicsHelper.AlignRect(TextAlignment, TextRelativeRectangle, ScreenRectangle);
+            TextPosition = new Vector2(TextScreenRectangle.X, TextScreenRectangle.Y);
         }
 
-        private float ScaleText(Vector2 boundary, Vector2 textboxsize)
+        /// <summary>
+        ///     Returns the correct scale for the text.
+        ///     TODO: Add proper documentation.
+        /// </summary>
+        /// <param name="boundary"></param>
+        /// <param name="textboxsize"></param>
+        /// <returns></returns>
+        private static float ScaleText(Vector2 boundary, Vector2 textboxsize)
         {
-            var sizeYRatio = (boundary.Y / boundary.X) / (textboxsize.Y / textboxsize.X);
-            if (sizeYRatio > 1)
-                return (boundary.X / textboxsize.X);
-            else
-                return (boundary.Y / textboxsize.Y);
+            var sizeYRatio = boundary.Y / boundary.X / (textboxsize.Y / textboxsize.X);
+            return sizeYRatio > 1 ? boundary.X / textboxsize.X : boundary.Y / textboxsize.Y;
         }
 
+        /// <summary>
+        ///     When the text is updated, depending on the style, this will format the text correctly.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="multiLine"></param>
+        /// <param name="overflow"></param>
+        /// <returns></returns>
         private string WrapText(string text, bool multiLine, bool overflow = false)
         {
             //Check if text is not short enough to fit on its on box

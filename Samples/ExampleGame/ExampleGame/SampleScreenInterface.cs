@@ -59,14 +59,15 @@ namespace ExampleGame
                 X = 150
             };
 
-            SampleText = new SpriteText()
+            SampleText = new SpriteText
             {
                 Font = game.Aller,
                 Text = "hey sample text",
-                Parent = Container,
+                Parent = AnimatedSprite,
                 TextColor = Color.White,
                 Alignment = Alignment.MidCenter,
-                X = 100
+                X = 0,
+                TextScale = 4.5f
             };
         }
 
@@ -124,6 +125,13 @@ namespace ExampleGame
                     AnimatedSprite.StopLoop();
                 else
                     AnimatedSprite.StartLoop(Direction.Forward, 240);
+            }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.F))
+            {
+                SampleText.Alignment = Alignment.TopLeft;
+                SampleText.TextScale = 1f;
+                SampleText.TextColor = Color.White;
             }
         }
 
