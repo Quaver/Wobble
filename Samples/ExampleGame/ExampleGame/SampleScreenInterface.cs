@@ -58,6 +58,27 @@ namespace ExampleGame
                 }
             };
 
+            // ReSharper disable once ObjectCreationAsStatement
+            new Sprite()
+            {
+                Alignment = Alignment.TopLeft,
+                Parent = SpriteWithShader,
+                Image = game.Spongebob,
+                Size = new ScalableVector2(150, 80),
+                UsePreviousSpriteBatchOptions = true
+            };
+
+            SampleText = new SpriteText
+            {
+                Font = game.Aller,
+                Text = "hey sample text",
+                Parent = SpriteWithShader,
+                TextColor = Color.White,
+                Alignment = Alignment.MidCenter,
+                X = 0,
+                TextScale = 4.5f,
+            };
+
             AnimatedSprite = new AnimatableSprite(game.TestSpritesheet)
             {
                 Alignment = Alignment.MidLeft,
@@ -68,25 +89,6 @@ namespace ExampleGame
                 {
                     BlendState = BlendState.Additive
                 }
-            };
-
-            new Sprite()
-            {
-                Alignment = Alignment.TopRight,
-                Parent = Container,
-                Image = game.Spongebob,
-                Size = new ScalableVector2(150, 80)
-            };
-
-            SampleText = new SpriteText
-            {
-                Font = game.Aller,
-                Text = "hey sample text",
-                Parent = AnimatedSprite,
-                TextColor = Color.White,
-                Alignment = Alignment.MidCenter,
-                X = 0,
-                TextScale = 4.5f
             };
         }
 

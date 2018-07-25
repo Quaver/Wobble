@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using OpenGL;
 using Wobble.Window;
 
 namespace Wobble.Graphics
@@ -242,6 +243,16 @@ namespace Wobble.Graphics
         ///     blend states for example.
         /// </summary>
         public SpriteBatchOptions SpriteBatchOptions { get; set; }
+
+        /// <summary>
+        ///     If set, it'll ignore calling SpriteBatch.End(); and creating a new SpriteBatch
+        ///     This comes in handy if you want to have multiple sprites under the same
+        ///     SpriteBatch.
+        ///
+        ///     This should normally only be set for actual drawable objects and non-containers;
+        ///     things that actually get drawn to the SpriteBatch.
+        /// </summary>
+        public bool UsePreviousSpriteBatchOptions { get; set; }
 
         /// <summary>
         ///     Event raised when the rectangle has been recalculated.
