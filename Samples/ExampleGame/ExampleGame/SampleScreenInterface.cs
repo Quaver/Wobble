@@ -4,10 +4,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble;
+using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI;
+using Wobble.Graphics.UI.Buttons;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
 using Wobble.Screens;
@@ -27,6 +29,8 @@ namespace ExampleGame
         public AnimatableSprite AnimatedSprite { get; }
 
         public SpriteText SampleText { get; }
+
+        public ImageButton ImageButton { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -101,6 +105,14 @@ namespace ExampleGame
                 {
                     BlendState = BlendState.Additive
                 }
+            };
+
+            ImageButton = new ImageButton(WobbleAssets.WhiteBox)
+            {
+                Parent = Container,
+                Size = new ScalableVector2(300, 300),
+                Alignment = Alignment.TopRight,
+                X = -300
             };
         }
 
