@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Graphics.Sprites;
@@ -36,7 +36,8 @@ namespace Wobble.Graphics.UI.Debugging
             Font = font,
             Text = "FPS: ",
             Parent = this,
-            TextScale = textScale
+            TextScale = textScale,
+            Alignment = Alignment.MidCenter
         };
 
         /// <inheritdoc />

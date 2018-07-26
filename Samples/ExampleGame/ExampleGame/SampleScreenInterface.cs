@@ -69,13 +69,12 @@ namespace ExampleGame
             {
                 Alignment = Alignment.BotRight,
                 Parent = Container,
-                Size = new ScalableVector2(0, 0),
-                UsePreviousSpriteBatchOptions = true,
+                Size = new ScalableVector2(100, 40),
                 TextFps =
                 {
                     TextColor = Color.LimeGreen,
                     TextScale = 1.1f
-                }
+                },
             };
 
             fpsCounter.X -= fpsCounter.TextFps.MeasureString().X;
