@@ -41,7 +41,7 @@ namespace ExampleGame
         {
             base.Initialize();
 
-            MouseManager.ShowCursor();
+            // MouseManager.ShowCursor();
             Window.AllowUserResizing = true;
         }
 
@@ -82,6 +82,13 @@ namespace ExampleGame
                 WindowManager.ChangeScreenResolution(new Point(1920, 1080));
             else if (MouseManager.IsUniqueClick(MouseButton.Middle))
                 WindowManager.ChangeScreenResolution(new Point(800, 600));
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.L))
+                GameBase.Game.GlobalUserInterface.Cursor.Hide(1000);
+            else if (KeyboardManager.IsUniqueKeyPress(Keys.K))
+            {
+                GameBase.Game.GlobalUserInterface.Cursor.Show(1000);
+            }
 
             //Person.Update(gameTime);
         }
