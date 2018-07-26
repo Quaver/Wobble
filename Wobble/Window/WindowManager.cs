@@ -50,7 +50,7 @@ namespace Wobble.Window
         /// <summary>
         ///     Event raised when the resolution of the window has changed.
         /// </summary>
-        public static EventHandler<WindowResolutionChangedEventArgs> ResolutionChanged { get; set; }
+        public static event EventHandler<WindowResolutionChangedEventArgs> ResolutionChanged;
 
         /// <summary>
         ///     Called every frame. This will continuously update our screen scale & matrix
