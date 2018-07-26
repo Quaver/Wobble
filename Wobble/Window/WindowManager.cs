@@ -108,7 +108,6 @@ namespace Wobble.Window
         /// <summary>
         ///     Changes the resolution of the screen.
         /// </summary>
-        /// <param name="gdm">The game's GraphicsDeviceManager</param>
         /// <param name="resolution">The resolution to change to</param>
         public static void ChangeScreenResolution(Point resolution)
         {
