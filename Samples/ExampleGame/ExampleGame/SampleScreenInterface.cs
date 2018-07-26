@@ -7,6 +7,7 @@ using Wobble;
 using Wobble.Graphics;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.UI;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
 using Wobble.Screens;
@@ -16,6 +17,8 @@ namespace ExampleGame
 {
     public class SampleScreenInterface : ScreenInterface
     {
+        public BackgroundImage Wallpaper { get; }
+
         /// <summary>
         ///     Test sprite
         /// </summary>
@@ -34,6 +37,8 @@ namespace ExampleGame
         {
             // Grab the game instance.
             var game = (ExampleGame) GameBase.Game;
+
+            Wallpaper = new BackgroundImage(game.Wallpaper) { Parent = Container };
 
             // Create new sprite to be drawn.
             SpriteWithShader = new Sprite

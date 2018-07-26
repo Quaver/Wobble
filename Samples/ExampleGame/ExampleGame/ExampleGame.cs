@@ -31,6 +31,8 @@ namespace ExampleGame
 
         public SpriteFont Aller;
 
+        public Texture2D Wallpaper;
+
         public ExampleGame()
         {
         }
@@ -46,6 +48,8 @@ namespace ExampleGame
         protected override void LoadContent()
         {
             base.LoadContent();
+
+            Wallpaper = AssetLoader.LoadTexture2DFromFile(@"c:\users\admin\desktop\c.jpg");
             Spongebob = AssetLoader.LoadTexture2D(ResourceStore.spongebob, ImageFormat.Png);
 
             var line = AssetLoader.LoadTexture2D(ResourceStore.test_spritesheet, ImageFormat.Png);
