@@ -2,6 +2,7 @@ using System;
 using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Assets;
 using Wobble.Graphics.Shaders;
 using Wobble.Window;
 
@@ -124,7 +125,7 @@ namespace Wobble.Graphics.Sprites
         {
             // If there is no image set, create a dummy 1px one.
             if (Image == null)
-                Image = new Texture2D(GameBase.Game.GraphicsDevice, 1, 1);
+                Image = WobbleAssets.WhiteBox;
 
             if (SpriteBatchOptions != null)
             {
