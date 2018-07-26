@@ -171,9 +171,19 @@ namespace Wobble.Graphics.Sprites
             // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
             else
             {
-                DrawToSpriteBatch();
-            }
+                try
+                {
+                    DrawToSpriteBatch();
+                }
+                catch (Exception e)
+                {
+                    GameBase.DefaultSpriteBatchOptions.Begin();
+                    GameBase.DefaultSpriteBatchInUse = true;
 
+                    DrawToSpriteBatch();
+                }
+
+            }
             base.Draw(gameTime);
         }
 
