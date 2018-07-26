@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\AssetLoader.cs" />
+    <Compile Include="Assets\WobbleAssets.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="Audio\AudioEngineException.cs" />
     <Compile Include="Audio\IPlayableAudio.cs" />
@@ -148,6 +149,11 @@
     <Compile Include="Window\WindowResolutionChangedEventArgs.cs" />
     <Compile Include="WobbleGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WobbleResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>WobbleResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="libbass.dylib">
@@ -192,6 +198,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\UI\Basics\white_box.png" />
     <Content Include="x64\bass.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -217,5 +224,13 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WobbleResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WobbleResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

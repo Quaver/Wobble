@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Assets;
 using Wobble.Graphics.Sprites;
 using Wobble.Window;
 
@@ -44,9 +45,11 @@ namespace Wobble.Graphics.UI
 
             BrightnessSprite = new Sprite
             {
+                Image = WobbleAssets.WhiteBox,
                 Tint = Color.Black,
                 Parent = this,
-                Size = Size
+                Size = Size,
+                Alpha = dim / 100f
             };
 
             Dim = dim;

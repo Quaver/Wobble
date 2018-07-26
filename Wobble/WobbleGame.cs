@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Graphics;
 using Wobble.Input;
@@ -52,6 +53,7 @@ namespace Wobble
         /// </summary>
         protected override void Initialize()
         {
+            WobbleResources.ResourceManager.IgnoreCase = true;
             AudioManager.Initialize();
             Window.ClientSizeChanged += WindowManager.OnClientSizeChanged;
 
@@ -66,6 +68,7 @@ namespace Wobble
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+            WobbleAssets.Load();
         }
 
         /// <summary>
@@ -74,6 +77,7 @@ namespace Wobble
         /// </summary>
         protected override void UnloadContent()
         {
+            WobbleAssets.Dispose();
             WindowManager.UnHookEvents();
             AudioManager.Dispose();
         }

@@ -38,7 +38,7 @@ namespace ExampleGame
             // Grab the game instance.
             var game = (ExampleGame) GameBase.Game;
 
-            Wallpaper = new BackgroundImage(game.Wallpaper) { Parent = Container };
+            Wallpaper = new BackgroundImage(game.Wallpaper, 60) { Parent = Container };
 
             // Create new sprite to be drawn.
             SpriteWithShader = new Sprite
