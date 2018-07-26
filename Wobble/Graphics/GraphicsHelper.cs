@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 
 namespace Wobble.Graphics
@@ -70,6 +70,31 @@ namespace Wobble.Graphics
             alignY = Align(alignY, objectRect.Height, boundary.Y, boundary.Y + boundary.Height, objectRect.Y);
 
             return new DrawRectangle((int) alignX, (int) alignY, objectRect.Width, objectRect.Height);
+        }
+
+        /// <summary>
+        ///     Converts a Vector2 to Point
+        /// </summary>
+        /// <param name="vector2"></param>
+        /// <returns></returns>
+        public static Point Vector2ToPoint(Vector2 vector2) => new Point((int)vector2.X, (int)vector2.Y);
+
+        /// <summary>
+        ///     Converts a Point to Vector2
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        internal static Vector2 PointToVector2(Point point) => new Vector2(point.X, point.Y);
+
+        /// <summary>
+        ///      Check if a Vector2 point is inside a DrawRectangle
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        internal static bool RectangleContains(DrawRectangle rect, Vector2 point)
+        {
+            return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
         }
     }
 }
