@@ -150,8 +150,15 @@ namespace Wobble.Graphics.Sprites
             // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
             else if (!GameBase.DefaultSpriteBatchInUse && !UsePreviousSpriteBatchOptions)
             {
-                // End the previous SpriteBatch.
-                GameBase.Game.SpriteBatch.End();
+                try
+                {
+                    // End the previous SpriteBatch.
+                    GameBase.Game.SpriteBatch.End();
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
 
                 // Begin the default spriteBatch
                 GameBase.DefaultSpriteBatchOptions.Begin();
