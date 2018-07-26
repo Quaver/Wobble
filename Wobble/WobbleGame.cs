@@ -37,12 +37,20 @@ namespace Wobble
         public int TimeRunning { get; private set; }
 
         /// <summary>
+        ///     For any sprites that are being displayed globally, this is the container that it should
+        ///     be a child of.
+        /// </summary>
+        public GlobalUserInterface GlobalUserInterface { get; }
+
+        /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
         protected WobbleGame()
         {
             Graphics = new GraphicsDeviceManager(this);
             GameBase.Game = this;
+
+            GlobalUserInterface = new GlobalUserInterface();
         }
 
         /// <summary>
@@ -100,6 +108,9 @@ namespace Wobble
             ScreenManager.Update(gameTime);
             AudioManager.Update();
 
+            // Update the global sprite container
+            GlobalUserInterface.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -115,6 +126,9 @@ namespace Wobble
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
+
+            // Draw the global container last.
+            GlobalUserInterface.Draw(gameTime);
         }
     }
 }

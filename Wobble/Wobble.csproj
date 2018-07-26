@@ -120,6 +120,7 @@
     <Compile Include="Discord\RPC\User.cs" />
     <Compile Include="Discord\RPC\Web\WebRPC.cs" />
     <Compile Include="GameBase.cs" />
+    <Compile Include="GlobalUserInterface.cs" />
     <Compile Include="Graphics\Alignment.cs" />
     <Compile Include="Graphics\Container.cs" />
     <Compile Include="Graphics\Direction.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Graphics\Sprites\Sprite.cs" />
     <Compile Include="Graphics\Sprites\SpriteText.cs" />
     <Compile Include="Graphics\UI\BackgroundImage.cs" />
+    <Compile Include="Graphics\UI\Cursor.cs" />
     <Compile Include="Graphics\UI\Debugging\FpsCounter.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />

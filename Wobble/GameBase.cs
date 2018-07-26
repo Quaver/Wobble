@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Wobble.Graphics;
 
 namespace Wobble
