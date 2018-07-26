@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Wobble.Window;
 
 namespace Wobble.Graphics
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Container as a parent for sprites to easily lay them out.
     ///     Default size is the virtual screen resolution.
