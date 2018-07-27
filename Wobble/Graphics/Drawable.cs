@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using OpenGL;
@@ -19,7 +19,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The order of which this object was drawn. Higher means the object was drawn later.
         /// </summary>
-        public int Order { get; private set; }
+        public int DrawOrder { get; private set; }
 
         /// <summary>
         ///     The parent of this drawable in which it depends on for its position and size.
@@ -291,7 +291,7 @@ namespace Wobble.Graphics
             // Increase the total amount of drawables that were drawn and set the order to the current
             // total.
             TotalDrawn++;
-            Order = TotalDrawn;
+            DrawOrder = TotalDrawn;
 
             // Draw the children and set their order.
             foreach (var drawable in Children)
@@ -299,7 +299,7 @@ namespace Wobble.Graphics
                 drawable.Draw(gameTime);
 
                 TotalDrawn++;
-                drawable.Order = TotalDrawn;
+                drawable.DrawOrder = TotalDrawn;
             }
         }
 

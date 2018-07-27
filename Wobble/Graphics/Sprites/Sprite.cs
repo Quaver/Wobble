@@ -145,7 +145,6 @@ namespace Wobble.Graphics.Sprites
                 // Begin the new SpriteBatch
                 SpriteBatchOptions.Begin();
 
-                // Draw the object.
                 DrawToSpriteBatch();
             }
             // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
@@ -165,7 +164,6 @@ namespace Wobble.Graphics.Sprites
                 GameBase.DefaultSpriteBatchOptions.Begin();
                 GameBase.DefaultSpriteBatchInUse = true;
 
-                // Draw the object.
                 DrawToSpriteBatch();
             }
             // This must mean that the default SpriteBatch is in use, so we can just go ahead and draw the object.
@@ -184,6 +182,7 @@ namespace Wobble.Graphics.Sprites
                 }
 
             }
+
             base.Draw(gameTime);
         }
 
