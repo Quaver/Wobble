@@ -126,13 +126,20 @@ namespace ExampleGame
             };
 
             new TextButton(WobbleAssets.WhiteBox, game.Aller, "Click me!", 1f,
-                (sender, args) => Console.WriteLine("I was clicked!"))
+                (sender, args) => game.Song.Rate += 0.1f)
             {
                 Parent = Container,
                 Size = new ScalableVector2(250, 100),
                 Alignment = Alignment.BotCenter,
                 X = -300,
                 Tint = Color.Brown
+            };
+
+            new ProgressBar(new Vector2(WindowManager.VirtualScreen.X, 30), game.AudioTime, Color.AliceBlue, Color.Red, false)
+            {
+                Parent = Container,
+                Alignment = Alignment.TopLeft,
+                Y = 200
             };
         }
 

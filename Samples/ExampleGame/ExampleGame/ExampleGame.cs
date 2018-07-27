@@ -10,6 +10,7 @@ using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Audio.Samples;
 using Wobble.Audio.Tracks;
+using Wobble.Bindables;
 using Wobble.Discord;
 using Wobble.Discord.RPC;
 using Wobble.Discord.RPC.Logging;
@@ -32,6 +33,8 @@ namespace ExampleGame
         public SpriteFont Aller;
 
         public Texture2D Wallpaper;
+
+        public BindableDouble AudioTime;
 
         public ExampleGame()
         {
@@ -62,6 +65,7 @@ namespace ExampleGame
                 Volume = 5
             };
 
+            AudioTime = new BindableDouble(Song.Position, 0, Song.Length);
             Song.Play();
             ScreenManager.AddScreen(new SampleScreen());
         }
@@ -90,7 +94,7 @@ namespace ExampleGame
                 GameBase.Game.GlobalUserInterface.Cursor.Show(1000);
             }
 
-            //Person.Update(gameTime);
+            AudioTime.Value = Song.Time;
         }
 
         protected override void Draw(GameTime gameTime)
