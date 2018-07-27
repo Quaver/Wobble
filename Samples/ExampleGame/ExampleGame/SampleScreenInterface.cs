@@ -32,6 +32,8 @@ namespace ExampleGame
 
         public ImageButton ImageButton { get; }
 
+        public ProgressBar SongTimeProgressBar{ get; }
+
         /// <inheritdoc />
         /// <summary>
         ///     Ctor
@@ -141,6 +143,14 @@ namespace ExampleGame
                 Alignment = Alignment.TopLeft,
                 Y = 200
             };
+
+            SongTimeProgressBar = new ProgressBar(new Vector2(WindowManager.VirtualScreen.X / 2f, 10), 0, game.Song.Length,
+                game.Song.Position, Color.Gold, Color.LimeGreen)
+            {
+                Parent = Container,
+                Alignment = Alignment.TopLeft,
+                Y = 100
+            };
         }
 
         /// <inheritdoc />
@@ -149,6 +159,9 @@ namespace ExampleGame
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            var game = (ExampleGame) GameBase.Game;
+            SongTimeProgressBar.Bindable.Value = game.Song.Time;
+
             HandleInput();
             Container.Update(gameTime);
         }

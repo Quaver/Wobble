@@ -10,7 +10,7 @@ namespace Wobble.Graphics.UI
         /// <summary>
         ///     The value the progress bar will be binded to.
         /// </summary>
-        private BindableDouble Bindable { get; }
+        public BindableDouble Bindable { get; }
 
         /// <summary>
         ///     The original size of the progress bar.
@@ -20,7 +20,7 @@ namespace Wobble.Graphics.UI
         /// <summary>
         ///     The active progress bar that is overlayed on top of this one.
         /// </summary>
-        private Sprite ActiveBar { get; }
+        private Sprite ActiveBar { get; set; }
 
         /// <summary>
         ///     The percentage of which the progress bar is at.
@@ -46,6 +46,35 @@ namespace Wobble.Graphics.UI
             OriginalSize = size;
             DisposeBindableOnDestroy = disposeBindableOnDestroy;
 
+            InitializeSprites(size, inactiveColor, activeColor);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="minValue"></param>
+        /// <param name="maxValue"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="inactiveColor"></param>
+        /// <param name="activeColor"></param>
+        public ProgressBar(Vector2 size, double minValue, double maxValue, double defaultValue, Color inactiveColor, Color activeColor)
+        {
+            Bindable = new BindableDouble(defaultValue, minValue, maxValue);
+            OriginalSize = size;
+            DisposeBindableOnDestroy = true;
+
+            InitializeSprites(size, inactiveColor, activeColor);
+        }
+
+        /// <summary>
+        ///     Initializes the sprites after doing initial construction.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="inactiveColor"></param>
+        /// <param name="activeColor"></param>
+        private void InitializeSprites(Vector2 size, Color inactiveColor, Color activeColor)
+        {
             Size = new ScalableVector2(size.X, size.Y);
             Tint = inactiveColor;
 
@@ -57,7 +86,6 @@ namespace Wobble.Graphics.UI
                 Tint = activeColor
             };
         }
-
 
         /// <inheritdoc />
         /// <summary>
