@@ -107,12 +107,24 @@ namespace ExampleGame
                 }
             };
 
-            ImageButton = new ImageButton(WobbleAssets.WhiteBox)
+            ImageButton = new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Console.WriteLine("Blue button clicked."))
             {
                 Parent = Container,
-                Size = new ScalableVector2(300, 300),
+                Size = new ScalableVector2(100, 100),
                 Alignment = Alignment.TopRight,
-                X = -300
+                X = -300,
+                Y = 100,
+                Tint = Color.Blue
+            };
+
+            new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Console.WriteLine("red Button Clicked"))
+            {
+                Parent = Container,
+                Size = new ScalableVector2(100, 50),
+                Alignment = Alignment.TopRight,
+                X = -275,
+                Y = 100,
+                Tint = Color.Red
             };
         }
 
