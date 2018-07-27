@@ -39,6 +39,16 @@ namespace Wobble.Graphics.UI.Buttons
         /// </summary>
         internal bool WaitingForClickRelease { get; private set; }
 
+        /// <summary>
+        /// 
+        ///     Dictates if the button is currently held down regardless of if it is clickable or not.
+        ///     This case is true if the user clicks down and does not release yet. They can move their
+        ///     mouse anywhere on the screen and the button will still be considered held. This is
+        ///     a useful property for items such as sliders, where the user's cursor position does not
+        ///     matter as long as they hold the mouse down.
+        /// </summary>
+        internal bool IsHeld { get; private set; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -76,6 +86,7 @@ namespace Wobble.Graphics.UI.Buttons
                     if (!WaitingForClickRelease && MouseManager.CurrentState.LeftButton == ButtonState.Pressed)
                     {
                         WaitingForClickRelease = true;
+                        IsHeld = true;
                     }
                     // In the event that we are waiting for a click release, and the user doesn, then we can call
                     // the click action.
@@ -87,6 +98,7 @@ namespace Wobble.Graphics.UI.Buttons
                         WaitingForClickRelease = false;
                     }
                 }
+                // If the button isn't the top layered button, then we'll want to consider it not hovered.
                 else
                 {
                     IsHovered = false;
@@ -95,6 +107,8 @@ namespace Wobble.Graphics.UI.Buttons
                     OnNotHovered(gameTime);
                 }
             }
+            // The button isn't actually hovered over so we can safely consider it not hovered.
+            // However, 
             else
             {
                 IsHoveredWithoutDrawOrder = false;
@@ -102,6 +116,12 @@ namespace Wobble.Graphics.UI.Buttons
 
                 OnNotHovered(gameTime);
             }
+         
+            if (MouseManager.CurrentState.LeftButton == ButtonState.Released)
+                IsHeld = false;
+
+            if (IsHeld)
+                OnHeld(gameTime);
 
             base.Update(gameTime);
         }
@@ -130,12 +150,18 @@ namespace Wobble.Graphics.UI.Buttons
         ///     When the button is hovered over, this'll be called.
         /// </summary>
         /// <param name="gameTime"></param>
-        protected virtual void OnHover(GameTime gameTime) {}
+        protected virtual void OnHover(GameTime gameTime) { }
 
         /// <summary>
         ///     When the button is not hovered, this'll be called.
         /// </summary>
         /// <param name="gameTime"></param>
-        protected virtual void OnNotHovered(GameTime gameTime) {}
+        protected virtual void OnNotHovered(GameTime gameTime) { }
+
+        /// <summary>
+        ///     When the mouse is held down after the button is clicked, this'll be called.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        protected virtual void OnHeld(GameTime gameTime) { }
     }
 }
