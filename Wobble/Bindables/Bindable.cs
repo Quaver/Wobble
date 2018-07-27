@@ -2,12 +2,13 @@
 
 namespace Wobble.Bindables
 {
+    /// <inheritdoc />
     /// <summary>
     ///     Generic class for values that you want to keep track of when they change.
     ///     This is usually used for configuration variables.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Bindable<T>
+    public class Bindable<T> : IDisposable
     {
         /// <summary>
         ///     Emitted when this value changes.
@@ -77,5 +78,10 @@ namespace Wobble.Bindables
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         public override string ToString() => Value.ToString();
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public void Dispose() => UnHookEventHandlers();
     }
 }

@@ -65,6 +65,8 @@
     <Compile Include="Audio\Samples\AudioSampleChannel.cs" />
     <Compile Include="Audio\Tracks\AudioTrack.cs" />
     <Compile Include="Bindables\Bindable.cs" />
+    <Compile Include="Bindables\BindableDouble.cs" />
+    <Compile Include="Bindables\BindableFloat.cs" />
     <Compile Include="Bindables\BindableInt.cs" />
     <Compile Include="Bindables\BindableValueChangedEventArgs.cs" />
     <Compile Include="Discord\DiscordManager.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Graphics\UI\Buttons\TextButton.cs" />
     <Compile Include="Graphics\UI\Cursor.cs" />
     <Compile Include="Graphics\UI\Debugging\FpsCounter.cs" />
+    <Compile Include="Graphics\UI\ProgressBar.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />
     <Compile Include="Input\MouseButton.cs" />
