@@ -171,6 +171,22 @@ namespace ExampleGame
                 X = -30,
                 Y = 60
             };
+
+            new HorizontalSelector(new List<string>()
+            {
+                "Apples",
+                "Oranges",
+                "Bananas"
+            }, new ScalableVector2(200, 60), game.Aller, 1f, game.Spongebob, game.Spongebob, new ScalableVector2(60, 60), 10,
+                (val, index) =>
+                {
+                    Console.WriteLine($"New HorizontalSelector value: {val} - Index: {index}");
+                })
+            {
+                Parent = Container,
+                Alignment = Alignment.BotCenter,
+                Position = new ScalableVector2(20, -60)
+            };
         }
 
         /// <inheritdoc />
