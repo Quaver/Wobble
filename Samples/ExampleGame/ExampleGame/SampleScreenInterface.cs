@@ -5,12 +5,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble;
 using Wobble.Assets;
+using Wobble.Bindables;
 using Wobble.Graphics;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Graphics.UI.Debugging;
+using Wobble.Graphics.UI.Form;
 using Wobble.Input;
 using Wobble.Screens;
 using Wobble.Window;
@@ -33,6 +35,8 @@ namespace ExampleGame
         public ImageButton ImageButton { get; }
 
         public ProgressBar SongTimeProgressBar{ get; }
+
+        public Bindable<bool> IsPaused { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -151,6 +155,22 @@ namespace ExampleGame
                 Alignment = Alignment.TopLeft,
                 Y = 100
             };
+
+            IsPaused = new Bindable<bool>(false, (sender, args) =>
+            {
+                if (args.Value)
+                    game.Song.Pause();
+                else
+                    game.Song.Play();
+            });
+
+            new Checkbox(IsPaused, new Vector2(30, 30), game.Wallpaper, game.Spongebob, false)
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                X = -30,
+                Y = 60
+            };
         }
 
         /// <inheritdoc />
@@ -221,6 +241,8 @@ namespace ExampleGame
             if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
                 AnimatedSprite.Size = new ScalableVector2(AnimatedSprite.Width, AnimatedSprite.Height / 1.5f);
 
+            if (KeyboardManager.IsUniqueKeyPress(Keys.I))
+                IsPaused.Value = !IsPaused.Value;
         }
 
         /// <summary>
