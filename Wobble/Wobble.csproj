@@ -142,6 +142,7 @@
     <Compile Include="Graphics\UI\Buttons\ButtonManager.cs" />
     <Compile Include="Graphics\UI\Buttons\DraggableButton.cs" />
     <Compile Include="Graphics\UI\Buttons\ImageButton.cs" />
+    <Compile Include="Graphics\UI\Buttons\TextButton.cs" />
     <Compile Include="Graphics\UI\Cursor.cs" />
     <Compile Include="Graphics\UI\Debugging\FpsCounter.cs" />
     <Compile Include="Input\KeyboardManager.cs" />

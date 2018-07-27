@@ -159,7 +159,12 @@ namespace Wobble.Graphics.Sprites
         ///    When a SpriteText is created, when want to hook onto whenever the rect is being recalced event
         ///    and update the text accordingly with the new values.
         /// </summary>
-        public SpriteText() => RectangleRecalculated += (o, e) => UpdateText();
+        public SpriteText(SpriteFont font, string text)
+        {
+            Font = font;
+            Text = text;
+            RectangleRecalculated += (o, e) => UpdateText();
+        }
 
         /// <inheritdoc />
         /// <summary>

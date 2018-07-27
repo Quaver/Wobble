@@ -84,10 +84,8 @@ namespace ExampleGame
             fpsCounter.X -= fpsCounter.TextFps.MeasureString().X;
             fpsCounter.Y = -20;
 
-            SampleText = new SpriteText
+            SampleText = new SpriteText(game.Aller, "Sample Text")
             {
-                Font = game.Aller,
-                Text = "hey sample text",
                 Parent = SpriteWithShader,
                 TextColor = Color.White,
                 Alignment = Alignment.BotCenter,
@@ -125,6 +123,16 @@ namespace ExampleGame
                 X = -275,
                 Y = 100,
                 Tint = Color.Red
+            };
+
+            new TextButton(WobbleAssets.WhiteBox, game.Aller, "Click me!", 1f,
+                (sender, args) => Console.WriteLine("I was clicked!"))
+            {
+                Parent = Container,
+                Size = new ScalableVector2(250, 100),
+                Alignment = Alignment.BotCenter,
+                X = -300,
+                Tint = Color.Brown
             };
         }
 
