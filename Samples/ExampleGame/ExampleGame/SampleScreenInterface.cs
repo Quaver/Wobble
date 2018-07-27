@@ -117,7 +117,7 @@ namespace ExampleGame
                 Tint = Color.Blue
             };
 
-            new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Console.WriteLine("red Button Clicked"))
+            new DraggableButton(WobbleAssets.WhiteBox, (sender, args) => Console.WriteLine("red Button Clicked"))
             {
                 Parent = Container,
                 Size = new ScalableVector2(100, 50),

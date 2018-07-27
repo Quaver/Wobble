@@ -140,6 +140,7 @@
     <Compile Include="Graphics\UI\BackgroundImage.cs" />
     <Compile Include="Graphics\UI\Buttons\Button.cs" />
     <Compile Include="Graphics\UI\Buttons\ButtonManager.cs" />
+    <Compile Include="Graphics\UI\Buttons\DraggableButton.cs" />
     <Compile Include="Graphics\UI\Buttons\ImageButton.cs" />
     <Compile Include="Graphics\UI\Cursor.cs" />
     <Compile Include="Graphics\UI\Debugging\FpsCounter.cs" />
