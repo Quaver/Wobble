@@ -92,10 +92,10 @@ namespace Wobble.Graphics.UI.Buttons
                     // the click action.
                     else if (WaitingForClickRelease && MouseManager.CurrentState.LeftButton == ButtonState.Released)
                     {
-                        Clicked?.Invoke(this, new EventArgs());
-
                         // Now that the button is clicked, reset the waiting property.
                         WaitingForClickRelease = false;
+
+                        Clicked?.Invoke(this, new EventArgs());
                     }
                 }
                 // If the button isn't the top layered button, then we'll want to consider it not hovered.
