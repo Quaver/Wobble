@@ -18,7 +18,7 @@ namespace Wobble.Bindables
         ///     Ctor -
         /// </summary>
         /// <param name="value"></param>
-        internal BindableValueChangedEventArgs(T value, T oldValue)
+        public BindableValueChangedEventArgs(T value, T oldValue)
         {
             Value = value;
             OldValue = oldValue;
@@ -27,11 +27,11 @@ namespace Wobble.Bindables
         /// <summary>
         ///     The value passed when
         /// </summary>
-        internal T Value { get; set; }
+        public T Value { get; set; }
 
         /// <summary>
         ///     The old value.
         /// </summary>
-        internal T OldValue { get; set; }
+        public T OldValue { get; set; }
     }
 }
