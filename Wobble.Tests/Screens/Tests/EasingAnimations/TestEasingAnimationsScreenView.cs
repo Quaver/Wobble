@@ -39,12 +39,16 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
                 Size = new ScalableVector2(75, 75),
                 Alignment = Alignment.MidLeft,
                 Tint = Color.LimeGreen,
-                Transformations = { new Transformation(TransformationProperty.X, Easing.EaseInQuad, 0, WindowManager.VirtualScreen.X, 3000)}
+                Transformations =
+                {
+                    new Transformation(TransformationProperty.X, Easing.EaseInQuad, 0, WindowManager.VirtualScreen.X, 3000)
+                }
             };
 
             // Create the horizontal selector
             EasingSelection = new HorizontalSelector(Enum.GetNames(typeof(Easing)).ToList(), new ScalableVector2(300, 45),
-                                    Fonts.AllerRegular16, 0.95f, Textures.LeftButtonSquare, Textures.RightButtonSquare, new ScalableVector2(45, 45), 10,
+                                    Fonts.AllerRegular16, 0.95f, Textures.LeftButtonSquare, Textures.RightButtonSquare,
+                                    new ScalableVector2(45, 45), 10,
             // Create the method that'll be called when a new option is selected.
             (val, index) =>
             {
@@ -56,7 +60,8 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
 
                 // Add a new transformation with the new easing type.
                 var newEaseType = (Easing)Enum.Parse(typeof(Easing), val);
-                GreenBox.Transformations.Add(new Transformation(TransformationProperty.X, newEaseType, GreenBox.X, WindowManager.VirtualScreen.X, 3000));
+                GreenBox.Transformations.Add(new Transformation(TransformationProperty.X, newEaseType, GreenBox.X,
+                                                                WindowManager.VirtualScreen.X, 3000));
             })
             {
                 Parent = Container,
@@ -85,7 +90,8 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
 
                 // Add a new transformation with the new easing type.
                 var newEaseType = (Easing)Enum.Parse(typeof(Easing), EasingSelection.Options[EasingSelection.SelectedIndex]);
-                GreenBox.Transformations.Add(new Transformation(TransformationProperty.X, newEaseType, GreenBox.X, WindowManager.VirtualScreen.X, 3000));
+                GreenBox.Transformations.Add(new Transformation(TransformationProperty.X, newEaseType, GreenBox.X,
+                                                                WindowManager.VirtualScreen.X, 3000));
             }
 
             Container?.Update(gameTime);
