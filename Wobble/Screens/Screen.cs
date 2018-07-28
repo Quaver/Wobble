@@ -9,23 +9,23 @@ namespace Wobble.Screens
         /// <summary>
         ///     The drawable user interface for the screen.
         /// </summary>
-        public abstract ScreenInterface Interface { get; protected set; }
+        public abstract ScreenView View { get; protected set; }
 
          /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void Update(GameTime gameTime) => Interface.Update(gameTime);
+        public virtual void Update(GameTime gameTime) => View.Update(gameTime);
 
         /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void Draw(GameTime gameTime) => Interface.Draw(gameTime);
+        public virtual void Draw(GameTime gameTime) => View.Draw(gameTime);
 
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public virtual void Destroy() => Interface.Destroy();
+        public virtual void Destroy() => View.Destroy();
     }
 }

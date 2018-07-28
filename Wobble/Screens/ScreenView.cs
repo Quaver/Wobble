@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Wobble.Graphics;
 using IDrawable = Wobble.Graphics.IDrawable;
 
@@ -7,7 +7,7 @@ namespace Wobble.Screens
     /// <summary>
     ///     This object contains the UI for each screen. This needs to be implemented per-screen.
     /// </summary>
-    public abstract class ScreenInterface : IDrawable
+    public abstract class ScreenView : IDrawable
     {
         /// <summary>
         ///     Reference to the screen this UI is for.
@@ -23,7 +23,7 @@ namespace Wobble.Screens
         ///     Ctor
         /// </summary>
         /// <param name="screen"></param>
-        public ScreenInterface(Screen screen) => Screen = screen;
+        public ScreenView(Screen screen) => Screen = screen;
 
         /// <inheritdoc />
         /// <summary>

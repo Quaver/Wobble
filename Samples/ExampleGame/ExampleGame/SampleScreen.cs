@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,11 +20,11 @@ namespace ExampleGame
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public sealed override ScreenInterface Interface { get; protected set; }
+        public sealed override ScreenView View { get; protected set; }
 
         /// <summary>
         ///     Ctor - Sample screen for the game.
         /// </summary>
-        public SampleScreen() => Interface = new SampleScreenInterface(this);
+        public SampleScreen() => View = new SampleScreenView(this);
     }
 }

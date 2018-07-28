@@ -20,7 +20,7 @@ using Wobble.Window;
 
 namespace ExampleGame
 {
-    public class SampleScreenInterface : ScreenInterface
+    public class SampleScreenView : ScreenView
     {
         public BackgroundImage Wallpaper { get; }
 
@@ -46,7 +46,7 @@ namespace ExampleGame
         ///     Ctor
         /// </summary>
         /// <param name="screen"></param>
-        public SampleScreenInterface(SampleScreen screen) : base(screen)
+        public SampleScreenView(SampleScreen screen) : base(screen)
         {
             // Grab the game instance.
             var game = (ExampleGame) GameBase.Game;
