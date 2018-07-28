@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using OpenGL;
+using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Transformations;
 using Wobble.Window;
 
 namespace Wobble.Graphics
@@ -255,6 +257,11 @@ namespace Wobble.Graphics
         public bool UsePreviousSpriteBatchOptions { get; set; }
 
         /// <summary>
+        ///     The list of transformations to perform on this drawable.
+        /// </summary>
+        public List<Transformation> Transformations { get; } = new List<Transformation>();
+
+        /// <summary>
         ///     Event raised when the rectangle has been recalculated.
         /// </summary>
         protected event EventHandler RectangleRecalculated;
@@ -265,6 +272,8 @@ namespace Wobble.Graphics
         /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
+            PerformTransformations(gameTime);
+
             // Update all of the contained children.
             for (var i = Children.Count - 1; i >= 0; i--)
             {
@@ -370,5 +379,63 @@ namespace Wobble.Graphics
         /// </summary>
         internal static void ResetTotalDrawnCount() => TotalDrawn = 0;
 
+        /// <summary>
+        ///     Performs all of the transformations in the queue.
+        /// </summary>
+        private void PerformTransformations(GameTime gameTime)
+        {
+            // Keep a list of transformations that are marked as done that'll be queued for removal.
+            var queuedForDeletion = new List<Transformation>();
+
+            foreach (var transformation in Transformations)
+            {
+                switch (transformation.Properties)
+                {
+                    case TransformationProperty.X:
+                        X = transformation.PerformInterpolation(gameTime);
+                        break;
+                    case TransformationProperty.Y:
+                        Y = transformation.PerformInterpolation(gameTime);
+                        break;
+                    case TransformationProperty.Width:
+                        Width = transformation.PerformInterpolation(gameTime);
+                        break;
+                    case TransformationProperty.Height:
+                        Height = transformation.PerformInterpolation(gameTime);
+                        break;
+                    case TransformationProperty.Alpha:
+                        var type = GetType();
+
+                        if (type == typeof(Sprite))
+                        {
+                            var sprite = (Sprite)this;
+                            sprite.Alpha = transformation.PerformInterpolation(gameTime);
+                        }
+                        else if (type == typeof(SpriteText))
+                        {
+                            var spriteText = (SpriteText) this;
+                            spriteText.Alpha = transformation.PerformInterpolation(gameTime);
+                        }
+                        break;
+                    case TransformationProperty.Rotation:
+                        if (GetType() == typeof(Sprite))
+                        {
+                            var sprite = (Sprite) this;
+                            sprite.Rotation = transformation.PerformInterpolation(gameTime);
+                        }
+                        else
+                            throw new NotImplementedException();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                if (transformation.Done)
+                    queuedForDeletion.Add(transformation);
+            }
+
+            // Remove all completed transformations.
+            queuedForDeletion.ForEach(x => Transformations.Remove(x));
+        }
     }
 }

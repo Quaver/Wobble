@@ -142,6 +142,7 @@
     <Compile Include="Graphics\Sprites\BakeableSprite.cs" />
     <Compile Include="Graphics\Sprites\Sprite.cs" />
     <Compile Include="Graphics\Sprites\SpriteText.cs" />
+    <Compile Include="Graphics\Transformations\TransformationProperty.cs" />
     <Compile Include="Graphics\UI\BackgroundImage.cs" />
     <Compile Include="Graphics\UI\Buttons\Button.cs" />
     <Compile Include="Graphics\UI\Buttons\ButtonManager.cs" />

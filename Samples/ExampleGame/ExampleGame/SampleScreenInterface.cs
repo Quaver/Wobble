@@ -9,6 +9,7 @@ using Wobble.Bindables;
 using Wobble.Graphics;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Transformations;
 using Wobble.Graphics.UI;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Graphics.UI.Debugging;
@@ -37,6 +38,8 @@ namespace ExampleGame
         public ProgressBar SongTimeProgressBar{ get; }
 
         public Bindable<bool> IsPaused { get; }
+
+        public Sprite TransformedSprite { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -186,6 +189,19 @@ namespace ExampleGame
                 Parent = Container,
                 Alignment = Alignment.BotCenter,
                 Position = new ScalableVector2(20, -60)
+            };
+
+            TransformedSprite = new Sprite()
+
+            {
+                Parent = Container,
+                Size = new ScalableVector2(150, 150),
+                Tint = Color.Green,
+                Alignment = Alignment.TopLeft,
+                Transformations =
+                {
+                    new Transformation(TransformationProperty.X, Easing.EaseInExpo, 0, WindowManager.VirtualScreen.X, 3000)
+                }
             };
         }
 
