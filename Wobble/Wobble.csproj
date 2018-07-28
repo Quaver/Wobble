@@ -154,6 +154,7 @@
     <Compile Include="Graphics\UI\Form\Checkbox.cs" />
     <Compile Include="Graphics\UI\Form\HorizontalSelector.cs" />
     <Compile Include="Graphics\UI\ProgressBar.cs" />
+    <Compile Include="Helpers\StreamHelper.cs" />
     <Compile Include="Input\KeyboardManager.cs" />
     <Compile Include="Input\EnhancedMouseState.cs" />
     <Compile Include="Input\MouseButton.cs" />

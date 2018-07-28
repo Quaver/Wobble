@@ -9,6 +9,7 @@ using Wobble.Graphics;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
+using Wobble.Tests.Screens.Tests.Audio;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 
@@ -83,6 +84,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.EasingAnimations:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestEasingAnimationsScreen());
+                        break;
+                    case ScreenType.Audio:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestAudioScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

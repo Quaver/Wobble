@@ -58,6 +58,8 @@
     </Compile>
     <Compile Include="Screens\Selection\SelectionScreen.cs" />
     <Compile Include="Screens\Selection\SelectionScreenView.cs" />
+    <Compile Include="Screens\Tests\Audio\TestAudioScreen.cs" />
+    <Compile Include="Screens\Tests\Audio\TestAudioScreenView.cs" />
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreen.cs" />
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreenView.cs" />
     <Compile Include="Screens\Tests\EasingAnimations\TestEasingAnimationsScreen.cs" />
@@ -89,6 +91,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Textures\left_button_square.png" />
     <EmbeddedResource Include="Resources\Textures\right_button_square.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\SFX\train.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Tracks\virt - Send My Love To Mars.mp3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

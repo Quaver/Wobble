@@ -133,4 +133,10 @@
   <data name="test_spritesheet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Textures\test_spritesheet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="train" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\sfx\train.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="virt___Send_My_Love_To_Mars" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\tracks\virt - send my love to mars.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

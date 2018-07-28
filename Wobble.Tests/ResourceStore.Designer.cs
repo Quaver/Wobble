@@ -109,5 +109,24 @@ namespace Wobble.Tests {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream train {
+            get {
+                return ResourceManager.GetStream("train", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] virt___Send_My_Love_To_Mars {
+            get {
+                object obj = ResourceManager.GetObject("virt___Send_My_Love_To_Mars", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
