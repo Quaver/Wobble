@@ -217,23 +217,16 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
             else if (!SpriteWithShaderHeightDecreasing && currentTransparentRect.Y <= 0.01)
                 SpriteWithShaderHeightDecreasing = true;
 
-            // These hold the new size of the width and height of the transparency rect.
-            float newWidth;
-            float newHeight;
+            // The time used for each lerp animation.
+            var animTime = (float) Math.Min(timeSinceLastFrame / 240, 1);
 
             // If we're decreasing the width in the shader, then we'll want to lerp the transparency rect closer to the width.
-            if (SpriteWithShaderWidthDecreasing)
-                newWidth = MathHelper.Lerp(currentTransparentRect.X, SpriteWithShader.Width, (float) Math.Min(timeSinceLastFrame / 240, 1));
-            // If we're increasing in the case, we'll want to lerp the transparency rect back to 0.
-            else
-                newWidth = MathHelper.Lerp(currentTransparentRect.X, 0, (float)Math.Min(timeSinceLastFrame / 240, 1));
+            // otherwise, we'll want to lerp it back to 0.
+            var targetWidth = SpriteWithShaderWidthDecreasing ? SpriteWithShader.Width : 0;
+            var targetHeight = SpriteWithShaderHeightDecreasing ? SpriteWithShader.Height : 0;
 
-            // If we're decreasing the width in the shader, then we'll want to lerp the transparency rect closer to the height.
-            if (SpriteWithShaderHeightDecreasing)
-                newHeight = MathHelper.Lerp(currentTransparentRect.Y, SpriteWithShader.Height, (float)Math.Min(timeSinceLastFrame / 240, 1));
-            // If we're increasing in the case, we'll want to lerp the transparency rect back to 0.
-            else
-                newHeight = MathHelper.Lerp(currentTransparentRect.Y, 0, (float)Math.Min(timeSinceLastFrame / 240, 1));
+            var newWidth = MathHelper.Lerp(currentTransparentRect.X, targetWidth, animTime);
+            var newHeight = MathHelper.Lerp(currentTransparentRect.Y, targetHeight, animTime);
 
             // Set the new rectangle shader parameter.
             SpriteWithShader.SpriteBatchOptions.Shader.SetParameter("p_rectangle", new Vector2(newWidth, newHeight), true);
