@@ -10,6 +10,7 @@ using Wobble.Graphics.UI.Buttons;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
+using Wobble.Tests.Screens.Tests.EasingAnimations;
 
 namespace Wobble.Tests.Screens.Selection
 {
@@ -62,7 +63,7 @@ namespace Wobble.Tests.Screens.Selection
             foreach (var testScreens in screen.TestCasesScreens)
             {
                 // Create a generic text button.
-                var button = new TextButton(WobbleAssets.WhiteBox, Fonts.AllerRegular16, $"{i + 1}. {testScreens.Value}")
+                var button = new TextButton(WobbleAssets.WhiteBox, Fonts.AllerRegular16, testScreens.Value)
                 {
                     Parent = Container,
                     Size = new ScalableVector2(150, 50),
@@ -72,13 +73,16 @@ namespace Wobble.Tests.Screens.Selection
                         TextScale = 0.75f
                     },
                     X = 5,
-                    Y = i * 50 + 10
+                    Y = i * 50 + i * 10 + 10
                 };
 
                 switch (testScreens.Key)
                 {
                     case ScreenType.DrawingSprites:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestDrawingSpritesScreen());
+                        break;
+                    case ScreenType.EasingAnimations:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestEasingAnimationsScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

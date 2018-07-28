@@ -34,7 +34,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     The text that displays the 
         /// </summary>
-        private SpriteText SelectedItemText { get; }
+        public SpriteText SelectedItemText { get; }
 
         /// <summary>
         ///     The button to select the option to the left.

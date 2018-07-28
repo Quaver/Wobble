@@ -60,6 +60,8 @@
     <Compile Include="Screens\Selection\SelectionScreenView.cs" />
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreen.cs" />
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreenView.cs" />
+    <Compile Include="Screens\Tests\EasingAnimations\TestEasingAnimationsScreen.cs" />
+    <Compile Include="Screens\Tests\EasingAnimations\TestEasingAnimationsScreenView.cs" />
     <Compile Include="WobbleTestsGame.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +86,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Textures\test_spritesheet.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Textures\left_button_square.png" />
+    <EmbeddedResource Include="Resources\Textures\right_button_square.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -30,6 +30,9 @@ namespace Wobble.Tests
             Graphics.SynchronizeWithVerticalRetrace = false;
             IsFixedTimeStep = false;
             Graphics.ApplyChanges();
+
+            GlobalUserInterface.Cursor.Hide(0);
+            IsMouseVisible = true;
         }
 
         /// <inheritdoc />

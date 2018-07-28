@@ -16,7 +16,8 @@ namespace Wobble.Tests.Screens.Selection
         /// </summary>
         public Dictionary<ScreenType, string> TestCasesScreens { get; } = new Dictionary<ScreenType, string>
         {
-            {ScreenType.DrawingSprites, "Drawing Sprites"}
+            {ScreenType.DrawingSprites, "Drawing Sprites"},
+            {ScreenType.EasingAnimations, "Easing Animations"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -28,6 +29,7 @@ namespace Wobble.Tests.Screens.Selection
     /// </summary>
     public enum ScreenType
     {
-        DrawingSprites
+        DrawingSprites,
+        EasingAnimations
     }
 }
