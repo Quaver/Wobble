@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Wobble.Bindables;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Transformations;
 
 namespace Wobble.Graphics.UI
 {
@@ -94,9 +95,7 @@ namespace Wobble.Graphics.UI
         public override void Update(GameTime gameTime)
         {
             var dt = gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            // TODO : Add smoother easing function for this.
-            ActiveBar.Width = MathHelper.LerpPrecise((float)(Width * (Percentage / 100f)), ActiveBar.Width, (float) Math.Min(dt / 240, 1));
+            ActiveBar.Width = MathHelper.Lerp((float)(Width * (Percentage / 100f)), ActiveBar.Width, (float) Math.Min(dt / 30, 1));
 
             base.Update(gameTime);
         }
