@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using ManagedBass;
 using Microsoft.Xna.Framework;
+using Wobble.Helpers;
 
 namespace Wobble.Audio.Samples
 {
@@ -69,6 +70,18 @@ namespace Wobble.Audio.Samples
         {
             OnlyCanPlayOnce = onlycanPlayOnce;
             Id = Load(data, concurrentPlaybacks);
+        }
+
+        /// <summary>
+        ///     Creates an audio sample from a stream.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="onlycanPlayOnce"></param>
+        /// <param name="concurrentPlaybacks"></param>
+        public AudioSample(Stream data, bool onlycanPlayOnce = false, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
+        {
+            OnlyCanPlayOnce = onlycanPlayOnce;
+            Id = Load(data.ToArray(), concurrentPlaybacks);
         }
 
         /// <summary>

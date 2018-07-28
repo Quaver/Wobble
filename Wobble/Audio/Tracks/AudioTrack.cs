@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 using ManagedBass;
 using ManagedBass.Fx;
+using Wobble.Helpers;
 
 namespace Wobble.Audio.Tracks
 {
@@ -145,6 +146,16 @@ namespace Wobble.Audio.Tracks
         public AudioTrack(byte[] data)
         {
             Stream = Bass.CreateStream(data, 0, data.Length, BassFlags.Decode);
+            AfterLoad();
+        }
+
+        /// <summary>
+        ///     Loads an audio track from a stream
+        /// </summary>
+        /// <param name="data"></param>
+        public AudioTrack(Stream data)
+        {
+            Stream = Bass.CreateStream(data.ToArray(), 0, data.Length, BassFlags.Decode);
             AfterLoad();
         }
 
