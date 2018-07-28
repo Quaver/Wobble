@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 using Wobble.Audio.Samples;
 using Wobble.Audio.Tracks;
 using Wobble.Bindables;
@@ -26,7 +25,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
         public AudioTrack Song { get; internal set; }
 
         /// <summary>
-        ///     Ping pong sound effect.
+        ///     Replayable Train sound effect.
         /// </summary>
         public AudioSample Train { get; }
 
@@ -40,16 +39,6 @@ namespace Wobble.Tests.Screens.Tests.Audio
             Song?.Play();
 
             View = new TestAudioScreenView(this);
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
-        {
-
-            base.Update(gameTime);
         }
 
         /// <inheritdoc />
