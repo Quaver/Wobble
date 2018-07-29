@@ -60,6 +60,8 @@
     <Compile Include="Screens\Selection\SelectionScreenView.cs" />
     <Compile Include="Screens\Tests\Audio\TestAudioScreen.cs" />
     <Compile Include="Screens\Tests\Audio\TestAudioScreenView.cs" />
+    <Compile Include="Screens\Tests\Discord\TestDiscordScreen.cs" />
+    <Compile Include="Screens\Tests\Discord\TestDiscordScreenView.cs" />
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreen.cs" />
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreenView.cs" />
     <Compile Include="Screens\Tests\EasingAnimations\TestEasingAnimationsScreen.cs" />
