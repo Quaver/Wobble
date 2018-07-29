@@ -11,7 +11,7 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 namespace Wobble.Assets
 {
     /// <summary>
-    ///     A way to load assets directly from embedded resources.
+    ///     Provides a ton of ways to load assets such as textures, fonts, and spritesheets.
     /// </summary>
     public static class AssetLoader
     {

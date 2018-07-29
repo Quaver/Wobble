@@ -1,9 +1,13 @@
-﻿using System;
+using System;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 
 namespace Wobble.Bindables
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     Bindable of type float. Includes extras such as min/max value.
+    /// </summary>
     public class BindableFloat : Bindable<float>
     {
         /// <summary>

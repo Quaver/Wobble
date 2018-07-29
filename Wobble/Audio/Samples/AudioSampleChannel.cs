@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using ManagedBass;
 
 namespace Wobble.Audio.Samples
 {
+    /// <inheritdoc />
     /// <summary>
     ///     A sample channel instance for a given audio sample.
     ///     Used to play sound effects.

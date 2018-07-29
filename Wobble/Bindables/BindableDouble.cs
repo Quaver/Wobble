@@ -1,8 +1,12 @@
-﻿using System;
+using System;
 using System.Globalization;
 
 namespace Wobble.Bindables
 {
+    /// <inheritdoc />
+    /// <summary>
+    ///     Bindable of type double. Includes extras such as min/max value.
+    /// </summary>
     public class BindableDouble : Bindable<double>
     {
         /// <summary>

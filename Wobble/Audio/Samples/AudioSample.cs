@@ -75,9 +75,9 @@ namespace Wobble.Audio.Samples
         /// <summary>
         ///     Creates an audio sample from a stream.
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="onlycanPlayOnce"></param>
-        /// <param name="concurrentPlaybacks"></param>
+        /// <param name="data">The stream of data to be played</param>
+        /// <param name="onlycanPlayOnce">If this sample is set to play only one time. (Default is true)></param>
+        /// <param name="concurrentPlaybacks">The amount of concurrent playbacks possible for this sample</param>
         public AudioSample(Stream data, bool onlycanPlayOnce = false, int concurrentPlaybacks = DEFAULT_CONCURRENCY)
         {
             OnlyCanPlayOnce = onlycanPlayOnce;
@@ -93,8 +93,8 @@ namespace Wobble.Audio.Samples
         /// <summary>
         ///     Loads an audio sample from a file path and returns an Id to it.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="concurrentPlaybacks"></param>
+        /// <param name="path">The file path to load the audio from</param>
+        /// <param name="concurrentPlaybacks">The number of times the audio can be played concurrently.</param>
         /// <returns></returns>
         private static int Load(string path, int concurrentPlaybacks)
         {
@@ -107,8 +107,8 @@ namespace Wobble.Audio.Samples
         /// <summary>
         ///     Loads an audio sample from a byte array and returns an Id to the sample.
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="concurrentPlaybacks"></param>
+        /// <param name="data">The containing audio data.</param>
+        /// <param name="concurrentPlaybacks">The total amount of concurrent playbacks allowed for the sample.</param>
         /// <returns></returns>
         private static int Load(byte[] data, int concurrentPlaybacks) => Bass.SampleLoad(data, 0, data.Length, concurrentPlaybacks,
                                                                             BassFlags.Default | BassFlags.SampleOverrideLongestPlaying);

@@ -11,19 +11,13 @@ namespace Wobble.Assets
         public static Texture2D WhiteBox { get; private set; }
 
         /// <summary>
-        ///     Loads all the assets that Wobble has.
+        ///     Loads all the assets that Wobble has included.
         /// </summary>
-        internal static void Load()
-        {
-            WhiteBox = AssetLoader.LoadTexture2D(WobbleResources.white_box, ImageFormat.Png);
-        }
+        internal static void Load() => WhiteBox = AssetLoader.LoadTexture2D(WobbleResources.white_box, ImageFormat.Png);
 
         /// <summary>
-        ///     Disposes of all the assets that Wobble has.
+        ///     Disposes of all the assets that Wobble has included
         /// </summary>
-        internal static void Dispose()
-        {
-            WhiteBox.Dispose();
-        }
+        internal static void Dispose() => WhiteBox.Dispose();
     }
 }

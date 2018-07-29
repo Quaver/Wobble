@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,9 @@ using Wobble.Audio.Tracks;
 
 namespace Wobble.Audio
 {
+    /// <summary>
+    ///     Handles all of the AudioTracks that are currently active.
+    /// </summary>
     public static class AudioManager
     {
         /// <summary>

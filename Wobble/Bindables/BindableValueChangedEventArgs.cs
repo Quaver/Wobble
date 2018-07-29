@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +17,8 @@ namespace Wobble.Bindables
         /// <summary>
         ///     Ctor -
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">The new value of the bindable</param>
+        /// <param name="oldValue">The old value of the bindable</param>
         public BindableValueChangedEventArgs(T value, T oldValue)
         {
             Value = value;
@@ -25,7 +26,6 @@ namespace Wobble.Bindables
         }
 
         /// <summary>
-        ///     The value passed when
         /// </summary>
         public T Value { get; set; }
 
