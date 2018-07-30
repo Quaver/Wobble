@@ -210,4 +210,6 @@ The creation of this framework couldn't have been possible without the following
 
 # License
 
+**Please Note:** [BASS](http://www.un4seen.com/), the audio library dependency of this framework, is free to use for non-commercial purposes. If you plan on using this framework for a commercial game, be sure to purchase a license.
+
 Wobble is released and licensed under [The MIT License (MIT)](https://github.com/Swan/Wobble/blob/master/LICENSE).
