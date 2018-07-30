@@ -6,9 +6,9 @@
 
 Wobble is a powerful and bare-bones extension of the [MonoGame Framework](https://github.com/MonoGame/MonoGame) designed to make the initial boilerplate process of developing games so much simpler. 
 
-This framework allows you to follow a familiar and easy-to-learn paradigm while still giving you the full control of MonoGame itself.
+This framework allows you to follow a familiar and easy-to-learn paradigm while still giving you full control of MonoGame itself.
 
-The original purpose of Wobble was to provide an underlying and organized framework for [Quaver](https://twitter.com/QuaverGame), a competitive-oriented and open-source rhythm game currently in development, however it can be used for just about any game. 
+The original purpose of Wobble was to provide an underlying and organized framework for [Quaver](https://github.com/Quaver), a competitive-oriented and open-source rhythm game currently in development, however it can be used for just about any game. 
 
 If you can master this framework, you'll have no problem jumping in on the Quaver development which is encouraged.
 
@@ -59,7 +59,7 @@ Every plain rectangle is implemented by you. Every non-plain rectangle is implem
 * **WobbleGame** - The abstract base class that new games should derive from. It contains a ton of intiailization and under-the-hood updating to keep development simple. It is a derivative of `Game` from the MonoGame Framework.
 * **Your Game** - This is your derivative of `WobbleGame`. You can perform any initialization updating, or drawing of the game at a global state.
 * **GameBase** - This is simply a static class to reference your Game and a few extra configuration properties such as `DefaultSpriteBatchOptions`
-* **ScreenManager** - Handles the initailization, updating, and drawing of game screens. It's a [Stack](https://www.google.com/search?q=stack+c%23&rlz=1C1GCEA_enUS794US794&oq=stack+c%23&aqs=chrome..69i57j69i60l3j0l2.1073j1j9&sourceid=chrome&ie=UTF-8) where the the last screen added is the one on top, and is the first screen to be removed. Any class of type `Screen` can be used here.
+* **ScreenManager** - Handles the initailization, updating, and drawing of game screens. It's a [Stack](https://msdn.microsoft.com/en-us/library/system.collections.stack(v=vs.110).aspx) where the the last screen added is the one on top, and is the first screen to be removed. Any class of type `Screen` can be used here.
 * **Screen** - `Screen` is an abstract class that contains a new game state/screen. It is its own entity to be able to update/draw a single screen.
 * **ScreenView** - This is the GUI for the screen. It is best to separate business logic from the actual view - just like the MVC paradigm. **This is a requirement and dependency of `Screen`.**
 * **Container** - This is a container for all `Drawable`s. Each screen automatically has one, and this should be the parent of all *base* Drawable's in the screen (unless going for custom functionality). A Drawable's position and size depends on the container. When a container is destroyed, updated, or drawn, so are its children.
