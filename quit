@@ -1,0 +1,41 @@
+warning: LF will be replaced by CRLF in Wobble/MonoGame.Framework.dll.config.
+The file will have its original line endings in your working directory.
+[1mdiff --git a/Wobble/Wobble.csproj b/Wobble/Wobble.csproj[m
+[1mindex 9c35fb0..11fe737 100644[m
+[1m--- a/Wobble/Wobble.csproj[m
+[1m+++ b/Wobble/Wobble.csproj[m
+[36m@@ -31,18 +31,17 @@[m
+   </PropertyGroup>[m
+   <ItemGroup>[m
+     <Reference Include="ManagedBass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">[m
+[31m-      <HintPath>..\packages\ManagedBass.2.0.4\lib\net45\ManagedBass.dll</HintPath>[m
+[32m+[m[32m      <HintPath>..\..\packages\ManagedBass.2.0.4\lib\net45\ManagedBass.dll</HintPath>[m
+     </Reference>[m
+     <Reference Include="ManagedBass.Fx, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">[m
+[31m-      <HintPath>..\packages\ManagedBass.Fx.2.0.1\lib\netstandard1.4\ManagedBass.Fx.dll</HintPath>[m
+[32m+[m[32m      <HintPath>..\..\packages\ManagedBass.Fx.2.0.1\lib\netstandard1.4\ManagedBass.Fx.dll</HintPath>[m
+     </Reference>[m
+     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">[m
+[31m-      <HintPath>..\packages\MonoGame.Framework.DesktopGL.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>[m
+[32m+[m[32m      <HintPath>..\..\packages\MonoGame.Framework.DesktopGL.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>[m
+       <Private>True</Private>[m
+     </Reference>[m
+[31m-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">[m
+[31m-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>[m
+[31m-      <Private>True</Private>[m
+[32m+[m[32m    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">[m
+[32m+[m[32m      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>[m
+     </Reference>[m
+     <Reference Include="System" />[m
+     <Reference Include="System.Core" />[m
+[36m@@ -185,9 +184,7 @@[m
+     <None Include="libSDL2-2.0.0.dylib">[m
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>[m
+     </None>[m
+[31m-    <None Include="MonoGame.Framework.dll.config">[m
+[31m-      <SubType>Designer</SubType>[m
+[31m-    </None>[m
+[32m+[m[32m    <None Include="MonoGame.Framework.dll.config" />[m
+     <None Include="packages.config" />[m
+     <None Include="x64\libbass.so">[m
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>[m
