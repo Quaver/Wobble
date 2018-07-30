@@ -190,7 +190,7 @@ There are five major components to take notice of when developing screens:
 
 As long as you understand that hierarchy, you should have no problem creating screens.
 
-## Example Screen - Drawing a Green Box Sprite
+## Example Screen - Drawing a Green Box
 
 Creating a screen is super easy, here's an example of how to do it. In this case, all we're going to do is draw a green box on the screen.
 
