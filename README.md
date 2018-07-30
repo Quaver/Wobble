@@ -71,6 +71,109 @@ Wobble is designed to work directly with the [MonoGame.Framework.DesktopGL Nuget
 
 If creating a new game, it's best to start with that, as Wobble provides all the dlls needed to get up and running.
 
+Currently there is no NuGet package for Wobble, however this may change in the future.
+
+## Steps
+
+These are the following steps that we find to be particularly handy when using Wobble with new projects.
+
+**1.** Create a new C# .NET project.  
+
+**2.** Install the [MonoGame.Framework.DesktopGL](https://www.nuget.org/packages/MonoGame.Framework.DesktopGL/) (or other platform) NuGet package.
+
+**3.** Download the Wobble source code **or** add it as a submodule to git (if necessary) and reference it in your project.
+
+**4.** Create a class that derives from `WobbleGame`. In this case, we'll call it `MyGame`. It should look similar to this:
+
+```cs
+public class MyGame : WobbleGame
+{
+    /// <inheritdoc />
+    /// <summary>
+    ///     Allows the game to perform any initialization it needs to before starting to run.
+    ///     This is where it can query for any required services and load any non-graphic
+    ///     related content.  Calling base.Initialize will enumerate through any components
+    ///     and initialize them as well.
+    /// </summary>
+    protected override void Initialize()
+    {
+        base.Initialize();
+        
+        // TODO: Your initialization code goes here.
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     LoadContent will be called once per game and is the place to load
+    ///     all of your content.
+    /// </summary>
+    protected override void LoadContent()
+    {
+        base.LoadContent();
+
+        // TODO: Your asset loading code goes here.
+
+        // TODO: Change to the first screen via ScreenManager
+        // ScreenManager.ChangeScreen(new MainMenuScreen()); - Example
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     UnloadContent will be called once per game and is the place to unload
+    ///     game-specific content.
+    /// </summary>
+    protected override void UnloadContent()
+    {
+        base.UnloadContent();
+
+        // TODO: Your disposing logic goes here.
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     Allows the game to run logic such as updating the world,
+    ///     checking for collisions, gathering input, and playing audio.
+    /// </summary>
+    protected override void Update(GameTime gameTime)
+    {
+        base.Update(gameTime);
+
+        // TODO: Your global update logic goes here. Anything updated here will be updated on every screen.
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    ///     This is called when the game should draw itself.
+    /// </summary>
+    protected override void Draw(GameTime gameTime)
+    {
+        base.Draw(gameTime);
+
+        // TODO: Your global draw logic goes here. Anything drawn here will be drawn on top of every screen.
+    }
+}
+```
+
+**5.** The **main method** *(usually in Program.cs)* of your application should look very straight forward. 
+
+```cs
+internal static class Program
+{
+    [STAThread]
+    internal static void Main(string[] args)
+    {
+        using (var game = new MyGame())
+        {
+            game.Run();
+        }
+    }
+}
+```
+
+**6.** Start building screens!
+
+**7.** Profit?
+
 # Special Thanks
 
 The creation of this framework couldn't have been possible without the following people/organizations.
