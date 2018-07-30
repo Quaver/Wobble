@@ -211,7 +211,6 @@ The creation of this framework couldn't have been possible without the following
 **Orgs**
 
 * [MonoGame](https://github.com/MonoGame/MonoGame) - The awesome framework this is built on top of.
-ence.
 * [ManagedBass](https://github.com/ManagedBass/ManagedBass) - For their .NET wrapper for the [BASS Audio Library](http://www.un4seen.com/)
 
 # License
