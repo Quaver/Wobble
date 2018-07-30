@@ -206,7 +206,7 @@ The creation of this framework couldn't have been possible without the following
 
 * [Staravia](https://github.com/Staravia) - For building out the base of the Drawable & Sprite system.
 * [Swan](https://github.com/Swan) - For putting the majority of this framework together.
-* [Lachee](https://github.com/Lachee/discord-rpc-csharp) - For their C# library for Discord Rich Pres
+* [Lachee](https://github.com/Lachee/discord-rpc-csharp) - For their C# Discord Rich Presence Library
 
 **Orgs**
 
