@@ -202,14 +202,20 @@ There are also tons of [visual tests](https://github.com/Swan/Wobble/tree/master
 
 The creation of this framework couldn't have been possible without the following people/organizations.
 
-* [MonoGame](https://github.com/MonoGame/MonoGame) - The awesome framework this is built on top of.
-* [Lachee](https://github.com/Lachee/discord-rpc-csharp) - For their C# library for Discord Rich Presence.
-* [ManagedBass](https://github.com/ManagedBass/ManagedBass) - For their .NET wrapper for the [BASS Audio Library](http://www.un4seen.com/)
+**People**
+
 * [Staravia](https://github.com/Staravia) - For building out the base of the Drawable & Sprite system.
 * [Swan](https://github.com/Swan) - For putting the majority of this framework together.
+* [Lachee](https://github.com/Lachee/discord-rpc-csharp) - For their C# library for Discord Rich Pres
+
+**Orgs**
+
+* [MonoGame](https://github.com/MonoGame/MonoGame) - The awesome framework this is built on top of.
+ence.
+* [ManagedBass](https://github.com/ManagedBass/ManagedBass) - For their .NET wrapper for the [BASS Audio Library](http://www.un4seen.com/)
 
 # License
 
-**Please Note:** [BASS](http://www.un4seen.com/), the audio library dependency of this framework, is free to use for non-commercial purposes. If you plan on using this framework for a commercial game, be sure to purchase a license.
-
 Wobble is released and licensed under [The MIT License (MIT)](https://github.com/Swan/Wobble/blob/master/LICENSE).
+
+**Please Note:** [BASS](http://www.un4seen.com/), the audio library dependency of this framework, is free to use for non-commercial purposes. If you plan on using this framework for a commercial game, be sure to purchase a license.
