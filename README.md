@@ -8,9 +8,9 @@ Wobble is a powerful and bare-bones extension of the [MonoGame Framework](https:
 
 This framework allows you to follow a familiar and easy-to-learn paradigm while still giving you the full control of MonoGame itself.
 
-The original purpose of Wobble was to provide an underlying and organized framework for [Quaver](), a competitive-oriented and open-source rhythm game currently in development, however it can be used for just about any game. 
+The original purpose of Wobble was to provide an underlying and organized framework for [Quaver](https://twitter.com/QuaverGame), a competitive-oriented and open-source rhythm game currently in development, however it can be used for just about any game. 
 
-If you can master this framework, you'll have no problem jumping in on the [Quaver]() development which is encouraged.
+If you can master this framework, you'll have no problem jumping in on the Quaver development which is encouraged.
 
 # Features
 
@@ -35,7 +35,7 @@ While this framework is still in its early stages and fairly bare-bones, you get
 
 We have several goals with the creation and development of this framework.
 
-* The primary goal is to make it easier for people to jump in on the [Quaver]() development.
+* The primary goal is to make it easier for people to jump in on the Quaver development.
 * To move some of our base code that was originally copyleft licensed to something more permissive.
 * To make the boilerplate process of developing new games a lot faster.
 * Have a clean and easy way of building out scenes while still giving the developer full control.
@@ -190,11 +190,13 @@ There are five major components to take notice of when developing screens:
 
 As long as you understand that hierarchy, you should have no problem creating screens.
 
-## Example Screen - Drawing a Green Box
+## Demos
 
-Creating a screen is super easy, here's an example of how to do it. In this case, all we're going to do is draw a green box on the screen.
+There a a bunch of demos and tests that you can use to learn how Wobble works. 
 
+You should first check out the example [GreenBox](https://github.com/Swan/Wobble/tree/master/Examples/GreenBox) game. A simple game that draws a green box to the screen and moves it around with our awesome transformation system.
 
+There are also tons of [visual tests](https://github.com/Swan/Wobble/tree/master/Wobble.Tests) you can run and take a look at to see how each part of Wobble can be used.
 
 # Special Thanks
 
