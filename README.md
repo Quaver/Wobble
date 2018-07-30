@@ -174,6 +174,28 @@ internal static class Program
 
 **7.** Profit?
 
+## Creating Screens
+
+As stated in our goals, the core focus of Wobble is to skip all of the initial boilerplate and set up code you'd usually do with MonoGame/XNA and go straight to developing your screens.
+
+There are five major components to take notice of when developing screens: 
+
+* **ScreenManager** - An under the hood static class that controls the addition, changing, removal, updating, and drawing of screens.
+* **Screen** - A portion of your game used to update and render a single state or scene of your game. You might want to have a main menu screen, and options screen, and a gameplay screen for example.
+* **ScreenView** - Each screen has one of these. It's where all of your GUI code should be placed. The initializing, updating, and drawing of sprites should live here. Think about it like the view in the MVC architecture. No business logic, just display.
+* **Container** - Every ScreenView has a container. In short, it serves a parent to the majority of the sprites on the screen. 
+
+    Each child depends on their parent for their positioning and size. As an example, if you were to align a container at the mid left of the screen, and a child sprite at the top right, the position of the sprite would be at the top right of the container, at the mid left of the screen.
+* **Sprite/SpriteText** - It's pretty self explanatory, but these are the sprites that are actually drawn to the screen. A sprite must have a parent of another `Drawable` (Container, another Sprite/SpriteText)
+
+As long as you understand that hierarchy, you should have no problem creating screens.
+
+## Example Screen - Drawing a Green Box Sprite
+
+Creating a screen is super easy, here's an example of how to do it. In this case, all we're going to do is draw a green box on the screen.
+
+
+
 # Special Thanks
 
 The creation of this framework couldn't have been possible without the following people/organizations.
