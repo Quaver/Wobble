@@ -1,0 +1,519 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class RpcConnection
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class RpcConnection
+   ">
+    <meta name="generator" content="docfx 2.37.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Wobble.Discord.RPC.RPC.RpcConnection">
+  
+  
+  <h1 id="Wobble_Discord_RPC_RPC_RpcConnection" data-uid="Wobble.Discord.RPC.RPC.RpcConnection" class="text-break">Class RpcConnection
+  </h1>
+  <div class="markdown level0 summary"><p>Communicates between the client and discord through RPC</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">RpcConnection</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IDisposable</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Wobble.Discord.RPC.RPC.html">Wobble.Discord.RPC.RPC</a></h6>
+  <h6><strong>Assembly</strong>: Wobble.dll</h6>
+  <h5 id="Wobble_Discord_RPC_RPC_RpcConnection_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class RpcConnection : IDisposable</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection__ctor_System_String_System_Int32_System_Int32_Wobble_Discord_RPC_IO_INamedPipeClient_.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.%23ctor(System.String%2CSystem.Int32%2CSystem.Int32%2CWobble.Discord.RPC.IO.INamedPipeClient)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L115">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection__ctor_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.#ctor*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection__ctor_System_String_System_Int32_System_Int32_Wobble_Discord_RPC_IO_INamedPipeClient_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.#ctor(System.String,System.Int32,System.Int32,Wobble.Discord.RPC.IO.INamedPipeClient)">RpcConnection(String, Int32, Int32, INamedPipeClient)</h4>
+  <div class="markdown level1 summary"><p>Creates a new instance of the RPC.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RpcConnection(string applicationID, int processID, int targetPipe, INamedPipeClient client)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">applicationID</span></td>
+        <td><p>The ID of the Discord App</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">processID</span></td>
+        <td><p>The ID of the currently running process</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">targetPipe</span></td>
+        <td><p>The target pipe to connect too</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Wobble.Discord.RPC.IO.INamedPipeClient.html">INamedPipeClient</a></td>
+        <td><span class="parametername">client</span></td>
+        <td><p>The pipe client we shall use.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_POLL_RATE.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.POLL_RATE%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L27">View Source</a>
+  </span>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_POLL_RATE" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.POLL_RATE">POLL_RATE</h4>
+  <div class="markdown level1 summary"><p>The rate of poll to the discord pipe.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly int POLL_RATE</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_VERSION.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.VERSION%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L22">View Source</a>
+  </span>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_VERSION" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.VERSION">VERSION</h4>
+  <div class="markdown level1 summary"><p>Version of the RPC Protocol</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static readonly int VERSION</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_Configuration.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.Configuration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L66">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_Configuration_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Configuration*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_Configuration" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Configuration">Configuration</h4>
+  <div class="markdown level1 summary"><p>The configuration received by the Ready</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Configuration Configuration { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Wobble.Discord.RPC.Configuration.html">Configuration</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_IsRunning.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.IsRunning%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L76">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_IsRunning_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.IsRunning*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_IsRunning" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.IsRunning">IsRunning</h4>
+  <div class="markdown level1 summary"><p>Indicates if the RPC connection is still running in the background</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsRunning { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_Logger.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.Logger%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L42">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_Logger_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Logger*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_Logger" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Logger">Logger</h4>
+  <div class="markdown level1 summary"><p>The logger used by the RPC connection</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ILogger Logger { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Wobble.Discord.RPC.Logging.ILogger.html">ILogger</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_ShutdownOnly.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.ShutdownOnly%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L82">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_ShutdownOnly_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.ShutdownOnly*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_ShutdownOnly" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.ShutdownOnly">ShutdownOnly</h4>
+  <div class="markdown level1 summary"><p>Forces the <a class="xref" href="Wobble.Discord.RPC.RPC.RpcConnection.html#Wobble_Discord_RPC_RPC_RpcConnection_Close">Close()</a> to call <a class="xref" href="Wobble.Discord.RPC.RPC.RpcConnection.html#Wobble_Discord_RPC_RPC_RpcConnection_Shutdown">Shutdown()</a> instead, safely saying goodbye to Discord.</p>
+<p>This option helps prevents ghosting in applications where the Process ID is a host and the game is executed within the host (ie: the Unity3D editor). This will tell Discord that we have no presence and we are closing the connection manually, instead of waiting for the process to terminate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ShutdownOnly { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_State.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.State%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L59">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_State_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.State*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_State" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.State">State</h4>
+  <div class="markdown level1 summary"><p>The current state of the RPC connection</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RpcState State { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Wobble.Discord.RPC.RPC.RpcState.html">RpcState</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_AttemptConnection.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.AttemptConnection%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L658">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_AttemptConnection_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.AttemptConnection*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_AttemptConnection" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.AttemptConnection">AttemptConnection()</h4>
+  <div class="markdown level1 summary"><p>Attempts to connect to the pipe. Returns true on success</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AttemptConnection()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_Close.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.Close%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L729">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_Close_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Close*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_Close" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Close">Close()</h4>
+  <div class="markdown level1 summary"><p>Closes the connection and disposes of resources.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Close()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_Dispose.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L760">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_Dispose_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Dispose*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_Dispose" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Dispose">Dispose()</h4>
+  <div class="markdown level1 summary"><p>Closes the connection and disposes resources. Identical to <a class="xref" href="Wobble.Discord.RPC.RPC.RpcConnection.html#Wobble_Discord_RPC_RPC_RpcConnection_Close">Close()</a> but ignores the &quot;ShutdownOnly&quot; value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection_Shutdown.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection.Shutdown%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L708">View Source</a>
+  </span>
+  <a id="Wobble_Discord_RPC_RPC_RpcConnection_Shutdown_" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Shutdown*"></a>
+  <h4 id="Wobble_Discord_RPC_RPC_RpcConnection_Shutdown" data-uid="Wobble.Discord.RPC.RPC.RpcConnection.Shutdown">Shutdown()</h4>
+  <div class="markdown level1 summary"><p>Closes the connection and disposes of resources. This will not force termination, but instead allow Discord disconnect us after we say goodbye.</p>
+<p>This option helps prevents ghosting in applications where the Process ID is a host and the game is executed within the host (ie: the Unity3D editor). This will tell Discord that we have no presence and we are closing the connection manually, instead of waiting for the process to terminate.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Shutdown()</code></pre>
+  </div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IDisposable</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Discord_RPC_RPC_RpcConnection.md&amp;value=---%0Auid%3A%20Wobble.Discord.RPC.RPC.RpcConnection%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Discord/RPC/RPC/RpcConnection.cs/#L17" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

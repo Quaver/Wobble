@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class WobbleGame
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class WobbleGame
+   ">
+    <meta name="generator" content="docfx 2.37.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Wobble.WobbleGame">
+  
+  
+  <h1 id="Wobble_WobbleGame" data-uid="Wobble.WobbleGame" class="text-break">Class WobbleGame
+  </h1>
+  <div class="markdown level0 summary"><p>The main game class. This will handle all the lower level details that should not
+be worried about. It takes care of the majority of the low level and boilerplate stuff, so that
+all you have to do is just write the game.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Microsoft.Xna.Framework.Game</span></div>
+    <div class="level2"><span class="xref">WobbleGame</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IDisposable</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Dispose()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Dispose(System.Boolean)</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Exit()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.ResetElapsedTime()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.SuppressDraw()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.RunOneFrame()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Run()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Run(Microsoft.Xna.Framework.GameRunBehavior)</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Tick()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.BeginDraw()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.EndDraw()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.BeginRun()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.EndRun()</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.OnExiting(System.Object, System.EventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.OnActivated(System.Object, System.EventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.OnDeactivated(System.Object, System.EventArgs)</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.LaunchParameters</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Components</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.InactiveSleepTime</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.MaxElapsedTime</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.IsActive</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.IsMouseVisible</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.TargetElapsedTime</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.IsFixedTimeStep</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Services</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Content</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.GraphicsDevice</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Window</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Activated</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Deactivated</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Disposed</span>
+    </div>
+    <div>
+      <span class="xref">Microsoft.Xna.Framework.Game.Exiting</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Wobble.html">Wobble</a></h6>
+  <h6><strong>Assembly</strong>: Wobble.dll</h6>
+  <h5 id="Wobble_WobbleGame_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class WobbleGame : Game, IDisposable</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame__ctor.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L48">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame__ctor_" data-uid="Wobble.WobbleGame.#ctor*"></a>
+  <h4 id="Wobble_WobbleGame__ctor" data-uid="Wobble.WobbleGame.#ctor">WobbleGame()</h4>
+  <div class="markdown level1 summary"><p>Creates a game with embedded resources as a content manager.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected WobbleGame()</code></pre>
+  </div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_GlobalUserInterface.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.GlobalUserInterface%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L43">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_GlobalUserInterface_" data-uid="Wobble.WobbleGame.GlobalUserInterface*"></a>
+  <h4 id="Wobble_WobbleGame_GlobalUserInterface" data-uid="Wobble.WobbleGame.GlobalUserInterface">GlobalUserInterface</h4>
+  <div class="markdown level1 summary"><p>For any sprites that are being displayed globally, this is the container that it should
+be a child of.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GlobalUserInterface GlobalUserInterface { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Wobble.GlobalUserInterface.html">GlobalUserInterface</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_Graphics.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.Graphics%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L22">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_Graphics_" data-uid="Wobble.WobbleGame.Graphics*"></a>
+  <h4 id="Wobble_WobbleGame_Graphics" data-uid="Wobble.WobbleGame.Graphics">Graphics</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GraphicsDeviceManager Graphics { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.GraphicsDeviceManager</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_SpriteBatch.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.SpriteBatch%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L27">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_SpriteBatch_" data-uid="Wobble.WobbleGame.SpriteBatch*"></a>
+  <h4 id="Wobble_WobbleGame_SpriteBatch" data-uid="Wobble.WobbleGame.SpriteBatch">SpriteBatch</h4>
+  <div class="markdown level1 summary"><p>Used for drawing textures</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SpriteBatch SpriteBatch { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.Graphics.SpriteBatch</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_TimeRunning.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.TimeRunning%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L37">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_TimeRunning_" data-uid="Wobble.WobbleGame.TimeRunning*"></a>
+  <h4 id="Wobble_WobbleGame_TimeRunning" data-uid="Wobble.WobbleGame.TimeRunning">TimeRunning</h4>
+  <div class="markdown level1 summary"><p>The amount of time the game has been running.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int TimeRunning { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_TimeSinceLastFrame.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.TimeSinceLastFrame%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L32">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_TimeSinceLastFrame_" data-uid="Wobble.WobbleGame.TimeSinceLastFrame*"></a>
+  <h4 id="Wobble_WobbleGame_TimeSinceLastFrame" data-uid="Wobble.WobbleGame.TimeSinceLastFrame">TimeSinceLastFrame</h4>
+  <div class="markdown level1 summary"><p>The amount of time elapsed since the previous frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double TimeSinceLastFrame { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_Draw_Microsoft_Xna_Framework_GameTime_.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.Draw(Microsoft.Xna.Framework.GameTime)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L121">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_Draw_" data-uid="Wobble.WobbleGame.Draw*"></a>
+  <h4 id="Wobble_WobbleGame_Draw_Microsoft_Xna_Framework_GameTime_" data-uid="Wobble.WobbleGame.Draw(Microsoft.Xna.Framework.GameTime)">Draw(GameTime)</h4>
+  <div class="markdown level1 summary"><p>This is called when the game should draw itself.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Draw(GameTime gameTime)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.GameTime</span></td>
+        <td><span class="parametername">gameTime</span></td>
+        <td><p>Provides a snapshot of timing values.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">Microsoft.Xna.Framework.Game.Draw(Microsoft.Xna.Framework.GameTime)</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_Initialize.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.Initialize%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L62">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_Initialize_" data-uid="Wobble.WobbleGame.Initialize*"></a>
+  <h4 id="Wobble_WobbleGame_Initialize" data-uid="Wobble.WobbleGame.Initialize">Initialize()</h4>
+  <div class="markdown level1 summary"><p>Allows the game to perform any initialization it needs to before starting to run.
+This is where it can query for any required services and load any non-graphic
+related content.  Calling base.Initialize will enumerate through any components
+and initialize them as well.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Initialize()</code></pre>
+  </div>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">Microsoft.Xna.Framework.Game.Initialize()</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_LoadContent.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.LoadContent%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L75">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_LoadContent_" data-uid="Wobble.WobbleGame.LoadContent*"></a>
+  <h4 id="Wobble_WobbleGame_LoadContent" data-uid="Wobble.WobbleGame.LoadContent">LoadContent()</h4>
+  <div class="markdown level1 summary"><p>LoadContent will be called once per game and is the place to load
+all of your content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void LoadContent()</code></pre>
+  </div>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">Microsoft.Xna.Framework.Game.LoadContent()</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_UnloadContent.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.UnloadContent%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L86">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_UnloadContent_" data-uid="Wobble.WobbleGame.UnloadContent*"></a>
+  <h4 id="Wobble_WobbleGame_UnloadContent" data-uid="Wobble.WobbleGame.UnloadContent">UnloadContent()</h4>
+  <div class="markdown level1 summary"><p>UnloadContent will be called once per game and is the place to unload
+game-specific content.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void UnloadContent()</code></pre>
+  </div>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">Microsoft.Xna.Framework.Game.UnloadContent()</span></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame_Update_Microsoft_Xna_Framework_GameTime_.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame.Update(Microsoft.Xna.Framework.GameTime)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L98">View Source</a>
+  </span>
+  <a id="Wobble_WobbleGame_Update_" data-uid="Wobble.WobbleGame.Update*"></a>
+  <h4 id="Wobble_WobbleGame_Update_Microsoft_Xna_Framework_GameTime_" data-uid="Wobble.WobbleGame.Update(Microsoft.Xna.Framework.GameTime)">Update(GameTime)</h4>
+  <div class="markdown level1 summary"><p>Allows the game to run logic such as updating the world,
+checking for collisions, gathering input, and playing audio.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void Update(GameTime gameTime)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.GameTime</span></td>
+        <td><span class="parametername">gameTime</span></td>
+        <td><p>Provides a snapshot of timing values.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><span class="xref">Microsoft.Xna.Framework.Game.Update(Microsoft.Xna.Framework.GameTime)</span></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IDisposable</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_WobbleGame.md&amp;value=---%0Auid%3A%20Wobble.WobbleGame%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/WobbleGame.cs/#L18" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

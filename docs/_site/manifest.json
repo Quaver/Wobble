@@ -1,0 +1,1760 @@
+{
+  "homepages": [],
+  "source_base_path": "C:/Users/admin/Desktop/Git/Wobble/Docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Assets.AssetLoader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Assets.AssetLoader.html",
+          "hash": "bktb5skOWNdidPzdkB49Yg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Assets.WobbleAssets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Assets.WobbleAssets.html",
+          "hash": "gdcLujw6qpp5XoIIzHgxeA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Assets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Assets.html",
+          "hash": "dGjwg2nRCZBQFzWBOE97sw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.AudioEngineException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.AudioEngineException.html",
+          "hash": "ZUwlhZPggHDgFtDgFMXLkw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.AudioManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.AudioManager.html",
+          "hash": "iguVk+cZF7nFrAYSSmE8OA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.IPlayableAudio.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.IPlayableAudio.html",
+          "hash": "8znYmoTFTHBV0sqxL60IVA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.PlayableAudioDisposedException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.PlayableAudioDisposedException.html",
+          "hash": "Ajg/aSOQd/Smj7EnSR79Ig=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.Samples.AudioSample.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.Samples.AudioSample.html",
+          "hash": "UCZmS9MVC2U5pt3B2olnHg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.Samples.AudioSampleChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.Samples.AudioSampleChannel.html",
+          "hash": "uY7hPjnXr7z4C0kscPGcng=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.Samples.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.Samples.html",
+          "hash": "4jfQPHNq88l4XQJkZJpczw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.Tracks.AudioTrack.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.Tracks.AudioTrack.html",
+          "hash": "W4tNhGDsfdaTLaX7VIZnhQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.Tracks.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.Tracks.html",
+          "hash": "uWQyL86Vd8WjZKmTPcTiZw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Audio.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Audio.html",
+          "hash": "wfx86seBvoiiaTf4q3XjLQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Bindables.Bindable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Bindables.Bindable-1.html",
+          "hash": "ht5pWURsnmZ650OqSO8/NQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Bindables.BindableDouble.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Bindables.BindableDouble.html",
+          "hash": "bQaDsWlXO6iK6ptR0DRxug=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Bindables.BindableFloat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Bindables.BindableFloat.html",
+          "hash": "QAVcHZSOYk5hPLzYFsFAsg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Bindables.BindableInt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Bindables.BindableInt.html",
+          "hash": "hOujeiPW5QGgckoDZz0V5w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Bindables.BindableValueChangedEventArgs-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Bindables.BindableValueChangedEventArgs-1.html",
+          "hash": "v9CYv3aamu0oSoH7pRDmxA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Bindables.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Bindables.html",
+          "hash": "um7sSqlggxQqExNsO/coeQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.DiscordManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.DiscordManager.html",
+          "hash": "g4XHYlRiZKTauG8pOmxDww=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Assets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Assets.html",
+          "hash": "9stB+glKSd2qWVWiy11UXw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Configuration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Configuration.html",
+          "hash": "DdL248l/+AQzjWGzO5mwsQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Converters.EnumSnakeCaseConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Converters.EnumSnakeCaseConverter.html",
+          "hash": "QhazB7y7OvSMPIhxJFBdLg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Converters.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Converters.html",
+          "hash": "GMtLiDV89fuwFT8pamlE5A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.DiscordRpcClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.DiscordRpcClient.html",
+          "hash": "vKPLxyrwql6aiQyiJw/Fhw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.EventType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.EventType.html",
+          "hash": "s2/558lHzOFlHdHllUy6Hw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Helper.StringTools.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Helper.StringTools.html",
+          "hash": "MpUy3yzOmedI05BXJ2+3+A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Helper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Helper.html",
+          "hash": "MHYZXbakIk6YKwkEnBKuLw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.IO.INamedPipeClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.IO.INamedPipeClient.html",
+          "hash": "U+xu8hLL4Q85QmjR19jVwg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.IO.InvalidPipeException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.IO.InvalidPipeException.html",
+          "hash": "ub2PIVPkMtGJRDTDU4QjEQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.IO.ManagedNamedPipeClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.IO.ManagedNamedPipeClient.html",
+          "hash": "pcUUACJhr1VK7huKYCbkPw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.IO.NativeNamedPipeClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.IO.NativeNamedPipeClient.html",
+          "hash": "l5JfOHairf/9hKFaiUS4Xw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.IO.Opcode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.IO.Opcode.html",
+          "hash": "yBuEaeb/jFgXuQ0rPsTwaA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.IO.PipeFrame.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.IO.PipeFrame.html",
+          "hash": "/yvw3LBkHdA93/bCHIHUHA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.IO.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.IO.html",
+          "hash": "RYX15HEMtti6DfGYORHOrg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Logging.ConsoleLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Logging.ConsoleLogger.html",
+          "hash": "ksqiPuRZ/GR4H87o6itwFg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Logging.FileLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Logging.FileLogger.html",
+          "hash": "MCmPoHFiEIyKq5d+aF0woQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Logging.ILogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Logging.ILogger.html",
+          "hash": "RJSlUNHCYjgFuS5a/2A4kQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Logging.LogLevel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Logging.LogLevel.html",
+          "hash": "Zu8tnwnNYqQ6CiQ5r8R8wA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Logging.NullLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Logging.NullLogger.html",
+          "hash": "3FdmCkIm3GTb2iEynzYLCw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Logging.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Logging.html",
+          "hash": "2xWN8Uh+o0MSNeoixhHkFw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.CloseMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.CloseMessage.html",
+          "hash": "D0ax8wNJshb02hjJl0imKQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.ConnectionEstablishedMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.ConnectionEstablishedMessage.html",
+          "hash": "stZt/mm8QKPxZIgksK5zYw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.ConnectionFailedMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.ConnectionFailedMessage.html",
+          "hash": "Ty/1U50Y2770zp9Ci9qt6A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.ErrorCode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.ErrorCode.html",
+          "hash": "31qpWSfO6geCMI8FfHoP9A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.ErrorMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.ErrorMessage.html",
+          "hash": "TtNCgq5G9WKDuCbBhhx/HQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.IMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.IMessage.html",
+          "hash": "Ka95d34dlCDcYWv+EzEEVw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.JoinMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.JoinMessage.html",
+          "hash": "iwWWF+RwbkG7MunmQobVrA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.JoinRequestMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.JoinRequestMessage.html",
+          "hash": "VhDD3no/kcXmn1wRNK6B/w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.MessageType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.MessageType.html",
+          "hash": "YymCW0Vn8Y7SYhxLjgr7/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.PresenceMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.PresenceMessage.html",
+          "hash": "ptKtgeQSSwaamjFAuWROiQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.ReadyMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.ReadyMessage.html",
+          "hash": "mnXyZDSELUS5VayeFCQcZA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.SpectateMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.SpectateMessage.html",
+          "hash": "A6azkOvUCnm/0SdIasRrhQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.SubscribeMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.SubscribeMessage.html",
+          "hash": "onBtdqV7vvILWsNHPL5vGg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.UnsubscribeMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.UnsubscribeMessage.html",
+          "hash": "6vHHJD5LB3IARkH6pr0nvA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Message.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Message.html",
+          "hash": "qOtsAiHscsy+yHTecd53fQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnCloseEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnCloseEvent.html",
+          "hash": "/a+AYM6+4ZIsdXGW1q6Syg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnConnectionEstablishedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnConnectionEstablishedEvent.html",
+          "hash": "7C11MSiRxANuAaYZ9iJGfw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnConnectionFailedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnConnectionFailedEvent.html",
+          "hash": "lan3LLd6Q1Lw9LUOFpH2XQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnErrorEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnErrorEvent.html",
+          "hash": "zvGa5CD57qaL1DN/TIGmRA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnJoinEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnJoinEvent.html",
+          "hash": "HwZH8vgwytTAbwzsjIjl2A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnJoinRequestedEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnJoinRequestedEvent.html",
+          "hash": "mnrJhgP+5t75kO9ht7yKSg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnPresenceUpdateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnPresenceUpdateEvent.html",
+          "hash": "PP3rFxNu+UZ1Coy7vjOsCA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnReadyEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnReadyEvent.html",
+          "hash": "auFg/J5fzrsItk4xB+XLHA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnSpectateEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnSpectateEvent.html",
+          "hash": "epHt9TArhWcnABLEEIn5gw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnSubscribeEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnSubscribeEvent.html",
+          "hash": "UN682dKqxR1zTg8vWJFfWA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.OnUnsubscribeEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.OnUnsubscribeEvent.html",
+          "hash": "j4sPfjWrf+cBJlKp+CdH/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Party.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Party.html",
+          "hash": "DgPeUDwu1N6rbAy/lJAmTw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.RPC.RpcConnection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.RPC.RpcConnection.html",
+          "hash": "VCiQoO/68lSuxLYSKP9HYw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.RPC.RpcState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.RPC.RpcState.html",
+          "hash": "06IV94ZR+Tfhed4XZJTx+g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.RPC.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.RPC.html",
+          "hash": "KIYBP0sWimOFMOFssYC5aw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.RichPresence.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.RichPresence.html",
+          "hash": "2Uhu/z7FJcOQRgST6RBrDQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Secrets.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Secrets.html",
+          "hash": "rPvHUUXoWG0qAH+5zdp5ww=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Timestamps.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Timestamps.html",
+          "hash": "qT8p9dQ9x5/uGSI2NQDt5Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.User.AvatarFormat.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.User.AvatarFormat.html",
+          "hash": "JaHX/leKr29bJxq2SJdRKg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.User.AvatarSize.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.User.AvatarSize.html",
+          "hash": "I7zFRtNbNTcEAjweFfaCkA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.User.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.User.html",
+          "hash": "09wR8nzV23GtNxnvTNF9DA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Web.WebRPC.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Web.WebRPC.html",
+          "hash": "/R5TSfBPZjmxZKRrM9VyOQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Web.WebRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Web.WebRequest.html",
+          "hash": "TajxGbJqEv1Iri26jn8vSg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.Web.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.Web.html",
+          "hash": "ZYUhIuvoqeaHfaLfrwa6Zw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.RPC.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.RPC.html",
+          "hash": "3xk0tjH9/e5WqaB72wN55A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Discord.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Discord.html",
+          "hash": "woTlcq9eaJbBkogPmhS6/g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.GameBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.GameBase.html",
+          "hash": "0dJJlF7omckTGvi3FeyfVw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.GlobalUserInterface.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.GlobalUserInterface.html",
+          "hash": "Cw2x7+k4wvUuyM2XiBxNJg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Alignment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Alignment.html",
+          "hash": "An8LiBfJYL+ryGKSEWTYmg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Container.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Container.html",
+          "hash": "8HIL/hDZtZdOum0DI+w57w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Direction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Direction.html",
+          "hash": "VcwiBnnViBQu3U1Oa0azvA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.DrawRectangle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.DrawRectangle.html",
+          "hash": "1XwVIje89hkGa4FkvQgC3Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Drawable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Drawable.html",
+          "hash": "Hna5gC/vt8oP32LJSaZ2AA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.GraphicsHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.GraphicsHelper.html",
+          "hash": "SJ2o7ZEUDrsaa9IQXqAZBg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.IDrawable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.IDrawable.html",
+          "hash": "QCJqGnF0/rY2vbNEwguvug=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.ScalableVector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.ScalableVector.html",
+          "hash": "nOefhK8cfVyQqSznbdKIsw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.ScalableVector2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.ScalableVector2.html",
+          "hash": "NDXHr4COzzEZ8lOOcW1hug=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Shaders.InvalidTypeParameterException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Shaders.InvalidTypeParameterException.html",
+          "hash": "Me6Ia0K61M+V90LwZnT3EQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Shaders.Shader.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Shaders.Shader.html",
+          "hash": "vEdX+wH7jCxMv0/zeZ7gcg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Shaders.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Shaders.html",
+          "hash": "y+sMMDwmOBpP4ci8TOV8aQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.SpriteBatchOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.SpriteBatchOptions.html",
+          "hash": "ezFORPKUV03TLhxp/c2OPw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Sprites.AnimatableSprite.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Sprites.AnimatableSprite.html",
+          "hash": "OiNlEvOdjVXpkGKchcyM5A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Sprites.BakeableSprite.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Sprites.BakeableSprite.html",
+          "hash": "nYZ/jIca5Yj9vPymqFYNWw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Sprites.Sprite.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Sprites.Sprite.html",
+          "hash": "sc8YcKPN0YaW21Ehq9NRFQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Sprites.SpriteText.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Sprites.SpriteText.html",
+          "hash": "MPRWvHGcACadH81zEcqXhA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Sprites.TextStyle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Sprites.TextStyle.html",
+          "hash": "z5pM1+suLKRNHQl/PlaOYA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Sprites.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Sprites.html",
+          "hash": "QC/R24r+yidqlbeMDcM5qg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Transformations.Easing.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Transformations.Easing.html",
+          "hash": "I6HCVJIglZGmbZTsJ5UM0w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Transformations.EasingFunctions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Transformations.EasingFunctions.html",
+          "hash": "G4xB3TEfmUla/AAgSsVXxg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Transformations.Transformation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Transformations.Transformation.html",
+          "hash": "BLGzpINGjQHOL473WSl5SA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Transformations.TransformationProperty.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Transformations.TransformationProperty.html",
+          "hash": "01Aub4dK3yCqsHiffhlb7Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.Transformations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.Transformations.html",
+          "hash": "tCPK9ZvyHte16/BRDc7Czg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.BackgroundImage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.BackgroundImage.html",
+          "hash": "I5ztufC1t+AkneuEzJZPHw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Buttons.Button.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Buttons.Button.html",
+          "hash": "1m7lMfXut0nKGMrxARnCOA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Buttons.DraggableButton.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Buttons.DraggableButton.html",
+          "hash": "ocvq4wB1V1XU89E10/zW8Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Buttons.ImageButton.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Buttons.ImageButton.html",
+          "hash": "5AuNsaObb29DQfxNsI8lHg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Buttons.TextButton.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Buttons.TextButton.html",
+          "hash": "Hdxg3LWnTX82+1WXXmZi6g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Buttons.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Buttons.html",
+          "hash": "bztzNu8HSzhnNlji8YIm3A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Cursor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Cursor.html",
+          "hash": "hdOkUx3tde1Q2TpRGsfr7g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Debugging.FpsCounter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Debugging.FpsCounter.html",
+          "hash": "jRJJR8KrInUR0ooPImQYFQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Debugging.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Debugging.html",
+          "hash": "ieoq9efuF3HS8xuhUjh+Eg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Form.Checkbox.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Form.Checkbox.html",
+          "hash": "m9qDHY2Twa5Mr4NZDk95zg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Form.HorizontalSelector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Form.HorizontalSelector.html",
+          "hash": "PDW1yCQIe6j7Z+vou49ZaA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.Form.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.Form.html",
+          "hash": "96AMWD5GIP4ynR8PtQBd9A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.ProgressBar.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.ProgressBar.html",
+          "hash": "e5iddGySQLHy35FvJnXxvw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.UI.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.UI.html",
+          "hash": "TrFb49eTRkolNMbWjcqymQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Graphics.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Graphics.html",
+          "hash": "xrlQZyZybWqOqkPUrHvQkw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Helpers.StreamHelper.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Helpers.StreamHelper.html",
+          "hash": "3tGLN6wzkS3QWlgofl/Nag=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Helpers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Helpers.html",
+          "hash": "mcjsbo2ycFJCUFBaAgoQYQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Input.EnhancedMouseState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Input.EnhancedMouseState.html",
+          "hash": "m4QY7EQ0M4CjbVUN7WZlxA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Input.KeyboardManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Input.KeyboardManager.html",
+          "hash": "EfccWmIxdcygGrL4DT6OMg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Input.MouseButton.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Input.MouseButton.html",
+          "hash": "TYycRjXYC+uUWWeXVJkZwA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Input.MouseManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Input.MouseManager.html",
+          "hash": "IhiPTJlkGV+gZl6NLZ0fuQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Input.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Input.html",
+          "hash": "Ng86ldTiXZcGokDIi7TPlg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Screens.Screen.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Screens.Screen.html",
+          "hash": "cc7x3yRHKAosHwdDpfNf7A=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Screens.ScreenManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Screens.ScreenManager.html",
+          "hash": "uzcMXo3Oivv71gSV+3fhBg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Screens.ScreenView.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Screens.ScreenView.html",
+          "hash": "voNjNZ1XSNrq+uooY4fjMw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Screens.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Screens.html",
+          "hash": "ebuym/L8Z0zn00h2IG1JjQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Window.WindowManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Window.WindowManager.html",
+          "hash": "4nejt16qVUfpJ9pdt5glkw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Window.WindowResolutionChangedEventArgs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Window.WindowResolutionChangedEventArgs.html",
+          "hash": "kW0rYl3dDHbsU5oLqxs/YA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.Window.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.Window.html",
+          "hash": "T9xESFx8mKBY9qHU/3jFvA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.WobbleGame.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.WobbleGame.html",
+          "hash": "H6FMGDxT3VZb98owad8ZJg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Wobble.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Wobble.html",
+          "hash": "VvnYgvGwCK49fC562vgLEQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "tS3RD7sC5vliI4jGI8DnKw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "fAWbuhJc5xCZmqR63fTxmw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "ZiGKQhtt7AtEf5sVYOLyeg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "eE7jxQr+tJO6Gqdj/xCecA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build"
+      },
+      "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build"
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing"
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

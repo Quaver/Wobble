@@ -1,0 +1,980 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class AnimatableSprite
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class AnimatableSprite
+   ">
+    <meta name="generator" content="docfx 2.37.1.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Wobble.Graphics.Sprites.AnimatableSprite">
+  
+  
+  <h1 id="Wobble_Graphics_Sprites_AnimatableSprite" data-uid="Wobble.Graphics.Sprites.AnimatableSprite" class="text-break">Class AnimatableSprite
+  </h1>
+  <div class="markdown level0 summary"><p>An animatable sprite. When using this, it is important NOT to manually set the image property.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><a class="xref" href="Wobble.Graphics.Drawable.html">Drawable</a></div>
+    <div class="level2"><a class="xref" href="Wobble.Graphics.Sprites.Sprite.html">Sprite</a></div>
+    <div class="level3"><span class="xref">AnimatableSprite</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="Wobble.Graphics.IDrawable.html">IDrawable</a></div>
+    <div><span class="xref">System.IDisposable</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_Image">Sprite.Image</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_Rotation">Sprite.Rotation</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_SpriteEffect">Sprite.SpriteEffect</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_Origin">Sprite.Origin</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_RenderRectangle">Sprite.RenderRectangle</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_OriginRectangle">Sprite.OriginRectangle</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_Tint">Sprite.Tint</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_Alpha">Sprite.Alpha</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_SetChildrenAlpha">Sprite.SetChildrenAlpha</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_Draw_Microsoft_Xna_Framework_GameTime_">Sprite.Draw(GameTime)</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_DrawToSpriteBatch">Sprite.DrawToSpriteBatch()</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Sprites.Sprite.html#Wobble_Graphics_Sprites_Sprite_Destroy">Sprite.Destroy()</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_TotalDrawn">Drawable.TotalDrawn</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_DrawOrder">Drawable.DrawOrder</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Parent">Drawable.Parent</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Children">Drawable.Children</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_ScreenRectangle">Drawable.ScreenRectangle</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_RelativeRectangle">Drawable.RelativeRectangle</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Position">Drawable.Position</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Size">Drawable.Size</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_X">Drawable.X</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Y">Drawable.Y</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Width">Drawable.Width</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_WidthScale">Drawable.WidthScale</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Height">Drawable.Height</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_HeightScale">Drawable.HeightScale</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Alignment">Drawable.Alignment</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_AbsoluteSize">Drawable.AbsoluteSize</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_AbsolutePosition">Drawable.AbsolutePosition</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Visible">Drawable.Visible</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_SetChildrenVisibility">Drawable.SetChildrenVisibility</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_IsDisposed">Drawable.IsDisposed</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_SpriteBatchOptions">Drawable.SpriteBatchOptions</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_UsePreviousSpriteBatchOptions">Drawable.UsePreviousSpriteBatchOptions</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Transformations">Drawable.Transformations</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_RectangleRecalculated">Drawable.RectangleRecalculated</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Dispose">Drawable.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_RecalculateRectangles">Drawable.RecalculateRectangles()</a>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Wobble.Graphics.Sprites.html">Wobble.Graphics.Sprites</a></h6>
+  <h6><strong>Assembly</strong>: Wobble.dll</h6>
+  <h5 id="Wobble_Graphics_Sprites_AnimatableSprite_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class AnimatableSprite : Sprite, IDrawable, IDisposable</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite__ctor_Microsoft_Xna_Framework_Graphics_Texture2D_System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.%23ctor(Microsoft.Xna.Framework.Graphics.Texture2D%2CSystem.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L72">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite__ctor_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.#ctor*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite__ctor_Microsoft_Xna_Framework_Graphics_Texture2D_System_Int32_System_Int32_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.#ctor(Microsoft.Xna.Framework.Graphics.Texture2D,System.Int32,System.Int32)">AnimatableSprite(Texture2D, Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Ctor - if you only have the image itself, but also the rows and columns</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AnimatableSprite(Texture2D spritesheet, int rows, int columns)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.Graphics.Texture2D</span></td>
+        <td><span class="parametername">spritesheet</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">rows</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">columns</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite__ctor_System_Collections_Generic_List_Microsoft_Xna_Framework_Graphics_Texture2D__.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.%23ctor(System.Collections.Generic.List%7BMicrosoft.Xna.Framework.Graphics.Texture2D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L83">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite__ctor_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.#ctor*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite__ctor_System_Collections_Generic_List_Microsoft_Xna_Framework_Graphics_Texture2D__" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.#ctor(System.Collections.Generic.List{Microsoft.Xna.Framework.Graphics.Texture2D})">AnimatableSprite(List&lt;Texture2D&gt;)</h4>
+  <div class="markdown level1 summary"><p>Ctor - If you already have the animation frames.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AnimatableSprite(List&lt;Texture2D&gt; frames)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">Microsoft.Xna.Framework.Graphics.Texture2D</span>&gt;</td>
+        <td><span class="parametername">frames</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_CurrentFrame.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.CurrentFrame%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L23">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_CurrentFrame_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.CurrentFrame*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_CurrentFrame" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.CurrentFrame">CurrentFrame</h4>
+  <div class="markdown level1 summary"><p>The current animation frame we're on.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int CurrentFrame { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_Direction.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.Direction%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L43">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_Direction_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.Direction*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_Direction" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.Direction">Direction</h4>
+  <div class="markdown level1 summary"><p>The direction the animations will loop.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Direction Direction { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Wobble.Graphics.Direction.html">Direction</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_FinishedLooping.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.FinishedLooping%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L63">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_FinishedLooping_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.FinishedLooping*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_FinishedLooping" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.FinishedLooping">FinishedLooping</h4>
+  <div class="markdown level1 summary"><p>Emitted when the sprite has finished its loop.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public EventHandler FinishedLooping { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.EventHandler</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_Frames.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.Frames%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L18">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_Frames_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.Frames*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_Frames" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.Frames">Frames</h4>
+  <div class="markdown level1 summary"><p>The animation frames</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;Texture2D&gt; Frames { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">Microsoft.Xna.Framework.Graphics.Texture2D</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_IsLooping.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.IsLooping%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L28">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_IsLooping_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.IsLooping*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_IsLooping" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.IsLooping">IsLooping</h4>
+  <div class="markdown level1 summary"><p>If the animation is currently looping.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsLooping { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_LoopFramesPerSecond.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.LoopFramesPerSecond%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L33">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_LoopFramesPerSecond_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.LoopFramesPerSecond*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_LoopFramesPerSecond" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.LoopFramesPerSecond">LoopFramesPerSecond</h4>
+  <div class="markdown level1 summary"><p>Animation frame time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int LoopFramesPerSecond { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_TimeSinceLastAnimFrame.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.TimeSinceLastAnimFrame%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L38">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_TimeSinceLastAnimFrame_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.TimeSinceLastAnimFrame*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_TimeSinceLastAnimFrame" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.TimeSinceLastAnimFrame">TimeSinceLastAnimFrame</h4>
+  <div class="markdown level1 summary"><p>The amount of time since the last frame in the animation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double TimeSinceLastAnimFrame { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_TimesLooped.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.TimesLooped%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L58">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_TimesLooped_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.TimesLooped*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_TimesLooped" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.TimesLooped">TimesLooped</h4>
+  <div class="markdown level1 summary"><p>The amount of times looped so far.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int TimesLooped { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_TimesToLoop.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.TimesToLoop%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L53">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_TimesToLoop_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.TimesToLoop*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_TimesToLoop" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.TimesToLoop">TimesToLoop</h4>
+  <div class="markdown level1 summary"><p>The amount of times to loop.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int TimesToLoop { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_AddFrame_Microsoft_Xna_Framework_Graphics_Texture2D_.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.AddFrame(Microsoft.Xna.Framework.Graphics.Texture2D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L142">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_AddFrame_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.AddFrame*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_AddFrame_Microsoft_Xna_Framework_Graphics_Texture2D_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.AddFrame(Microsoft.Xna.Framework.Graphics.Texture2D)">AddFrame(Texture2D)</h4>
+  <div class="markdown level1 summary"><p>Adds a frame to the list</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddFrame(Texture2D frame)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.Graphics.Texture2D</span></td>
+        <td><span class="parametername">frame</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_ChangeTo_System_Int32_.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.ChangeTo(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L103">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_ChangeTo_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ChangeTo*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_ChangeTo_System_Int32_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ChangeTo(System.Int32)">ChangeTo(Int32)</h4>
+  <div class="markdown level1 summary"><p>Changes the sprite's image to a specified frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ChangeTo(int i)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">i</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ArgumentException</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_ChangeToNext.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.ChangeToNext%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L115">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_ChangeToNext_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ChangeToNext*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_ChangeToNext" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ChangeToNext">ChangeToNext()</h4>
+  <div class="markdown level1 summary"><p>Changes the sprites image to the next frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ChangeToNext()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_ChangeToPrevious.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.ChangeToPrevious%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L128">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_ChangeToPrevious_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ChangeToPrevious*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_ChangeToPrevious" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ChangeToPrevious">ChangeToPrevious()</h4>
+  <div class="markdown level1 summary"><p>Changes the sprite to the previous frame.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ChangeToPrevious()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_RemoveAt_System_Int32_.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.RemoveAt(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L155">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_RemoveAt_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.RemoveAt*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_RemoveAt_System_Int32_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.RemoveAt(System.Int32)">RemoveAt(Int32)</h4>
+  <div class="markdown level1 summary"><p>Removes a frame a given index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RemoveAt(int i)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">i</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ArgumentException</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_RemoveFrame_Microsoft_Xna_Framework_Graphics_Texture2D_.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.RemoveFrame(Microsoft.Xna.Framework.Graphics.Texture2D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L148">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_RemoveFrame_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.RemoveFrame*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_RemoveFrame_Microsoft_Xna_Framework_Graphics_Texture2D_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.RemoveFrame(Microsoft.Xna.Framework.Graphics.Texture2D)">RemoveFrame(Texture2D)</h4>
+  <div class="markdown level1 summary"><p>Removes a frame from the list.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void RemoveFrame(Texture2D frame)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.Graphics.Texture2D</span></td>
+        <td><span class="parametername">frame</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_ReplaceFrames_System_Collections_Generic_List_Microsoft_Xna_Framework_Graphics_Texture2D__.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.ReplaceFrames(System.Collections.Generic.List%7BMicrosoft.Xna.Framework.Graphics.Texture2D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L192">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_ReplaceFrames_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ReplaceFrames*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_ReplaceFrames_System_Collections_Generic_List_Microsoft_Xna_Framework_Graphics_Texture2D__" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.ReplaceFrames(System.Collections.Generic.List{Microsoft.Xna.Framework.Graphics.Texture2D})">ReplaceFrames(List&lt;Texture2D&gt;)</h4>
+  <div class="markdown level1 summary"><p>Replaces all the frames with some new ones.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ReplaceFrames(List&lt;Texture2D&gt; newFrames)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">Microsoft.Xna.Framework.Graphics.Texture2D</span>&gt;</td>
+        <td><span class="parametername">newFrames</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ArgumentException</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_StartLoop_Wobble_Graphics_Direction_System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.StartLoop(Wobble.Graphics.Direction%2CSystem.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L172">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_StartLoop_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.StartLoop*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_StartLoop_Wobble_Graphics_Direction_System_Int32_System_Int32_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.StartLoop(Wobble.Graphics.Direction,System.Int32,System.Int32)">StartLoop(Direction, Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Start the animation frame loop at a given FPS.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void StartLoop(Direction direction, int fps, int timesToLoop = 0)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Wobble.Graphics.Direction.html">Direction</a></td>
+        <td><span class="parametername">direction</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">fps</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">timesToLoop</span></td>
+        <td><p>The amount of times to loop. If 0, it'll loop infinitely.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_StopLoop.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.StopLoop%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L185">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_StopLoop_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.StopLoop*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_StopLoop" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.StopLoop">StopLoop()</h4>
+  <div class="markdown level1 summary"><p>To stop the animation frame loop.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void StopLoop()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite_Update_Microsoft_Xna_Framework_GameTime_.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite.Update(Microsoft.Xna.Framework.GameTime)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L92">View Source</a>
+  </span>
+  <a id="Wobble_Graphics_Sprites_AnimatableSprite_Update_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.Update*"></a>
+  <h4 id="Wobble_Graphics_Sprites_AnimatableSprite_Update_Microsoft_Xna_Framework_GameTime_" data-uid="Wobble.Graphics.Sprites.AnimatableSprite.Update(Microsoft.Xna.Framework.GameTime)">Update(GameTime)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Update(GameTime gameTime)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">Microsoft.Xna.Framework.GameTime</span></td>
+        <td><span class="parametername">gameTime</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="Wobble.Graphics.Drawable.html#Wobble_Graphics_Drawable_Update_Microsoft_Xna_Framework_GameTime_">Drawable.Update(GameTime)</a></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="Wobble.Graphics.IDrawable.html">IDrawable</a>
+  </div>
+  <div>
+      <span class="xref">System.IDisposable</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Swan/Wobble/new/master/apiSpec/new?filename=Wobble_Graphics_Sprites_AnimatableSprite.md&amp;value=---%0Auid%3A%20Wobble.Graphics.Sprites.AnimatableSprite%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Swan/Wobble/blob/master/Wobble/Graphics/Sprites/AnimatableSprite.cs/#L13" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
