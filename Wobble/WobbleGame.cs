@@ -137,9 +137,6 @@ namespace Wobble
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
-
-            // Draw the global container last.
-            GlobalUserInterface.Draw(gameTime);
         }
     }
 }
