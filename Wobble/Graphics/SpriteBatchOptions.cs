@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Graphics.Shaders;
@@ -42,6 +43,16 @@ namespace Wobble.Graphics
         public void Begin()
         {
             // ReSharper disable once ArrangeMethodOrOperatorBody
+            try
+            {
+                GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, WindowManager.Scale);
+                return;
+            }
+            catch (Exception e)
+            {
+                GameBase.Game.SpriteBatch.End();
+            }
+
             GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, WindowManager.Scale);
         }
     }
