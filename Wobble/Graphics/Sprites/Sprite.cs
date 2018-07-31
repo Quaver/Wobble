@@ -219,5 +219,20 @@ namespace Wobble.Graphics.Sprites
             RenderRectangle = new Rectangle((int)OriginRectangle.X, (int)OriginRectangle.Y,
                                                 (int) OriginRectangle.Width,(int) OriginRectangle.Height);
         }
+
+        /// <summary>
+        ///     Fades the sprite to a given color.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="dt"></param>
+        /// <param name="scale"></param>
+        public void FadeToColor(Color color, double dt, float scale)
+        {
+            var r = MathHelper.Lerp(Tint.R, color.R, (float) Math.Min(dt / scale, 1));
+            var g = MathHelper.Lerp(Tint.G, color.G, (float) Math.Min(dt / scale, 1));
+            var b = MathHelper.Lerp(Tint.B, color.B, (float) Math.Min(dt / scale, 1));
+
+            Tint = new Color((int)r, (int)g, (int)b);
+        }
     }
 }
