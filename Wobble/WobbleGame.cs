@@ -22,8 +22,8 @@ namespace Wobble
         public GraphicsDeviceManager Graphics { get; }
 
         /// <summary>
-       ///    Used for drawing textures
-       /// </summary>
+        ///    Used for drawing textures
+        /// </summary>
         public SpriteBatch SpriteBatch { get; private set; }
 
         /// <summary>
@@ -41,6 +41,11 @@ namespace Wobble
         ///     be a child of.
         /// </summary>
         public GlobalUserInterface GlobalUserInterface { get; }
+
+        /// <summary>
+        ///     Dictates if the game is ready to set up.
+        /// </summary>
+        protected abstract bool IsReadyToUpdate { get; set; }
 
         /// <summary>
         ///     Creates a game with embedded resources as a content manager.
@@ -97,6 +102,9 @@ namespace Wobble
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (!IsReadyToUpdate)
+                return;
+
             // Update the time since the last frame and the game's clock.
             TimeSinceLastFrame = gameTime.ElapsedGameTime.TotalMilliseconds;
             TimeRunning = gameTime.TotalGameTime.Milliseconds;
@@ -120,6 +128,9 @@ namespace Wobble
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            if (!IsReadyToUpdate)
+                return;
+
             base.Draw(gameTime);
 
             Drawable.ResetTotalDrawnCount();
