@@ -49,6 +49,13 @@ namespace Wobble.Graphics.UI.Buttons
         /// </summary>
         internal bool IsHeld { get; private set; }
 
+        /// <summary>
+        ///     Determines if the button is actually clickable, set by the user.
+        ///     If set to false, the button can still be hovered, but the click event
+        ///     will not be invoked.
+        /// </summary>
+        public bool IsClickable { get; set; } = true;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -95,7 +102,8 @@ namespace Wobble.Graphics.UI.Buttons
                         // Now that the button is clicked, reset the waiting property.
                         WaitingForClickRelease = false;
 
-                        Clicked?.Invoke(this, new EventArgs());
+                        if (IsClickable)
+                            Clicked?.Invoke(this, new EventArgs());
                     }
                 }
                 // If the button isn't the top layered button, then we'll want to consider it not hovered.
