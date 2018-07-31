@@ -112,6 +112,7 @@ namespace Wobble.Graphics.UI.Buttons
             else
             {
                 IsHoveredWithoutDrawOrder = false;
+                IsHovered = false;
                 WaitingForClickRelease = false;
 
                 OnNotHovered(gameTime);
