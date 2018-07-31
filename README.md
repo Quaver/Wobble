@@ -90,6 +90,11 @@ public class MyGame : WobbleGame
 {
     /// <inheritdoc />
     /// <summary>
+    /// </summary>
+    protected override bool IsReadyToUpdate { get; set; }
+
+    /// <inheritdoc />
+    /// <summary>
     ///     Allows the game to perform any initialization it needs to before starting to run.
     ///     This is where it can query for any required services and load any non-graphic
     ///     related content.  Calling base.Initialize will enumerate through any components
@@ -112,6 +117,9 @@ public class MyGame : WobbleGame
         base.LoadContent();
 
         // TODO: Your asset loading code goes here.
+
+        // Tell the game that it should start updating now
+        IsReadyToUpdate = true;
 
         // TODO: Change to the first screen via ScreenManager
         // ScreenManager.ChangeScreen(new MainMenuScreen()); - Example
@@ -136,6 +144,9 @@ public class MyGame : WobbleGame
     /// </summary>
     protected override void Update(GameTime gameTime)
     {
+        if (!IsReadyToUpdate)
+            return;
+
         base.Update(gameTime);
 
         // TODO: Your global update logic goes here. Anything updated here will be updated on every screen.
@@ -147,6 +158,9 @@ public class MyGame : WobbleGame
     /// </summary>
     protected override void Draw(GameTime gameTime)
     {
+        if (!IsReadyToUpdate)
+            return;
+
         base.Draw(gameTime);
 
         // TODO: Your global draw logic goes here. Anything drawn here will be drawn on top of every screen.

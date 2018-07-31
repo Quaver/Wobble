@@ -14,6 +14,11 @@ namespace GreenBox
     {
         /// <inheritdoc />
         /// <summary>
+        /// </summary>
+        protected override bool IsReadyToUpdate { get; set; }
+
+        /// <inheritdoc />
+        /// <summary>
         ///     Allows the game to perform any initialization it needs to before starting to run.
         ///     This is where it can query for any required services and load any non-graphic
         ///     related content.  Calling base.Initialize will enumerate through any components
@@ -43,6 +48,8 @@ namespace GreenBox
 
             // TODO: Your asset loading code goes here.
 
+            IsReadyToUpdate = true;
+
             // Change to the GreenBox screen
             ScreenManager.ChangeScreen(new GreenBoxScreen());
         }
@@ -66,6 +73,9 @@ namespace GreenBox
         /// </summary>
         protected override void Update(GameTime gameTime)
         {
+            if (!IsReadyToUpdate)
+                return;
+
             base.Update(gameTime);
 
             // TODO: Your global update logic goes here. Anything updated here will be updated on every screen.
@@ -77,6 +87,9 @@ namespace GreenBox
         /// </summary>
         protected override void Draw(GameTime gameTime)
         {
+            if (!IsReadyToUpdate)
+                return;
+
             base.Draw(gameTime);
 
             // TODO: Your global draw logic goes here. Anything drawn here will be drawn on top of every screen.

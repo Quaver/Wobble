@@ -15,6 +15,8 @@ namespace Wobble.Tests
 {
     public class WobbleTestsGame : WobbleGame
     {
+        protected override bool IsReadyToUpdate { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -46,6 +48,8 @@ namespace Wobble.Tests
             Textures.Load();
             Fonts.Load();
 
+            IsReadyToUpdate = true;
+
             // Once the assets load, we'll start the main screen
             ScreenManager.ChangeScreen(new SelectionScreen());
         }
@@ -62,6 +66,9 @@ namespace Wobble.Tests
 
         protected override void Update(GameTime gameTime)
         {
+            if (!IsReadyToUpdate)
+                return;
+
             base.Update(gameTime);
 
             // TODO: Your global update logic goes here.
@@ -71,6 +78,9 @@ namespace Wobble.Tests
 
         protected override void Draw(GameTime gameTime)
         {
+            if (!IsReadyToUpdate)
+                return;
+
             base.Draw(gameTime);
 
             // TODO: Your global draw logic goes here.
