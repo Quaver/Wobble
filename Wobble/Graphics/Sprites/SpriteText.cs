@@ -166,11 +166,31 @@ namespace Wobble.Graphics.Sprites
             RectangleRecalculated += (o, e) => UpdateText();
         }
 
+        /// <summary>
+        ///     Create SpriteFont with set size.
+        /// </summary>
+        /// <param name="font"></param>
+        /// <param name="text"></param>
+        /// <param name="size"></param>
+        public SpriteText(SpriteFont font, string text, ScalableVector2 size)
+        {
+            Size = size;
+            Font = font;
+            Text = text;
+            RectangleRecalculated += (o, e) => UpdateText();
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
+            if (!Visible)
+            {
+                base.Draw(gameTime);
+                return;
+            }
+
             if (SpriteBatchOptions != null)
             {
                 // If we actually have new SpriteBatchOptions to use,then
@@ -306,7 +326,7 @@ namespace Wobble.Graphics.Sprites
             {
                 var size = Font.MeasureString(a);
 
-                if (linewidth + size.X < AbsoluteSize.X)
+                if (linewidth + size.X < Width)
                 {
                     linewidth += size.X + spaceWidth;
                 }
@@ -322,7 +342,9 @@ namespace Wobble.Graphics.Sprites
                     if (textline >= maxTextLines)
                         break;
                 }
-                else break;
+                else
+                    break;
+
                 wrappedText.Append(a + " ");
             }
 
