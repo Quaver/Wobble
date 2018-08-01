@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using OpenGL;
 using Wobble.Graphics;
@@ -26,6 +26,16 @@ namespace Wobble.Window
         ///     game will render at.
         /// </summary>
         public static Vector2 VirtualScreen { get; private set; } = new Vector2(1366, 768);
+
+        /// <summary>
+        ///     The width of the virtual screen.
+        /// </summary>
+        public static float Width => VirtualScreen.X;
+
+        /// <summary>
+        ///     The height of the virtual screen.
+        /// </summary>
+        public static float Height => VirtualScreen.Y;
 
         /// <summary>
         ///     Rectangle object for the screen size.
