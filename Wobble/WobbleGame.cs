@@ -34,7 +34,7 @@ namespace Wobble
         /// <summary>
         ///     The amount of time the game has been running.
         /// </summary>
-        public int TimeRunning { get; private set; }
+        public long TimeRunning { get; private set; }
 
         /// <summary>
         ///     For any sprites that are being displayed globally, this is the container that it should
@@ -107,7 +107,7 @@ namespace Wobble
 
             // Update the time since the last frame and the game's clock.
             TimeSinceLastFrame = gameTime.ElapsedGameTime.TotalMilliseconds;
-            TimeRunning = gameTime.TotalGameTime.Milliseconds;
+            TimeRunning += gameTime.ElapsedGameTime.Milliseconds;
 
             // Keep the window updated with the current resolution.
             WindowManager.Update();
