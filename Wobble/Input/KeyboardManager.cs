@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +33,13 @@ namespace Wobble.Input
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static bool IsUniqueKeyPress(Keys key) => PreviousState.IsKeyDown(key) && CurrentState.IsKeyUp(key);
+        public static bool IsUniqueKeyPress(Keys key) => CurrentState.IsKeyDown(key) && PreviousState.IsKeyUp(key);
+
+        /// <summary>
+        ///     If a key was previously pressed down and then released.
+        /// </summary>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public static bool IsUniqueKeyRelease(Keys k) => CurrentState.IsKeyUp(k) && PreviousState.IsKeyDown(k);
     }
 }
