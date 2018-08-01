@@ -189,8 +189,14 @@ namespace Wobble.Graphics.Sprites
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        protected override void DrawToSpriteBatch() => GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle,
-                                                                null, _color, _rotation, Origin, SpriteEffect, 0f);
+        protected override void DrawToSpriteBatch()
+        {
+            if (!Visible)
+                return;
+
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+        }
+        
 
         /// <inheritdoc />
         /// <summary>
