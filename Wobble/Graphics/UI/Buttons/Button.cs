@@ -147,6 +147,11 @@ namespace Wobble.Graphics.UI.Buttons
         }
 
         /// <summary>
+        ///     Manually fires the click event for the button.
+        /// </summary>
+        public void FireButtonClickEvent() => Clicked?.Invoke(this, EventArgs.Empty);
+
+        /// <summary>
         ///     Checks if the mouse is in the click area of the button.
         /// 
         ///     This is marked as virtual because some buttons may want to increase/decrease
