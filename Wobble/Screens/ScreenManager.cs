@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -88,5 +88,11 @@ namespace Wobble.Screens
 
             Screens.Peek().Draw(gameTime);
         }
+
+        /// <summary>
+        ///     Asynchronously load a screen and call its initialize method.
+        ///     After doing so, the callback action will be called
+        /// </summary>
+        public static void LoadAsync(Func<Screen> loadAction, Action callback) => Task.Run(loadAction).ContinueWith(t => callback());
     }
 }
