@@ -150,6 +150,8 @@
     <Compile Include="Graphics\UI\Buttons\TextButton.cs" />
     <Compile Include="Graphics\UI\Cursor.cs" />
     <Compile Include="Graphics\UI\Debugging\FpsCounter.cs" />
+    <Compile Include="Graphics\UI\Dialogs\DialogScreen.cs" />
+    <Compile Include="Graphics\UI\Dialogs\DialogManager.cs" />
     <Compile Include="Graphics\UI\Form\Checkbox.cs" />
     <Compile Include="Graphics\UI\Form\HorizontalSelector.cs" />
     <Compile Include="Graphics\UI\ProgressBar.cs" />
