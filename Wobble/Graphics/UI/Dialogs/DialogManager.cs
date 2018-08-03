@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 
 namespace Wobble.Graphics.UI.Dialogs
@@ -30,8 +31,10 @@ namespace Wobble.Graphics.UI.Dialogs
             if (CurrentDialogScreen != null)
                 Dismiss();
 
+            if (dialogScreen.Parent != null)
+                throw new ArgumentException("Dialog must not have a parent!");
+
             CurrentDialogScreen = dialogScreen;
-            CurrentDialogScreen.Parent = null;
         }
 
         /// <summary>

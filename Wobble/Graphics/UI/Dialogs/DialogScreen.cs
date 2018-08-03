@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Window;
 
@@ -32,7 +33,10 @@ namespace Wobble.Graphics.UI.Dialogs
             // Create the actual background that will dim the screen.
             Tint = Color.Black;
 
-            Container = new Container { Parent = this };
+            Container = new Container() { Parent = this };
+
+            // ReSharper disable once VirtualMemberCallInConstructor
+            CreateContent();
         }
 
         /// <inheritdoc />
