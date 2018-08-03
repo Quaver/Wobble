@@ -130,6 +130,11 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
+        ///     The percentage of how far the audio track is.
+        /// </summary>
+        public double ProgressPercentage => (Time / Length) * 100;
+
+        /// <summary>
         ///    Loads an audio track from a file.
         /// </summary>
         /// <param name="path"></param>
