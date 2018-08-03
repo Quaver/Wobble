@@ -2,7 +2,7 @@
   <img src="https://eggplants.org/m3g41m.png">
 </p>
 
-# Wobble [![Build Status](https://travis-ci.com/Swan/Wobble.svg?token=NHZjzNfqaGjpVAkssS34&branch=master)](https://travis-ci.com/Quaver/Wobble) [![CodeFactor](https://www.codefactor.io/repository/github/quaver/wobble/badge/master)](https://www.codefactor.io/repository/github/quaver/wobble/overview/master) [![Trello](https://img.shields.io/badge/Trello-Roadmap-blue.svg)](https://trello.com/b/QVbVwKN1/quaver-client) [![Discord](https://discordapp.com/api/guilds/354206121386573824/widget.png?style=shield)](https://discord.gg/nJa8VFr)
+# Wobble [![Build Status](https://travis-ci.com/Quaver/Wobble.svg?branch=master)](https://travis-ci.com/Quaver/Wobble) [![CodeFactor](https://www.codefactor.io/repository/github/quaver/wobble/badge/master)](https://www.codefactor.io/repository/github/quaver/wobble/overview/master) [![Trello](https://img.shields.io/badge/Trello-Roadmap-blue.svg)](https://trello.com/b/QVbVwKN1/quaver-client) [![Discord](https://discordapp.com/api/guilds/354206121386573824/widget.png?style=shield)](https://discord.gg/nJa8VFr)
 
 Wobble is a powerful and bare-bones extension of the [MonoGame Framework](https://github.com/MonoGame/MonoGame) designed to make the initial boilerplate process of developing games so much simpler. 
 
