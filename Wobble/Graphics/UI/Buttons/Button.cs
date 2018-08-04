@@ -80,7 +80,17 @@ namespace Wobble.Graphics.UI.Buttons
                 IsHoveredWithoutDrawOrder = true;
 
                 // Get the button that is on the top layer.
-                var topLayerButton = ButtonManager.Buttons.FindAll(x => x.IsHoveredWithoutDrawOrder).OrderByDescending(x => x.DrawOrder).First();
+                Button topLayerButton;
+
+                try
+                {
+                    topLayerButton = ButtonManager.Buttons.FindAll(x => x.IsHoveredWithoutDrawOrder).OrderByDescending(x => x.DrawOrder).First();
+                }
+                catch (Exception e)
+                {
+                    base.Update(gameTime);
+                    return;
+                }
 
                 // Set this to be truly hovered and follow up with click actions for this button.
                 if (topLayerButton == this)
