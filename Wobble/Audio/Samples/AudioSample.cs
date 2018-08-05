@@ -38,13 +38,13 @@ namespace Wobble.Audio.Samples
         public bool IsDisposed { get; private set; }
 
         /// <summary>
-        ///     The global audio sample volume. When setting this,
-        ///     it takes a value from 1-100%.
+        ///     Calculated volume that's used for all channels.
         /// </summary>
-        public static int GlobalVolume
+        private static double _volume;
+        public static double GlobalVolume
         {
-            get => Bass.GlobalSampleVolume / 100;
-            set => Bass.GlobalSampleVolume = MathHelper.Clamp(value, 0, 100) * 100;
+            get => _volume;
+            set => _volume = (float) (value / 100f);
         }
 
         /// <summary>
@@ -88,14 +88,10 @@ namespace Wobble.Audio.Samples
         ///     Creates an audio sample channel to be played.
         /// </summary>
         /// <returns></returns>
-        public AudioSampleChannel CreateChannel(int volume = 100)
+        public AudioSampleChannel CreateChannel()
         {
-            var channel = new AudioSampleChannel(this)
-            {
-                Volume = volume
-            };
-
-            return channel;
+            var sampleChannel = new AudioSampleChannel(this) { Volume = GlobalVolume };
+            return sampleChannel;
         }
 
         /// <summary>
