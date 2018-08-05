@@ -40,7 +40,7 @@ namespace Wobble.Audio.Samples
         /// <summary>
         ///     Calculated volume that's used for all channels.
         /// </summary>
-        private static double _volume;
+        private static double _volume = 1;
         public static double GlobalVolume
         {
             get => _volume;
