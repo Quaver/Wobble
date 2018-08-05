@@ -29,7 +29,7 @@ namespace Wobble
         ///    The default SpriteBatch options that'd be used on every drawable that doesn't
         ///    have it overwritten.
         /// </summary>
-        public static SpriteBatchOptions DefaultSpriteBatchOptions { get; } = new SpriteBatchOptions();
+        public static SpriteBatchOptions DefaultSpriteBatchOptions { get; set;  } = new SpriteBatchOptions();
 
         /// <summary>
         ///     Dictates if the default SpriteBatch is currently in use.

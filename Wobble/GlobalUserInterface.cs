@@ -23,7 +23,6 @@ namespace Wobble
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            DialogManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -33,7 +32,6 @@ namespace Wobble
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            DialogManager.Draw(gameTime);
             base.Draw(gameTime);
         }
     }
