@@ -126,7 +126,7 @@ namespace Wobble.Audio.Tracks
         public double Volume
         {
             get => Bass.ChannelGetAttribute(Stream, ChannelAttribute.Volume);
-            set => Bass.ChannelSlideAttribute(Stream, ChannelAttribute.Volume, (float)(value / 100f), 50);
+            set => Bass.ChannelSetAttribute(Stream, ChannelAttribute.Volume, (float)(value / 100f));
         }
 
         /// <summary>

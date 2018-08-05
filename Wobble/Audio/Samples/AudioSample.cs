@@ -88,7 +88,15 @@ namespace Wobble.Audio.Samples
         ///     Creates an audio sample channel to be played.
         /// </summary>
         /// <returns></returns>
-        public AudioSampleChannel CreateChannel() => new AudioSampleChannel(this);
+        public AudioSampleChannel CreateChannel(int volume = 100)
+        {
+            var channel = new AudioSampleChannel(this)
+            {
+                Volume = volume
+            };
+
+            return channel;
+        }
 
         /// <summary>
         ///     Loads an audio sample from a file path and returns an Id to it.

@@ -26,6 +26,15 @@ namespace Wobble.Audio.Samples
         public bool HasStopped { get; private set; }
 
         /// <summary>
+        ///     The volume of the current stream as a percentage.
+        /// </summary>
+        public double Volume
+        {
+            get => Bass.ChannelGetAttribute(Id, ChannelAttribute.Volume);
+            set => Bass.ChannelSetAttribute(Id, ChannelAttribute.Volume, (float)(value / 100f));
+        }
+
+        /// <summary>
         ///     Ctor
         /// </summary>
         /// <param name="sample"></param>
