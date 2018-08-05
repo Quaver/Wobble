@@ -45,7 +45,6 @@ namespace Wobble.Graphics.UI.Dialogs
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            HandleInput(gameTime);
             base.Update(gameTime);
         }
 

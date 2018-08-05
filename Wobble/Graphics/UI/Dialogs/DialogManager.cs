@@ -28,7 +28,17 @@ namespace Wobble.Graphics.UI.Dialogs
         /// <param name="gameTime"></param>
         public static void Update(GameTime gameTime)
         {
-            Dialogs.ForEach(x => x.Update(gameTime));
+            for (var i = 0; i < Dialogs.Count; i++)
+            {
+                var dialog = Dialogs[i];
+
+                // Update each dialog.
+                dialog.Update(gameTime);
+
+                // Only handle input for the last dialog in the stack.
+                if (i == Dialogs.Count - 1)
+                    dialog.HandleInput(gameTime);
+            }
 
             // Remove all dialogs that need to be removed at the end of this frame.
             if (DialogsToBeRemoved.Count > 0)
