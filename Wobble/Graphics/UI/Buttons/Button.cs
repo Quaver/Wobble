@@ -47,7 +47,7 @@ namespace Wobble.Graphics.UI.Buttons
         ///     a useful property for items such as sliders, where the user's cursor position does not
         ///     matter as long as they hold the mouse down.
         /// </summary>
-        internal bool IsHeld { get; private set; }
+        public bool IsHeld { get; private set; }
 
         /// <summary>
         ///     Determines if the button is actually clickable, set by the user.
