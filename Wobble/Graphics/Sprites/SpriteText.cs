@@ -363,6 +363,21 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         /// <returns></returns>
         public Vector2 MeasureString() => Font.MeasureString(Text) * TextScale;
+
+        /// <summary>
+        ///     Fades the sprite to a given color.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="dt"></param>
+        /// <param name="scale"></param>
+        public void FadeToColor(Color color, double dt, float scale)
+        {
+            var r = MathHelper.Lerp(TextColor.R, color.R, (float) Math.Min(dt / scale, 1));
+            var g = MathHelper.Lerp(TextColor.G, color.G, (float) Math.Min(dt / scale, 1));
+            var b = MathHelper.Lerp(TextColor.B, color.B, (float) Math.Min(dt / scale, 1));
+
+            TextColor = new Color((int)r, (int)g, (int)b);
+        }
     }
 
     /// <summary>

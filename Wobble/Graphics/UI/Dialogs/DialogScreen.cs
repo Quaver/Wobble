@@ -34,9 +34,6 @@ namespace Wobble.Graphics.UI.Dialogs
             Tint = Color.Black;
 
             Container = new Container() { Parent = this };
-
-            // ReSharper disable once VirtualMemberCallInConstructor
-            CreateContent();
         }
 
         /// <inheritdoc />
