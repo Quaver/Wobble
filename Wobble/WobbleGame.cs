@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Audio;
+using Wobble.Discord;
 using Wobble.Graphics;
 using Wobble.Input;
 using Wobble.Screens;
@@ -93,6 +94,7 @@ namespace Wobble
             WobbleAssets.Dispose();
             WindowManager.UnHookEvents();
             AudioManager.Dispose();
+            DiscordManager.Dispose();
         }
 
         /// <summary>
@@ -118,6 +120,9 @@ namespace Wobble
 
             // Update the global sprite container
             GlobalUserInterface.Update(gameTime);
+
+            // Keep the RPC client up-to-date.
+            DiscordManager.Client?.Invoke();
 
             base.Update(gameTime);
         }
