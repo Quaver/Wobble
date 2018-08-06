@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Input;
+using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -91,8 +92,19 @@ namespace Wobble.Graphics.Sprites
             // to its original.
             var currentRect = GameBase.Game.GraphicsDevice.ScissorRectangle;
 
-            // Temporarily set the scissor rect
-            GameBase.Game.GraphicsDevice.ScissorRectangle = ScreenRectangle.ToRectangle();
+            // Find the width and height scale of the window.
+            var widthScale = GameBase.Game.Graphics.PreferredBackBufferWidth / WindowManager.Width;
+            var heightScale = GameBase.Game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
+
+            // Calculate the new rectangle taking into account the scaling of the window.
+            var rect = ScreenRectangle.ToRectangle();
+            rect.X = (int)(rect.X * widthScale);
+            rect.Y = (int)(rect.Y * heightScale);
+            rect.Width = (int)(rect.Width * widthScale);
+            rect.Height = (int)(rect.Height * heightScale);
+
+            // Set new scissor rect to the scaled rect.
+            GameBase.Game.GraphicsDevice.ScissorRectangle = rect;
 
             // Draw sprite + children.
             base.Draw(gameTime);
