@@ -1,4 +1,6 @@
-﻿namespace Wobble.Graphics
+﻿using Microsoft.Xna.Framework;
+
+namespace Wobble.Graphics
 {
     public class DrawRectangle
     {
@@ -36,5 +38,11 @@
             Width = width;
             Height = height;
         }
+
+        /// <summary>
+        ///     Converts to normal rect.
+        /// </summary>
+        /// <returns></returns>
+        public Rectangle ToRectangle() => new Rectangle((int) X, (int) Y, (int) Width, (int) Height);
     }
 }
