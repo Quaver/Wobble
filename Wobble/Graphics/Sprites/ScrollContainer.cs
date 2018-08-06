@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,13 +17,6 @@ namespace Wobble.Graphics.Sprites
         ///     The scroll bar
         /// </summary>
         public Sprite Scrollbar { get; }
-
-        public int StartingScrollValue { get; }
-
-        /// <summary>
-        ///     The scroll value of the mouse when the container was created.
-        /// </summary>
-        public int PreviousScrollValue { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -57,10 +50,6 @@ namespace Wobble.Graphics.Sprites
                 Tint = Color.Black,
                 X = 1
             };
-
-            // Capture the initial scroll wheel value so we can use this to calculate
-            StartingScrollValue = MouseManager.CurrentState.ScrollWheelValue;
-            PreviousScrollValue = StartingScrollValue;
         }
 
         /// <inheritdoc />
