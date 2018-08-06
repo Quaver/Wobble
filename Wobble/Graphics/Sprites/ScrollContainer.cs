@@ -2,6 +2,8 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Bindables;
+using Wobble.Graphics.Transformations;
 using Wobble.Input;
 using Wobble.Window;
 
@@ -18,6 +20,16 @@ namespace Wobble.Graphics.Sprites
         ///     The scroll bar
         /// </summary>
         public Sprite Scrollbar { get; }
+
+        /// <summary>
+        ///     The target y position of the container.
+        /// </summary>
+        private float TargetY { get; set;  }
+
+        /// <summary>
+        ///     The target y position in the previous frame.
+        /// </summary>
+        private float PreviousTargetY { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -51,6 +63,9 @@ namespace Wobble.Graphics.Sprites
                 Tint = Color.Black,
                 X = 1
             };
+
+            TargetY = ContentContainer.Y;
+            PreviousTargetY = TargetY;
         }
 
         /// <inheritdoc />
@@ -68,17 +83,26 @@ namespace Wobble.Graphics.Sprites
 
             // Handle scrolling
             if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
-                ContentContainer.Y += 20;
+                TargetY += 20;
             else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
-                ContentContainer.Y -= 20;
+                TargetY -= 20;
 
             // Make sure content container is clamped to the viewport.
-            ContentContainer.Y = MathHelper.Clamp(ContentContainer.Y, -ContentContainer.Height + Height, 0);
+            TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
 
             // Calculate the scrollbar's y position.
             var percentage = -ContentContainer.Y / ( -ContentContainer.Height + Height ) * 100;
             Scrollbar.Y = percentage / 100 * (Height - Scrollbar.Height);
 
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (TargetY != PreviousTargetY)
+            {
+                ContentContainer.Transformations.Clear();
+                ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, Easing.EaseInQuad,
+                                                            ContentContainer.Y, TargetY, 75));
+            }
+
+            PreviousTargetY = TargetY;
             base.Update(gameTime);
         }
 
