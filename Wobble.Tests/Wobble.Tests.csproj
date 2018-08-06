@@ -68,6 +68,8 @@
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreenView.cs" />
     <Compile Include="Screens\Tests\EasingAnimations\TestEasingAnimationsScreen.cs" />
     <Compile Include="Screens\Tests\EasingAnimations\TestEasingAnimationsScreenView.cs" />
+    <Compile Include="Screens\Tests\Scrolling\TestScrollContainerScreen.cs" />
+    <Compile Include="Screens\Tests\Scrolling\TestScrollContainerScreenView.cs" />
     <Compile Include="WobbleTestsGame.cs" />
   </ItemGroup>
   <ItemGroup>

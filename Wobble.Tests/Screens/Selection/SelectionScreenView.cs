@@ -14,6 +14,7 @@ using Wobble.Tests.Screens.Tests.Background;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
+using Wobble.Tests.Screens.Tests.Scrolling;
 
 namespace Wobble.Tests.Screens.Selection
 {
@@ -95,6 +96,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.Background:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBackgroundImageScreen());
+                        break;
+                    case ScreenType.Scrolling:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestScrollContainerScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

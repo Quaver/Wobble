@@ -20,7 +20,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.EasingAnimations, "Easing Animations"},
             {ScreenType.Audio, "Audio"},
             {ScreenType.Discord, "Discord Rich Pr."},
-            {ScreenType.Background, "Background Sprite"}
+            {ScreenType.Background, "Background Sprite"},
+            {ScreenType.Scrolling, "Scroll Container"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -36,6 +37,7 @@ namespace Wobble.Tests.Screens.Selection
         EasingAnimations,
         Audio,
         Discord,
-        Background
+        Background,
+        Scrolling
     }
 }
