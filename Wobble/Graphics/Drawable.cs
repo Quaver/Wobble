@@ -281,9 +281,16 @@ namespace Wobble.Graphics
                 {
                     Children[i].Update(gameTime);
                 }
-                catch (Exception e)
+                // Handle
+                catch (ArgumentOutOfRangeException e)
                 {
-                    break;
+                    // In the event that a child was updated but the list was somehow modified
+                    // just break out of the loop for now.
+                    if (i < 0 || i >= Children.Count)
+                        break;
+
+                    // All other exceptions, just throw and hard crash.
+                    throw;
                 }
             }
         }
@@ -425,6 +432,19 @@ namespace Wobble.Graphics
                         }
                         else
                             throw new NotImplementedException();
+                        break;
+                    case TransformationProperty.Color:
+                        if (GetType() == typeof(Sprite))
+                        {
+                            var sprite = (Sprite)this;
+                            Console.WriteLine(transformation.PerformColorInterpolation(gameTime));
+                            sprite.Tint = transformation.PerformColorInterpolation(gameTime);
+                        }
+                        else if (GetType() == typeof(SpriteText))
+                        {
+                            var spriteText = (SpriteText) this;
+                            spriteText.TextColor = transformation.PerformColorInterpolation(gameTime);
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

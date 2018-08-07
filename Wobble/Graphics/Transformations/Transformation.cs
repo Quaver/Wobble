@@ -16,7 +16,7 @@ namespace Wobble.Graphics.Transformations
         public Easing EasingType { get; }
 
         /// <summary>
-        ///     The starting value of the property. 
+        ///     The starting value of the property.
         /// </summary>
         public float Start { get; }
 
@@ -41,7 +41,17 @@ namespace Wobble.Graphics.Transformations
         public bool Done { get; set; }
 
         /// <summary>
-        ///     
+        ///     If doing a transformation with color, it'll fade from this color.
+        /// </summary>
+        public Color StartColor { get; set; }
+
+        /// <summary>
+        ///     If doing a transformation with color, it'll fade to this color
+        /// </summary>
+        public Color EndColor { get; set; }
+
+        /// <summary>
+        ///
         /// </summary>
         /// <param name="properties"></param>
         /// <param name="easingType"></param>
@@ -58,7 +68,23 @@ namespace Wobble.Graphics.Transformations
         }
 
         /// <summary>
-        ///     Performs the interpolation function for the transformation 
+        ///     Transformation with
+        /// </summary>
+        /// <param name="easingType"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="time"></param>
+        public Transformation(Easing easingType, Color start, Color end, float time)
+        {
+            Properties = TransformationProperty.Color;
+            EasingType = easingType;
+            StartColor = start;
+            EndColor = end;
+            Time = time;
+        }
+
+        /// <summary>
+        ///     Performs the interpolation function for the transformation
         /// </summary>
         /// <param name="gameTime"></param>
         public float PerformInterpolation(GameTime gameTime)
@@ -74,6 +100,28 @@ namespace Wobble.Graphics.Transformations
                 Done = true;
 
             return val;
+        }
+
+        /// <summary>
+        ///     Performs interpolation with colors.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <returns></returns>
+        public Color PerformColorInterpolation(GameTime gameTime)
+        {
+            CurrentAnimationTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if (CurrentAnimationTime > Time)
+                CurrentAnimationTime = Time;
+
+            var r = EasingFunctions.Perform(EasingType, StartColor.R, EndColor.R, (float) (CurrentAnimationTime / Time));
+            var g = EasingFunctions.Perform(EasingType, StartColor.G, EndColor.G, (float) (CurrentAnimationTime / Time));
+            var b = EasingFunctions.Perform(EasingType, StartColor.B, EndColor.B, (float) (CurrentAnimationTime / Time));
+
+            if (Math.Abs(r - EndColor.R) < 0.01 && Math.Abs(g - EndColor.G) < 0.01 && Math.Abs(b - EndColor.B) < 0.01)
+                Done = true;
+
+            return new Color((int) r, (int) g, (int) b);
         }
     }
 }
