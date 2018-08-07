@@ -17,5 +17,6 @@ namespace Wobble.Graphics.Transformations
         Height,
         Alpha,
         Rotation,
+        Color
     }
 }
