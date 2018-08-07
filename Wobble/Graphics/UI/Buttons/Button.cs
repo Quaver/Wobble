@@ -28,7 +28,7 @@ namespace Wobble.Graphics.UI.Buttons
 
         /// <summary>
         ///     Keeps track of if the button is just hovered;no matter the draw order.
-        ///     This will allow us to figure out which button is on top by 
+        ///     This will allow us to figure out which button is on top by
         /// </summary>
         private bool IsHoveredWithoutDrawOrder { get; set; }
 
@@ -40,7 +40,7 @@ namespace Wobble.Graphics.UI.Buttons
         internal bool WaitingForClickRelease { get; private set; }
 
         /// <summary>
-        /// 
+        ///
         ///     Dictates if the button is currently held down regardless of if it is clickable or not.
         ///     This case is true if the user clicks down and does not release yet. They can move their
         ///     mouse anywhere on the screen and the button will still be considered held. This is
@@ -126,7 +126,7 @@ namespace Wobble.Graphics.UI.Buttons
                 }
             }
             // The button isn't actually hovered over so we can safely consider it not hovered.
-            // However, 
+            // However,
             else
             {
                 IsHoveredWithoutDrawOrder = false;
@@ -135,7 +135,7 @@ namespace Wobble.Graphics.UI.Buttons
 
                 OnNotHovered(gameTime);
             }
-         
+
             if (MouseManager.CurrentState.LeftButton == ButtonState.Released)
                 IsHeld = false;
 
@@ -162,8 +162,13 @@ namespace Wobble.Graphics.UI.Buttons
         public void FireButtonClickEvent() => Clicked?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
+        ///     Removes all click handlers from this button.
+        /// </summary>
+        public void RemoveClickHandlers() => Clicked = null;
+
+        /// <summary>
         ///     Checks if the mouse is in the click area of the button.
-        /// 
+        ///
         ///     This is marked as virtual because some buttons may want to increase/decrease
         ///     their click area.
         /// </summary>
