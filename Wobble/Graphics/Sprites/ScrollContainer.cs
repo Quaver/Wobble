@@ -83,9 +83,9 @@ namespace Wobble.Graphics.Sprites
 
             // Handle scrolling
             if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
-                TargetY += 20;
+                TargetY += 50;
             else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
-                TargetY -= 20;
+                TargetY -= 50;
 
             // Make sure content container is clamped to the viewport.
             TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
@@ -98,7 +98,7 @@ namespace Wobble.Graphics.Sprites
             if (TargetY != PreviousTargetY)
             {
                 ContentContainer.Transformations.Clear();
-                ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, Easing.EaseInQuad,
+                ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, Easing.Linear,
                                                             ContentContainer.Y, TargetY, 75));
             }
 
