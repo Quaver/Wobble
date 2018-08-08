@@ -173,6 +173,8 @@ namespace Wobble.Graphics.Sprites
         {
             // Make sure content container is clamped to the viewport.
             y = MathHelper.Clamp(y, -ContentContainer.Height + Height, 0);
+            TargetY = y;
+            PreviousTargetY = y;
 
             ContentContainer.Transformations.Clear();
             ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, EasingType, ContentContainer.Y, y, time));
