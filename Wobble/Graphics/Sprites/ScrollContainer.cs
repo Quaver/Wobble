@@ -31,6 +31,21 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         private float PreviousTargetY { get; set; }
 
+        /// <summary>
+        ///     The speed at which the container scrolls.
+        /// </summary>
+        public int ScrollSpeed { get; set; } = 50;
+
+        /// <summary>
+        ///      The easing type when scrolling.
+        /// </summary>
+        public Easing EasingType { get; set; } = Easing.Linear;
+
+        /// <summary>
+        ///     The time to complete the scroll.
+        /// </summary>
+        public int TimeToCompleteScroll { get; set; } = 75;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -83,9 +98,9 @@ namespace Wobble.Graphics.Sprites
 
             // Handle scrolling
             if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
-                TargetY += 50;
+                TargetY += ScrollSpeed;
             else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
-                TargetY -= 50;
+                TargetY -= ScrollSpeed;
 
             // Make sure content container is clamped to the viewport.
             TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
@@ -98,8 +113,8 @@ namespace Wobble.Graphics.Sprites
             if (TargetY != PreviousTargetY)
             {
                 ContentContainer.Transformations.Clear();
-                ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, Easing.Linear,
-                                                            ContentContainer.Y, TargetY, 75));
+                ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, EasingType,
+                                                            ContentContainer.Y, TargetY, TimeToCompleteScroll));
             }
 
             PreviousTargetY = TargetY;
@@ -147,6 +162,20 @@ namespace Wobble.Graphics.Sprites
             // Set drawable and children to use the same SpriteBatch
             drawable.UsePreviousSpriteBatchOptions = true;
             drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = true);
+        }
+
+        /// <summary>
+        ///     Scrolls to a given y position.
+        /// </summary>
+        /// <param name="y"></param>
+        /// <param name="time"></param>
+        public void ScrollTo(float y, int time)
+        {
+            // Make sure content container is clamped to the viewport.
+            y = MathHelper.Clamp(y, -ContentContainer.Height + Height, 0);
+
+            ContentContainer.Transformations.Clear();
+            ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, EasingType, ContentContainer.Y, y, time));
         }
     }
 }
