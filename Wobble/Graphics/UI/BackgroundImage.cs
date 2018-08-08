@@ -16,7 +16,7 @@ namespace Wobble.Graphics.UI
         ///
         ///     TODO: Use a shader for this instead of drawing a new child sprite.
         /// </summary>
-        private Sprite BrightnessSprite { get; }
+        public Sprite BrightnessSprite { get; }
 
         /// <summary>
         ///     The dim of the background as a percentage.
