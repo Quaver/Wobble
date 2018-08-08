@@ -437,7 +437,6 @@ namespace Wobble.Graphics
                         if (GetType() == typeof(Sprite))
                         {
                             var sprite = (Sprite)this;
-                            Console.WriteLine(transformation.PerformColorInterpolation(gameTime));
                             sprite.Tint = transformation.PerformColorInterpolation(gameTime);
                         }
                         else if (GetType() == typeof(SpriteText))
