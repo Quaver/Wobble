@@ -394,65 +394,77 @@ namespace Wobble.Graphics
             // Keep a list of transformations that are marked as done that'll be queued for removal.
             var queuedForDeletion = new List<Transformation>();
 
-            foreach (var transformation in Transformations)
+
+            for (var i = Transformations.Count - 1; i >= 0; i--)
             {
-                switch (transformation.Properties)
+                var transformation = Transformations[i];
+
+                try
                 {
-                    case TransformationProperty.X:
-                        X = transformation.PerformInterpolation(gameTime);
-                        break;
-                    case TransformationProperty.Y:
-                        Y = transformation.PerformInterpolation(gameTime);
-                        break;
-                    case TransformationProperty.Width:
-                        Width = transformation.PerformInterpolation(gameTime);
-                        break;
-                    case TransformationProperty.Height:
-                        Height = transformation.PerformInterpolation(gameTime);
-                        break;
-                    case TransformationProperty.Alpha:
-                        var type = GetType();
+                    switch (transformation.Properties)
+                    {
+                        case TransformationProperty.X:
+                            X = transformation.PerformInterpolation(gameTime);
+                            break;
+                        case TransformationProperty.Y:
+                            Y = transformation.PerformInterpolation(gameTime);
+                            break;
+                        case TransformationProperty.Width:
+                            Width = transformation.PerformInterpolation(gameTime);
+                            break;
+                        case TransformationProperty.Height:
+                            Height = transformation.PerformInterpolation(gameTime);
+                            break;
+                        case TransformationProperty.Alpha:
+                            var type = GetType();
 
-                        if (type == typeof(Sprite))
-                        {
-                            var sprite = (Sprite)this;
-                            sprite.Alpha = transformation.PerformInterpolation(gameTime);
-                        }
-                        else if (type == typeof(SpriteText))
-                        {
-                            var spriteText = (SpriteText) this;
-                            spriteText.Alpha = transformation.PerformInterpolation(gameTime);
-                        }
-                        break;
-                    case TransformationProperty.Rotation:
-                        if (GetType() == typeof(Sprite))
-                        {
-                            var sprite = (Sprite) this;
-                            sprite.Rotation = transformation.PerformInterpolation(gameTime);
-                        }
-                        else
-                            throw new NotImplementedException();
-                        break;
-                    case TransformationProperty.Color:
-                        if (GetType() == typeof(Sprite))
-                        {
-                            var sprite = (Sprite)this;
-                            sprite.Tint = transformation.PerformColorInterpolation(gameTime);
-                        }
-                        else if (GetType() == typeof(SpriteText))
-                        {
-                            var spriteText = (SpriteText) this;
-                            spriteText.TextColor = transformation.PerformColorInterpolation(gameTime);
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                            if (type == typeof(Sprite))
+                            {
+                                var sprite = (Sprite) this;
+                                sprite.Alpha = transformation.PerformInterpolation(gameTime);
+                            }
+                            else if (type == typeof(SpriteText))
+                            {
+                                var spriteText = (SpriteText) this;
+                                spriteText.Alpha = transformation.PerformInterpolation(gameTime);
+                            }
+
+                            break;
+                        case TransformationProperty.Rotation:
+                            if (GetType() == typeof(Sprite))
+                            {
+                                var sprite = (Sprite) this;
+                                sprite.Rotation = transformation.PerformInterpolation(gameTime);
+                            }
+                            else
+                                throw new NotImplementedException();
+
+                            break;
+                        case TransformationProperty.Color:
+                            if (GetType() == typeof(Sprite))
+                            {
+                                var sprite = (Sprite) this;
+                                sprite.Tint = transformation.PerformColorInterpolation(gameTime);
+                            }
+                            else if (GetType() == typeof(SpriteText))
+                            {
+                                var spriteText = (SpriteText) this;
+                                spriteText.TextColor = transformation.PerformColorInterpolation(gameTime);
+                            }
+
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    if (transformation.Done)
+                        queuedForDeletion.Add(transformation);
                 }
-
-                if (transformation.Done)
-                    queuedForDeletion.Add(transformation);
+                catch (Exception e)
+                {
+                    break;
+                }
             }
-
             // Remove all completed transformations.
             queuedForDeletion.ForEach(x => Transformations.Remove(x));
         }
