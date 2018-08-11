@@ -25,7 +25,9 @@ namespace Wobble.Graphics.UI.Buttons
         {
             Parent = this,
             Alignment = Alignment.MidCenter,
-            TextScale = textScale
+            TextScale = textScale,
+            TextAlignment = Alignment.MidCenter,
+            Y = 1
         };
     }
 }
