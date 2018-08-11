@@ -46,6 +46,11 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public int TimeToCompleteScroll { get; set; } = 75;
 
+        /// <summary>
+        ///     Determines if the scrolling input is enabled for the container.
+        /// </summary>
+        public bool InputEnabled { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -97,10 +102,13 @@ namespace Wobble.Graphics.Sprites
                 Scrollbar.Height = 30;
 
             // Handle scrolling
-            if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
-                TargetY += ScrollSpeed;
-            else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
-                TargetY -= ScrollSpeed;
+            if (InputEnabled)
+            {
+                if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
+                    TargetY += ScrollSpeed;
+                else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
+                    TargetY -= ScrollSpeed;
+            }
 
             // Make sure content container is clamped to the viewport.
             TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
