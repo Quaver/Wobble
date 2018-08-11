@@ -24,12 +24,12 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     The target y position of the container.
         /// </summary>
-        private float TargetY { get; set;  }
+        public float TargetY { get; set;  }
 
         /// <summary>
         ///     The target y position in the previous frame.
         /// </summary>
-        private float PreviousTargetY { get; set; }
+        public float PreviousTargetY { get; set; }
 
         /// <summary>
         ///     The speed at which the container scrolls.
