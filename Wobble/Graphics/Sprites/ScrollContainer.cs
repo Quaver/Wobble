@@ -114,8 +114,8 @@ namespace Wobble.Graphics.Sprites
             TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
 
             // Calculate the scrollbar's y position.
-            var percentage = -ContentContainer.Y / ( -ContentContainer.Height + Height ) * 100;
-            Scrollbar.Y = percentage / 100 * (Height - Scrollbar.Height);
+            var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
+            Scrollbar.Y = percentage / 100 * (Height - Scrollbar.Height) - (Height - Scrollbar.Height);
 
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (TargetY != PreviousTargetY)
