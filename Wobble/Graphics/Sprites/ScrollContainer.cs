@@ -172,6 +172,13 @@ namespace Wobble.Graphics.Sprites
             drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = true);
         }
 
+        public void RemoveContainedDrawable(Drawable drawable)
+        {
+            drawable.Parent = null;
+            drawable.UsePreviousSpriteBatchOptions = false;
+            drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = false);
+        }
+
         /// <summary>
         ///     Scrolls to a given y position.
         /// </summary>
