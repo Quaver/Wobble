@@ -42,7 +42,7 @@ namespace Wobble.Graphics
                 {
                     value.Children.Add(this);
                 }
-                else
+                else if (DestroyIfParentIsNull)
                 {
                     // If we've received null for the parent however, that must mean we want to FULLY
                     // destroy and dispose of the object.
@@ -54,6 +54,11 @@ namespace Wobble.Graphics
                 RecalculateRectangles();
             }
         }
+
+        /// <summary>
+        ///     Completely destroys the object if the parent is null
+        /// </summary>
+        public bool DestroyIfParentIsNull { get; set; } = true;
 
         /// <summary>
         ///     The children of this drawable. All children objects depend on this object's position
