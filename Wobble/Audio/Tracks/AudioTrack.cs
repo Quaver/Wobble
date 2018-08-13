@@ -307,5 +307,12 @@ namespace Wobble.Audio.Tracks
             if (!StreamLoaded || IsDisposed)
                 throw new PlayableAudioDisposedException("You cannot change a disposed/unloaded track's position.");
         }
+
+        /// <summary>
+        ///     Fades the current audio stream's volume to a given volume in a specified time frame.
+        /// </summary>
+        /// <param name="to"></param>
+        /// <param name="time"></param>
+        public void Fade(float to, int time) => Bass.ChannelSlideAttribute(Stream, ChannelAttribute.Volume, to / 100, time);
     }
 }
