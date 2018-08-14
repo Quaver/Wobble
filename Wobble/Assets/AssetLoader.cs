@@ -70,7 +70,7 @@ namespace Wobble.Assets
         /// <returns></returns>
         public static Texture2D LoadTexture2DFromFile(string path)
         {
-            using (var fileStream = new FileStream(path, FileMode.Open))
+            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 return Texture2D.FromStream(GameBase.Game.GraphicsDevice, fileStream);
             }
