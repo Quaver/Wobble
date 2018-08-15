@@ -135,6 +135,11 @@ namespace Wobble.Audio.Tracks
         public double ProgressPercentage => (Time / Length) * 100;
 
         /// <summary>
+        ///     If set to false, it won't allow playback.
+        /// </summary>
+        public static bool AllowPlayback { get; set; } = true;
+
+        /// <summary>
         ///    Loads an audio track from a file.
         /// </summary>
         /// <param name="path"></param>
@@ -169,6 +174,9 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         public void Play()
         {
+            if (!AllowPlayback)
+                throw new AudioEngineException("AllowPlayback is not enabled.");
+
             CheckIfDisposed();
 
             if (IsPlaying)
