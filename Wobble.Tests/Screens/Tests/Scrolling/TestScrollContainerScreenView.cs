@@ -21,6 +21,7 @@ namespace Wobble.Tests.Screens.Tests.Scrolling
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
+                InputEnabled = true
             };
 
             ScrollContainer.AddContainedDrawable(new Sprite()
