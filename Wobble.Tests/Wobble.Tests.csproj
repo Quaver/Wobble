@@ -62,8 +62,8 @@
     <Compile Include="Screens\Tests\Audio\TestAudioScreenView.cs" />
     <Compile Include="Screens\Tests\Background\TestBackgroundImageScreen.cs" />
     <Compile Include="Screens\Tests\Background\TestBackgroundImageScreenView.cs" />
-    <Compile Include="Screens\Tests\Blur\TestBlurScreen.cs" />
-    <Compile Include="Screens\Tests\Blur\TestBlurScreenView.cs" />
+    <Compile Include="Screens\Tests\BlurContainer\TestBlurContainerScreen.cs" />
+    <Compile Include="Screens\Tests\BlurContainer\TestBlurContainerScreenView.cs" />
     <Compile Include="Screens\Tests\Discord\TestDiscordScreen.cs" />
     <Compile Include="Screens\Tests\Discord\TestDiscordScreenView.cs" />
     <Compile Include="Screens\Tests\DrawingSprites\TestDrawingSpritesScreen.cs" />

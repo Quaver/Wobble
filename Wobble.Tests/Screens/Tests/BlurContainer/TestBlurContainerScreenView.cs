@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Assets;
 using Wobble.Graphics;
@@ -9,16 +7,15 @@ using Wobble.Graphics.UI;
 using Wobble.Input;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
-using Wobble.Window;
 
-namespace Wobble.Tests.Screens.Tests.Blur
+namespace Wobble.Tests.Screens.Tests.BlurContainer
 {
-    public class TestBlurScreenView : ScreenView
+    public class TestBlurContainerScreenView : ScreenView
     {
         /// <summary>
         ///     Blur container.
         /// </summary>
-        public BlurContainer Blur { get; }
+        public Graphics.Sprites.BlurContainer Blur { get; }
 
         /// <summary>
         ///     Text that displays the current blur strength.
@@ -29,11 +26,11 @@ namespace Wobble.Tests.Screens.Tests.Blur
         /// <summary>
         /// </summary>
         /// <param name="screen"></param>
-        public TestBlurScreenView(Screen screen) : base(screen)
+        public TestBlurContainerScreenView(Screen screen) : base(screen)
         {
             // Creates a blur container, any child sprite
             // will be under the blur effect.
-            Blur = new BlurContainer(BlurType.Gaussian, 10)
+            Blur = new Graphics.Sprites.BlurContainer(BlurType.Gaussian, 10)
             {
                 Parent = Container,
                 Children =

@@ -1,8 +1,8 @@
 ﻿using Wobble.Screens;
 
-namespace Wobble.Tests.Screens.Tests.Blur
+namespace Wobble.Tests.Screens.Tests.BlurContainer
 {
-    public class TestBlurScreen : Screen
+    public class TestBlurContainerScreen : Screen
     {
         /// <inheritdoc />
         /// <summary>
@@ -12,6 +12,6 @@ namespace Wobble.Tests.Screens.Tests.Blur
         /// <summary>
         ///
         /// </summary>
-        public TestBlurScreen() => View = new TestBlurScreenView(this);
+        public TestBlurContainerScreen() => View = new TestBlurContainerScreenView(this);
     }
 }
