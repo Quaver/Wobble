@@ -21,7 +21,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.Audio, "Audio"},
             {ScreenType.Discord, "Discord Rich Pr."},
             {ScreenType.Background, "Background Sprite"},
-            {ScreenType.Scrolling, "Scroll Container"}
+            {ScreenType.Scrolling, "Scroll Container"},
+            {ScreenType.Blur, "Blur"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -38,6 +39,7 @@ namespace Wobble.Tests.Screens.Selection
         Audio,
         Discord,
         Background,
-        Scrolling
+        Scrolling,
+        Blur
     }
 }
