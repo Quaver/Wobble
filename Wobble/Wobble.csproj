@@ -190,6 +190,9 @@
     </None>
     <None Include="MonoGame.Framework.dll.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Shaders\fast-blur.mgfxo" />
+    <EmbeddedResource Include="Resources\Shaders\frosty-blur.mgfxo" />
+    <EmbeddedResource Include="Resources\Shaders\gaussian-blur.mgfxo" />
     <None Include="x64\libbass.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -217,6 +220,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\UI\Basics\white_box.png" />
+    <Content Include="Resources\Shaders\fast-blur.fx" />
+    <Content Include="Resources\Shaders\frosty-blur.fx" />
+    <Content Include="Resources\Shaders\gaussian-blur.fx" />
     <Content Include="x64\bass.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
