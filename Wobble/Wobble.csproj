@@ -146,6 +146,7 @@
     <Compile Include="Graphics\Sprites\SpriteText.cs" />
     <Compile Include="Graphics\Transformations\TransformationProperty.cs" />
     <Compile Include="Graphics\UI\BackgroundImage.cs" />
+    <Compile Include="Graphics\UI\BlurredBackgroundImage.cs" />
     <Compile Include="Graphics\UI\Buttons\Button.cs" />
     <Compile Include="Graphics\UI\Buttons\ButtonManager.cs" />
     <Compile Include="Graphics\UI\Buttons\DraggableButton.cs" />
