@@ -18,10 +18,14 @@ namespace Wobble.Graphics.Sprites
             // Create a new render target and set the game's current RT to it.
             var rt = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) Width, (int) Height);
             GameBase.Game.GraphicsDevice.SetRenderTarget(rt);
-            GameBase.Game.GraphicsDevice.Clear(Color.Black);
+            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
 
             // Draw all of the children
-            Children.ForEach(x => x.Draw(gameTime));
+            Children.ForEach(x =>
+            {
+                x.UsePreviousSpriteBatchOptions = true;
+                x.Draw(gameTime);
+            });
 
             // Attempt to end the spritebatch
             try
@@ -46,6 +50,16 @@ namespace Wobble.Graphics.Sprites
 
             // Reset image.
             Image = oldImage;
+
+            // Attempt to end the spritebatch
+            try
+            {
+                GameBase.Game.SpriteBatch.End();
+            }
+            catch (Exception e)
+            {
+                // ignored.
+            }
         }
     }
 }
