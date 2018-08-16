@@ -29,10 +29,11 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public float Strength { get; set; }
 
+        /// <inheritdoc />
         /// <summary>
         ///      Creates a new blur container
         /// </summary>
-        public BlurContainer(ScalableVector2 size, BlurType blurType, float strength) : base(size)
+        public BlurContainer(BlurType blurType, float strength)
         {
             // ReSharper disable once ArrangeConstructorOrDestructorBody
             SpriteBatchOptions = new SpriteBatchOptions()

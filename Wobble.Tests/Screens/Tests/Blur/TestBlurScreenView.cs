@@ -33,7 +33,7 @@ namespace Wobble.Tests.Screens.Tests.Blur
         {
             // Creates a blur container, any child sprite
             // will be under the blur effect.
-            Blur = new BlurContainer(new ScalableVector2(WindowManager.Width, WindowManager.Height), BlurType.Gaussian, 10)
+            Blur = new BlurContainer(BlurType.Gaussian, 10)
             {
                 Parent = Container,
                 Children =

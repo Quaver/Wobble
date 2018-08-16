@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -21,6 +22,14 @@ namespace Wobble.Graphics.Sprites
         public RenderTargetContainer(ScalableVector2 size)
         {
             Size = size;
+            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) Width, (int) Height);
+        }
+
+        /// <summary>
+        /// </summary>
+        public RenderTargetContainer()
+        {
+            Size = new ScalableVector2(WindowManager.Width, WindowManager.Height);
             RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) Width, (int) Height);
         }
 
