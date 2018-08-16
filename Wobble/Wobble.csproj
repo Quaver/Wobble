@@ -129,6 +129,7 @@
     <Compile Include="Graphics\DrawRectangle.cs" />
     <Compile Include="Graphics\GraphicsHelper.cs" />
     <Compile Include="Graphics\IDrawable.cs" />
+    <Compile Include="Graphics\Sprites\BlurContainer.cs" />
     <Compile Include="Graphics\Sprites\RenderTargetContainer.cs" />
     <Compile Include="Graphics\Sprites\ScrollContainer.cs" />
     <Compile Include="Graphics\Transformations\Easing.cs" />
@@ -224,6 +225,7 @@
     <Content Include="Resources\Shaders\fast-blur.fx" />
     <Content Include="Resources\Shaders\frosty-blur.fx" />
     <Content Include="Resources\Shaders\gaussian-blur.fx" />
+    <EmbeddedResource Include="Resources\UI\Basics\wallpaper.jpg" />
     <Content Include="x64\bass.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

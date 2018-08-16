@@ -1,6 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
+using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.UI;
 using Wobble.Screens;
 using Wobble.Window;
 
@@ -8,30 +11,36 @@ namespace Wobble.Tests.Screens.Tests.Blur
 {
     public class TestBlurScreenView : ScreenView
     {
+        /// <summary>
+        ///     Blur container.
+        /// </summary>
+        public BlurContainer Blur { get; }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="screen"></param>
         public TestBlurScreenView(Screen screen) : base(screen)
         {
-            var container = new RenderTargetContainer()
+            // Creates a blur container, any child sprite
+            // will be under the blur effect.
+            Blur = new BlurContainer(BlurType.Gaussian, 10)
             {
                 Parent = Container,
                 Size = new ScalableVector2(WindowManager.Width, WindowManager.Height),
-                Alpha = 1
             };
 
-            var child = new Sprite()
-            {
-                Parent = container,
-                Size = new ScalableVector2(300, 300),
-                Alignment = Alignment.TopCenter,
-                Y = 150,
-                Tint = Color.Green
-            };
+            // Create child BackgroundImage to have the blur effect.
+            var wallpaper = new BackgroundImage(WobbleAssets.Wallpaper, 10) { Parent = Blur };
 
-            new Sprite()
+            // Create a green box, this should NOT have a blur effect given that it isn't a child
+            // of Blur.
+            var redBox = new Sprite()
             {
                 Parent = Container,
-                Size = new ScalableVector2(50, 50),
+                Alignment = Alignment.MidCenter,
                 Tint = Color.Red,
-                Alignment = Alignment.MidRight
+                Size = new ScalableVector2(100, 100)
             };
         }
 
