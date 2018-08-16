@@ -10,7 +10,7 @@ namespace Wobble.Graphics.Shaders
         /// <summary>
         ///     The loaded shader effect.
         /// </summary>
-        public Effect ShaderEffect { get; }
+        public Effect ShaderEffect { get; set; }
 
         /// <summary>
         ///     If the shader has already been disposed of.
@@ -31,6 +31,18 @@ namespace Wobble.Graphics.Shaders
         public Shader(byte[] data, Dictionary<string, object> parameters)
         {
             ShaderEffect = new Effect(GameBase.Game.GraphicsDevice, data);
+            Parameters = parameters;
+            SetParameters(false);
+        }
+
+        /// <summary>
+        ///     Creates a shader from a given effect.
+        /// </summary>
+        /// <param name="effect"></param>
+        /// <param name="parameters"></param>
+        public Shader(Effect effect, Dictionary<string, object> parameters)
+        {
+            ShaderEffect = effect;
             Parameters = parameters;
             SetParameters(false);
         }
