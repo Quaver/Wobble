@@ -12,6 +12,7 @@ using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Tests.Audio;
 using Wobble.Tests.Screens.Tests.Background;
 using Wobble.Tests.Screens.Tests.BlurContainer;
+using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
@@ -103,6 +104,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.BlurContainer:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBlurContainerScreen());
+                        break;
+                    case ScreenType.BlurredBackgroundImage:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBlurredBackgroundImageScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
