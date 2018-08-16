@@ -33,7 +33,7 @@ namespace Wobble.Tests.Screens.Tests.Blur
             // Create child BackgroundImage to have the blur effect.
             var wallpaper = new BackgroundImage(WobbleAssets.Wallpaper, 10) { Parent = Blur };
 
-            // Create a green box, this should NOT have a blur effect given that it isn't a child
+            // Create a red box, this should NOT have a blur effect given that it isn't a child
             // of Blur.
             var redBox = new Sprite()
             {
