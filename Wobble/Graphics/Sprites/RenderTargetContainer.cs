@@ -9,15 +9,28 @@ namespace Wobble.Graphics.Sprites
     /// </summary>
     public class RenderTargetContainer : Sprite
     {
+        /// <summary>
+        ///     The main render target to render to.
+        /// </summary>
+        private RenderTarget2D RenderTarget { get; }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="size"></param>
+        public RenderTargetContainer(ScalableVector2 size)
+        {
+            Size = size;
+            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) Width, (int) Height);
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            // Create a new render target and set the game's current RT to it.
-            var rt = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) Width, (int) Height);
-            GameBase.Game.GraphicsDevice.SetRenderTarget(rt);
+            GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
             GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
 
             // Draw all of the children
@@ -45,7 +58,7 @@ namespace Wobble.Graphics.Sprites
 
             // Change the image to the render target
             // and draw it.
-            Image = rt;
+            Image = RenderTarget;
             base.Draw(gameTime);
 
             // Reset image.

@@ -21,7 +21,7 @@ namespace Wobble.Assets
         internal static void Load()
         {
             WhiteBox = AssetLoader.LoadTexture2D(WobbleResources.white_box, ImageFormat.Png);
-            Wallpaper= AssetLoader.LoadTexture2D(WobbleResources.wallpaper, ImageFormat.Jpeg);
+            Wallpaper = AssetLoader.LoadTexture2D(WobbleResources.wallpaper, ImageFormat.Jpeg);
         }
 
         /// <summary>
