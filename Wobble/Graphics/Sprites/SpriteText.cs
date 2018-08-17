@@ -156,13 +156,19 @@ namespace Wobble.Graphics.Sprites
         private Vector2 TextSize { get; set; }
 
         /// <summary>
+        ///     Used when wrapping lines. Gives slightly less/more line space before wrapping to the next line.
+        /// </summary>
+        public int Padding { get; set; }
+
+        /// <summary>
         ///    When a SpriteText is created, when want to hook onto whenever the rect is being recalced event
         ///    and update the text accordingly with the new values.
         /// </summary>
-        public SpriteText(SpriteFont font, string text)
+        public SpriteText(SpriteFont font, string text, float scale = 1.0f)
         {
             Font = font;
             Text = text;
+            TextScale = scale;
             RectangleRecalculated += (o, e) => UpdateText();
         }
 
@@ -172,11 +178,13 @@ namespace Wobble.Graphics.Sprites
         /// <param name="font"></param>
         /// <param name="text"></param>
         /// <param name="size"></param>
-        public SpriteText(SpriteFont font, string text, ScalableVector2 size)
+        /// <param name="scale"></param>
+        public SpriteText(SpriteFont font, string text, ScalableVector2 size, float scale = 1.0f)
         {
             Size = size;
             Font = font;
             Text = text;
+            TextScale = scale;
             RectangleRecalculated += (o, e) => UpdateText();
         }
 
@@ -271,7 +279,7 @@ namespace Wobble.Graphics.Sprites
                     _text = WrapText(Text, true);
                     break;
                 case TextStyle.WordwrapMultiLine:
-                    _text = WrapText(Text, true);
+                    _text = WrapText(Text);
                     break;
                 case TextStyle.OverflowSingleLine:
                     _text = Text;
@@ -341,6 +349,7 @@ namespace Wobble.Graphics.Sprites
                 {
                     // Add new line
                     wrappedText.Append("\n");
+
                     linewidth = size.X + spaceWidth;
 
                     // Check if text wrap should continue
@@ -358,11 +367,44 @@ namespace Wobble.Graphics.Sprites
             return wrappedText.ToString();
         }
 
+        private string WrapText(string text)
+        {
+            text = text.Replace("\n", "");
+            if(MeasureString(text).X < Width - Padding) {
+                return text;
+            }
+
+            var words = text.Split(' ');
+            var wrappedText = new StringBuilder();
+            var linewidth = 0f;
+            var spaceWidth = MeasureString(" ").X;
+            for(var i = 0; i < words.Length; ++i) {
+                var size = MeasureString(words[i]);
+                if(linewidth + size.X < Width - Padding) {
+                    linewidth += size.X + spaceWidth;
+                } else {
+                    wrappedText.Append("\n");
+                    linewidth = size.X + spaceWidth;
+                }
+                wrappedText.Append(words[i]);
+                wrappedText.Append(" ");
+            }
+
+            return wrappedText.ToString();
+        }
+
         /// <summary>
         ///     Measures the size of the sprite.
         /// </summary>
         /// <returns></returns>
         public Vector2 MeasureString() => Font.MeasureString(Text) * TextScale;
+
+        /// <summary>
+        ///     Measures size of inputted text.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public Vector2 MeasureString(string text) => Font.MeasureString(text) * TextScale;
 
         /// <summary>
         ///     Fades the sprite to a given color.
