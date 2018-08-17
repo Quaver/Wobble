@@ -74,6 +74,8 @@
     <Compile Include="Screens\Tests\EasingAnimations\TestEasingAnimationsScreenView.cs" />
     <Compile Include="Screens\Tests\Scrolling\TestScrollContainerScreen.cs" />
     <Compile Include="Screens\Tests\Scrolling\TestScrollContainerScreenView.cs" />
+    <Compile Include="Screens\Tests\TextInput\TestTextInputScreen.cs" />
+    <Compile Include="Screens\Tests\TextInput\TestTextInputScreenView.cs" />
     <Compile Include="WobbleTestsGame.cs" />
   </ItemGroup>
   <ItemGroup>

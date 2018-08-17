@@ -23,7 +23,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.Background, "Background Sprite"},
             {ScreenType.Scrolling, "Scroll Container"},
             {ScreenType.BlurContainer, "Blur Container"},
-            {ScreenType.BlurredBackgroundImage, "Blurred BG Image"}
+            {ScreenType.BlurredBackgroundImage, "Blurred BG Image"},
+            {ScreenType.TextInput, "Text Input"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -42,6 +43,7 @@ namespace Wobble.Tests.Screens.Selection
         Background,
         Scrolling,
         BlurContainer,
-        BlurredBackgroundImage
+        BlurredBackgroundImage,
+        TextInput
     }
 }
