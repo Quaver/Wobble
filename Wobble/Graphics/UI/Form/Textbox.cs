@@ -3,7 +3,9 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Assets;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
@@ -36,6 +38,11 @@ namespace Wobble.Graphics.UI.Form
         public Sprite SelectedSprite { get; }
 
         /// <summary>
+        ///     The button for the text box to control if it is focused or not.
+        /// </summary>
+        public ImageButton Button { get; }
+
+        /// <summary>
         ///     The raw text for this sprite.
         /// </summary>
         private string _rawText;
@@ -58,7 +65,17 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     If the textbox is focused, it will handle input, if not, it wont.
         /// </summary>
-        public bool Focused { get; set;  } = true;
+        private bool _focused = false;
+        public bool Focused
+        {
+            get => AlwaysFocused || _focused;
+            set => _focused = value;
+        }
+
+        /// <summary>
+        ///     If set to true, the textbox will always be focused.
+        /// </summary>
+        public bool AlwaysFocused { get; set; }
 
         /// <summary>
         ///     Determines if the text is selected. (CTRL+A) state
@@ -151,7 +168,8 @@ namespace Wobble.Graphics.UI.Form
                 Alignment = Alignment.TopLeft,
                 Size = new ScalableVector2(2, InputText.MeasureString("A").Y), // Height is equivalent to text height.
                 Tint = Color.White,
-                Y = 2
+                Y = 2,
+                Visible = false
             };
 
             SelectedSprite = new Sprite()
@@ -163,6 +181,27 @@ namespace Wobble.Graphics.UI.Form
                 Alpha = 0,
                 Y = 1,
                 X = InputText.X - 1
+            };
+
+            // Create the invisible button that will dictate if the button is focused or not.
+            Button = new ImageButton(WobbleAssets.WhiteBox, (o, e) => Focused = true)
+            {
+                Parent = this,
+                Size = Size,
+                Alpha = 0
+            };
+
+            // If the user clicks outside of the button, then it won't be focused anymore.
+            Button.ClickedOutside += (o, e) =>
+            {
+                Focused = false;
+
+                // Change back to placeholder text if the textbox is indeed empty.
+                if (!string.IsNullOrEmpty(PlaceholderText) && string.IsNullOrEmpty(RawText))
+                {
+                    InputText.Text = PlaceholderText;
+                    InputText.Alpha = 0.50f;
+                }
             };
 
             CalculateContainerX();
@@ -282,13 +321,6 @@ namespace Wobble.Graphics.UI.Form
 
                         // Clear text box.
                         RawText = "";
-
-                        // Use place holder text after submitting.
-                        if (!string.IsNullOrEmpty(PlaceholderText))
-                        {
-                            InputText.Text = PlaceholderText;
-                            InputText.Alpha = 0.50f;
-                        }
                         break;
                     // Input text
                     default:
@@ -324,7 +356,11 @@ namespace Wobble.Graphics.UI.Form
                 case TextboxStyle.MultiLine:
                     break;
                 case TextboxStyle.SingleLine:
-                    Cursor.X = InputText.MeasureString().X + 3;
+                    if (InputText.Text == PlaceholderText)
+                        Cursor.X = 3;
+                    else
+                        Cursor.X = InputText.MeasureString().X + 3;
+
                     SelectedSprite.Width = Cursor.X;
                     break;
                 default:
@@ -337,7 +373,7 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void PerformCursorBlinking(GameTime gameTime)
         {
-            if (!Focused || InputText.Text == PlaceholderText)
+            if (!Focused)
             {
                 Cursor.Visible = false;
                 return;
