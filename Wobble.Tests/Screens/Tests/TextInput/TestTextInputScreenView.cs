@@ -15,6 +15,8 @@ namespace Wobble.Tests.Screens.Tests.TextInput
 {
     public class TestTextInputScreenView : ScreenView
     {
+        public Random RNG = new Random();
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -42,7 +44,37 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
                 Tint = Color.Black,
-                Alpha = 0.75f
+                Alpha = 0.75f,
+                Focused = false
+            };
+
+            // Simple text box that when submitted, will send the text flying across the screen.
+            var usernameCheckTextbox = new Textbox(TextboxStyle.SingleLine, new ScalableVector2(500, 30), Fonts.AllerRegular16, "",
+                "Enter a username", 0.90f, null, (text) =>
+            {
+                Console.WriteLine($"Username typed when user stopped typing: " + text);
+
+                // Generate a random number between 0 and 1 that will represent if the username
+                // is taken or not.
+                var val = RNG.Next(0, 2);
+                new SpriteText(Fonts.AllerRegular16, val == 1 ? "Username Available" : "Username Taken")
+                {
+                    Parent = Container,
+                    Alignment = Alignment.MidCenter,
+                    Y = 100 + 30 + 5,
+                    TextColor = val == 1 ? Color.LimeGreen : Color.Red,
+                    Transformations =
+                    {
+                        new Transformation(TransformationProperty.Alpha, Easing.Linear, 1, 0, 1000)
+                    }
+                };
+            })
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                Tint = Color.Black,
+                Alpha = 0.75f,
+                Y = 100
             };
         }
 
