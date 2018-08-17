@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics.Sprites;
+using Wobble.Input;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Wobble.Graphics.UI.Form
 {
@@ -26,6 +28,12 @@ namespace Wobble.Graphics.UI.Form
         ///     The cursor that displays where the text input currently is.
         /// </summary>
         public Sprite Cursor { get; }
+
+        /// <summary>
+        ///     When the text is selected (CTRL + A), this sprite will display
+        ///     and make it look as if the text box is selected.
+        /// </summary>
+        public Sprite SelectedSprite { get; }
 
         /// <summary>
         ///     The raw text for this sprite.
@@ -51,6 +59,11 @@ namespace Wobble.Graphics.UI.Form
         ///     If the textbox is focused, it will handle input, if not, it wont.
         /// </summary>
         public bool Focused { get; set;  } = true;
+
+        /// <summary>
+        ///     Determines if the text is selected. (CTRL+A) state
+        /// </summary>
+        public bool Selected { get; set; }
 
         /// <summary>
         ///     Action called when pressing enter and submitting the text box.
@@ -141,10 +154,23 @@ namespace Wobble.Graphics.UI.Form
                 Y = 2
             };
 
+            SelectedSprite = new Sprite()
+            {
+                Parent = this,
+                Alignment = Alignment.MidLeft,
+                Size = new ScalableVector2(Width * 0.98f, Height * 0.85f),
+                Tint = Color.White,
+                Alpha = 0,
+                Y = 1,
+                X = InputText.X - 1
+            };
+
             CalculateContainerX();
             ChangeCursorLocation();
+
             AddContainedDrawable(InputText);
             AddContainedDrawable(Cursor);
+            AddContainedDrawable(SelectedSprite);
 
             GameBase.Game.Window.TextInput += OnTextInputEntered;
             OnSubmit += onSubmit;
@@ -166,7 +192,15 @@ namespace Wobble.Graphics.UI.Form
                 FiredStoppedTypingActionHandlers = true;
             }
 
+            // Handle all input.
+            HandleCtrlInput();
+
+            // Change the alpha of the selected sprite depending on if we're currently in a CTRL+A operation.
+            SelectedSprite.Alpha = MathHelper.Lerp(SelectedSprite.Alpha, Selected ? 0.25f : 0,
+                (float) Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
+
             PerformCursorBlinking(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -189,64 +223,81 @@ namespace Wobble.Graphics.UI.Form
             if (!Focused)
                 return;
 
-            // Handle key inputs.
-            switch (e.Key)
+            // If the text is selected (in a CTRL+A) operation
+            if (Selected)
             {
-                // Ignore these keys
-                case Keys.Tab:
-                case Keys.Delete:
-                case Keys.Escape:
-                    break;
-                // Back spacing
-                case Keys.Back:
-                    if (string.IsNullOrEmpty(RawText))
-                        return;
+                // Clear text
+                RawText = "";
 
-                    RawText = RawText.TrimEnd(RawText[RawText.Length - 1]);
+                switch (e.Key)
+                {
+                    // If it's one of the keys that crash you and dont have an input, just clear
+                    case Keys.Back:
+                    case Keys.Tab:
+                    case Keys.Delete:
+                        break;
+                    // For all other key presses, we reset the string and append the new character
+                    default:
+                        RawText += e.Character;
+                        break;
+                }
 
-                    if (RawText == "")
-                    {
-                        // Use place holder text after backspacing to nothing.
+                Selected = false;
+            }
+            // Handle normal key presses.
+            else
+            {
+                // Handle key inputs.
+                switch (e.Key)
+                {
+                    // Ignore these keys
+                    case Keys.Tab:
+                    case Keys.Delete:
+                    case Keys.Escape:
+                        break;
+                    // Back spacing
+                    case Keys.Back:
+                        if (string.IsNullOrEmpty(RawText))
+                            return;
+
+                        RawText = RawText.TrimEnd(RawText[RawText.Length - 1]);
+
+                        if (RawText == "")
+                        {
+                            // Use place holder text after backspacing to nothing.
+                            if (!string.IsNullOrEmpty(PlaceholderText))
+                            {
+                                InputText.Text = PlaceholderText;
+                                InputText.Alpha = 0.50f;
+                            }
+                        }
+                        break;
+                    // On Submit
+                    case Keys.Enter:
+                        if (string.IsNullOrEmpty(RawText))
+                            return;
+
+                        // Run the callback function that was passed in.
+                        OnSubmit?.Invoke(RawText);
+
+                        // Clear text box.
+                        RawText = "";
+
+                        // Use place holder text after submitting.
                         if (!string.IsNullOrEmpty(PlaceholderText))
                         {
                             InputText.Text = PlaceholderText;
                             InputText.Alpha = 0.50f;
                         }
-                    }
-                    break;
-                // On Submit
-                case Keys.Enter:
-                    if (string.IsNullOrEmpty(RawText))
-                        return;
-
-                    // Run the callback function that was passed in.
-                    OnSubmit?.Invoke(RawText);
-
-                    // Clear text box.
-                    RawText = "";
-
-                    // Use place holder text after submitting.
-                    if (!string.IsNullOrEmpty(PlaceholderText))
-                    {
-                        InputText.Text = PlaceholderText;
-                        InputText.Alpha = 0.50f;
-                    }
-                    break;
-                // Input text
-                default:
-                    RawText += e.Character;
-                    break;
+                        break;
+                    // Input text
+                    default:
+                        RawText += e.Character;
+                        break;
+                }
             }
 
-            CalculateContainerX();
-            ChangeCursorLocation();
-
-            // Make cursor visible and reset its visiblity changing.
-            Cursor.Visible = true;
-            TimeSinceCursorVisibllityChanged = 0;
-            TimeSinceStoppedTyping = 0;
-
-            FiredStoppedTypingActionHandlers = RawText == "";
+            ReadjustTextbox();
         }
 
         /// <summary>
@@ -274,6 +325,7 @@ namespace Wobble.Graphics.UI.Form
                     break;
                 case TextboxStyle.SingleLine:
                     Cursor.X = InputText.MeasureString().X + 3;
+                    SelectedSprite.Width = Cursor.X;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -298,6 +350,53 @@ namespace Wobble.Graphics.UI.Form
 
             Cursor.Visible = !Cursor.Visible;
             TimeSinceCursorVisibllityChanged = 0;
+        }
+
+        /// <summary>
+        ///     Makes sure the textbox cursor and x is all up-to-date after entering/removing text.
+        /// </summary>
+        private void ReadjustTextbox()
+        {
+            CalculateContainerX();
+            ChangeCursorLocation();
+
+            // Make cursor visible and reset its visiblity changing.
+            Cursor.Visible = true;
+            TimeSinceCursorVisibllityChanged = 0;
+            TimeSinceStoppedTyping = 0;
+
+            FiredStoppedTypingActionHandlers = RawText == "";
+        }
+
+        /// <summary>
+        ///     Handles control input for the textbox.
+        /// </summary>
+        private void HandleCtrlInput()
+        {
+            // Make sure the textbox is focused and that the control buttons are down before handling anything.
+            if ((!Focused || !KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl))
+                && !KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+                return;
+
+            // CTRL+A, Select the text.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.A) && !string.IsNullOrEmpty(RawText))
+                Selected = true;
+
+            // CTRL+C, Copy the text to the clipboard.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.C) && Selected)
+                Clipboard.SetText(RawText);
+
+            // CTRL+V Paste text
+            if (KeyboardManager.IsUniqueKeyPress(Keys.V))
+            {
+                var clipboardText = Clipboard.GetText().Replace("\n", "").Replace("\r", "");
+
+                if (!string.IsNullOrEmpty(clipboardText))
+                    RawText += clipboardText;
+
+                ReadjustTextbox();
+                Selected = false;
+            }
         }
     }
 
