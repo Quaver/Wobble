@@ -48,7 +48,8 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 Focused = false
             };
 
-            // Simple text box that when submitted, will send the text flying across the screen.
+            // Simple text box that when the user stops typing, it will "check" if a username is available (Random number generator)
+            // and display text on the screen.
             var usernameCheckTextbox = new Textbox(TextboxStyle.SingleLine, new ScalableVector2(500, 30), Fonts.AllerRegular16, "",
                 "Enter a username", 0.90f, null, (text) =>
             {
