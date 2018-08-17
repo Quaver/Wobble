@@ -108,7 +108,7 @@ namespace Wobble.Graphics.UI.Form
             {
                 TextAlignment = Alignment.TopLeft,
                 X = 5,
-                Y = 2,
+                Y = 3,
                 Padding = 5
             };
 
@@ -206,7 +206,7 @@ namespace Wobble.Graphics.UI.Form
 
                     if (RawText == "")
                     {
-                        // Use place holder text after submitting.
+                        // Use place holder text after backspacing to nothing.
                         if (!string.IsNullOrEmpty(PlaceholderText))
                         {
                             InputText.Text = PlaceholderText;
@@ -246,7 +246,7 @@ namespace Wobble.Graphics.UI.Form
             TimeSinceCursorVisibllityChanged = 0;
             TimeSinceStoppedTyping = 0;
 
-            FiredStoppedTypingActionHandlers = RawText != "";
+            FiredStoppedTypingActionHandlers = RawText == "";
         }
 
         /// <summary>
@@ -300,6 +300,7 @@ namespace Wobble.Graphics.UI.Form
             TimeSinceCursorVisibllityChanged = 0;
         }
     }
+
     /// <summary>
     ///     The type of text box
     /// </summary>
