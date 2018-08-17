@@ -270,7 +270,6 @@ namespace Wobble.Graphics.UI.Form
 
                 switch (e.Key)
                 {
-                    // If it's one of the keys that crash you and dont have an input, just clear
                     case Keys.Back:
                     case Keys.Tab:
                     case Keys.Delete:
@@ -293,7 +292,8 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Tab:
                     case Keys.Delete:
                     case Keys.Escape:
-                        break;
+
+                        return;
                     // Back spacing
                     case Keys.Back:
                         if (string.IsNullOrEmpty(RawText))
@@ -401,7 +401,7 @@ namespace Wobble.Graphics.UI.Form
             TimeSinceCursorVisibllityChanged = 0;
             TimeSinceStoppedTyping = 0;
 
-            FiredStoppedTypingActionHandlers = RawText == "";
+            FiredStoppedTypingActionHandlers = false;
         }
 
         /// <summary>
