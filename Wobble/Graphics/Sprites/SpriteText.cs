@@ -367,6 +367,11 @@ namespace Wobble.Graphics.Sprites
             return wrappedText.ToString();
         }
 
+        /// <summary>
+        ///     Better text wrapping function.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         private string WrapText(string text)
         {
             text = text.Replace("\n", "");

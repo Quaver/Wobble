@@ -38,8 +38,19 @@ namespace Wobble.Graphics.UI.Form
             {
                 _rawText = value;
                 InputText.Text = value;
+                InputText.Alpha = 1;
             }
         }
+
+        /// <summary>
+        ///     The text used as a placeholder.
+        /// </summary>
+        public string PlaceholderText { get; set; }
+
+        /// <summary>
+        ///     If the textbox is focused, it will handle input, if not, it wont.
+        /// </summary>
+        public bool Focused { get; set;  } = true;
 
         /// <summary>
         ///     Action called when pressing enter and submitting the text box.
@@ -47,9 +58,33 @@ namespace Wobble.Graphics.UI.Form
         public Action<string> OnSubmit { get; }
 
         /// <summary>
+        ///     Action called when the user stops typing.
+        /// </summary>
+        public Action<string> OnStoppedTyping { get; }
+
+        /// <summary>
         ///     The time since the cursor's visiblity has changed.
         /// </summary>
         private double TimeSinceCursorVisibllityChanged { get; set; }
+
+        /// <summary>
+        ///     The amount of time in milliseconds it'll take before firing OnStoppedTyping
+        /// </summary>
+        public int StoppedTypingActionCalltime { get; set; } = 500;
+
+        /// <summary>
+        ///     The amount of time since the user has stopped typing, so that
+        ///     we can perform actions after they've stopped typing.
+        /// </summary>
+        private double TimeSinceStoppedTyping { get; set; }
+
+        /// <summary>
+        ///     When the user stops typing after a while, this variable tracks if we've already fired
+        ///     the action handlers, to prevent doing it from every frame.
+        ///
+        ///     Set to true by default because we don't want to call on a just initialized Textbox.
+        /// </summary>
+        private bool FiredStoppedTypingActionHandlers { get; set; } = true;
 
         /// <inheritdoc />
         /// <summary>
@@ -58,13 +93,16 @@ namespace Wobble.Graphics.UI.Form
         /// <param name="size"></param>
         /// <param name="font"></param>
         /// <param name="initialText"></param>
+        /// <param name="placeHolderText"></param>
         /// <param name="textScale"></param>
         /// <param name="onSubmit"></param>
-        public Textbox(TextboxStyle style, ScalableVector2 size, SpriteFont font, string initialText = "", float textScale = 1.0f,
-            Action<string> onSubmit = null) : base(size, size)
+        /// <param name="onStoppedTyping"></param>
+        public Textbox(TextboxStyle style, ScalableVector2 size, SpriteFont font, string initialText = "", string placeHolderText = "", float textScale = 1.0f,
+            Action<string> onSubmit = null, Action<string> onStoppedTyping = null) : base(size, size)
         {
-            _rawText = initialText;
             Style = style;
+            PlaceholderText = placeHolderText;
+            _rawText = initialText;
 
             InputText = new SpriteText(font, RawText, size, textScale)
             {
@@ -73,6 +111,14 @@ namespace Wobble.Graphics.UI.Form
                 Y = 2,
                 Padding = 5
             };
+
+            if (!string.IsNullOrEmpty(initialText))
+                RawText = initialText;
+            else if (!string.IsNullOrEmpty(placeHolderText))
+            {
+                InputText.Text = placeHolderText;
+                InputText.Alpha = 0.50f;
+            }
 
             switch (Style)
             {
@@ -99,8 +145,10 @@ namespace Wobble.Graphics.UI.Form
             ChangeCursorLocation();
             AddContainedDrawable(InputText);
             AddContainedDrawable(Cursor);
+
             GameBase.Game.Window.TextInput += OnTextInputEntered;
             OnSubmit += onSubmit;
+            OnStoppedTyping += onStoppedTyping;
         }
 
         /// <inheritdoc />
@@ -109,6 +157,15 @@ namespace Wobble.Graphics.UI.Form
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            TimeSinceStoppedTyping += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            // Handle when the user stops typing. and invoke the action handlers.
+            if (TimeSinceStoppedTyping >= StoppedTypingActionCalltime && !FiredStoppedTypingActionHandlers)
+            {
+                OnStoppedTyping?.Invoke(RawText);
+                FiredStoppedTypingActionHandlers = true;
+            }
+
             PerformCursorBlinking(gameTime);
             base.Update(gameTime);
         }
@@ -129,6 +186,9 @@ namespace Wobble.Graphics.UI.Form
         /// <param name="e"></param>
         private void OnTextInputEntered(object sender, TextInputEventArgs e)
         {
+            if (!Focused)
+                return;
+
             // Handle key inputs.
             switch (e.Key)
             {
@@ -143,6 +203,16 @@ namespace Wobble.Graphics.UI.Form
                         return;
 
                     RawText = RawText.TrimEnd(RawText[RawText.Length - 1]);
+
+                    if (RawText == "")
+                    {
+                        // Use place holder text after submitting.
+                        if (!string.IsNullOrEmpty(PlaceholderText))
+                        {
+                            InputText.Text = PlaceholderText;
+                            InputText.Alpha = 0.50f;
+                        }
+                    }
                     break;
                 // On Submit
                 case Keys.Enter:
@@ -154,6 +224,13 @@ namespace Wobble.Graphics.UI.Form
 
                     // Clear text box.
                     RawText = "";
+
+                    // Use place holder text after submitting.
+                    if (!string.IsNullOrEmpty(PlaceholderText))
+                    {
+                        InputText.Text = PlaceholderText;
+                        InputText.Alpha = 0.50f;
+                    }
                     break;
                 // Input text
                 default:
@@ -167,6 +244,9 @@ namespace Wobble.Graphics.UI.Form
             // Make cursor visible and reset its visiblity changing.
             Cursor.Visible = true;
             TimeSinceCursorVisibllityChanged = 0;
+            TimeSinceStoppedTyping = 0;
+
+            FiredStoppedTypingActionHandlers = RawText != "";
         }
 
         /// <summary>
@@ -205,6 +285,12 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void PerformCursorBlinking(GameTime gameTime)
         {
+            if (!Focused || InputText.Text == PlaceholderText)
+            {
+                Cursor.Visible = false;
+                return;
+            }
+
             TimeSinceCursorVisibllityChanged += gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (!(TimeSinceCursorVisibllityChanged >= 500))

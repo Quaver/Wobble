@@ -21,7 +21,8 @@ namespace Wobble.Tests.Screens.Tests.TextInput
         /// <param name="screen"></param>
         public TestTextInputScreenView(Screen screen) : base(screen)
         {
-            var textbox = new Textbox(TextboxStyle.SingleLine, new ScalableVector2(500, 30), Fonts.AllerRegular16, "", 0.90f, (text) =>
+            // Simple text box that when submitted, will send the text flying across the screen.
+            var textbox = new Textbox(TextboxStyle.SingleLine, new ScalableVector2(500, 30), Fonts.AllerRegular16, "", "Type to see a cool effect!", 0.90f, text =>
             {
                 // Just create a new SpriteText and move it across the screen.
                 // Not recommended in production, as you'll have a random SpriteText floating around still
