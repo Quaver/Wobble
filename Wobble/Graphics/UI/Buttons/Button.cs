@@ -21,6 +21,11 @@ namespace Wobble.Graphics.UI.Buttons
         public event EventHandler Clicked;
 
         /// <summary>
+        ///     Event invoked when the user clicks outside of the button
+        /// </summary>
+        public event EventHandler ClickedOutside;
+
+        /// <summary>
         ///     Returns true if the mouse is truly hovering over the button
         ///     and this button is the top layered one.
         /// </summary>
@@ -142,6 +147,10 @@ namespace Wobble.Graphics.UI.Buttons
             if (IsHeld)
                 OnHeld(gameTime);
 
+            // Fire an event if the user clicks outside of the button.
+            if (MouseManager.IsUniqueClick(MouseButton.Left) && !IsMouseInClickArea())
+                ClickedOutside?.Invoke(this, EventArgs.Empty);
+
             base.Update(gameTime);
         }
 
@@ -151,6 +160,7 @@ namespace Wobble.Graphics.UI.Buttons
         public override void Destroy()
         {
             Clicked = null;
+            ClickedOutside = null;
             ButtonManager.Remove(this);
 
             base.Destroy();
