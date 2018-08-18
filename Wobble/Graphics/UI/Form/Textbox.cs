@@ -268,6 +268,8 @@ namespace Wobble.Graphics.UI.Form
                 // Clear text
                 RawText = "";
 
+
+
                 switch (e.Key)
                 {
                     case Keys.Back:
