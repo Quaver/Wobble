@@ -268,7 +268,12 @@ namespace Wobble.Graphics.UI.Form
                 // Clear text
                 RawText = "";
 
-
+                // Use place holder text after backspacing to nothing.
+                if (!string.IsNullOrEmpty(PlaceholderText))
+                {
+                    InputText.Text = PlaceholderText;
+                    InputText.Alpha = 0.50f;
+                }
 
                 switch (e.Key)
                 {
