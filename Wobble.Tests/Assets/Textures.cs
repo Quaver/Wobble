@@ -27,6 +27,11 @@ namespace Wobble.Tests.Assets
         public static Texture2D RightButtonSquare { get; private set; }
 
         /// <summary>
+        ///     circle-mask
+        /// </summary>
+        public static Texture2D CircleMask { get; private set; }
+
+        /// <summary>
         ///     Loads all the textures for the game.
         /// </summary>
         public static void Load()
@@ -34,6 +39,7 @@ namespace Wobble.Tests.Assets
             TestSpritesheet = AssetLoader.LoadSpritesheetFromTexture(AssetLoader.LoadTexture2D(ResourceStore.test_spritesheet, ImageFormat.Png), 1, 12);
             LeftButtonSquare = AssetLoader.LoadTexture2D(ResourceStore.left_button_square, ImageFormat.Png);
             RightButtonSquare = AssetLoader.LoadTexture2D(ResourceStore.right_button_square, ImageFormat.Png);
+            CircleMask = AssetLoader.LoadTexture2D(ResourceStore.circle_mask, ImageFormat.Png);
         }
     }
 }

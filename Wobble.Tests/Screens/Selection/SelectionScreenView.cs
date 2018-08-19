@@ -17,6 +17,7 @@ using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Scrolling;
+using Wobble.Tests.Screens.Tests.SpriteMasking;
 using Wobble.Tests.Screens.Tests.TextInput;
 
 namespace Wobble.Tests.Screens.Selection
@@ -111,6 +112,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.TextInput:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestTextInputScreen());
+                        break;
+                    case ScreenType.SpriteMaskContainer:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestSpriteMaskingScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

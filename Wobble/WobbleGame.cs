@@ -53,9 +53,12 @@ namespace Wobble
         /// </summary>
         protected WobbleGame()
         {
-            Graphics = new GraphicsDeviceManager(this);
-            GameBase.Game = this;
+            Graphics = new GraphicsDeviceManager(this)
+            {
+                PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
+            };
 
+            GameBase.Game = this;
             GlobalUserInterface = new GlobalUserInterface();
         }
 

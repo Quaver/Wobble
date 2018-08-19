@@ -180,7 +180,6 @@ namespace Wobble.Graphics.Sprites
 
                     DrawToSpriteBatch();
                 }
-
             }
 
             base.Draw(gameTime);
@@ -196,7 +195,7 @@ namespace Wobble.Graphics.Sprites
 
             GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
         }
-        
+
 
         /// <inheritdoc />
         /// <summary>

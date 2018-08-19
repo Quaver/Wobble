@@ -133,6 +133,7 @@
     <Compile Include="Graphics\Sprites\BlurContainer.cs" />
     <Compile Include="Graphics\Sprites\RenderTargetContainer.cs" />
     <Compile Include="Graphics\Sprites\ScrollContainer.cs" />
+    <Compile Include="Graphics\Sprites\SpriteMaskContainer.cs" />
     <Compile Include="Graphics\Transformations\Easing.cs" />
     <Compile Include="Graphics\Transformations\EasingFunctions.cs" />
     <Compile Include="Graphics\Transformations\Transformation.cs" />
