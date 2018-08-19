@@ -39,6 +39,12 @@ namespace Wobble.Tests.Screens.Tests.SpriteMasking
                 Size = new ScalableVector2(500, 200),
                 Image = WobbleAssets.Wallpaper,
             });
+
+            maskContainer.AddContainedSprite(new SpriteText(Fonts.AllerRegular16, "This is masked!")
+            {
+                Parent = maskContainer,
+                Alignment = Alignment.MidCenter,
+            });
         }
 
         /// <inheritdoc />

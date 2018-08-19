@@ -47,7 +47,7 @@ namespace Wobble.Graphics.Sprites
                 DepthBufferEnable = false,
             };
 
-            ContainedDepthStencilState= new DepthStencilState
+            ContainedDepthStencilState = new DepthStencilState
             {
                 StencilEnable = true,
                 StencilFunction = CompareFunction.LessEqual,
@@ -81,13 +81,13 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
-        ///     Adds a contained sprite to the mask container.
+        ///     Adds a contained drawable to the mask container.
         /// </summary>
-        /// <param name="sprite"></param>
-        public void AddContainedSprite(Sprite sprite)
+        /// <param name="drawable"></param>
+        public void AddContainedSprite(Drawable drawable)
         {
             // Add the sprite as a child.
-            sprite.Parent = this;
+            drawable.Parent = this;
 
             for (var i = 0; i < Children.Count; i++)
             {
@@ -99,11 +99,7 @@ namespace Wobble.Graphics.Sprites
                     child.SpriteBatchOptions = new SpriteBatchOptions
                     {
                         DepthStencilState = ContainedDepthStencilState,
-                        Shader = new Shader(new AlphaTestEffect(GameBase.Game.GraphicsDevice)
-                        {
-                            Projection = Matrix,
-                            Alpha = sprite.Alpha,
-                        }, new Dictionary<string, object>())
+                        Shader = new Shader(CreateAlphaTestEffect(drawable), new Dictionary<string, object>())
                     };
                 }
                 // All other children need to use previous SpriteBatch options.
@@ -112,6 +108,35 @@ namespace Wobble.Graphics.Sprites
                     child.UsePreviousSpriteBatchOptions = true;
                 }
             }
+        }
+
+        /// <summary>
+        ///     Creates an AlphaTestEffect from a drawable.
+        /// </summary>
+        /// <param name="drawable"></param>
+        /// <returns></returns>
+        private AlphaTestEffect CreateAlphaTestEffect(Drawable drawable)
+        {
+            var alpha = 0f;
+
+            var type = drawable.GetType();
+
+            if (type == typeof(Sprite))
+            {
+                var sprite = (Sprite) drawable;
+                alpha = sprite.Alpha;
+            }
+            else if (type == typeof(SpriteText))
+            {
+                var text = (SpriteText) drawable;
+                alpha = text.Alpha;
+            }
+
+            return new AlphaTestEffect(GameBase.Game.GraphicsDevice)
+            {
+                Projection = Matrix,
+                Alpha = alpha,
+            };
         }
     }
 }
