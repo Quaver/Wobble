@@ -315,12 +315,21 @@ namespace Wobble.Graphics
             DrawOrder = TotalDrawn;
 
             // Draw the children and set their order.
-            foreach (var drawable in Children)
+            try
             {
-                drawable.Draw(gameTime);
+                foreach (var drawable in Children)
+                {
+                    drawable.Draw(gameTime);
 
-                TotalDrawn++;
-                drawable.DrawOrder = TotalDrawn;
+                    TotalDrawn++;
+                    drawable.DrawOrder = TotalDrawn;
+                }
+            }
+            // In the case of modifying a drawable collection, an InvalidOperationException might occur
+            catch (InvalidOperationException e)
+            {
+                if (!e.Message.Contains("Collection was modified; enumeration operation may not execute."))
+                    throw;
             }
         }
 
