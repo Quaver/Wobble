@@ -92,7 +92,7 @@ namespace Wobble.Graphics
         /// <param name="rect"></param>
         /// <param name="point"></param>
         /// <returns></returns>
-        internal static bool RectangleContains(DrawRectangle rect, Vector2 point)
+        public static bool RectangleContains(DrawRectangle rect, Vector2 point)
         {
             return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
         }
