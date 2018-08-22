@@ -112,5 +112,8 @@
   <ItemGroup>
     <Resource Include="Resources\Tracks\virt - Send My Love To Mars.mp3" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Textures\circle-mask.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
