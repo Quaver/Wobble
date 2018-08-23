@@ -96,5 +96,10 @@ namespace Wobble.Graphics
         {
             return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
         }
+
+        public static bool RectangleContains(Rectangle rect, Vector2 point)
+        {
+            return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
+        }
     }
 }
