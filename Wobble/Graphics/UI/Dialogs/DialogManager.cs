@@ -90,6 +90,18 @@ namespace Wobble.Graphics.UI.Dialogs
         public static void Dismiss() => DialogsToBeRemoved = new List<DialogScreen> {Dialogs.Last()};
 
         /// <summary>
+        ///     Dismisses a specific dialog screen
+        /// </summary>
+        /// <param name="screen"></param>
+        public static void Dismiss(DialogScreen screen)
+        {
+            if (!Dialogs.Contains(screen))
+                return;
+
+            DialogsToBeRemoved = new List<DialogScreen>() {screen};
+        }
+
+        /// <summary>
         ///     Dismisses all dialogs.
         /// </summary>
         public static void DismissAll()
