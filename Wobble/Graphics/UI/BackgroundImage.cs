@@ -49,7 +49,11 @@ namespace Wobble.Graphics.UI
         public BackgroundImage(Texture2D image, int dim = 0, bool hasParallaxEffect = true)
         {
             Image = image;
-            Size = new ScalableVector2(WindowManager.VirtualScreen.X + 100, WindowManager.VirtualScreen.Y + 100);
+
+            if (hasParallaxEffect)
+                Size = new ScalableVector2(WindowManager.VirtualScreen.X + 100, WindowManager.VirtualScreen.Y + 100);
+            else
+                Size = new ScalableVector2(WindowManager.VirtualScreen.X, WindowManager.VirtualScreen.Y);
 
             BrightnessSprite = new Sprite
             {
