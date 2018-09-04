@@ -85,12 +85,12 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Action called when pressing enter and submitting the text box.
         /// </summary>
-        public Action<string> OnSubmit { get; }
+        public Action<string> OnSubmit { get; set; }
 
         /// <summary>
         ///     Action called when the user stops typing.
         /// </summary>
-        public Action<string> OnStoppedTyping { get; }
+        public Action<string> OnStoppedTyping { get; set; }
 
         /// <summary>
         ///     The time since the cursor's visiblity has changed.
