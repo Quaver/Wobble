@@ -63,6 +63,11 @@ namespace Wobble.Graphics.UI.Form
         public string PlaceholderText { get; set; }
 
         /// <summary>
+        ///     Maximum amount of characters that could be in the textbox.
+        /// </summary>
+        public int MaxCharacters { get; set; } = int.MaxValue;
+
+        /// <summary>
         ///     If the textbox is focused, it will handle input, if not, it wont.
         /// </summary>
         private bool _focused = false;
@@ -283,7 +288,8 @@ namespace Wobble.Graphics.UI.Form
                         break;
                     // For all other key presses, we reset the string and append the new character
                     default:
-                        RawText += e.Character;
+                        if (RawText.Length + 1 <= MaxCharacters)
+                            RawText += e.Character;
                         break;
                 }
 
@@ -331,7 +337,8 @@ namespace Wobble.Graphics.UI.Form
                         break;
                     // Input text
                     default:
-                        RawText += e.Character;
+                        if (RawText.Length + 1 <= MaxCharacters)
+                            RawText += e.Character;
                         break;
                 }
             }
