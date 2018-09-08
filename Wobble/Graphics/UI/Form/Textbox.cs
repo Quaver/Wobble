@@ -405,7 +405,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Makes sure the textbox cursor and x is all up-to-date after entering/removing text.
         /// </summary>
-        private void ReadjustTextbox()
+        public void ReadjustTextbox()
         {
             CalculateContainerX();
             ChangeCursorLocation();
