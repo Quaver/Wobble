@@ -7,8 +7,8 @@ namespace Wobble.Graphics.Sprites
 {
     /// <inheritdoc />
     /// <summary>
-    ///     Any drawable object that uses
     /// </summary>
+    [Obsolete("SpriteText is deprecated. Please use SpriteTextBitmap instead.")]
     public class SpriteText : Drawable
     {
         /// <summary>
