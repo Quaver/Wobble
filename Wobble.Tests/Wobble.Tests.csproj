@@ -62,6 +62,8 @@
     <Compile Include="Screens\Tests\Audio\TestAudioScreenView.cs" />
     <Compile Include="Screens\Tests\Background\TestBackgroundImageScreen.cs" />
     <Compile Include="Screens\Tests\Background\TestBackgroundImageScreenView.cs" />
+    <Compile Include="Screens\Tests\BitmapFont\TestBitmapFontScreen.cs" />
+    <Compile Include="Screens\Tests\BitmapFont\TestBitmapFontScreenView.cs" />
     <Compile Include="Screens\Tests\BlurContainer\TestBlurContainerScreen.cs" />
     <Compile Include="Screens\Tests\BlurContainer\TestBlurContainerScreenView.cs" />
     <Compile Include="Screens\Tests\BlurredBgImage\TestBlurredBackgroundImageScreen.cs" />
@@ -86,6 +88,8 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\Fonts\aller_regular_16.xnb" />
     <EmbeddedResource Include="Resources\Shaders\semi-transparent.mgfxo" />
+    <EmbeddedResource Include="Resources\Fonts\exo2-bold.otf" />
+    <EmbeddedResource Include="Resources\Fonts\exo2-regular.otf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wobble\Wobble.csproj">

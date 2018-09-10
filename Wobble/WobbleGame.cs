@@ -5,6 +5,7 @@ using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Discord;
 using Wobble.Graphics;
+using Wobble.Graphics.BitmapFonts;
 using Wobble.Input;
 using Wobble.Screens;
 using Wobble.Window;
@@ -98,6 +99,7 @@ namespace Wobble
             WindowManager.UnHookEvents();
             AudioManager.Dispose();
             DiscordManager.Dispose();
+            BitmapFontFactory.Dispose();
         }
 
         /// <summary>
