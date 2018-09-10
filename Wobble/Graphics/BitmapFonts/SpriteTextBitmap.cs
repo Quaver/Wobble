@@ -110,7 +110,6 @@ namespace Wobble.Graphics.BitmapFonts
             _maxWidth = maxWidth;
             _textAlignment = textAlignment;
 
-            SpriteBatchOptions = new SpriteBatchOptions {BlendState = BlendState.NonPremultiplied};
             LoadTexture();
         }
 
