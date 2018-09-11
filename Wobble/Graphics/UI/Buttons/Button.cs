@@ -89,7 +89,7 @@ namespace Wobble.Graphics.UI.Buttons
 
                 try
                 {
-                    topLayerButton = ButtonManager.Buttons.FindAll(x => x.IsHoveredWithoutDrawOrder).OrderByDescending(x => x.DrawOrder).First();
+                    topLayerButton = ButtonManager.Buttons.FindAll(x => x.IsHoveredWithoutDrawOrder && x.IsClickable).OrderByDescending(x => x.DrawOrder).First();
                 }
                 catch (Exception e)
                 {
