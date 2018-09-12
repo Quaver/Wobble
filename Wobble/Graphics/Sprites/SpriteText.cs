@@ -20,7 +20,8 @@ namespace Wobble.Graphics.Sprites
             get => _text;
             set
             {
-                _text = value;
+
+                _text = ReplaceBadCharacters(value);
                 RecalculateRectangles();
             }
         }
@@ -424,6 +425,26 @@ namespace Wobble.Graphics.Sprites
             var b = MathHelper.Lerp(TextColor.B, color.B, (float) Math.Min(dt / scale, 1));
 
             TextColor = new Color((int)r, (int)g, (int)b);
+        }
+
+        /// <summary>
+        ///     Checks
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private string ReplaceBadCharacters(string text)
+        {
+            var str = "";
+
+            foreach (var character in text)
+            {
+                if (!Font.Characters.Contains(character))
+                    str += "?";
+                else
+                    str += character;
+            }
+
+            return str;
         }
     }
 
