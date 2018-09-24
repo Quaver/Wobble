@@ -44,7 +44,6 @@ namespace Wobble.Tests
         {
             base.LoadContent();
 
-            // TODO: Your asset loading + first screen goes here.
             Textures.Load();
             Fonts.Load();
 

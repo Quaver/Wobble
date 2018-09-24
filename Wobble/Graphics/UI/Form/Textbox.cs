@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
+using Wobble.Platform;
+using Wobble.Platform.Windows;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Wobble.Graphics.UI.Form
@@ -120,6 +121,11 @@ namespace Wobble.Graphics.UI.Form
         ///     Set to true by default because we don't want to call on a just initialized Textbox.
         /// </summary>
         private bool FiredStoppedTypingActionHandlers { get; set; } = true;
+
+        /// <summary>
+        ///     Clipboard for the windows instance.
+        /// </summary>
+        private WindowsClipboard Clipboard { get; } = new WindowsClipboard();
 
         /// <inheritdoc />
         /// <summary>

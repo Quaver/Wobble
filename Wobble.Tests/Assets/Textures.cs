@@ -36,10 +36,10 @@ namespace Wobble.Tests.Assets
         /// </summary>
         public static void Load()
         {
-            TestSpritesheet = AssetLoader.LoadSpritesheetFromTexture(AssetLoader.LoadTexture2D(ResourceStore.test_spritesheet, ImageFormat.Png), 1, 12);
-            LeftButtonSquare = AssetLoader.LoadTexture2D(ResourceStore.left_button_square, ImageFormat.Png);
-            RightButtonSquare = AssetLoader.LoadTexture2D(ResourceStore.right_button_square, ImageFormat.Png);
-            CircleMask = AssetLoader.LoadTexture2D(ResourceStore.circle_mask, ImageFormat.Png);
+            TestSpritesheet = AssetLoader.LoadSpritesheetFromTexture(AssetLoader.LoadTexture2D(ResourceStore.test_spritesheet), 1, 12);
+            LeftButtonSquare = AssetLoader.LoadTexture2D(ResourceStore.left_button_square);
+            RightButtonSquare = AssetLoader.LoadTexture2D(ResourceStore.right_button_square);
+            CircleMask = AssetLoader.LoadTexture2D(ResourceStore.circle_mask);
         }
     }
 }

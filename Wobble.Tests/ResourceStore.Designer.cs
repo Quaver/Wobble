@@ -71,12 +71,12 @@ namespace Wobble.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap circle_mask {
+        internal static byte[] circle_mask {
             get {
                 object obj = ResourceManager.GetObject("circle_mask", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
@@ -101,22 +101,22 @@ namespace Wobble.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap left_button_square {
+        internal static byte[] left_button_square {
             get {
                 object obj = ResourceManager.GetObject("left_button_square", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap right_button_square {
+        internal static byte[] right_button_square {
             get {
                 object obj = ResourceManager.GetObject("right_button_square", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((byte[])(obj));
             }
         }
         
@@ -131,21 +131,12 @@ namespace Wobble.Tests {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Bitmap test_spritesheet {
+        internal static byte[] test_spritesheet {
             get {
                 object obj = ResourceManager.GetObject("test_spritesheet", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
-        /// </summary>
-        internal static System.IO.UnmanagedMemoryStream train {
-            get {
-                return ResourceManager.GetStream("train", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

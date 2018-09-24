@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Wobble.Tests
 {
-    internal static class Program
+    public static class Program
     {
         [STAThread]
-        internal static void Main(string[] args)
+        public static void Main(string[] args)
         {
             using (var game = new WobbleTestsGame())
-            {
                 game.Run();
-            }
         }
     }
 }

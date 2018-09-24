@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wobble.Assets;
 using Wobble.Audio.Samples;
 using Wobble.Audio.Tracks;
 using Wobble.Bindables;
@@ -34,7 +35,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
         public TestAudioScreen()
         {
             Song = new AudioTrack(ResourceStore.virt___Send_My_Love_To_Mars);
-            Train = new AudioSample(ResourceStore.train);
+            Train = new AudioSample(AssetLoader.GetResource("Resources.SFX.train.wav"));
 
             Song?.Play();
 

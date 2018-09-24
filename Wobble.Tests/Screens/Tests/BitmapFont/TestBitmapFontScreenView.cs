@@ -39,7 +39,11 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
 
             SongTimeText = new SpriteTextBitmap("exo2-bold", "0", 16, Color.White, Alignment.MidLeft, (int)WindowManager.Width)
             {
-                Parent = Container
+                Parent = Container,
+                SpriteBatchOptions = new SpriteBatchOptions()
+                {
+                    BlendState = BlendState.NonPremultiplied
+                }
             };
 
             Track = new AudioTrack(ResourceStore.virt___Send_My_Love_To_Mars);
