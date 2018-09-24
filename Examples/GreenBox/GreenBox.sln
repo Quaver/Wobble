@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreenBox", "GreenBox\GreenBox.csproj", "{15715CD7-64CD-448E-A95F-FD039E57E91F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreenBox", "GreenBox\GreenBox.csproj", "{15715CD7-64CD-448E-A95F-FD039E57E91F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wobble", "..\..\Wobble\Wobble.csproj", "{44724AD6-93B2-4587-AFB8-576A48DD4EEB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Framework.DesktopGL.Core", "..\..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.Core.csproj", "{4F87E7A1-C7F9-4514-A1CF-32C7ED8797A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{44724AD6-93B2-4587-AFB8-576A48DD4EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44724AD6-93B2-4587-AFB8-576A48DD4EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44724AD6-93B2-4587-AFB8-576A48DD4EEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F87E7A1-C7F9-4514-A1CF-32C7ED8797A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F87E7A1-C7F9-4514-A1CF-32C7ED8797A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F87E7A1-C7F9-4514-A1CF-32C7ED8797A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F87E7A1-C7F9-4514-A1CF-32C7ED8797A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
