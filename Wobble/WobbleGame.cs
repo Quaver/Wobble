@@ -71,7 +71,7 @@ namespace Wobble
         /// </summary>
         protected override void Initialize()
         {
-            WobbleResources.ResourceManager.IgnoreCase = true;
+            WobbleResourceStore.ResourceManager.IgnoreCase = true;
             AudioManager.Initialize();
             Window.ClientSizeChanged += WindowManager.OnClientSizeChanged;
 

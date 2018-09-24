@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
+using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
@@ -118,8 +119,8 @@ namespace Wobble.Graphics.BitmapFonts
                 // Dispose of the font.
                 font.Dispose();
 
-                // Now save or use the bitmap
-                return AssetLoader.LoadTexture2D(bmp, ImageFormat.Png);
+               // bmp.RawFormat = ImageFormat.Png;
+                return AssetLoader.LoadTexture2D(ImageToByte2(bmp));
             }
         }
 
@@ -155,6 +156,20 @@ namespace Wobble.Graphics.BitmapFonts
                     return StringAlignment.Far;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null);
+            }
+        }
+
+        /// <summary>
+        ///     Converts an image to a byte array.
+        /// </summary>
+        /// <param name="img"></param>
+        /// <returns></returns>
+        public static byte[] ImageToByte2(Image img)
+        {
+            using (var stream = new MemoryStream())
+            {
+                img.Save(stream, ImageFormat.Png);
+                return stream.ToArray();
             }
         }
 

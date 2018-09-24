@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ManagedBass;
-using Microsoft.Xna.Framework;
 using Wobble.Audio.Tracks;
 
 namespace Wobble.Audio

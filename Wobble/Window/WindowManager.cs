@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Xna.Framework;
-using OpenGL;
 using Wobble.Graphics;
 
 namespace Wobble.Window

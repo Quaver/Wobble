@@ -243,12 +243,6 @@ namespace Wobble.Discord.RPC
 			ProcessID = System.Diagnostics.Process.GetCurrentProcess().Id;
 			_pipe = pipe;
 
-			//If we are to register the URI scheme, do so.
-			//The UriScheme.RegisterUriScheme function takes steamID as a optional parameter, its null by default.
-			//   this means it will handle a null steamID for us :)
-			if (registerUriScheme)
-				UriScheme.RegisterUriScheme(applicationID, steamID);
-
 			//Create the RPC client
 			connection = new RpcConnection(ApplicationID, ProcessID, TargetPipe, client) { ShutdownOnly = _shutdownOnly };
 			connection.Logger = this._logger;

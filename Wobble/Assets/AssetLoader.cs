@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -28,6 +29,17 @@ namespace Wobble.Assets
                 image.Save(stream, format);
                 return Texture2D.FromStream(GameBase.Game.GraphicsDevice, stream);
             }
+        }
+
+        /// <summary>
+        ///     Loads a Texture2D from a byte array.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static Texture2D LoadTexture2D(byte[] data)
+        {
+            using (var stream = new MemoryStream(data))
+                return Texture2D.FromStream(GameBase.Game.GraphicsDevice, stream);
         }
 
         /// <summary>
@@ -105,5 +117,25 @@ namespace Wobble.Assets
         /// <typeparam name="T">The resx resource store to load from.</typeparam>
         /// <returns></returns>
         private static object GetProperty<T>(string name) => typeof(T).GetProperty(name.Replace("-", "_").Replace("@", "_"))?.GetValue(null, null);
+
+        /// <summary>
+        ///     Gets an embedded resource as a byte[] 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static byte[] GetResource(string filename)
+        {
+            var a = System.Reflection.Assembly.GetCallingAssembly();
+
+            using (var resFilestream = a.GetManifestResourceStream(a.GetName().Name + "." + filename))
+            {
+                if (resFilestream == null)
+                    return null;
+
+                var ba = new byte[resFilestream.Length];
+                resFilestream.Read(ba, 0, ba.Length);
+                return ba;
+            }
+        }
     }
 }
