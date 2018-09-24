@@ -28,7 +28,7 @@ namespace Wobble.Platform
         internal static void Copy()
         {
             foreach (var file in Directory.GetFiles(NativeDirectory))
-                File.Copy(file, Path.Combine(BaseDirectory, Path.GetFileName(file)));
+                File.Copy(file, Path.Combine(BaseDirectory, Path.GetFileName(file)), true);
         }
     }
 }
