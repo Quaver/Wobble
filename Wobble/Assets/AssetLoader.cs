@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Resources;
+using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
@@ -41,6 +42,14 @@ namespace Wobble.Assets
             using (var stream = new MemoryStream(data))
                 return Texture2D.FromStream(GameBase.Game.GraphicsDevice, stream);
         }
+
+        /// <summary>
+        ///     Loads an embedded resource from a resource manager
+        /// </summary>
+        /// <param name="rm"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static Texture2D LoadTexture2D(ResourceManager rm, string name) => LoadTexture2D(GetResource(rm, name));
 
         /// <summary>
         ///     Loads a spritesheet in from a texture 2d given the number of rows and columns.
@@ -136,6 +145,26 @@ namespace Wobble.Assets
                 resFilestream.Read(ba, 0, ba.Length);
                 return ba;
             }
+        }
+
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="rm"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public static byte[] GetResource(ResourceManager rm, string file)
+        {
+            file = file.Replace("-", "_").Replace(".", "_");
+
+            var obj = rm.GetObject(file);
+
+            if (obj != null)
+                return (byte[]) obj;
+
+            Console.WriteLine($"ERROR: RESOURCE: {file} WAS NOT FOUND. DEFAULTING");
+            return WobbleResourceStore.white_box;
+
         }
     }
 }
