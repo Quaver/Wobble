@@ -7,6 +7,7 @@ using Wobble.Discord;
 using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Input;
+using Wobble.Platform;
 using Wobble.Screens;
 using Wobble.Window;
 
@@ -54,6 +55,8 @@ namespace Wobble
         /// </summary>
         protected WobbleGame()
         {
+            NativeAssemblies.Copy();
+
             Graphics = new GraphicsDeviceManager(this)
             {
                 PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
