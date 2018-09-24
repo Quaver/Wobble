@@ -83,9 +83,11 @@ These are the following steps that we find to be particularly handy when using W
 
 **1.** Create a new C# .NET Core project.  
 
-**2.** Install the [MonoGame.Framework.DesktopGL.Core](https://www.nuget.org/packages/MonoGame.Framework.DesktopGL.Core/)
+**3.** Clone Wobble and add it as a submodule to your project.
 
-**3.** Download the Wobble source code **or** add it as a submodule to git (if necessary) and reference it in your project.
+**4.** Run `git submodule update --init recursive` to install all of Wobble's dependencies.
+
+**5.** Reference both Wobble and MonoGame.Framework.DesktopGL.Core in your project.
 
 **4.** Create a class that derives from `WobbleGame`. In this case, we'll call it `MyGame`. It should look similar to this:
 
