@@ -42,7 +42,7 @@ We have several goals with the creation and development of this framework.
 
 # Requirements
 
-* [.NET Core SDK 2.0](https://www.microsoft.com/net/download)
+* [.NET Core SDK 2.1](https://www.microsoft.com/net/download)
 
 # Understanding the Design Paradigm
 
