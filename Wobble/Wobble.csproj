@@ -9,25 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Shaders\fast-blur.fx" />
-    <None Remove="Resources\Shaders\fast-blur.mgfxo" />
-    <None Remove="Resources\Shaders\frosty-blur.fx" />
-    <None Remove="Resources\Shaders\frosty-blur.mgfxo" />
-    <None Remove="Resources\Shaders\gaussian-blur.fx" />
-    <None Remove="Resources\Shaders\gaussian-blur.mgfxo" />
-    <None Remove="Resources\UI\Basics\wallpaper.jpg" />
-    <None Remove="Resources\UI\Basics\white_box.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Shaders\fast-blur.fx" />
-    <EmbeddedResource Include="Resources\Shaders\fast-blur.mgfxo" />
-    <EmbeddedResource Include="Resources\Shaders\frosty-blur.fx" />
-    <EmbeddedResource Include="Resources\Shaders\frosty-blur.mgfxo" />
-    <EmbeddedResource Include="Resources\Shaders\gaussian-blur.fx" />
-    <EmbeddedResource Include="Resources\Shaders\gaussian-blur.mgfxo" />
-    <EmbeddedResource Include="Resources\UI\Basics\wallpaper.jpg" />
-    <EmbeddedResource Include="Resources\UI\Basics\white_box.png" />
+    <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
 
   <ItemGroup>
