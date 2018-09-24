@@ -40,6 +40,10 @@ We have several goals with the creation and development of this framework.
 * To make the boilerplate process of developing new games a lot faster.
 * Have a clean and easy way of building out scenes while still giving the developer full control.
 
+# Requirements
+
+* [.NET Core SDK 2.0](https://www.microsoft.com/net/download)
+
 # Understanding the Design Paradigm
 
 The key of understanding how to use Wobble is understanding how it works at its core. 
@@ -77,9 +81,9 @@ Currently there is no NuGet package for Wobble, however this may change in the f
 
 These are the following steps that we find to be particularly handy when using Wobble with new projects.
 
-**1.** Create a new C# .NET project.  
+**1.** Create a new C# .NET Core project.  
 
-**2.** Install the [MonoGame.Framework.DesktopGL](https://www.nuget.org/packages/MonoGame.Framework.DesktopGL/) (or other platform) NuGet package.
+**2.** Install the [MonoGame.Framework.DesktopGL.Core](https://www.nuget.org/packages/MonoGame.Framework.DesktopGL.Core/)
 
 **3.** Download the Wobble source code **or** add it as a submodule to git (if necessary) and reference it in your project.
 
