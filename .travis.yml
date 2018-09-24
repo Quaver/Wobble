@@ -1,6 +1,11 @@
 language: csharp
-solution: Wobble.sln
-after_success:
+mono: none
+dotnet: 2.0.0
+install:
+- dotnet restore
+script:
+ - dotnet build ./Wobble/Wobble.csproj
+ after_success:
   - wget https://raw.githubusercontent.com/Swan/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
   - ./send.sh success $WEBHOOK_URL
