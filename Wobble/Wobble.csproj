@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="WobbleResourceStore.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
