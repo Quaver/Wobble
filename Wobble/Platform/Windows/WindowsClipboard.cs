@@ -60,11 +60,11 @@ namespace Wobble.Platform.Windows
                 if (!OpenClipboard(IntPtr.Zero))
                     return null;
 
-                IntPtr handle = GetClipboardData(cf_unicodetext);
+                var handle = GetClipboardData(cf_unicodetext);
                 if (handle == IntPtr.Zero)
                     return null;
 
-                IntPtr pointer = IntPtr.Zero;
+                var pointer = IntPtr.Zero;
 
                 try
                 {
@@ -73,8 +73,8 @@ namespace Wobble.Platform.Windows
                     if (pointer == IntPtr.Zero)
                         return null;
 
-                    int size = GlobalSize(handle);
-                    byte[] buff = new byte[size];
+                    var size = GlobalSize(handle);
+                    var buff = new byte[size];
 
                     Marshal.Copy(pointer, buff, 0, size);
 
@@ -101,7 +101,7 @@ namespace Wobble.Platform.Windows
 
                 EmptyClipboard();
 
-                uint bytes = ((uint)selectedText.Length + 1) * 2;
+                var bytes = ((uint)selectedText.Length + 1) * 2;
 
                 var source = Marshal.StringToHGlobalUni(selectedText);
 
