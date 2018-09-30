@@ -63,7 +63,7 @@ namespace Wobble.Graphics.Sprites
         ///     The tint this QuaverSprite will inherit.
         /// </summary>
         private Color _tint = Color.White;
-        private Color _color = Color.White;
+        public Color _color = Color.White;
         public Color Tint
         {
             get => _tint;

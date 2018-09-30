@@ -16,6 +16,16 @@ namespace Wobble.Tests.Screens.Tests.Primitives
         /// </summary>
         public Line HorizontalLine { get; }
 
+        /// <summary>
+        ///     Simple rectangle.
+        /// </summary>
+        public RectangleSprite Rect { get; }
+
+        /// <summary>
+        ///     Simple filled in rectangle.
+        /// </summary>
+        public FilledRectangleSprite FilledRect { get; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -32,6 +42,23 @@ namespace Wobble.Tests.Screens.Tests.Primitives
             };
 
             HorizontalLine.EndPosition = new Vector2(HorizontalLine.AbsolutePosition.X + 500, HorizontalLine.AbsolutePosition.Y);
+
+            Rect = new RectangleSprite(2)
+            {
+                Parent = Container,
+                Alignment = Alignment.TopCenter,
+                Y = 55,
+                Size = new ScalableVector2(50, 20),
+                X = -25
+            };
+
+            FilledRect = new FilledRectangleSprite()
+            {
+                Parent = Container,
+                Alignment = Alignment.TopCenter,
+                Position = new ScalableVector2(-50, Rect.Y + Rect.Height + 5),
+                Size = new ScalableVector2(100, 30)
+            };
         }
 
         /// <inheritdoc />

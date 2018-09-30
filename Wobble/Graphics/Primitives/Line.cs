@@ -6,6 +6,9 @@ using Wobble.Graphics.Sprites;
 
 namespace Wobble.Graphics.Primitives
 {
+    /// <summary>
+    ///     A simple line.
+    /// </summary>
     public class Line : Sprite
     {
         /// <summary>
@@ -35,6 +38,7 @@ namespace Wobble.Graphics.Primitives
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        protected override void DrawToSpriteBatch() => GameBase.Game.SpriteBatch.DrawLine(new Vector2(RenderRectangle.X, RenderRectangle.Y), EndPosition, Tint, Thickness);
+        protected override void DrawToSpriteBatch() => GameBase.Game.SpriteBatch.DrawLine(new Vector2(RenderRectangle.X, RenderRectangle.Y),
+            EndPosition, Tint * Alpha, Thickness);
     }
 }
