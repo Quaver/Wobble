@@ -38,7 +38,13 @@ namespace Wobble.Graphics.Primitives
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        protected override void DrawToSpriteBatch() => GameBase.Game.SpriteBatch.DrawLine(new Vector2(RenderRectangle.X, RenderRectangle.Y),
-            EndPosition, Tint * Alpha, Thickness);
+        protected override void DrawToSpriteBatch()
+        {
+            if (!Visible)
+                return;
+
+            GameBase.Game.SpriteBatch.DrawLine(new Vector2(RenderRectangle.X, RenderRectangle.Y),
+                EndPosition, Tint * Alpha, Thickness);
+        }
     }
 }

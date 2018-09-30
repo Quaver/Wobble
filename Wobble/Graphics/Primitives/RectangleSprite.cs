@@ -24,6 +24,9 @@ namespace Wobble.Graphics.Primitives
         /// </summary>
         protected override void DrawToSpriteBatch()
         {
+            if (!Visible)
+                return;
+
             GameBase.Game.SpriteBatch.DrawRectangle(new Vector2(RenderRectangle.X, RenderRectangle.Y),
                 new Vector2(RenderRectangle.Width, RenderRectangle.Height), Tint * Alpha, Thickness);
         }

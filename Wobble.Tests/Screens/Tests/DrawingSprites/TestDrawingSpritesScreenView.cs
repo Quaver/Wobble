@@ -76,6 +76,8 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
                 Position = new ScalableVector2(0, 10),
                 Alignment = Alignment.TopCenter
             };
+
+            GreenBox.AddBorder(Color.White, 2);
 #endregion
 
 #region HELLO_WORLD_TEXT

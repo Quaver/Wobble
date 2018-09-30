@@ -30,7 +30,13 @@ namespace Wobble.Graphics.Primitives
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        protected override void DrawToSpriteBatch() => Primitives2D.DrawPoints(GameBase.Game.SpriteBatch,
-            new Vector2(RenderRectangle.X, RenderRectangle.Y), Points, Tint * Alpha, Thickness);
+        protected override void DrawToSpriteBatch()
+        {
+            if (!Visible)
+                return;
+
+            Primitives2D.DrawPoints(GameBase.Game.SpriteBatch,
+                new Vector2(RenderRectangle.X, RenderRectangle.Y), Points, Tint * Alpha, Thickness);
+        }
     }
 }
