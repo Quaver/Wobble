@@ -17,6 +17,7 @@ using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
+using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
 using Wobble.Tests.Screens.Tests.TextInput;
@@ -119,6 +120,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.BitmapFont:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBitmapFontScreen());
+                        break;
+                    case ScreenType.Primitives:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestPrimitivesScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

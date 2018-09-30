@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
@@ -90,7 +91,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 
 #region CLICK_ME_BUTTON
             ClickMeButton = new TextButton(WobbleAssets.WhiteBox, Fonts.AllerRegular16, "Click Me!", 0.95f, (sender, args) =>
-            {        
+            {
                 // Click event handler method goes here.
                 // Choose a random background color!
                 BackgroundColor = new Color(Rng.Next(0, 255), Rng.Next(0, 255), Rng.Next(0, 255));

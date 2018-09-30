@@ -26,7 +26,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.BlurredBackgroundImage, "Blurred BG Image"},
             {ScreenType.TextInput, "Text Input"},
             {ScreenType.SpriteMaskContainer, "Sprite Masking"},
-            {ScreenType.BitmapFont, "Bitmap Font"}
+            {ScreenType.BitmapFont, "Bitmap Font"},
+            {ScreenType.Primitives, "Primitives"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -48,6 +49,7 @@ namespace Wobble.Tests.Screens.Selection
         BlurredBackgroundImage,
         TextInput,
         SpriteMaskContainer,
-        BitmapFont
+        BitmapFont,
+        Primitives
     }
 }
