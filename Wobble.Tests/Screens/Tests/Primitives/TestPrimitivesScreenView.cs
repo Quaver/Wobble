@@ -26,6 +26,13 @@ namespace Wobble.Tests.Screens.Tests.Primitives
         /// </summary>
         public FilledRectangleSprite FilledRect { get; }
 
+        /// <summary>
+        ///     A list of points drawn in a single line batch.
+        ///
+        ///     Draws a triangle.
+        /// </summary>
+        public PrimitiveLineBatch PrimitiveLineBatch { get; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -58,6 +65,18 @@ namespace Wobble.Tests.Screens.Tests.Primitives
                 Alignment = Alignment.TopCenter,
                 Position = new ScalableVector2(-50, Rect.Y + Rect.Height + 5),
                 Size = new ScalableVector2(100, 30)
+            };
+
+            PrimitiveLineBatch = new PrimitiveLineBatch(new List<Vector2>()
+            {
+                new Vector2(0, 100),
+                new Vector2(100, 100),
+                new Vector2(100, 0),
+                new Vector2(0, 100)
+            }, 3)
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
             };
         }
 
