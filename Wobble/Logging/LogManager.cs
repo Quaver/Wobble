@@ -29,8 +29,12 @@ namespace Wobble.Logging
         ///     Add a log to the manager.
         /// </summary>
         /// <param name="m"></param>
+        /// <param name="level"></param>
         internal static void AddLog(string m, LogLevel level)
         {
+            if (Container == null)
+                return;
+
             var log = new DrawableLog(m, level)
             {
                 Parent = Container,
@@ -59,8 +63,13 @@ namespace Wobble.Logging
         ///     Draws the logs.
         /// </summary>
         /// <param name="gameTime"></param>
-        internal static void Draw(GameTime gameTime) => Container?.Draw(gameTime);
+        public static void Draw(GameTime gameTime) => Container?.Draw(gameTime);
 
+        /// <summary>
+        ///     Calculates the y position of individual logs.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
         private static float GetLogY(int i)
         {
             if (i == 0)

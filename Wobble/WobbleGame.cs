@@ -155,7 +155,6 @@ namespace Wobble
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
-            LogManager.Draw(gameTime);
         }
     }
 }

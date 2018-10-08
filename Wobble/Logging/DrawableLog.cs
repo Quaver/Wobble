@@ -39,15 +39,17 @@ namespace Wobble.Logging
         {
             UsePreviousSpriteBatchOptions = true;
 
-            Text = new SpriteTextBitmap("Arial", t, 8, Color.White, Alignment.MidCenter, (int) (WindowManager.Width / 2))
+            Text = new SpriteTextBitmap("Calibri", t, 16, Color.White, Alignment.MidCenter, (int) (WindowManager.Width / 0.75f))
             {
                 Parent = this,
                 UsePreviousSpriteBatchOptions = true,
                 Alignment = Alignment.MidLeft,
+                Y = 1
             };
 
-            Tint = Color.Black;
-            Alpha = 0.75f;
+            Text.Size = new ScalableVector2(Text.Width * 0.60f, Text.Height * 0.60f);
+
+            Alpha = 0.65f;
 
             Size = new ScalableVector2(Text.Width + 3, Text.Height + 3);
             X = -Width;
@@ -61,7 +63,7 @@ namespace Wobble.Logging
                     Tint = Color.Gold;
                     break;
                 case LogLevel.Important:
-                    Tint = Color.DarkBlue;
+                    Tint = Color.Black;
                     break;
                 case LogLevel.Error:
                     Tint = Color.DarkRed;

@@ -48,7 +48,6 @@ namespace Wobble.Logging
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        /// <param name="duration"></param>
         public static void Debug(string value, LogType type) => Log(value, LogLevel.Important, type);
 
         /// <summary>
@@ -56,7 +55,6 @@ namespace Wobble.Logging
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        /// <param name="duration"></param>
         public static void Important(string value, LogType type) => Log(value, LogLevel.Important, type);
 
         /// <summary>
@@ -64,7 +62,6 @@ namespace Wobble.Logging
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        /// <param name="duration"></param>
         public static void Warning(string value, LogType type) => Log(value, LogLevel.Warning, type);
 
         /// <summary>
@@ -72,7 +69,6 @@ namespace Wobble.Logging
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        /// <param name="duration"></param>
         public static void Error(string value, LogType type) => Log(value, LogLevel.Error, type);
 
         /// <summary>
@@ -80,7 +76,6 @@ namespace Wobble.Logging
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        /// <param name="duration"></param>
         public static void Error(Exception value, LogType type) => Log(value.Message, LogLevel.Important, type);
 
         /// <summary>
