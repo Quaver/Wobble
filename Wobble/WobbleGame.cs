@@ -136,6 +136,7 @@ namespace Wobble
             // Keep the RPC client up-to-date.
             DiscordManager.Client?.Invoke();
             LogManager.Update(gameTime);
+            Logger.Update();
 
             base.Update(gameTime);
         }

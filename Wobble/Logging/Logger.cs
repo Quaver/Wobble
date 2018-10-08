@@ -26,10 +26,18 @@ namespace Wobble.Logging
         public static string GetLogPath(LogType type) => $"{LogsFolder}/{type.ToString().ToLower()}.log";
 
         /// <summary>
+        ///     The log listener.
+        /// </summary>
+        public static LogListener Listener { get; private set; }
+
+        /// <summary>
         ///     Initializes the logger. Creates the folder and all necessary files.
         /// </summary>
         internal static void Initialize()
         {
+            Listener = new LogListener();
+            Trace.Listeners.Add(Listener);
+
             Directory.CreateDirectory(LogsFolder);
 
             foreach (LogType type in Enum.GetValues(typeof(LogType)))
@@ -48,40 +56,45 @@ namespace Wobble.Logging
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public static void Debug(string value, LogType type) => Log(value, LogLevel.Debug, type);
+        /// <param name="writeToFile"></param>
+        public static void Debug(string value, LogType type, bool writeToFile = true) => Log(value, LogLevel.Debug, type, writeToFile);
 
         /// <summary>
         ///     Logs an important message
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public static void Important(string value, LogType type) => Log(value, LogLevel.Important, type);
+        /// <param name="writeToFile"></param>
+        public static void Important(string value, LogType type, bool writeToFile = true) => Log(value, LogLevel.Important, type, writeToFile);
 
         /// <summary>
         ///     Logs a warning
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public static void Warning(string value, LogType type) => Log(value, LogLevel.Warning, type);
+        /// <param name="writeToFile"></param>
+        public static void Warning(string value, LogType type, bool writeToFile = true) => Log(value, LogLevel.Warning, type, writeToFile);
 
         /// <summary>
         ///     Logs an error
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public static void Error(string value, LogType type) => Log(value, LogLevel.Error, type);
+        /// <param name="writeToFile"></param>
+        public static void Error(string value, LogType type, bool writeToFile = true) => Log(value, LogLevel.Error, type, writeToFile);
 
         /// <summary>
         ///     Logs an error.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public static void Error(Exception value, LogType type) => Log(value.Message, LogLevel.Important, type);
+        /// <param name="writeToFile">/param>
+        public static void Error(Exception value, LogType type, bool writeToFile = true) => Log(value.Message, LogLevel.Important, type, writeToFile);
 
         /// <summary>
         ///     Logs a message
         /// </summary>
-        public static void Log(string m, LogLevel level, LogType type)
+        public static void Log(string m, LogLevel level, LogType type, bool writeToFile = true)
         {
             // Get a stringified version of the log level, and also set the color.
             var logLevelStr = "";
@@ -105,27 +118,33 @@ namespace Wobble.Logging
             var log = $"[{DateTime.Now:h:mm:ss}] - {type.ToString().ToUpper()} - {logLevelStr}: {m}";
             Console.WriteLine(log);
 
-            // Write to the log file
-            try
+            if (writeToFile)
             {
-                using (var sw = new StreamWriter(GetLogPath(type), true))
+                // Write to the log file
+                try
                 {
-                    sw.AutoFlush = true;
-                    sw.WriteLine(log);
+                    using (var sw = new StreamWriter(GetLogPath(type), true))
+                    {
+                        sw.AutoFlush = true;
+                        sw.WriteLine(log);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                // If it fails, we can't really handle the error here. This shouldn't happen though.
-                Console.WriteLine(e);
+                catch (Exception e)
+                {
+                    // If it fails, we can't really handle the error here. This shouldn't happen though.
+                    Console.WriteLine(e);
+                }
             }
 
 #if DEBUG
-            System.Diagnostics.Debug.Print(log);
-
             if (DisplayMessages)
                 LogManager.AddLog(log, level);
 #endif
         }
+
+        /// <summary>
+        ///     Updates the logger with new messages.
+        /// </summary>
+        public static void Update() => Listener.GetLogs().ForEach(x => Debug(x, LogType.Runtime));
     }
 }
