@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Transformations;
 using Wobble.Window;
@@ -266,6 +267,11 @@ namespace Wobble.Graphics
         public List<Transformation> Transformations { get; } = new List<Transformation>();
 
         /// <summary>
+        ///    The border around the drawable.
+        /// </summary>
+        public PrimitiveLineBatch Border { get; private set; }
+
+        /// <summary>
         ///     Event raised when the rectangle has been recalculated.
         /// </summary>
         protected event EventHandler RectangleRecalculated;
@@ -342,6 +348,29 @@ namespace Wobble.Graphics
             Parent = null;
         }
 
+        /// <summary>
+        ///     Adds a border to the drawable.
+        /// </summary>
+        public void AddBorder(Color color, float thickness = 1)
+        {
+            if (Border != null)
+                return;
+
+            Border = new PrimitiveLineBatch(new List<Vector2>()
+            {
+                new Vector2(0, 0),
+                new Vector2(Width, 0),
+                new Vector2(Width, Height),
+                new Vector2(0, Height),
+                new Vector2(0, 0)
+            }, thickness)
+            {
+                Alignment = Alignment.TopLeft,
+                Parent = this,
+                Tint = color
+            };
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Any derivatives should implement this disposition methods and then call
@@ -380,6 +409,19 @@ namespace Wobble.Graphics
 
                 RelativeRectangle = new DrawRectangle(x, y, width, height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
+            }
+
+            // Recalculate the border points.
+            if (Border != null)
+            {
+                Border.Points = new List<Vector2>()
+                {
+                    new Vector2(0, 0),
+                    new Vector2(Width, 0),
+                    new Vector2(Width, Height),
+                    new Vector2(0, Height),
+                    new Vector2(0, 0)
+                };
             }
 
             Children.ForEach(x => x.RecalculateRectangles());
