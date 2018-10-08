@@ -7,6 +7,7 @@ using System.Resources;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Logging;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -162,9 +163,8 @@ namespace Wobble.Assets
             if (obj != null)
                 return (byte[]) obj;
 
-            Console.WriteLine($"ERROR: RESOURCE: {file} WAS NOT FOUND. DEFAULTING");
+            Logger.Error($"Resource: {file} was not found. Defaulting to White Box.", LogType.Runtime);
             return WobbleResourceStore.white_box;
-
         }
     }
 }

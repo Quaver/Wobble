@@ -1,12 +1,14 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Discord;
 using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Input;
+using Wobble.Logging;
 using Wobble.Platform;
 using Wobble.Screens;
 using Wobble.Window;
@@ -75,6 +77,8 @@ namespace Wobble
         protected override void Initialize()
         {
             WobbleResourceStore.ResourceManager.IgnoreCase = true;
+            Logger.Initialize();
+            LogManager.Initialize();
             AudioManager.Initialize();
             Window.ClientSizeChanged += WindowManager.OnClientSizeChanged;
 
@@ -131,6 +135,7 @@ namespace Wobble
 
             // Keep the RPC client up-to-date.
             DiscordManager.Client?.Invoke();
+            LogManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -150,6 +155,7 @@ namespace Wobble
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
+            LogManager.Draw(gameTime);
         }
     }
 }
