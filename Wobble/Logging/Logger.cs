@@ -89,7 +89,7 @@ namespace Wobble.Logging
         /// <param name="value"></param>
         /// <param name="type"></param>
         /// <param name="writeToFile">/param>
-        public static void Error(Exception value, LogType type, bool writeToFile = true) => Log(value.Message, LogLevel.Important, type, writeToFile);
+        public static void Error(Exception value, LogType type, bool writeToFile = true) => Log(value.ToString(), LogLevel.Important, type, writeToFile);
 
         /// <summary>
         ///     Logs a message
