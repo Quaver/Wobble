@@ -48,7 +48,7 @@ namespace Wobble.Logging
         /// </summary>
         /// <param name="value"></param>
         /// <param name="type"></param>
-        public static void Debug(string value, LogType type) => Log(value, LogLevel.Important, type);
+        public static void Debug(string value, LogType type) => Log(value, LogLevel.Debug, type);
 
         /// <summary>
         ///     Logs an important message
