@@ -52,17 +52,6 @@ namespace Wobble.Graphics.BitmapFonts
             }
         }
 
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set
-            {
-                _color = value;
-                LoadTexture();
-            }
-        }
-
         /// <summary>
         ///     The max width of the text.
         /// </summary>
@@ -106,7 +95,7 @@ namespace Wobble.Graphics.BitmapFonts
             _font = font;
             _text = text;
             _fontSize = fontSize;
-            _color = color;
+            Tint = color;
             _maxWidth = maxWidth;
             _textAlignment = textAlignment;
 
@@ -120,7 +109,7 @@ namespace Wobble.Graphics.BitmapFonts
         {
             var oldTexture = Image;
 
-            Image = BitmapFontFactory.Create(Font, Text, FontSize, Color, TextAlignment, MaxWidth);
+            Image = BitmapFontFactory.Create(Font, Text, FontSize, Color.White, TextAlignment, MaxWidth);
             Size = new ScalableVector2(Image.Width, Image.Height);
 
             oldTexture?.Dispose();
@@ -133,6 +122,22 @@ namespace Wobble.Graphics.BitmapFonts
         {
             Image.Dispose();
             base.Destroy();
+        }
+
+
+        /// <summary>
+        ///     Fades the sprite to a given color.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="dt"></param>
+        /// <param name="scale"></param>
+        public override void FadeToColor(Color color, double dt, float scale)
+        {
+            var r = MathHelper.Lerp(Tint.R, color.R, (float) Math.Min(dt / scale, 1));
+            var g = MathHelper.Lerp(Tint.G, color.G, (float) Math.Min(dt / scale, 1));
+            var b = MathHelper.Lerp(Tint.B, color.B, (float) Math.Min(dt / scale, 1));
+
+            Tint = new Color((int)r, (int)g, (int)b);
         }
     }
 }
