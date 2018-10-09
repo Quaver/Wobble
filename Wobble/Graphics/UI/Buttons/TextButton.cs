@@ -4,6 +4,7 @@ using Wobble.Graphics.Sprites;
 
 namespace Wobble.Graphics.UI.Buttons
 {
+    [Obsolete("TextButton is obselete, use BitmapTextButton")]
     public class TextButton : ImageButton
     {
         /// <summary>
