@@ -367,7 +367,8 @@ namespace Wobble.Graphics
             {
                 Alignment = Alignment.TopLeft,
                 Parent = this,
-                Tint = color
+                Tint = color,
+                UsePreviousSpriteBatchOptions = true
             };
         }
 
