@@ -230,7 +230,7 @@ namespace Wobble.Graphics.Sprites
         /// <param name="color"></param>
         /// <param name="dt"></param>
         /// <param name="scale"></param>
-        public void FadeToColor(Color color, double dt, float scale)
+        public virtual void FadeToColor(Color color, double dt, float scale)
         {
             var r = MathHelper.Lerp(Tint.R, color.R, (float) Math.Min(dt / scale, 1));
             var g = MathHelper.Lerp(Tint.G, color.G, (float) Math.Min(dt / scale, 1));
