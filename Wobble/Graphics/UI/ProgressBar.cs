@@ -21,7 +21,7 @@ namespace Wobble.Graphics.UI
         /// <summary>
         ///     The active progress bar that is overlayed on top of this one.
         /// </summary>
-        private Sprite ActiveBar { get; set; }
+        public Sprite ActiveBar { get; set; }
 
         /// <summary>
         ///     The percentage of which the progress bar is at.

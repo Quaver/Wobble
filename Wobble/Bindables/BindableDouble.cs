@@ -12,12 +12,12 @@ namespace Wobble.Bindables
         /// <summary>
         ///     The mininimum value that it will be clamped to.
         /// </summary>
-        public double MinValue { get; }
+        public double MinValue { get; set; }
 
         /// <summary>
         ///     The maximum value that it will be clamped to
         /// </summary>
-        public double MaxValue { get; }
+        public double MaxValue { get; set; }
 
         /// <summary>
         ///     The value of the BindableDouble
