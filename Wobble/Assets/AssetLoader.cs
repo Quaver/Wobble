@@ -45,6 +45,13 @@ namespace Wobble.Assets
         }
 
         /// <summary>
+        ///     Loads a Texture2D from a stream
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static Texture2D LoadTexture2D(Stream s) => Texture2D.FromStream(GameBase.Game.GraphicsDevice, s);
+
+        /// <summary>
         ///     Loads an embedded resource from a resource manager
         /// </summary>
         /// <param name="rm"></param>
@@ -129,7 +136,7 @@ namespace Wobble.Assets
         private static object GetProperty<T>(string name) => typeof(T).GetProperty(name.Replace("-", "_").Replace("@", "_"))?.GetValue(null, null);
 
         /// <summary>
-        ///     Gets an embedded resource as a byte[] 
+        ///     Gets an embedded resource as a byte[]
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
@@ -149,7 +156,7 @@ namespace Wobble.Assets
         }
 
         /// <summary>
-        ///     
+        ///
         /// </summary>
         /// <param name="rm"></param>
         /// <param name="file"></param>

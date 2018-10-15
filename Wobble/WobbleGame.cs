@@ -8,6 +8,7 @@ using Wobble.Discord;
 using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Input;
+using Wobble.IO;
 using Wobble.Logging;
 using Wobble.Platform;
 using Wobble.Screens;
@@ -53,6 +54,11 @@ namespace Wobble
         protected abstract bool IsReadyToUpdate { get; set; }
 
         /// <summary>
+        ///     All the resources used by the game.
+        /// </summary>
+        public ResourceStore<byte[]> Resources { get; set; }
+
+        /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
         protected WobbleGame()
@@ -76,6 +82,7 @@ namespace Wobble
         /// </summary>
         protected override void Initialize()
         {
+            Resources = new ResourceStore<byte[]>();
             WobbleResourceStore.ResourceManager.IgnoreCase = true;
             Logger.Initialize();
             LogManager.Initialize();
