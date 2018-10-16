@@ -27,13 +27,24 @@ namespace Wobble.Graphics.UI.Buttons
             Color textColor, EventHandler clickAction = null) : base(image, clickAction)
         {
             // ReSharper disable once UseObjectOrCollectionInitializer
-            Text = new SpriteTextBitmap(font, text, fontSize, textColor, Alignment.MidCenter, (int) WindowManager.Width)
+            Text = new SpriteTextBitmap(font, " ", fontSize, textColor, Alignment.MidCenter, (int) WindowManager.Width)
             {
                 Parent = this,
                 Alignment = Alignment.MidCenter,
-                UsePreviousSpriteBatchOptions = true
+                UsePreviousSpriteBatchOptions = true,
             };
 
+            UpdateText(text, textScale);
+        }
+
+        /// <summary>
+        ///     Properly updates the text of the button.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="textScale"></param>
+        public void UpdateText(string text, float textScale)
+        {
+            Text.Text = text;
             Text.Size = new ScalableVector2(Text.Width * textScale, Text.Height * textScale);
         }
     }
