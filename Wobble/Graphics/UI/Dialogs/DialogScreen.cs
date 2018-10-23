@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
@@ -54,5 +55,15 @@ namespace Wobble.Graphics.UI.Dialogs
         ///     Handles input for the dialogScreen box.
         /// </summary>
         public abstract void HandleInput(GameTime gameTime);
+
+        /// <summary>
+        ///     Dictates if this dialog screen is on top
+        /// </summary>
+        public bool IsOnTop => DialogManager.Dialogs.Count > 0 && DialogManager.Dialogs.Last() == this;
+
+        /// <summary>
+        ///     Dictates if this dialog screen is currently active
+        /// </summary>
+        public bool Active => DialogManager.Dialogs.Contains(this);
     }
 }
