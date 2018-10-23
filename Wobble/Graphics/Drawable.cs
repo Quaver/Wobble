@@ -474,12 +474,12 @@ namespace Wobble.Graphics
                         case TransformationProperty.Alpha:
                             var type = GetType();
 
-                            if (type == typeof(Sprite))
+                            if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
                                 sprite.Alpha = transformation.PerformInterpolation(gameTime);
                             }
-                            else if (type == typeof(SpriteText))
+                            else if (this is SpriteText)
                             {
                                 var spriteText = (SpriteText) this;
                                 spriteText.Alpha = transformation.PerformInterpolation(gameTime);
@@ -487,7 +487,7 @@ namespace Wobble.Graphics
 
                             break;
                         case TransformationProperty.Rotation:
-                            if (GetType() == typeof(Sprite))
+                            if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
                                 sprite.Rotation = transformation.PerformInterpolation(gameTime);
@@ -497,12 +497,12 @@ namespace Wobble.Graphics
 
                             break;
                         case TransformationProperty.Color:
-                            if (GetType() == typeof(Sprite))
+                            if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
                                 sprite.Tint = transformation.PerformColorInterpolation(gameTime);
                             }
-                            else if (GetType() == typeof(SpriteText))
+                            else if (this is SpriteText)
                             {
                                 var spriteText = (SpriteText) this;
                                 spriteText.TextColor = transformation.PerformColorInterpolation(gameTime);
