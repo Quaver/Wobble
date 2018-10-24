@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,6 +25,16 @@ namespace Wobble
     /// </summary>
     public abstract class WobbleGame : Game
     {
+        /// <summary>
+        ///     The path of the current executable.
+        /// </summary>
+        public static string ExecutablePath => System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(@"file:///", "");
+
+        /// <summary>
+        ///     The current working directory of the executable.
+        /// </summary>
+        public static string WorkingDirectory => Path.GetDirectoryName(ExecutablePath).Replace(@"file:\", "");
+
         /// <summary>
         /// </summary>
         public GraphicsDeviceManager Graphics { get; }
@@ -64,6 +75,8 @@ namespace Wobble
         /// </summary>
         protected WobbleGame()
         {
+            Directory.SetCurrentDirectory(WorkingDirectory);
+            Environment.CurrentDirectory = WorkingDirectory;
             NativeAssemblies.Copy();
 
             Graphics = new GraphicsDeviceManager(this)
