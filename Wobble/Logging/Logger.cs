@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Wobble.Logging
 {
@@ -48,6 +49,8 @@ namespace Wobble.Logging
                 using (var f = File.Create(GetLogPath(type)))
                 {
                 }
+
+                Debug($"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription}", type);
             }
         }
 
