@@ -68,7 +68,9 @@ namespace Wobble
 
             Graphics = new GraphicsDeviceManager(this)
             {
-                PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8
+                PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8,
+                GraphicsProfile = GraphicsProfile.HiDef,
+                PreferMultiSampling = true,
             };
 
             GameBase.Game = this;
@@ -100,6 +102,9 @@ namespace Wobble
         /// </summary>
         protected override void LoadContent()
         {
+            GraphicsDevice.PresentationParameters.MultiSampleCount = 8;
+            Graphics.ApplyChanges();
+
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             WobbleAssets.Load();

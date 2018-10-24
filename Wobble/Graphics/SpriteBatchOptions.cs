@@ -16,7 +16,10 @@ namespace Wobble.Graphics
         public BlendState BlendState { get; set; } = BlendState.NonPremultiplied;
         public SamplerState SamplerState { get; set; }
         public DepthStencilState DepthStencilState { get; set; }
-        public RasterizerState RasterizerState { get; set; }
+        public RasterizerState RasterizerState { get; set; } = new RasterizerState()
+        {
+            MultiSampleAntiAlias = true
+        };
 
         /// <summary>
         ///     Custom shader for this sprite.
