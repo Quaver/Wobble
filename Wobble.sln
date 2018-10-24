@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wobble.Tests", "Wobble.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Framework.DesktopGL.Core", "MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.Core.csproj", "{745927CF-8040-49AD-9A5B-BAC2B2958063}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wobble.Resources", "Wobble.Resources\Wobble.Resources.csproj", "{EA7C05F2-D916-4BE5-A55C-69DF9343D0A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{745927CF-8040-49AD-9A5B-BAC2B2958063}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{745927CF-8040-49AD-9A5B-BAC2B2958063}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{745927CF-8040-49AD-9A5B-BAC2B2958063}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA7C05F2-D916-4BE5-A55C-69DF9343D0A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA7C05F2-D916-4BE5-A55C-69DF9343D0A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA7C05F2-D916-4BE5-A55C-69DF9343D0A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA7C05F2-D916-4BE5-A55C-69DF9343D0A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -83,7 +83,8 @@ namespace Wobble
         protected override void Initialize()
         {
             Resources = new ResourceStore<byte[]>();
-            WobbleResourceStore.ResourceManager.IgnoreCase = true;
+            Resources.AddStore(new DllResourceStore("Wobble.Resources.dll"));
+
             Logger.Initialize();
             LogManager.Initialize();
             AudioManager.Initialize();
