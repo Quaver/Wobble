@@ -82,7 +82,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region HELLO_WORLD_TEXT
-            HelloWorldText = new SpriteTextBitmap("exo2-bold", "Hello, World!", 24, Color.White, Alignment.MidLeft, int.MaxValue)
+            HelloWorldText = new SpriteTextBitmap("exo2-bold", "Hello, World!", 18, Color.White, Alignment.MidLeft, int.MaxValue)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,

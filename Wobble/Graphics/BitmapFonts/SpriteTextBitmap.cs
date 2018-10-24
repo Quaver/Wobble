@@ -109,8 +109,10 @@ namespace Wobble.Graphics.BitmapFonts
         {
             var oldTexture = Image;
 
-            Image = BitmapFontFactory.Create(Font, Text, FontSize, Color.White, TextAlignment, MaxWidth);
-            Size = new ScalableVector2(Image.Width, Image.Height);
+            Image = BitmapFontFactory.Create(Font, Text, 36, Color.White, TextAlignment, MaxWidth);
+
+            var ratio = FontSize / 36f;
+            Size = new ScalableVector2(Image.Width * ratio, Image.Height * ratio);
 
             oldTexture?.Dispose();
         }
