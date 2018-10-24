@@ -43,7 +43,7 @@ namespace Wobble.Logging
             foreach (LogType type in Enum.GetValues(typeof(LogType)))
             {
                 if (File.Exists(GetLogPath(type)))
-                    continue;
+                    File.Delete(GetLogPath(type));
 
                 using (var f = File.Create(GetLogPath(type)))
                 {
@@ -145,6 +145,6 @@ namespace Wobble.Logging
         /// <summary>
         ///     Updates the logger with new messages.
         /// </summary>
-        public static void Update() => Listener.GetLogs().ForEach(x => Debug(x, LogType.Runtime));
+        public static void Update() => Listener.GetLogs().ForEach(x => Debug(x, LogType.Runtime, false));
     }
 }
