@@ -1,10 +1,16 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
+using Wobble.IO;
+using Wobble.Tests.Resources.SpriteFonts;
 
 namespace Wobble.Tests.Assets
 {
@@ -20,7 +26,7 @@ namespace Wobble.Tests.Assets
         /// </summary>
         public static void Load()
         {
-            AllerRegular16 = AssetLoader.LoadFont(ResourceStore.ResourceManager, "aller_regular_16");
+            AllerRegular16 = AssetLoader.LoadFont(WobbleTestsResourceFonts.ResourceManager, "aller_regular_16");
         }
     }
 }

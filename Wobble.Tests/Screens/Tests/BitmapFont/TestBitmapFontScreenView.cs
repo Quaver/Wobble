@@ -31,7 +31,7 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         {
             // (This should normally be done at the start of the game.)
             // Load up a font to use by a byte[] / ResourceStore.
-            BitmapFontFactory.AddFont("exo2-bold", ResourceStore.exo2_bold);
+            BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.otf"));
 
             // (This should normally be done at the start of the game.)
             // Load up a font to use by file
@@ -46,7 +46,7 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
                 }
             };
 
-            Track = new AudioTrack(ResourceStore.virt___Send_My_Love_To_Mars);
+            Track = new AudioTrack(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Tracks/virt - Send My Love To Mars.mp3"));
             Track.Play();
         }
 

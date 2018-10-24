@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="WobbleTestsResourceFonts.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WobbleTestsResourceFonts.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="WobbleTestsResourceFonts.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>WobbleTestsResourceFonts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

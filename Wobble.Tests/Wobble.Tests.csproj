@@ -1,58 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\Fonts\aller_regular_16.xnb" />
-    <None Remove="Resources\Fonts\exo2-bold.otf" />
-    <None Remove="Resources\Fonts\exo2-regular.otf" />
-    <None Remove="Resources\SFX\train.wav" />
-    <None Remove="Resources\Shaders\semi-transparent.mgfxo" />
-    <None Remove="Resources\Textures\circle-mask.png" />
-    <None Remove="Resources\Textures\left_button_square.png" />
-    <None Remove="Resources\Textures\right_button_square.png" />
-    <None Remove="Resources\Textures\test_spritesheet.png" />
-    <None Remove="Resources\Tracks\virt - Send My Love To Mars.mp3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Fonts\aller_regular_16.xnb" />
-    <EmbeddedResource Include="Resources\Fonts\exo2-bold.otf" />
-    <EmbeddedResource Include="Resources\Fonts\exo2-regular.otf" />
-    <EmbeddedResource Include="Resources\SFX\train.wav" />
-    <EmbeddedResource Include="Resources\Shaders\semi-transparent.mgfxo" />
-    <EmbeddedResource Include="Resources\Textures\circle-mask.png" />
-    <EmbeddedResource Include="Resources\Textures\left_button_square.png" />
-    <EmbeddedResource Include="Resources\Textures\right_button_square.png" />
-    <EmbeddedResource Include="Resources\Textures\test_spritesheet.png" />
-    <EmbeddedResource Include="Resources\Tracks\virt - Send My Love To Mars.mp3" />
-  </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.Core.csproj" />
+    <ProjectReference Include="..\Wobble.Tests.Resources.SpriteFonts\Wobble.Tests.Resources.SpriteFonts.csproj" />
+    <ProjectReference Include="..\Wobble.Tests.Resources\Wobble.Tests.Resources.csproj" />
     <ProjectReference Include="..\Wobble\Wobble.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="ResourceStore.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ResourceStore.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="ResourceStore.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ResourceStore.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
 </Project>

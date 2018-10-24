@@ -73,7 +73,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
                 // begin to play it again.
                 if (song.IsStopped || song.IsDisposed)
                 {
-                    song = new AudioTrack(ResourceStore.virt___Send_My_Love_To_Mars);
+                    song = new AudioTrack(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Tracks/virt - Send My Love To Mars.mp3"));
                     song.Play();
 
                     PlayButton.Text.Text = "Pause";

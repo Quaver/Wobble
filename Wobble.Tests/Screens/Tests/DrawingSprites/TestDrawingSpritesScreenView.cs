@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
@@ -23,12 +24,12 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
         /// <summary>
         ///     Text that displays "Hello World!"
         /// </summary>
-        public SpriteText HelloWorldText { get; }
+        public SpriteTextBitmap HelloWorldText { get; }
 
         /// <summary>
         ///     Button that says click me! Click it to find out the surprise.
         /// </summary>
-        public TextButton ClickMeButton { get; }
+        public BitmapTextButton ClickMeButton { get; }
 
         /// <summary>
         ///     The background color for the scene.
@@ -81,28 +82,28 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region HELLO_WORLD_TEXT
-            HelloWorldText = new SpriteText(Fonts.AllerRegular16, "Hello World!")
+            HelloWorldText = new SpriteTextBitmap("exo2-bold", "Hello, World!", 24, Color.White, Alignment.MidLeft, int.MaxValue)
             {
                 Parent = Container,
-                TextColor = Color.White,
-                TextScale = 1.2f,
                 Alignment = Alignment.TopCenter,
                 Y = GreenBox.Height + GreenBox.Y + 40
             };
 #endregion
 
 #region CLICK_ME_BUTTON
-            ClickMeButton = new TextButton(WobbleAssets.WhiteBox, Fonts.AllerRegular16, "Click Me!", 0.95f, (sender, args) =>
-            {
-                // Click event handler method goes here.
-                // Choose a random background color!
-                BackgroundColor = new Color(Rng.Next(0, 255), Rng.Next(0, 255), Rng.Next(0, 255));
-            })
+
+            ClickMeButton = new BitmapTextButton(WobbleAssets.WhiteBox, "exo2-bold", "Click me!", 0.50f, 24,
+                Color.White, (sender, args) =>
+                {
+                    // Click event handler method goes here.
+                    // Choose a random background color!
+                    BackgroundColor = new Color(Rng.Next(0, 255), Rng.Next(0, 255), Rng.Next(0, 255));
+                })
             {
                 Parent = Container,
                 Size = new ScalableVector2(150, 50),
                 Tint = Color.White,
-                Text = { TextColor = Color.Black },
+                Text = { Tint = Color.Black},
                 Alignment = Alignment.TopCenter,
                 Y = HelloWorldText.Y + 40
             };
@@ -147,7 +148,8 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
                     RasterizerState = RasterizerState.CullNone,
                     // The shader attached is to make the sprite semi transparent
                     // Shader created by "Vortex-" (https://github.com/VortexCoyote)
-                    Shader = new Shader(ResourceStore.semi_transparent, new Dictionary<string, object>
+                    Shader = new Shader(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Shaders/semi-transparent.mgfxo"),
+                        new Dictionary<string, object>
                     {
                         {"p_dimensions", new Vector2(200, 200)},
                         {"p_position", new Vector2(0, 0)},

@@ -34,8 +34,8 @@ namespace Wobble.Tests.Screens.Tests.Audio
         /// </summary>
         public TestAudioScreen()
         {
-            Song = new AudioTrack(ResourceStore.virt___Send_My_Love_To_Mars);
-            Train = new AudioSample(AssetLoader.GetResource("Resources.SFX.train.wav"));
+            Song = new AudioTrack(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Tracks/virt - Send My Love To Mars.mp3"));
+            Train = new AudioSample(GameBase.Game.Resources.Get("Wobble.Tests.Resources/SFX/train.wav"));
 
             Song?.Play();
 

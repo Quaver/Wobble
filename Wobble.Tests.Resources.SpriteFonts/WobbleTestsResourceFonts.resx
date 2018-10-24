@@ -119,30 +119,6 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="aller_regular_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\fonts\aller_regular_16.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="circle_mask" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Textures\circle-mask.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="exo2_bold" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Fonts\exo2-bold.otf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="exo2_regular" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Fonts\exo2-regular.otf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="left_button_square" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Textures\left_button_square.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="right_button_square" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Textures\right_button_square.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="semi_transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Shaders\semi-transparent.mgfxo;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="test_spritesheet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Textures\test_spritesheet.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="virt___Send_My_Love_To_Mars" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tracks\virt - send my love to mars.mp3;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>Fonts\aller_regular_16.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

@@ -115,7 +115,7 @@ namespace Wobble.Assets
             var oldManager = GameBase.Game.Content;
 
             // Set the new content manager.
-            var resxContent = new ResourceContentManager(GameBase.Game.Services,manager);
+            var resxContent = new ResourceContentManager(GameBase.Game.Services, manager);
             GameBase.Game.Content = resxContent;
 
             // Load up the font.

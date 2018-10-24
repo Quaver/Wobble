@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Input;
+using Wobble.IO;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Selection;
@@ -44,6 +45,7 @@ namespace Wobble.Tests
         {
             base.LoadContent();
 
+            Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
             Textures.Load();
             Fonts.Load();
 
