@@ -13,7 +13,7 @@ namespace Wobble.Graphics
     public class SpriteBatchOptions
     {
         public SpriteSortMode SortMode { get; set; } = SpriteSortMode.Immediate;
-        public BlendState BlendState { get; set; }
+        public BlendState BlendState { get; set; } = BlendState.NonPremultiplied;
         public SamplerState SamplerState { get; set; }
         public DepthStencilState DepthStencilState { get; set; }
         public RasterizerState RasterizerState { get; set; }
