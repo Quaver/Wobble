@@ -69,7 +69,7 @@ namespace Wobble.Graphics.BitmapFonts
         /// <summary>
         ///     The alignment of the text
         /// </summary>
-        private Alignment _textAlignment;
+        private Alignment _textAlignment = Alignment.MidLeft;
         public Alignment TextAlignment
         {
             get => _textAlignment;
@@ -82,9 +82,13 @@ namespace Wobble.Graphics.BitmapFonts
 
         /// <inheritdoc />
         /// <summary>
-        ///     Sprite text from a bitmap font.
         /// </summary>
-        public SpriteTextBitmap(string font, string text, int fontSize, Color color, Alignment textAlignment, int maxWidth)
+        /// <param name="font"></param>
+        /// <param name="text"></param>
+        /// <param name="fontSize"></param>
+        /// <param name="maxWidth">The maximum width before it wraps to the next line</param>
+        /// <exception cref="T:System.ArgumentException"></exception>
+        public SpriteTextBitmap(string font, string text, int fontSize, int maxWidth = int.MaxValue)
         {
             if (string.IsNullOrEmpty(font))
                 throw new ArgumentException("Font must be not null or empty.");
@@ -95,9 +99,7 @@ namespace Wobble.Graphics.BitmapFonts
             _font = font;
             _text = text;
             _fontSize = fontSize;
-            Tint = color;
             _maxWidth = maxWidth;
-            _textAlignment = textAlignment;
 
             LoadTexture();
         }

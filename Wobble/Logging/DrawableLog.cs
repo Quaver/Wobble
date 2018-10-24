@@ -37,12 +37,9 @@ namespace Wobble.Logging
         /// <param name="level"></param>
         public DrawableLog(string t, LogLevel level)
         {
-            UsePreviousSpriteBatchOptions = true;
-
-            Text = new SpriteTextBitmap("Calibri", t, 16, Color.White, Alignment.MidCenter, (int) (WindowManager.Width / 0.75f))
+            Text = new SpriteTextBitmap("Calibri", t, 16, (int) (WindowManager.Width / 0.75f))
             {
                 Parent = this,
-                UsePreviousSpriteBatchOptions = true,
                 Alignment = Alignment.MidLeft,
                 Y = 1
             };

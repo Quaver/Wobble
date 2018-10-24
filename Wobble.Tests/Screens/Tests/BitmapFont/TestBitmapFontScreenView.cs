@@ -38,13 +38,9 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
             // Load up a font to use by file
             // BitmapFontFactory.AddFont("exo2-regular", @"C:\users\admin\desktop\exo2-regular.otf");
 
-            SongTimeText = new SpriteTextBitmap("exo2-bold", "0", 16, Color.White, Alignment.MidLeft, (int)WindowManager.Width)
+            SongTimeText = new SpriteTextBitmap("exo2-bold", "0", 16)
             {
                 Parent = Container,
-                SpriteBatchOptions = new SpriteBatchOptions()
-                {
-                    BlendState = BlendState.NonPremultiplied
-                }
             };
 
             Track = new AudioTrack(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Tracks/virt - Send My Love To Mars.mp3"));

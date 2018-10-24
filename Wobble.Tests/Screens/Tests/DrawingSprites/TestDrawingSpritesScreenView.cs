@@ -81,8 +81,13 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
             GreenBox.AddBorder(Color.White, 2);
 #endregion
 
+            // (This should normally be done at the start of the game.)
+            // Load up a font to use by a byte[] / ResourceStore.
+            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-bold"))
+                BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.otf"));
+
 #region HELLO_WORLD_TEXT
-            HelloWorldText = new SpriteTextBitmap("exo2-bold", "Hello, World!", 18, Color.White, Alignment.MidLeft, int.MaxValue)
+            HelloWorldText = new SpriteTextBitmap("exo2-bold", "Hello, World!", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -91,9 +96,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region CLICK_ME_BUTTON
-
-            ClickMeButton = new BitmapTextButton(WobbleAssets.WhiteBox, "exo2-bold", "Click me!", 0.50f, 24,
-                Color.White, (sender, args) =>
+            ClickMeButton = new BitmapTextButton(WobbleAssets.WhiteBox, "exo2-bold", "Click me!", 18, (sender, args) =>
                 {
                     // Click event handler method goes here.
                     // Choose a random background color!
