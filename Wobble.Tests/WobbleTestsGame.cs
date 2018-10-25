@@ -48,7 +48,6 @@ namespace Wobble.Tests
 
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
             Textures.Load();
-            Fonts.Load();
 
             // (This should normally be done at the start of the game.)
             // Load up a font to use by a byte[] / ResourceStore.
