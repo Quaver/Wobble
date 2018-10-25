@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Assets;
 using Wobble.Graphics.BitmapFonts;
 
 namespace Wobble.Graphics.Sprites

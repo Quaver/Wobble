@@ -28,7 +28,11 @@ namespace Wobble.Graphics.UI.Debugging
         /// </summary>
         public SpriteText TextFps { get; }
 
-        public double time;
+        /// <summary>
+        ///     The last FPS recorded, so we know if to update the counter.
+        /// </summary>
+        private int LastRecordedFps { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         ///     Ctor
@@ -47,21 +51,12 @@ namespace Wobble.Graphics.UI.Debugging
         {
             ElapsedTime += gameTime.ElapsedGameTime;
 
-            time += gameTime.ElapsedGameTime.TotalMilliseconds;
-            Console.WriteLine(time);
-            if (time >= 5000)
-            {
-                Console.WriteLine(FrameCounter);
-                time = 0;
-            }
             if (ElapsedTime <= TimeSpan.FromSeconds(1))
                 return;
 
             ElapsedTime -= TimeSpan.FromSeconds(1);
             FrameRate = FrameCounter;
             FrameCounter = 0;
-
-
 
             base.Update(gameTime);
         }
@@ -73,8 +68,11 @@ namespace Wobble.Graphics.UI.Debugging
         public override void Draw(GameTime gameTime)
         {
             FrameCounter++;
-            // TextFps.Text = $"FPS: {FrameRate}";
 
+            if (LastRecordedFps != FrameRate)
+                TextFps.Text = $"FPS: {FrameRate}";
+
+            LastRecordedFps = FrameRate;
             base.Draw(gameTime);
         }
     }
