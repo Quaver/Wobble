@@ -61,8 +61,12 @@ namespace Wobble.Graphics.Sprites
             // Create the SpriteBatchOptions with scissor rect enabled.
             SpriteBatchOptions = new SpriteBatchOptions
             {
-                RasterizerState = new RasterizerState { ScissorTestEnable = true },
+                SortMode = SpriteSortMode.Immediate,
                 BlendState = BlendState.NonPremultiplied,
+                RasterizerState = new RasterizerState
+                {
+                    ScissorTestEnable = true,
+                },
             };
 
             // Create container in which all scrolling contents will be children of.
