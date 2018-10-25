@@ -25,7 +25,7 @@ namespace Wobble.Tests.Screens.Tests.TextInput
         public TestTextInputScreenView(Screen screen) : base(screen)
         {
             // Simple text box that when submitted, will send the text flying across the screen.
-            var textbox = new Textbox(new ScalableVector2(500, 30), "exo2-bold", 14, "Type to see a cool effect!")
+            var textbox = new Textbox(new ScalableVector2(500, 30), "exo2-bold", 14, "", "Type to see a cool effect!")
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
