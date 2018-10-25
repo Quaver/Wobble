@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics.BitmapFonts;
+using Wobble.Logging;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -96,6 +97,16 @@ namespace Wobble.Graphics.Sprites
             }
         }
 
+        /// <summary>
+        ///     The amount of text updates that have occurred in the previous second.
+        /// </summary>
+        private int AmountOfTextUpdatesInSecond { get; set; }
+
+        /// <summary>
+        ///     The amount of time that has elapsed since the previous second.
+        /// </summary>
+        private double TimeSinceLastSecond { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -119,6 +130,16 @@ namespace Wobble.Graphics.Sprites
             LoadTexture();
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public override void Update(GameTime gameTime)
+        {
+            MonitorPerformance(gameTime);
+            base.Update(gameTime);
+        }
+
         /// <summary>
         ///     Sets the texture of t
         /// </summary>
@@ -137,6 +158,12 @@ namespace Wobble.Graphics.Sprites
 
             var ratio = ForceDrawAtSize ? 1 : FontSize / 36f;
             Size = new ScalableVector2(Image.Width * ratio, Image.Height * ratio);
+
+            AmountOfTextUpdatesInSecond++;
+
+            // 5 is a decent amount. There should never be a need to update text more than 5 times per second.
+            if (AmountOfTextUpdatesInSecond >= 5)
+                Logger.Warning($"Danger! Way too many text updates happening per second for {Text}", LogType.Runtime);
 
             oldTexture?.Dispose();
         }
@@ -164,6 +191,22 @@ namespace Wobble.Graphics.Sprites
             var b = MathHelper.Lerp(Tint.B, color.B, (float) Math.Min(dt / scale, 1));
 
             Tint = new Color((int)r, (int)g, (int)b);
+        }
+
+        /// <summary>
+        ///     Keeps track of how many times the text on this object has been changed.
+        ///     This can be a major performance hit, so it's just good to track.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        private void MonitorPerformance(GameTime gameTime)
+        {
+            TimeSinceLastSecond += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if (TimeSinceLastSecond < 1000)
+                return;
+
+            TimeSinceLastSecond = 0;
+            AmountOfTextUpdatesInSecond = 0;
         }
     }
 }
