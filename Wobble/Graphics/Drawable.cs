@@ -443,33 +443,33 @@ namespace Wobble.Graphics
         internal static void ResetTotalDrawnCount() => TotalDrawn = 0;
 
         /// <summary>
-        ///     Performs all of the transformations in the queue.
+        ///     Performs all of the Animations in the queue.
         /// </summary>
         private void PerformTransformations(GameTime gameTime)
         {
-            // Keep a list of transformations that are marked as done that'll be queued for removal.
+            // Keep a list of Animations that are marked as done that'll be queued for removal.
             var queuedForDeletion = new List<Animation>();
 
 
             for (var i = Animations.Count - 1; i >= 0; i--)
             {
-                var transformation = Animations[i];
+                var Animation = Animations[i];
 
                 try
                 {
-                    switch (transformation.Properties)
+                    switch (Animation.Properties)
                     {
                         case AnimationProperty.X:
-                            X = transformation.PerformInterpolation(gameTime);
+                            X = Animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Y:
-                            Y = transformation.PerformInterpolation(gameTime);
+                            Y = Animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Width:
-                            Width = transformation.PerformInterpolation(gameTime);
+                            Width = Animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Height:
-                            Height = transformation.PerformInterpolation(gameTime);
+                            Height = Animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Alpha:
                             var type = GetType();
@@ -477,7 +477,7 @@ namespace Wobble.Graphics
                             if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
-                                sprite.Alpha = transformation.PerformInterpolation(gameTime);
+                                sprite.Alpha = Animation.PerformInterpolation(gameTime);
                             }
 
                             break;
@@ -485,7 +485,7 @@ namespace Wobble.Graphics
                             if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
-                                sprite.Rotation = transformation.PerformInterpolation(gameTime);
+                                sprite.Rotation = Animation.PerformInterpolation(gameTime);
                             }
                             else
                                 throw new NotImplementedException();
@@ -494,22 +494,22 @@ namespace Wobble.Graphics
                             if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
-                                sprite.Tint = transformation.PerformColorInterpolation(gameTime);
+                                sprite.Tint = Animation.PerformColorInterpolation(gameTime);
                             }
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    if (transformation.Done)
-                        queuedForDeletion.Add(transformation);
+                    if (Animation.Done)
+                        queuedForDeletion.Add(Animation);
                 }
                 catch (Exception e)
                 {
                     break;
                 }
             }
-            // Remove all completed transformations.
+            // Remove all completed Animations.
             queuedForDeletion.ForEach(x => Animations.Remove(x));
         }
 
