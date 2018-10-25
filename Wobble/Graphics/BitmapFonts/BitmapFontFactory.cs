@@ -7,17 +7,12 @@ using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Graphics;
-using SixLabors.Fonts;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 using Wobble.Assets;
 using Wobble.Logging;
 using Color = Microsoft.Xna.Framework.Color;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
 using Image = System.Drawing.Image;
-using SystemFonts = SixLabors.Fonts.SystemFonts;
 
 namespace Wobble.Graphics.BitmapFonts
 {
