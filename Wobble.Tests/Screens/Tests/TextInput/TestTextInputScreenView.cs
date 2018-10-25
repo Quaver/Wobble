@@ -3,9 +3,9 @@ using System.Drawing;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Transformations;
 using Wobble.Graphics.UI.Form;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
@@ -44,9 +44,9 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                     Parent = Container,
                     X = -100,
                     Y = 100,
-                    Transformations =
+                    Animations =
                     {
-                        new Transformation(TransformationProperty.X, Easing.Linear, -100, WindowManager.Width + 500, 5000)
+                        new Animation(AnimationProperty.X, Easing.Linear, -100, WindowManager.Width + 500, 5000)
                     }
                 };
             };

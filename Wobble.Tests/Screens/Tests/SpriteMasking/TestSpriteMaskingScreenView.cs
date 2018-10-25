@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Transformations;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 
@@ -26,9 +26,9 @@ namespace Wobble.Tests.Screens.Tests.SpriteMasking
                 // The MASK image. In this case it's a circle!
                 // IMPORTANT! That's why this exists!
                 Image = Textures.CircleMask,
-                Transformations =
+                Animations =
                 {
-                    new Transformation(TransformationProperty.X, Easing.Linear, 0, 300, 5000)
+                    new Animation(AnimationProperty.X, Easing.Linear, 0, 300, 5000)
                 },
             };
 

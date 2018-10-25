@@ -39,7 +39,7 @@ namespace Wobble.Graphics.UI
         {
             // If somoene tries to set a transformation to this and not the child background sprite
             // then throw an exception.
-            if (Transformations.Count > 0)
+            if (Animations.Count > 0)
                 throw new InvalidOperationException("Transformations cannot be applied to BlurredBackgroundImage. Only BlurredBackgroundImage.Background.");
 
             base.Update(gameTime);

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Transformations;
 using Wobble.Graphics.UI.Form;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
@@ -39,9 +39,9 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
                 Size = new ScalableVector2(75, 75),
                 Alignment = Alignment.MidLeft,
                 Tint = Color.LimeGreen,
-                Transformations =
+                Animations =
                 {
-                    new Transformation(TransformationProperty.X, Easing.EaseInQuad, 0, WindowManager.VirtualScreen.X, 3000)
+                    new Animation(AnimationProperty.X, Easing.InQuad, 0, WindowManager.VirtualScreen.X, 3000)
                 }
             };
 
@@ -53,14 +53,14 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
             (val, index) =>
             {
                 // Clear all existing transformations
-                GreenBox.Transformations.Clear();
+                GreenBox.Animations.Clear();
 
                 // Reset the position of the box.
                 GreenBox.X = 0;
 
                 // Add a new transformation with the new easing type.
                 var newEaseType = (Easing)Enum.Parse(typeof(Easing), val);
-                GreenBox.Transformations.Add(new Transformation(TransformationProperty.X, newEaseType, GreenBox.X,
+                GreenBox.Animations.Add(new Animation(AnimationProperty.X, newEaseType, GreenBox.X,
                                                                 WindowManager.VirtualScreen.X, 3000));
             })
             {
@@ -84,13 +84,13 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
         {
             // If there aren't any transformations left, then we'll
             // want to loop it in this case.
-            if (GreenBox.Transformations.Count == 0)
+            if (GreenBox.Animations.Count == 0)
             {
                 GreenBox.X = 0;
 
                 // Add a new transformation with the new easing type.
                 var newEaseType = (Easing)Enum.Parse(typeof(Easing), EasingSelection.Options[EasingSelection.SelectedIndex]);
-                GreenBox.Transformations.Add(new Transformation(TransformationProperty.X, newEaseType, GreenBox.X,
+                GreenBox.Animations.Add(new Animation(AnimationProperty.X, newEaseType, GreenBox.X,
                                                                 WindowManager.VirtualScreen.X, 3000));
             }
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Transformations;
 using Wobble.Window;
 
 namespace Wobble.Logging
@@ -69,7 +69,7 @@ namespace Wobble.Logging
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
 
-            Transformations.Add(new Transformation(TransformationProperty.X, Easing.EaseOutQuint, X, 0, 300));
+            Animations.Add(new Animation(AnimationProperty.X, Easing.OutQuint, X, 0, 300));
         }
 
         /// <inheritdoc />
@@ -78,7 +78,7 @@ namespace Wobble.Logging
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            if (Transformations.Count == 0)
+            if (Animations.Count == 0)
             {
                 if (FadedOut)
                     Destroy();
@@ -87,7 +87,7 @@ namespace Wobble.Logging
 
                 if (TimeActive > 3000 && !FadedOut)
                 {
-                    Transformations.Add(new Transformation(TransformationProperty.X, Easing.EaseOutQuint, X, -Width, 300));
+                    Animations.Add(new Animation(AnimationProperty.X, Easing.OutQuint, X, -Width, 300));
                     FadedOut = true;
                 }
             }

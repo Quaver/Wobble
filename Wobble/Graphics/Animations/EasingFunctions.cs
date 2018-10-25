@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Wobble.Graphics.Transformations
+namespace Wobble.Graphics.Animations
 {
     public static class EasingFunctions
     {
@@ -19,69 +19,69 @@ namespace Wobble.Graphics.Transformations
         {
             switch (type)
             {
-                case Easing.EaseInQuad:
+                case Easing.InQuad:
                     return EaseInQuad(start, end, value);
-                case Easing.EaseOutQuad:
+                case Easing.OutQuad:
                     return EaseOutQuad(start, end, value);
-                case Easing.EaseInOutQuad:
+                case Easing.InOutQuad:
                     return EaseInOutQuad(start, end, value);
-                case Easing.EaseInCubic:
+                case Easing.InCubic:
                     return EaseInCubic(start, end, value);
-                case Easing.EaseOutCubic:
+                case Easing.OutCubic:
                     return EaseOutCubic(start, end, value);
-                case Easing.EaseInOutCubic:
+                case Easing.InOutCubic:
                     return EaseInOutCubic(start, end, value);
-                case Easing.EaseInQuart:
+                case Easing.InQuart:
                     return EaseInQuart(start, end, value);
-                case Easing.EaseOutQuart:
+                case Easing.OutQuart:
                     return EaseOutQuart(start, end, value);
-                case Easing.EaseInOutQuart:
+                case Easing.InOutQuart:
                     return EaseInOutQuart(start, end, value);
-                case Easing.EaseInQuint:
+                case Easing.InQuint:
                     return EaseInQuint(start, end, value);
-                case Easing.EaseOutQuint:
+                case Easing.OutQuint:
                     return EaseOutQuint(start, end, value);
-                case Easing.EaseInOutQuint:
+                case Easing.InOutQuint:
                     return EaseInOutQuint(start, end, value);
-                case Easing.EaseInSine:
+                case Easing.InSine:
                     return EaseInSine(start, end, value);
-                case Easing.EaseOutSine:
+                case Easing.OutSine:
                     return EaseOutSine(start, end, value);
-                case Easing.EaseInOutSine:
+                case Easing.InOutSine:
                     return EaseInOutSine(start, end, value);
-                case Easing.EaseInExpo:
+                case Easing.InExpo:
                     return EaseInExpo(start, end, value);
-                case Easing.EaseOutExpo:
+                case Easing.OutExpo:
                     return EaseOutExpo(start, end, value);
-                case Easing.EaseInOutExpo:
+                case Easing.InOutExpo:
                     return EaseInOutExpo(start, end, value);
-                case Easing.EaseInCirc:
+                case Easing.InCirc:
                     return EaseInCirc(start, end, value);
-                case Easing.EaseOutCirc:
+                case Easing.OutCirc:
                     return EaseOutCirc(start, end, value);
-                case Easing.EaseInOutCirc:
+                case Easing.InOutCirc:
                     return EaseInOutCirc(start, end, value);
                 case Easing.Linear:
                     return Linear(start, end, value);
                 case Easing.Spring:
                     return Spring(start, end, value);
-                case Easing.EaseInBounce:
+                case Easing.InBounce:
                     return EaseInBounce(start, end, value);
-                case Easing.EaseOutBounce:
+                case Easing.OutBounce:
                     return EaseOutBounce(start, end, value);
-                case Easing.EaseInOutBounce:
+                case Easing.InOutBounce:
                     return EaseInOutBounce(start, end, value);
-                case Easing.EaseInBack:
+                case Easing.InBack:
                     return EaseInBack(start, end, value);
-                case Easing.EaseOutBack:
+                case Easing.OutBack:
                     return EaseOutBack(start, end, value);
-                case Easing.EaseInOutBack:
+                case Easing.InOutBack:
                     return EaseInOutBack(start, end, value);
-                case Easing.EaseInElastic:
+                case Easing.InElastic:
                     return EaseInElastic(start, end, value);
-                case Easing.EaseOutElastic:
+                case Easing.OutElastic:
                     return EaseOutElastic(start, end, value);
-                case Easing.EaseInOutElastic:
+                case Easing.InOutElastic:
                     return EaseInOutElastic(start, end, value);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);

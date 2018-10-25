@@ -2,7 +2,6 @@ using System;
 using Microsoft.Xna.Framework;
 using Wobble.Bindables;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Transformations;
 
 namespace Wobble.Graphics.UI
 {

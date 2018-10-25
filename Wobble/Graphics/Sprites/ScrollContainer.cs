@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Bindables;
-using Wobble.Graphics.Transformations;
+using Wobble.Graphics.Animations;
 using Wobble.Input;
 using Wobble.Window;
 
@@ -121,8 +121,8 @@ namespace Wobble.Graphics.Sprites
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (TargetY != PreviousTargetY)
             {
-                ContentContainer.Transformations.Clear();
-                ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, EasingType,
+                ContentContainer.Animations.Clear();
+                ContentContainer.Animations.Add(new Animation(AnimationProperty.Y, EasingType,
                                                             ContentContainer.Y, TargetY, TimeToCompleteScroll));
             }
 
@@ -192,8 +192,8 @@ namespace Wobble.Graphics.Sprites
             TargetY = y;
             PreviousTargetY = y;
 
-            ContentContainer.Transformations.Clear();
-            ContentContainer.Transformations.Add(new Transformation(TransformationProperty.Y, EasingType, ContentContainer.Y, y, time));
+            ContentContainer.Animations.Clear();
+            ContentContainer.Animations.Add(new Animation(AnimationProperty.Y, EasingType, ContentContainer.Y, y, time));
         }
     }
 }

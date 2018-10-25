@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Transformations;
 using Wobble.Window;
 
 namespace Wobble.Graphics
@@ -262,9 +262,9 @@ namespace Wobble.Graphics
         public bool UsePreviousSpriteBatchOptions { get; set; }
 
         /// <summary>
-        ///     The list of transformations to perform on this drawable.
+        ///     The list of animations to perform on this drawable.
         /// </summary>
-        public List<Transformation> Transformations { get; } = new List<Transformation>();
+        public List<Animation> Animations { get; } = new List<Animation>();
 
         /// <summary>
         ///    The border around the drawable.
@@ -448,30 +448,30 @@ namespace Wobble.Graphics
         private void PerformTransformations(GameTime gameTime)
         {
             // Keep a list of transformations that are marked as done that'll be queued for removal.
-            var queuedForDeletion = new List<Transformation>();
+            var queuedForDeletion = new List<Animation>();
 
 
-            for (var i = Transformations.Count - 1; i >= 0; i--)
+            for (var i = Animations.Count - 1; i >= 0; i--)
             {
-                var transformation = Transformations[i];
+                var transformation = Animations[i];
 
                 try
                 {
                     switch (transformation.Properties)
                     {
-                        case TransformationProperty.X:
+                        case AnimationProperty.X:
                             X = transformation.PerformInterpolation(gameTime);
                             break;
-                        case TransformationProperty.Y:
+                        case AnimationProperty.Y:
                             Y = transformation.PerformInterpolation(gameTime);
                             break;
-                        case TransformationProperty.Width:
+                        case AnimationProperty.Width:
                             Width = transformation.PerformInterpolation(gameTime);
                             break;
-                        case TransformationProperty.Height:
+                        case AnimationProperty.Height:
                             Height = transformation.PerformInterpolation(gameTime);
                             break;
-                        case TransformationProperty.Alpha:
+                        case AnimationProperty.Alpha:
                             var type = GetType();
 
                             if (this is Sprite)
@@ -481,7 +481,7 @@ namespace Wobble.Graphics
                             }
 
                             break;
-                        case TransformationProperty.Rotation:
+                        case AnimationProperty.Rotation:
                             if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
@@ -490,7 +490,7 @@ namespace Wobble.Graphics
                             else
                                 throw new NotImplementedException();
                             break;
-                        case TransformationProperty.Color:
+                        case AnimationProperty.Color:
                             if (this is Sprite)
                             {
                                 var sprite = (Sprite) this;
@@ -510,7 +510,91 @@ namespace Wobble.Graphics
                 }
             }
             // Remove all completed transformations.
-            queuedForDeletion.ForEach(x => Transformations.Remove(x));
+            queuedForDeletion.ForEach(x => Animations.Remove(x));
+        }
+
+        /// <summary>
+        ///     Removes all animations from the drawable
+        /// </summary>
+        public void ClearAnimations()
+        {
+            lock (Animations)
+                Animations.Clear();
+        }
+
+        /// <summary>
+        ///     Moves the drawable to an x position.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        public void MoveToX(int x, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.X, easingType, X, x, time));
+        }
+
+        /// <summary>
+        ///     Moves the drawable to a y position
+        /// </summary>
+        /// <param name="y"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        public void MoveToY(int y, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.Y, easingType, Y, y, time));
+        }
+
+        /// <summary>
+        ///     Moves the drawable to a given position
+        /// </summary>
+        public void MoveToPosition(Vector2 position, Easing easingType, int time)
+        {
+            lock (Animations)
+            {
+                Animations.Add(new Animation(AnimationProperty.X, easingType, X, position.X, time));
+                Animations.Add(new Animation(AnimationProperty.Y, easingType, Y, position.Y, time));
+            }
+        }
+
+        /// <summary>
+        ///     Animate's the drawable's height
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        public void ChangeHeightTo(int height, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.Height, easingType, Height, height, time));
+        }
+
+        /// <summary>
+        ///     Animates the drawable's width
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        public void ChangeWidthTo(int width, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.Width, easingType, Width, width, time));
+        }
+
+        /// <summary>
+        ///     Animate's the drawable's width and height.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        public void ChangeSizeTo(Vector2 size, Easing easingType, int time)
+        {
+            lock (Animations)
+            {
+                Animations.Add(new Animation(AnimationProperty.Width, easingType, Width, size.X, time));
+                Animations.Add(new Animation(AnimationProperty.Height, easingType, Height, size.Y, time));
+            }
         }
     }
 }

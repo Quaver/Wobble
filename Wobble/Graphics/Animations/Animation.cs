@@ -1,17 +1,17 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Wobble.Graphics.Transformations
+namespace Wobble.Graphics.Animations
 {
-    public class Transformation
+    public class Animation
     {
         /// <summary>
         ///     The properties of the drawable that will be changed.
         /// </summary>
-        public TransformationProperty Properties { get; }
+        public AnimationProperty Properties { get; }
 
         /// <summary>
-        ///     The type of easing function this transformation will perform.
+        ///     The type of easing function this animation will perform.
         /// </summary>
         public Easing EasingType { get; }
 
@@ -26,7 +26,7 @@ namespace Wobble.Graphics.Transformations
         public float End { get; }
 
         /// <summary>
-        ///     The time to complete the transformation.
+        ///     The time to complete the animation.
         /// </summary>
         public float Time { get; }
 
@@ -36,29 +36,28 @@ namespace Wobble.Graphics.Transformations
         public double CurrentAnimationTime { get; private set; }
 
         /// <summary>
-        ///     Dictates if the transformation is done.
+        ///     Dictates if the animation is done.
         /// </summary>
         public bool Done { get; set; }
 
         /// <summary>
-        ///     If doing a transformation with color, it'll fade from this color.
+        ///     If doing a animation with color, it'll fade from this color.
         /// </summary>
         public Color StartColor { get; set; }
 
         /// <summary>
-        ///     If doing a transformation with color, it'll fade to this color
+        ///     If doing a animation with color, it'll fade to this color
         /// </summary>
         public Color EndColor { get; set; }
 
         /// <summary>
-        ///
         /// </summary>
         /// <param name="properties"></param>
         /// <param name="easingType"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="time"></param>
-        public Transformation(TransformationProperty properties, Easing easingType, float start, float end, float time)
+        public Animation(AnimationProperty properties, Easing easingType, float start, float end, float time)
         {
             Properties = properties;
             EasingType = easingType;
@@ -68,15 +67,14 @@ namespace Wobble.Graphics.Transformations
         }
 
         /// <summary>
-        ///     Transformation with
         /// </summary>
         /// <param name="easingType"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="time"></param>
-        public Transformation(Easing easingType, Color start, Color end, float time)
+        public Animation(Easing easingType, Color start, Color end, float time)
         {
-            Properties = TransformationProperty.Color;
+            Properties = AnimationProperty.Color;
             EasingType = easingType;
             StartColor = start;
             EndColor = end;
@@ -84,7 +82,7 @@ namespace Wobble.Graphics.Transformations
         }
 
         /// <summary>
-        ///     Performs the interpolation function for the transformation
+        ///     Performs the interpolation function
         /// </summary>
         /// <param name="gameTime"></param>
         public float PerformInterpolation(GameTime gameTime)
