@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 
 namespace Wobble.Graphics.UI.Debugging
@@ -31,10 +32,9 @@ namespace Wobble.Graphics.UI.Debugging
         /// <summary>
         ///     Ctor
         /// </summary>
-        public FpsCounter(SpriteFont font, float textScale) => TextFps = new SpriteText(font, "")
+        public FpsCounter(string font, int size) => TextFps = new SpriteText(font, " ", size)
         {
             Parent = this,
-            TextScale = textScale,
             Alignment = Alignment.MidCenter
         };
 

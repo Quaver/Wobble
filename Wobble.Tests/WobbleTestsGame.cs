@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Graphics.BitmapFonts;
 using Wobble.Input;
 using Wobble.IO;
 using Wobble.Screens;
@@ -48,6 +49,16 @@ namespace Wobble.Tests
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
             Textures.Load();
             Fonts.Load();
+
+            // (This should normally be done at the start of the game.)
+            // Load up a font to use by a byte[] / ResourceStore.
+            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-bold"))
+                BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.otf"));
+
+            // (This should normally be done at the start of the game.)
+            // Load up a font to use by a byte[] / ResourceStore.
+            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-regular"))
+                BitmapFontFactory.AddFont("exo2-regular", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-regular.otf"));
 
             IsReadyToUpdate = true;
 

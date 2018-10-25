@@ -7,9 +7,17 @@ using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Graphics;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using Wobble.Assets;
 using Wobble.Logging;
 using Color = Microsoft.Xna.Framework.Color;
+using Font = System.Drawing.Font;
+using FontStyle = System.Drawing.FontStyle;
+using Image = System.Drawing.Image;
+using SystemFonts = SixLabors.Fonts.SystemFonts;
 
 namespace Wobble.Graphics.BitmapFonts
 {
@@ -94,9 +102,9 @@ namespace Wobble.Graphics.BitmapFonts
             using (var format = new StringFormat())
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.InterpolationMode = InterpolationMode.HighQualityBilinear;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                g.TextRenderingHint = TextRenderingHint.AntiAlias;
 
                 format.Alignment = alignment;
                 format.LineAlignment = alignment;
@@ -106,15 +114,15 @@ namespace Wobble.Graphics.BitmapFonts
             }
 
             // Create the actual bitmap using the size of the text.
-            using (var bmp = new Bitmap((int) textSize.Width, (int) textSize.Height))
+            using (var bmp = new Bitmap((int) textSize.Width, (int) textSize.Height, PixelFormat.Format32bppArgb))
             using (var g = System.Drawing.Graphics.FromImage(bmp))
-            using (var brush = new SolidBrush(System.Drawing.Color.FromArgb(color.R, color.G, color.B)))
+            using (var brush = new SolidBrush(System.Drawing.Color.White))
             using (var format = new StringFormat())
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.InterpolationMode = InterpolationMode.HighQualityBilinear;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                g.TextRenderingHint = TextRenderingHint.AntiAlias;
 
                 format.Alignment = alignment;
                 format.LineAlignment = alignment;

@@ -21,7 +21,7 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         /// <summary>
         ///     The text that is being displayed.
         /// </summary>
-        public SpriteTextBitmap SongTimeText { get; }
+        public SpriteText SongTimeText { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -29,16 +29,7 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         /// <param name="screen"></param>
         public TestBitmapFontScreenView(Screen screen) : base(screen)
         {
-            // (This should normally be done at the start of the game.)
-            // Load up a font to use by a byte[] / ResourceStore.
-            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-bold"))
-                BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.otf"));
-
-            // (This should normally be done at the start of the game.)
-            // Load up a font to use by file
-            // BitmapFontFactory.AddFont("exo2-regular", @"C:\users\admin\desktop\exo2-regular.otf");
-
-            SongTimeText = new SpriteTextBitmap("exo2-bold", "0", 16)
+            SongTimeText = new SpriteText("exo2-bold", "0", 16)
             {
                 Parent = Container,
             };

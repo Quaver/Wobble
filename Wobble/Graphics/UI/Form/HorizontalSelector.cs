@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 
@@ -32,7 +33,7 @@ namespace Wobble.Graphics.UI.Form
         private Action<string, int> OnChange { get; }
 
         /// <summary>
-        ///     The text that displays the 
+        ///     The text that displays the
         /// </summary>
         public SpriteText SelectedItemText { get; }
 
@@ -59,7 +60,7 @@ namespace Wobble.Graphics.UI.Form
         /// <param name="buttonSpacing"></param>
         /// <param name="onChange"></param>
         /// <param name="selectedIndex"></param>
-        public HorizontalSelector(List<string> options, ScalableVector2 selectorSize, SpriteFont selectorFont, float fontScale, Texture2D leftButtonImage,
+        public HorizontalSelector(List<string> options, ScalableVector2 selectorSize, string selectorFont, int fontSize, Texture2D leftButtonImage,
                                     Texture2D rightButtonImage, ScalableVector2 buttonSize, int buttonSpacing, Action<string, int> onChange,
                                     int selectedIndex = 0)
         {
@@ -76,12 +77,11 @@ namespace Wobble.Graphics.UI.Form
             Size = selectorSize;
 
             // Create the text that displays the currently selected item.
-            SelectedItemText = new SpriteText(selectorFont, Options[SelectedIndex])
+            SelectedItemText = new SpriteText(selectorFont, Options[SelectedIndex], fontSize)
             {
                 Parent = this,
                 Alignment = Alignment.MidCenter,
-                TextColor = Color.Black,
-                TextScale = fontScale
+                Tint = Color.Black
             };
 
             // Create the left selection button.

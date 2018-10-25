@@ -24,7 +24,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
         /// <summary>
         ///     Text that displays "Hello World!"
         /// </summary>
-        public SpriteTextBitmap HelloWorldText { get; }
+        public SpriteText HelloWorldText { get; }
 
         /// <summary>
         ///     Button that says click me! Click it to find out the surprise.
@@ -87,7 +87,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
                 BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.otf"));
 
 #region HELLO_WORLD_TEXT
-            HelloWorldText = new SpriteTextBitmap("exo2-bold", "Hello, World!", 18)
+            HelloWorldText = new SpriteText("exo2-bold", "Hello, World!", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,

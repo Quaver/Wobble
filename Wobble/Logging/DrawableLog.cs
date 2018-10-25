@@ -18,7 +18,7 @@ namespace Wobble.Logging
         /// <summary>
         ///     The text for the log.
         /// </summary>
-        public SpriteTextBitmap Text { get; }
+        public SpriteText Text { get; }
 
         /// <summary>
         ///     The amount of time the log has been active.
@@ -37,7 +37,7 @@ namespace Wobble.Logging
         /// <param name="level"></param>
         public DrawableLog(string t, LogLevel level)
         {
-            Text = new SpriteTextBitmap("Calibri", t, 16, (int) (WindowManager.Width / 0.75f))
+            Text = new SpriteText("Calibri", t, 16, true, (int) (WindowManager.Width / 0.75f))
             {
                 Parent = this,
                 Alignment = Alignment.MidLeft,

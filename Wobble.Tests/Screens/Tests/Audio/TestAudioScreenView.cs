@@ -23,31 +23,6 @@ namespace Wobble.Tests.Screens.Tests.Audio
         /// </summary>
         public ProgressBar AudioTimeProgress { get; }
 
-        /// <summary>
-        ///     The button to play and pause the track.
-        /// </summary>
-        public TextButton PlayButton { get; }
-
-        /// <summary>
-        ///     Button that increases the rate of the audio
-        /// </summary>
-        public TextButton IncreaseAudioRateButton { get; }
-
-        /// <summary>
-        ///    Text that displays the current audio position
-        /// </summary>
-        public SpriteText CurrentTime { get; }
-
-        /// <summary>
-        ///     The current audio rate.
-        /// </summary>
-        public SpriteText AudioRate { get; }
-
-        /// <summary>
-        ///     Button that plays a train sound effect
-        /// </summary>
-        public TextButton PlayTrainSoundButton { get; }
-
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -65,7 +40,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
             };
 
             // Create play/pause button
-            PlayButton = new TextButton(WobbleAssets.WhiteBox, Fonts.AllerRegular16, "Pause", 0.95f, (sender, args) =>
+            /*PlayButton = new TextButton(WobbleAssets.WhiteBox, Fonts.AllerRegular16, "Pause", 0.95f, (sender, args) =>
             {
                 var song = audioScreen.Song;
 
@@ -148,7 +123,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
                 Alignment = Alignment.MidCenter,
                 X = 100,
                 Text = { TextColor = Color.Black }
-            };
+            };*/
         }
 
         /// <inheritdoc />
@@ -163,12 +138,12 @@ namespace Wobble.Tests.Screens.Tests.Audio
             AudioTimeProgress.Bindable.Value = audioScreen.Song.Time;
 
             // When the song stops, reset the button text.
-            if (audioScreen.Song.IsStopped || audioScreen.Song.IsDisposed)
-                PlayButton.Text.Text = "Play";
+            //f (audioScreen.Song.IsStopped || audioScreen.Song.IsDisposed)
+             //   PlayButton.Text.Text = "Play";
 
             // Update current time and audio rate text.
-            CurrentTime.Text = $"Position: {audioScreen.Song.Time}ms";
-            AudioRate.Text = $"Audio Rate: {audioScreen.Song.Rate}x";
+            //CurrentTime.Text = $"Position: {audioScreen.Song.Time}ms";
+            //AudioRate.Text = $"Audio Rate: {audioScreen.Song.Rate}x";
 
             Container?.Update(gameTime);
         }

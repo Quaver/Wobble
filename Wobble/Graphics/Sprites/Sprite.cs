@@ -90,17 +90,9 @@ namespace Wobble.Graphics.Sprites
 
                 Children.ForEach(x =>
                 {
-                    var t = x.GetType();
-
-                    if (t == typeof(Sprite))
+                    if (x is Sprite sprite)
                     {
-                        var sprite = (Sprite) x;
                         sprite.Alpha = value;
-                    }
-                    else if (t == typeof(SpriteText))
-                    {
-                        var text = (SpriteText)x;
-                        text.Alpha = value;
                     }
                 });
             }

@@ -119,19 +119,10 @@ namespace Wobble.Graphics.Sprites
         {
             var alpha = 0f;
 
-            var type = drawable.GetType();
-
-            if (type == typeof(Sprite))
+            if (drawable is Sprite sprite)
             {
-                var sprite = (Sprite) drawable;
                 alpha = sprite.Alpha;
             }
-            else if (type == typeof(SpriteText))
-            {
-                var text = (SpriteText) drawable;
-                alpha = text.Alpha;
-            }
-
             return new AlphaTestEffect(GameBase.Game.GraphicsDevice)
             {
                 Projection = Matrix,

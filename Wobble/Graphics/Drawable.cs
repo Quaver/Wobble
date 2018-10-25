@@ -479,11 +479,6 @@ namespace Wobble.Graphics
                                 var sprite = (Sprite) this;
                                 sprite.Alpha = transformation.PerformInterpolation(gameTime);
                             }
-                            else if (this is SpriteText)
-                            {
-                                var spriteText = (SpriteText) this;
-                                spriteText.Alpha = transformation.PerformInterpolation(gameTime);
-                            }
 
                             break;
                         case TransformationProperty.Rotation:
@@ -494,7 +489,6 @@ namespace Wobble.Graphics
                             }
                             else
                                 throw new NotImplementedException();
-
                             break;
                         case TransformationProperty.Color:
                             if (this is Sprite)
@@ -502,12 +496,6 @@ namespace Wobble.Graphics
                                 var sprite = (Sprite) this;
                                 sprite.Tint = transformation.PerformColorInterpolation(gameTime);
                             }
-                            else if (this is SpriteText)
-                            {
-                                var spriteText = (SpriteText) this;
-                                spriteText.TextColor = transformation.PerformColorInterpolation(gameTime);
-                            }
-
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

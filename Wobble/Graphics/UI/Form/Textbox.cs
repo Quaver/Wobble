@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
+using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
@@ -17,11 +18,6 @@ namespace Wobble.Graphics.UI.Form
     /// </summary>
     public class Textbox : ScrollContainer
     {
-        /// <summary>
-        ///     The style of the text box.
-        /// </summary>
-        public TextboxStyle Style { get; }
-
         /// <summary>
         ///     The text that is currently displayed
         /// </summary>
@@ -130,27 +126,25 @@ namespace Wobble.Graphics.UI.Form
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        /// <param name="style"></param>
         /// <param name="size"></param>
         /// <param name="font"></param>
+        /// <param name="fontSize"></param>
         /// <param name="initialText"></param>
         /// <param name="placeHolderText"></param>
-        /// <param name="textScale"></param>
         /// <param name="onSubmit"></param>
         /// <param name="onStoppedTyping"></param>
-        public Textbox(TextboxStyle style, ScalableVector2 size, SpriteFont font, string initialText = "", string placeHolderText = "", float textScale = 1.0f,
-            Action<string> onSubmit = null, Action<string> onStoppedTyping = null) : base(size, size)
+        public Textbox(ScalableVector2 size, string font, int fontSize,
+            string initialText = "", string placeHolderText = "",  Action<string> onSubmit = null, Action<string> onStoppedTyping = null)
+            : base(size, size)
         {
-            Style = style;
             PlaceholderText = placeHolderText;
             _rawText = initialText;
 
-            InputText = new SpriteText(font, RawText, size, textScale)
+            InputText = new SpriteText(font, RawText, fontSize, false)
             {
                 TextAlignment = Alignment.TopLeft,
                 X = 5,
                 Y = 3,
-                Padding = 5
             };
 
             if (!string.IsNullOrEmpty(initialText))
@@ -161,23 +155,11 @@ namespace Wobble.Graphics.UI.Form
                 InputText.Alpha = 0.50f;
             }
 
-            switch (Style)
-            {
-                case TextboxStyle.MultiLine:
-                    InputText.Style = TextStyle.WordwrapMultiLine;
-                    break;
-                case TextboxStyle.SingleLine:
-                    InputText.Style = TextStyle.OverflowSingleLine;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
             Cursor = new Sprite()
             {
                 Parent = this,
                 Alignment = Alignment.TopLeft,
-                Size = new ScalableVector2(2, InputText.MeasureString("A").Y), // Height is equivalent to text height.
+                Size = new ScalableVector2(2, InputText.Height), // Height is equivalent to text height.
                 Tint = Color.White,
                 Y = 2,
                 Visible = false
@@ -244,6 +226,8 @@ namespace Wobble.Graphics.UI.Form
 
             // Handle all input.
             HandleCtrlInput();
+            CalculateContainerX();
+            ChangeCursorLocation();
 
             // Change the alpha of the selected sprite depending on if we're currently in a CTRL+A operation.
             SelectedSprite.Alpha = MathHelper.Lerp(SelectedSprite.Alpha, Selected ? 0.25f : 0,
@@ -358,34 +342,22 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void CalculateContainerX()
         {
-            if (Style != TextboxStyle.SingleLine)
-                return;
-
-            var size = InputText.MeasureString();
-            ContentContainer.X = size.X > Width ? Width - size.X - InputText.Padding - Cursor.Width: 0;
+            ContentContainer.X = InputText.Width > Width ? Width - InputText.Width - Cursor.Width: 0;
         }
 
         /// <summary>
         ///     Changes the location of the cursor to the position of where the text is.
         /// </summary>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private void ChangeCursorLocation()
         {
-            switch (Style)
+            if (string.IsNullOrEmpty(RawText))
             {
-                case TextboxStyle.MultiLine:
-                    break;
-                case TextboxStyle.SingleLine:
-                    if (InputText.Text == PlaceholderText)
-                        Cursor.X = 3;
-                    else
-                        Cursor.X = InputText.MeasureString().X + 3;
-
-                    SelectedSprite.Width = Cursor.X;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                Cursor.X = 3;
+                return;
             }
+
+            Cursor.X = InputText.Width;
+            SelectedSprite.Width = Cursor.X;
         }
 
         /// <summary>
@@ -413,9 +385,6 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         public void ReadjustTextbox()
         {
-            CalculateContainerX();
-            ChangeCursorLocation();
-
             // Make cursor visible and reset its visiblity changing.
             Cursor.Visible = true;
             TimeSinceCursorVisibllityChanged = 0;
@@ -454,17 +423,5 @@ namespace Wobble.Graphics.UI.Form
                 Selected = false;
             }
         }
-    }
-
-    /// <summary>
-    ///     The type of text box
-    /// </summary>
-    public enum TextboxStyle
-    {
-        // Wraps to multiple lines in the box.
-        MultiLine,
-
-        // Stays on a single line and moves the viewing container as the user types.
-        SingleLine
     }
 }

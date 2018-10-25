@@ -47,7 +47,7 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
 
             // Create the horizontal selector
             EasingSelection = new HorizontalSelector(Enum.GetNames(typeof(Easing)).ToList(), new ScalableVector2(300, 45),
-                                    Fonts.AllerRegular16, 0.95f, Textures.LeftButtonSquare, Textures.RightButtonSquare,
+                                    "exo2-bold", 18, Textures.LeftButtonSquare, Textures.RightButtonSquare,
                                     new ScalableVector2(45, 45), 10,
             // Create the method that'll be called when a new option is selected.
             (val, index) =>
@@ -73,7 +73,7 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
 
             EasingSelection.ButtonSelectLeft.Tint = Color.Red;
             EasingSelection.ButtonSelectRight.Tint = Color.Red;
-            EasingSelection.SelectedItemText.TextColor = Color.White;
+            EasingSelection.SelectedItemText.Tint = Color.White;
         }
 
         /// <inheritdoc />
@@ -95,7 +95,7 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
             }
 
             Container?.Update(gameTime);
-        } 
+        }
 
         /// <inheritdoc />
         /// <summary>
