@@ -52,12 +52,16 @@ namespace Wobble.Graphics.UI.Debugging
             ElapsedTime += gameTime.ElapsedGameTime;
 
             if (ElapsedTime <= TimeSpan.FromSeconds(1))
+            {
+                base.Update(gameTime);
                 return;
+            }
 
             ElapsedTime -= TimeSpan.FromSeconds(1);
             FrameRate = FrameCounter;
             FrameCounter = 0;
 
+            TextFps.Text = $"FPS: {FrameRate}";
             base.Update(gameTime);
         }
 
@@ -68,11 +72,6 @@ namespace Wobble.Graphics.UI.Debugging
         public override void Draw(GameTime gameTime)
         {
             FrameCounter++;
-
-            if (LastRecordedFps != FrameRate)
-                TextFps.Text = $"FPS: {FrameRate}";
-
-            LastRecordedFps = FrameRate;
             base.Draw(gameTime);
         }
     }

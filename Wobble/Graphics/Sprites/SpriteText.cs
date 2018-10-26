@@ -161,7 +161,7 @@ namespace Wobble.Graphics.Sprites
 
             AmountOfTextUpdatesInSecond++;
 
-            if (AmountOfTextUpdatesInSecond >= 30)
+            if (AmountOfTextUpdatesInSecond >= 100)
                 Logger.Warning($"Danger! Way too many text updates ({AmountOfTextUpdatesInSecond}) happening per second for {Text}",
                     LogType.Runtime, false);
 
