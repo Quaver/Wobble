@@ -161,9 +161,9 @@ namespace Wobble.Graphics.Sprites
 
             AmountOfTextUpdatesInSecond++;
 
-            // 5 is a decent amount. There should never be a need to update text more than 5 times per second.
-            if (AmountOfTextUpdatesInSecond >= 5)
-                Logger.Warning($"Danger! Way too many text updates happening per second for {Text}", LogType.Runtime);
+            if (AmountOfTextUpdatesInSecond >= 30)
+                Logger.Warning($"Danger! Way too many text updates ({AmountOfTextUpdatesInSecond}) happening per second for {Text}",
+                    LogType.Runtime, false);
 
             oldTexture?.Dispose();
         }
