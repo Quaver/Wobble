@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Shaders;
 using Wobble.Window;
 
@@ -229,6 +230,18 @@ namespace Wobble.Graphics.Sprites
             var b = MathHelper.Lerp(Tint.B, color.B, (float) Math.Min(dt / scale, 1));
 
             Tint = new Color((int)r, (int)g, (int)b);
+        }
+
+        /// <summary>
+        ///     Fades to a tint in a certain amount of time.
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        public void FadeToColor(Color color, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(easingType, Tint, color, time));
         }
     }
 }

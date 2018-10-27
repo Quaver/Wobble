@@ -528,7 +528,7 @@ namespace Wobble.Graphics
         /// <param name="x"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void MoveToX(int x, Easing easingType, int time)
+        public void MoveToX(float x, Easing easingType, int time)
         {
             lock (Animations)
                 Animations.Add(new Animation(AnimationProperty.X, easingType, X, x, time));
