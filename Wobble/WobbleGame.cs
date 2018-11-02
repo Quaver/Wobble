@@ -45,7 +45,7 @@ namespace Wobble
         public SpriteBatch SpriteBatch { get; private set; }
 
         /// <summary>
-        ///     The amount of time elapsed since the previous frame.
+        ///     The amount of time elapsed since the previous frame in Milliseconds.
         /// </summary>
         public double TimeSinceLastFrame { get; private set; }
 

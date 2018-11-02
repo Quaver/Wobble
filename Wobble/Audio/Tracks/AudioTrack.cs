@@ -46,8 +46,8 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
-        ///     The true position of the audio, taking into frame times. Use this for more accurate
-        ///     results (such as for rhythm games, or things where the audio time really matters)
+        ///     The true position of the audio in milliseconds, taking into frame times. Use this for more accurate
+        ///     results (such as for rhythm games, or things where the audio time really matters.)
         /// </summary>
         public double Time { get; private set; }
 
@@ -276,7 +276,16 @@ namespace Wobble.Audio.Tracks
                 return;
             }
 
-            Time = (Position + (Time + timeSinceLastFrame * Rate)) / 2;
+            // Audio Position will stablize if BASS Audio Track Position is above the target value.
+            var target = Time + timeSinceLastFrame * Rate;
+            if (Position > target)
+            {
+                Time = (Position + target) / 2;
+                return;
+            }
+
+            // Use Delta Time if Audio position doesn't need to be stablized.
+            Time = target;
         }
 
         /// <inheritdoc />
