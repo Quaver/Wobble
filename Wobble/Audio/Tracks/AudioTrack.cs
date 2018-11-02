@@ -276,7 +276,16 @@ namespace Wobble.Audio.Tracks
                 return;
             }
 
-            Time = (Position + (Time + timeSinceLastFrame * Rate)) / 2;
+            // Audio Position will stablize if BASS Audio Track Position is above the target value.
+            var target = Time + timeSinceLastFrame * Rate;
+            if (Position > target)
+            {
+                Time = (Position + target) / 2;
+                return;
+            }
+
+            // Use Delta Time if Audio position doesn't need to be stablized.
+            Time = target;
         }
 
         /// <inheritdoc />
