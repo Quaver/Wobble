@@ -46,8 +46,8 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
-        ///     The true position of the audio, taking into frame times. Use this for more accurate
-        ///     results (such as for rhythm games, or things where the audio time really matters)
+        ///     The true position of the audio in milliseconds, taking into frame times. Use this for more accurate
+        ///     results (such as for rhythm games, or things where the audio time really matters.)
         /// </summary>
         public double Time { get; private set; }
 
