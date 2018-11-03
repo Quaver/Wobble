@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Graphics.BitmapFonts;
@@ -7,7 +7,7 @@ using Wobble.Window;
 
 namespace Wobble.Graphics.UI.Buttons
 {
-    public class BitmapTextButton : ImageButton
+    public class TextButton : ImageButton
     {
         /// <summary>
         ///     The sprite text inside of the button
@@ -22,7 +22,7 @@ namespace Wobble.Graphics.UI.Buttons
         /// <param name="text"></param>
         /// <param name="fontSize"></param>
         /// <param name="clickAction"></param>
-        public BitmapTextButton(Texture2D image, string font, string text, int fontSize, EventHandler clickAction = null)
+        public TextButton(Texture2D image, string font, string text, int fontSize, EventHandler clickAction = null)
             : base(image, clickAction) => Text = new SpriteText(font, text, fontSize)
         {
             Parent = this,

@@ -45,7 +45,7 @@ namespace Wobble
         public SpriteBatch SpriteBatch { get; private set; }
 
         /// <summary>
-        ///     The amount of time elapsed since the previous frame.
+        ///     The amount of time elapsed since the previous frame in Milliseconds.
         /// </summary>
         public double TimeSinceLastFrame { get; private set; }
 
@@ -82,8 +82,6 @@ namespace Wobble
             Graphics = new GraphicsDeviceManager(this)
             {
                 PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8,
-                GraphicsProfile = GraphicsProfile.HiDef,
-                PreferMultiSampling = true,
             };
 
             GameBase.Game = this;
@@ -115,9 +113,6 @@ namespace Wobble
         /// </summary>
         protected override void LoadContent()
         {
-            GraphicsDevice.PresentationParameters.MultiSampleCount = 8;
-            Graphics.ApplyChanges();
-
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             WobbleAssets.Load();

@@ -37,10 +37,10 @@ namespace Wobble.Graphics.UI
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            // If somoene tries to set a transformation to this and not the child background sprite
+            // If somoene tries to set a Animation to this and not the child background sprite
             // then throw an exception.
             if (Animations.Count > 0)
-                throw new InvalidOperationException("Transformations cannot be applied to BlurredBackgroundImage. Only BlurredBackgroundImage.Background.");
+                throw new InvalidOperationException("Animations cannot be applied to BlurredBackgroundImage. Only BlurredBackgroundImage.Background.");
 
             base.Update(gameTime);
         }

@@ -1,7 +1,7 @@
 namespace Wobble.Graphics.Animations
 {
     /// <summary>
-    ///     The property of which to perform an easing function transformation for.
+    ///     The property of which to perform an easing function Animation for.
     /// </summary>
     public enum AnimationProperty
     {

@@ -2,7 +2,7 @@ namespace Wobble.Graphics.Animations
 {
     /// <summary>
     ///     An enum containing different types of easing functions to be used
-    ///     for transformations.
+    ///     for Animations.
     ///
     ///     Provided by: https://gist.github.com/cjddmut/d789b9eb78216998e95c
     /// </summary>

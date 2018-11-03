@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework.Graphics;
 using Wobble.Graphics;
 
 namespace Wobble
@@ -25,11 +26,15 @@ namespace Wobble
             }
         }
 
-         /// <summary>
+        /// <summary>
         ///    The default SpriteBatch options that'd be used on every drawable that doesn't
         ///    have it overwritten.
         /// </summary>
-        public static SpriteBatchOptions DefaultSpriteBatchOptions { get; set;  } = new SpriteBatchOptions();
+        public static SpriteBatchOptions DefaultSpriteBatchOptions { get; set; } = new SpriteBatchOptions()
+        {
+            SortMode = SpriteSortMode.Immediate,
+            BlendState = BlendState.NonPremultiplied,
+        };
 
         /// <summary>
         ///     Dictates if the default SpriteBatch is currently in use.
