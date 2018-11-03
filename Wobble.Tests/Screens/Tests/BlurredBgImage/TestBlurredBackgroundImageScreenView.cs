@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Wobble.Assets;
+using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI;
 using Wobble.Screens;
@@ -10,9 +11,13 @@ namespace Wobble.Tests.Screens.Tests.BlurredBgImage
     {
         public TestBlurredBackgroundImageScreenView(Screen screen) : base(screen)
         {
-            var background = new BlurredBackgroundImage(WobbleAssets.Wallpaper, BlurType.Gaussian, 10, 10)
+            var blur = new GaussianBlur(1.1f);
+            var image = blur.PerformGaussianBlur(WobbleAssets.Wallpaper);
+
+            var background = new BackgroundImage(image)
             {
-                Parent = Container
+                Parent = Container,
+                Image = image
             };
         }
 
