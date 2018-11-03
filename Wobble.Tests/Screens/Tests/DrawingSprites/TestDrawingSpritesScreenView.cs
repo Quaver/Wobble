@@ -29,7 +29,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
         /// <summary>
         ///     Button that says click me! Click it to find out the surprise.
         /// </summary>
-        public BitmapTextButton ClickMeButton { get; }
+        public TextButton ClickMeButton { get; }
 
         /// <summary>
         ///     The background color for the scene.
@@ -96,7 +96,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region CLICK_ME_BUTTON
-            ClickMeButton = new BitmapTextButton(WobbleAssets.WhiteBox, "exo2-bold", "Click me!", 18, (sender, args) =>
+            ClickMeButton = new TextButton(WobbleAssets.WhiteBox, "exo2-bold", "Click me!", 18, (sender, args) =>
                 {
                     // Click event handler method goes here.
                     // Choose a random background color!
