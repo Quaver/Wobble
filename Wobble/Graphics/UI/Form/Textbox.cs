@@ -105,6 +105,11 @@ namespace Wobble.Graphics.UI.Form
         public int StoppedTypingActionCalltime { get; set; } = 500;
 
         /// <summary>
+        ///     If true, it'll allow the textbox to be submitted.
+        /// </summary>
+        public bool AllowSubmission { get; set; } = true;
+
+        /// <summary>
         ///     The amount of time since the user has stopped typing, so that
         ///     we can perform actions after they've stopped typing.
         /// </summary>
@@ -316,6 +321,9 @@ namespace Wobble.Graphics.UI.Form
                         break;
                     // On Submit
                     case Keys.Enter:
+                        if (!AllowSubmission)
+                            return;
+
                         if (string.IsNullOrEmpty(RawText))
                             return;
 
