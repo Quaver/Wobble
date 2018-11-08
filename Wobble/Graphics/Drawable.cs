@@ -450,67 +450,74 @@ namespace Wobble.Graphics
             // Keep a list of Animations that are marked as done that'll be queued for removal.
             var queuedForDeletion = new List<Animation>();
 
-
-            for (var i = Animations.Count - 1; i >= 0; i--)
+            lock (Animations)
             {
-                var Animation = Animations[i];
-
-                try
+                for (var i = Animations.Count - 1; i >= 0; i--)
                 {
-                    switch (Animation.Properties)
+                    var Animation = Animations[i];
+
+                    try
                     {
-                        case AnimationProperty.X:
-                            X = Animation.PerformInterpolation(gameTime);
-                            break;
-                        case AnimationProperty.Y:
-                            Y = Animation.PerformInterpolation(gameTime);
-                            break;
-                        case AnimationProperty.Width:
-                            Width = Animation.PerformInterpolation(gameTime);
-                            break;
-                        case AnimationProperty.Height:
-                            Height = Animation.PerformInterpolation(gameTime);
-                            break;
-                        case AnimationProperty.Alpha:
-                            var type = GetType();
+                        switch (Animation.Properties)
+                        {
+                            case AnimationProperty.X:
+                                X = Animation.PerformInterpolation(gameTime);
+                                break;
+                            case AnimationProperty.Y:
+                                Y = Animation.PerformInterpolation(gameTime);
+                                break;
+                            case AnimationProperty.Width:
+                                Width = Animation.PerformInterpolation(gameTime);
+                                break;
+                            case AnimationProperty.Height:
+                                Height = Animation.PerformInterpolation(gameTime);
+                                break;
+                            case AnimationProperty.Alpha:
+                                var type = GetType();
 
-                            if (this is Sprite)
-                            {
-                                var sprite = (Sprite) this;
-                                sprite.Alpha = Animation.PerformInterpolation(gameTime);
-                            }
+                                if (this is Sprite)
+                                {
+                                    var sprite = (Sprite) this;
+                                    sprite.Alpha = Animation.PerformInterpolation(gameTime);
+                                }
 
-                            break;
-                        case AnimationProperty.Rotation:
-                            if (this is Sprite)
-                            {
-                                var sprite = (Sprite) this;
-                                sprite.Rotation = Animation.PerformInterpolation(gameTime);
-                            }
-                            else
-                                throw new NotImplementedException();
-                            break;
-                        case AnimationProperty.Color:
-                            if (this is Sprite)
-                            {
-                                var sprite = (Sprite) this;
-                                sprite.Tint = Animation.PerformColorInterpolation(gameTime);
-                            }
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                                break;
+                            case AnimationProperty.Rotation:
+                                if (this is Sprite)
+                                {
+                                    var sprite = (Sprite) this;
+                                    sprite.Rotation = Animation.PerformInterpolation(gameTime);
+                                }
+                                else
+                                    throw new NotImplementedException();
+                                break;
+                            case AnimationProperty.Color:
+                                if (this is Sprite)
+                                {
+                                    var sprite = (Sprite) this;
+                                    sprite.Tint = Animation.PerformColorInterpolation(gameTime);
+                                }
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        if (Animation.Done)
+                            queuedForDeletion.Add(Animation);
                     }
+                    catch (Exception e)
+                    {
+                        break;
+                    }
+                }
 
-                    if (Animation.Done)
-                        queuedForDeletion.Add(Animation);
-                }
-                catch (Exception e)
+                // Remove all completed Animations.
+                queuedForDeletion.ForEach(x =>
                 {
-                    break;
-                }
+                    if (Animations.Contains(x))
+                        Animations.Remove(x);
+                });
             }
-            // Remove all completed Animations.
-            queuedForDeletion.ForEach(x => Animations.Remove(x));
         }
 
         /// <summary>
