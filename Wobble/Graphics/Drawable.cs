@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
+using Wobble.Logging;
 using Wobble.Window;
 
 namespace Wobble.Graphics
@@ -298,9 +299,10 @@ namespace Wobble.Graphics
                     // just break out of the loop for now.
                     if (i < 0 || i >= Children.Count)
                         break;
-
-                    // All other exceptions, just throw and hard crash.
-                    throw;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, LogType.Runtime);
                 }
             }
         }
@@ -514,8 +516,15 @@ namespace Wobble.Graphics
                 // Remove all completed Animations.
                 queuedForDeletion.ForEach(x =>
                 {
-                    if (Animations.Contains(x))
-                        Animations.Remove(x);
+                    try
+                    {
+                        if (Animations.Contains(x))
+                            Animations.Remove(x);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e, LogType.Runtime);
+                    }
                 });
             }
         }
