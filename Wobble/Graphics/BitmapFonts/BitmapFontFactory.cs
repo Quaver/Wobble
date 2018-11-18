@@ -37,8 +37,6 @@ namespace Wobble.Graphics.BitmapFonts
         /// <param name="fontBytes"></param>
         public static void AddFont(string name, byte[] fontBytes)
         {
-            Logger.Log($"Loading font: {name}...", LogLevel.Debug, LogType.Runtime);
-
             var fontData = Marshal.AllocCoTaskMem(fontBytes.Length);
             Marshal.Copy(fontBytes, 0, fontData, fontBytes.Length);
 
@@ -48,8 +46,6 @@ namespace Wobble.Graphics.BitmapFonts
             CustomFonts.Add(name, new FontStore(name, fontCollection.Families[0]));
 
             fontCollection.Dispose();
-
-            Logger.Log($"Loaded font: {name}!", LogLevel.Debug, LogType.Runtime);
         }
 
         /// <summary>
@@ -59,16 +55,12 @@ namespace Wobble.Graphics.BitmapFonts
         /// <param name="filePath"></param>
         public static void AddFont(string name, string filePath)
         {
-            Logger.Log($"Loading font: {name}...", LogLevel.Debug, LogType.Runtime);
-
             var fontCollection = new PrivateFontCollection();
             fontCollection.AddFontFile(filePath);
 
             CustomFonts.Add(name, new FontStore(name, fontCollection.Families[0]));
 
             fontCollection.Dispose();
-
-            Logger.Log($"Loaded font: {name}!", LogLevel.Debug, LogType.Runtime);
         }
 
         ///  <summary>
