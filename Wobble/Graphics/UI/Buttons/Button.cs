@@ -45,7 +45,6 @@ namespace Wobble.Graphics.UI.Buttons
         internal bool WaitingForClickRelease { get; private set; }
 
         /// <summary>
-        ///
         ///     Dictates if the button is currently held down regardless of if it is clickable or not.
         ///     This case is true if the user clicks down and does not release yet. They can move their
         ///     mouse anywhere on the screen and the button will still be considered held. This is
@@ -60,6 +59,11 @@ namespace Wobble.Graphics.UI.Buttons
         ///     will not be invoked.
         /// </summary>
         public bool IsClickable { get; set; } = true;
+
+        /// <summary>
+        ///    Turns on or off buttons globally.
+        /// </summary>
+        public static bool IsGloballyClickable { get; set; } = true;
 
         /// <inheritdoc />
         /// <summary>
@@ -89,7 +93,8 @@ namespace Wobble.Graphics.UI.Buttons
 
                 try
                 {
-                    topLayerButton = ButtonManager.Buttons.FindAll(x => x.IsHoveredWithoutDrawOrder && x.IsClickable).OrderByDescending(x => x.DrawOrder).First();
+                    topLayerButton = ButtonManager.Buttons.FindAll(x => x.IsHoveredWithoutDrawOrder && x.IsClickable && IsGloballyClickable)
+                        .OrderByDescending(x => x.DrawOrder).First();
                 }
                 catch (Exception e)
                 {
