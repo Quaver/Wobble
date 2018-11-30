@@ -133,5 +133,15 @@ namespace Wobble.Graphics.UI.Form
             SelectedItemText.Text = Options[SelectedIndex];
             OnChange(Options[SelectedIndex], SelectedIndex);
         }
+
+        /// <summary>
+        ///  Changes the selected element to a given index.
+        /// </summary>
+        /// <param name="index"></param>
+        public void SelectIndex(int index)
+        {
+            SelectedIndex = index;
+            SelectedItemText.Text = Options[SelectedIndex];
+        }
     }
 }
