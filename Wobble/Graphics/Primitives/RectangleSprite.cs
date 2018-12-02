@@ -22,7 +22,7 @@ namespace Wobble.Graphics.Primitives
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        protected override void DrawToSpriteBatch()
+        public override void DrawToSpriteBatch()
         {
             if (!Visible)
                 return;

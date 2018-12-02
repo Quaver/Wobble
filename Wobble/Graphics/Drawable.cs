@@ -436,7 +436,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///
         /// </summary>
-        protected abstract void DrawToSpriteBatch();
+        public abstract void DrawToSpriteBatch();
 
         /// <summary>
         ///     Resets the count of total drawn objects.
