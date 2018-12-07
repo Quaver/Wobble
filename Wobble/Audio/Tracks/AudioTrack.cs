@@ -239,6 +239,7 @@ namespace Wobble.Audio.Tracks
                 throw new AudioEngineException("You can only seek to a position greater than -1 and below its length.");
 
             Bass.ChannelSetPosition(Stream, Bass.ChannelSeconds2Bytes(Stream, pos / 1000d));
+            Time = Position;
         }
 
         /// <summary>
