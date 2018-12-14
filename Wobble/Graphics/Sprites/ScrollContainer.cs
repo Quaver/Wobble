@@ -135,6 +135,15 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public override void Destroy()
+        {
+            ContentContainer.Destroy();
+            base.Destroy();
+        }
+
+        /// <inheritdoc />
         ///  <summary>
         ///  </summary>
         ///  <param name="gameTime"></param>

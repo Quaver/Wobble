@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.UI.Buttons;
 using Wobble.Logging;
 using Wobble.Window;
 
@@ -376,8 +377,6 @@ namespace Wobble.Graphics
 
         /// <inheritdoc />
         /// <summary>
-        ///     Any derivatives should implement this disposition methods and then call
-        ///     this base method to signify that it actually has been disposed of.
         /// </summary>
         public virtual void Dispose()
         {
@@ -436,7 +435,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///
         /// </summary>
-        protected abstract void DrawToSpriteBatch();
+        public abstract void DrawToSpriteBatch();
 
         /// <summary>
         ///     Resets the count of total drawn objects.
