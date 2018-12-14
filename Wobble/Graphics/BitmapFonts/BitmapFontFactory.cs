@@ -87,10 +87,11 @@ namespace Wobble.Graphics.BitmapFonts
             using (var g = System.Drawing.Graphics.FromHwnd(IntPtr.Zero))
             using (var format = new StringFormat())
             {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.SmoothingMode = SmoothingMode.HighQuality;
                 g.InterpolationMode = InterpolationMode.HighQualityBilinear;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.AntiAlias;
+                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                g.CompositingQuality = CompositingQuality.HighQuality;
 
                 format.Alignment = alignment;
                 format.LineAlignment = alignment;
@@ -105,10 +106,11 @@ namespace Wobble.Graphics.BitmapFonts
             using (var brush = new SolidBrush(System.Drawing.Color.White))
             using (var format = new StringFormat())
             {
-                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.SmoothingMode = SmoothingMode.HighQuality;
                 g.InterpolationMode = InterpolationMode.HighQualityBilinear;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.AntiAlias;
+                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                g.CompositingQuality = CompositingQuality.HighQuality;
 
                 format.Alignment = alignment;
                 format.LineAlignment = alignment;
