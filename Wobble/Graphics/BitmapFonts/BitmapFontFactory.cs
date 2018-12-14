@@ -80,7 +80,6 @@ namespace Wobble.Graphics.BitmapFonts
 
             var alignment = GetAlignment(textAlignment);
 
-            // Load up the font to be used.
             var font = GetCustomFont(fontName, fontSize) ?? new Font(fontName, fontSize, FontStyle.Regular);
 
             // Here we're creating a "virtual" graphics instance to measure
@@ -134,7 +133,28 @@ namespace Wobble.Graphics.BitmapFonts
         /// <param name="name"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        private static Font GetCustomFont(string name, int size) => !CustomFonts.ContainsKey(name) ? null : new Font(CustomFonts[name].Family, size);
+        private static Font GetCustomFont(string name, int size)
+        {
+            if (!CustomFonts.ContainsKey(name))
+                return null;
+
+            if (CustomFonts[name].Family.IsStyleAvailable(FontStyle.Regular))
+                return new Font(CustomFonts[name].Family, size, FontStyle.Regular);
+
+            if (CustomFonts[name].Family.IsStyleAvailable(FontStyle.Bold))
+                return new Font(CustomFonts[name].Family, size, FontStyle.Bold);
+
+            if (CustomFonts[name].Family.IsStyleAvailable(FontStyle.Italic))
+                return new Font(CustomFonts[name].Family, size, FontStyle.Italic);
+
+            if (CustomFonts[name].Family.IsStyleAvailable(FontStyle.Strikeout))
+                return new Font(CustomFonts[name].Family, size, FontStyle.Strikeout);
+
+            if (CustomFonts[name].Family.IsStyleAvailable(FontStyle.Underline))
+                return new Font(CustomFonts[name].Family, size, FontStyle.Underline);
+
+            return null;
+        }
 
         /// <summary>
         ///     Gets the StringAlignment from a normal Wobble Alignment.

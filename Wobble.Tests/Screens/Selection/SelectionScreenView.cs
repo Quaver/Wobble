@@ -73,7 +73,7 @@ namespace Wobble.Tests.Screens.Selection
             foreach (var testScreens in screen.TestCasesScreens)
             {
                 // Create a generic text button.
-                var button = new TextButton(WobbleAssets.WhiteBox, "exo2-regular", testScreens.Value, 12)
+                var button = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", testScreens.Value, 13)
                 {
                     Parent = Container,
                     Size = new ScalableVector2(150, 50),

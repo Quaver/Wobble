@@ -49,15 +49,17 @@ namespace Wobble.Tests
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
             Textures.Load();
 
-            // (This should normally be done at the start of the game.)
-            // Load up a font to use by a byte[] / ResourceStore.
             if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-bold"))
-                BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.otf"));
+                BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.ttf"));
 
-            // (This should normally be done at the start of the game.)
-            // Load up a font to use by a byte[] / ResourceStore.
             if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-regular"))
-                BitmapFontFactory.AddFont("exo2-regular", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-regular.otf"));
+                BitmapFontFactory.AddFont("exo2-regular", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-regular.ttf"));
+
+            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-semibold"))
+                BitmapFontFactory.AddFont("exo2-semibold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-semibold.ttf"));
+
+            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-medium"))
+                BitmapFontFactory.AddFont("exo2-medium", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-medium.ttf"));
 
             IsReadyToUpdate = true;
 
