@@ -85,7 +85,7 @@ These are the following steps that we find to be particularly handy when using W
 
 **3.** Clone Wobble and add it as a submodule to your project.
 
-**4.** Run `git submodule update --init recursive` to install all of Wobble's dependencies.
+**4.** Run `git submodule update --init --recursive` to install all of Wobble's dependencies.
 
 **5.** Reference both Wobble and MonoGame.Framework.DesktopGL.Core in your project.
 
