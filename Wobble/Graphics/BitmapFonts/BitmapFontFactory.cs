@@ -90,7 +90,7 @@ namespace Wobble.Graphics.BitmapFonts
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 g.InterpolationMode = InterpolationMode.HighQualityBilinear;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
                 g.CompositingQuality = CompositingQuality.HighQuality;
 
                 format.Alignment = alignment;
