@@ -73,16 +73,17 @@ namespace Wobble.Tests.Screens.Selection
             foreach (var testScreens in screen.TestCasesScreens)
             {
                 // Create a generic text button.
-                var button = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", testScreens.Value, 13)
+                var button = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", testScreens.Value, 12)
                 {
                     Parent = Container,
                     Size = new ScalableVector2(150, 50),
                     Text =
                     {
-                        Tint = Color.Black
+                        Tint = Color.Black,
+                        ForceDrawAtSize = false
                     },
                     X = 5,
-                    Y = i * 50 + i * 10 + 10
+                    Y = i * 50 + i * 10 + 10,
                 };
 
                 switch (testScreens.Key)

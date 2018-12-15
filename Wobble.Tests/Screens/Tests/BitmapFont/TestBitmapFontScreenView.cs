@@ -1,27 +1,16 @@
-﻿using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Audio.Tracks;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Screens;
-using Wobble.Window;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace Wobble.Tests.Screens.Tests.BitmapFont
 {
     public class TestBitmapFontScreenView : ScreenView
     {
-        /// <summary>
-        ///     Audio track
-        /// </summary>
-        public AudioTrack Track { get; }
-
-        /// <summary>
-        ///     The text that is being displayed.
-        /// </summary>
-        public SpriteText SongTimeText { get; }
+        private MonoGame.Extended.BitmapFonts.BitmapFont font;
 
         /// <inheritdoc />
         /// <summary>
@@ -29,26 +18,35 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         /// <param name="screen"></param>
         public TestBitmapFontScreenView(Screen screen) : base(screen)
         {
-            SongTimeText = new SpriteText("exo2-bold", "0", 16)
+            font = GameBase.Game.Content.Load<MonoGame.Extended.BitmapFonts.BitmapFont>("Fonts/exo-2-bigger");
+
+            new SpriteTextBitmap(font, "The quick brown fox jumps over the lazy dog")
             {
                 Parent = Container,
+                Alignment = Alignment.MidCenter,
+                FontSize = 72,
+                MaxWidth = 300,
+                Tint = Color.White,
+                SpriteBatchOptions = new SpriteBatchOptions()
+                {
+                    BlendState = BlendState.NonPremultiplied,
+                    SamplerState = SamplerState.LinearClamp,
+                }
             };
 
-            Track = new AudioTrack(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Tracks/virt - Send My Love To Mars.mp3"));
-            Track.Play();
+            new SpriteText("exo2-regular", "The quick brown fox jumps over the lazy dog", 12)
+            {
+                Parent = Container,
+                Alignment = Alignment.MidRight,
+                ForceDrawAtSize = false
+            };
         }
 
         /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
-        {
-            // Update the text with the current song time.
-            SongTimeText.Text = ((int) Track.Time).ToString();
-
-            Container?.Update(gameTime);
-        }
+        public override void Update(GameTime gameTime) => Container?.Update(gameTime);
 
         /// <inheritdoc />
         /// <summary>
@@ -56,7 +54,7 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            GameBase.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
+            GameBase.Game.GraphicsDevice.Clear(Color.Black);
             Container?.Draw(gameTime);
         }
 
@@ -65,7 +63,6 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         /// </summary>
         public override void Destroy()
         {
-            Track.Dispose();
             Container?.Destroy();
         }
     }

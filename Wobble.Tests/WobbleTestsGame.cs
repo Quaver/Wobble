@@ -4,8 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.BitmapFonts;
+using Wobble.Assets;
+using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
+using Wobble.Graphics.Sprites;
 using Wobble.Input;
 using Wobble.IO;
 using Wobble.Screens;
@@ -30,6 +35,8 @@ namespace Wobble.Tests
 
             Graphics.PreferredBackBufferWidth = (int) WindowManager.VirtualScreen.X;
             Graphics.PreferredBackBufferHeight = (int)WindowManager.VirtualScreen.Y;
+
+            Content.RootDirectory = "Content";
 
             Graphics.SynchronizeWithVerticalRetrace = false;
             IsFixedTimeStep = false;
@@ -95,8 +102,6 @@ namespace Wobble.Tests
                 return;
 
             base.Draw(gameTime);
-
-            // TODO: Your global draw logic goes here.
         }
     }
 }

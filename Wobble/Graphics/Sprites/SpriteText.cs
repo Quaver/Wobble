@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
@@ -154,9 +154,9 @@ namespace Wobble.Graphics.Sprites
                 return;
             }
 
-            Image = BitmapFontFactory.Create(Font, Text, ForceDrawAtSize ? FontSize : 36, Color.White, TextAlignment, MaxWidth);
+            Image = BitmapFontFactory.Create(Font, Text, ForceDrawAtSize ? FontSize : (int) (FontSize * 1.5f), Color.White, TextAlignment, MaxWidth);
 
-            var ratio = ForceDrawAtSize ? 1 : FontSize / 36f;
+            var ratio = ForceDrawAtSize ? 1f : (float) FontSize / (FontSize * 1.5f);
             Size = new ScalableVector2(Image.Width * ratio, Image.Height * ratio);
 
             AmountOfTextUpdatesInSecond++;
