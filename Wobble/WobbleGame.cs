@@ -26,14 +26,9 @@ namespace Wobble
     public abstract class WobbleGame : Game
     {
         /// <summary>
-        ///     The path of the current executable.
-        /// </summary>
-        public static string ExecutablePath => System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace(@"file:///", "");
-
-        /// <summary>
         ///     The current working directory of the executable.
         /// </summary>
-        public static string WorkingDirectory => Path.GetDirectoryName(ExecutablePath).Replace(@"file:\", "");
+        public static string WorkingDirectory => AppDomain.CurrentDomain.BaseDirectory;
 
         /// <summary>
         /// </summary>
