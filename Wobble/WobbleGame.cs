@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +14,7 @@ using Wobble.Input;
 using Wobble.IO;
 using Wobble.Logging;
 using Wobble.Platform;
+using Wobble.Platform.Linux;
 using Wobble.Screens;
 using Wobble.Window;
 
@@ -81,6 +83,12 @@ namespace Wobble
 
             GameBase.Game = this;
             GlobalUserInterface = new GlobalUserInterface();
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Required for libbass_fx.so to load properly on Linux and not crash (see https://github.com/ppy/osu/issues/2852).
+                NativeLibrary.Load("libbass.so", NativeLibrary.LoadFlags.RTLD_LAZY | NativeLibrary.LoadFlags.RTLD_GLOBAL);
+            }
         }
 
         /// <summary>
