@@ -7,6 +7,7 @@ using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
+using Wobble.Logging;
 using Wobble.Platform;
 using Wobble.Platform.Windows;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
@@ -307,7 +308,7 @@ namespace Wobble.Graphics.UI.Form
                         if (string.IsNullOrEmpty(RawText))
                             return;
 
-                        RawText = RawText.TrimEnd(RawText[RawText.Length - 1]);
+                        RawText = RawText.Remove(RawText.Length - 1);
 
                         if (RawText == "")
                         {
