@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
-using Wobble.Logging;
-using Wobble.Platform;
 using Wobble.Platform.Windows;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
