@@ -71,12 +71,12 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
         /// </summary>
-        public DrawRectangle ScreenRectangle { get; private set; } = new DrawRectangle();
+        public Rectangle ScreenRectangle { get; private set; } = new Rectangle();
 
         /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
-        public DrawRectangle RelativeRectangle { get; private set; } = new DrawRectangle();
+        public Rectangle RelativeRectangle { get; private set; } = new Rectangle();
 
         /// <summary>
         ///     The position of the drawable
@@ -398,7 +398,7 @@ namespace Wobble.Graphics
                 var x = Position.X.Value;
                 var y = Position.Y.Value;
 
-                RelativeRectangle = new DrawRectangle(x, y, width, height);
+                RelativeRectangle = new Rectangle((int) x, (int) y, (int) width, (int) height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle);
             }
             // Make it relative to the screen size.
@@ -409,7 +409,7 @@ namespace Wobble.Graphics
                 var x = Position.X.Value;
                 var y = Position.Y.Value;
 
-                RelativeRectangle = new DrawRectangle(x, y, width, height);
+                RelativeRectangle = new Rectangle((int) x, (int) y, (int) width, (int) height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
             }
 

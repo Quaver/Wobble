@@ -158,7 +158,7 @@ namespace Wobble.Graphics.Sprites
             var heightScale = GameBase.Game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
 
             // Calculate the new rectangle taking into account the scaling of the window.
-            var rect = ScreenRectangle.ToRectangle();
+            var rect = new Rectangle(ScreenRectangle.X, ScreenRectangle.Y, ScreenRectangle.Width, ScreenRectangle.Height);
             rect.X = (int)(rect.X * widthScale);
             rect.Y = (int)(rect.Y * heightScale);
             rect.Width = (int)(rect.Width * widthScale);
