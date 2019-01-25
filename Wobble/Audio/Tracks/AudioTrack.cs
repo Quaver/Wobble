@@ -20,16 +20,7 @@ namespace Wobble.Audio.Tracks
         /// <summary>
         ///     The length of the current audio stream in milliseconds.
         /// </summary>
-        public double Length
-        {
-            get
-            {
-                if (!StreamLoaded || IsDisposed)
-                    throw new InvalidOperationException("Cannot get track length if disposed or stream not loaded");
-
-                return Bass.ChannelBytes2Seconds(Stream, Bass.ChannelGetLength(Stream)) * 1000;
-            }
-        }
+        public double Length { get; private set; }
 
         /// <summary>
         ///     The position of the current audio stream in milliseconds (from BASS library)
@@ -46,10 +37,13 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
-        ///     The true position of the audio in milliseconds, taking into frame times. Use this for more accurate
-        ///     results (such as for rhythm games, or things where the audio time really matters.)
+        ///     The frequency of the file
         /// </summary>
-        public double Time { get; private set; }
+        public int Frequency { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public double Time => Bass.ChannelBytes2Seconds(Stream, Bass.ChannelGetPosition(Stream)) * 1000;
 
         /// <summary>
         ///     If the stream is currently loaded.
@@ -92,6 +86,11 @@ namespace Wobble.Audio.Tracks
         public bool IsLeftOver => HasPlayed && IsStopped;
 
         /// <summary>
+        ///     If the audio track was loaded to be a preview. Fast loading, (not decoded or prescanned)
+        /// </summary>
+        public bool IsPreview { get; }
+
+        /// <summary>
         ///     The rate at which the audio plays at.
         /// </summary>
         private float _rate = 1.0f;
@@ -104,7 +103,7 @@ namespace Wobble.Audio.Tracks
                     throw new ArgumentException("Cannot set rate to 0 or below.");
 
                 _rate = value;
-                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Tempo, _rate * 100 - 100);
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency * _rate);
 
                 // When the rate changes, we also want to set the pitching again with the new rate.
                 ToggleRatePitching(IsPitched);
@@ -132,7 +131,7 @@ namespace Wobble.Audio.Tracks
         /// <summary>
         ///     The percentage of how far the audio track is.
         /// </summary>
-        public double ProgressPercentage => (Time / Length) * 100;
+        public double ProgressPercentage => Time / Length * 100;
 
         /// <summary>
         ///     If set to false, it won't allow playback.
@@ -143,9 +142,14 @@ namespace Wobble.Audio.Tracks
         ///    Loads an audio track from a file.
         /// </summary>
         /// <param name="path"></param>
-        public AudioTrack(string path)
+        /// <param name="preview"></param>
+        public AudioTrack(string path, bool preview = false)
         {
-            Stream = Bass.CreateStream(path, Flags: BassFlags.Decode);
+            IsPreview = preview;
+
+            var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
+            Stream = Bass.CreateStream(path, Flags: flags);
+
             AfterLoad();
         }
 
@@ -153,9 +157,14 @@ namespace Wobble.Audio.Tracks
         ///     Loads an audio track from a byte array
         /// </summary>
         /// <param name="data"></param>
-        public AudioTrack(byte[] data)
+        /// <param name="preview"></param>
+        public AudioTrack(byte[] data, bool preview = false)
         {
-            Stream = Bass.CreateStream(data, 0, data.Length, BassFlags.Decode);
+            IsPreview = preview;
+
+            var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
+            Stream = Bass.CreateStream(data, 0, data.Length, flags);
+
             AfterLoad();
         }
 
@@ -163,9 +172,14 @@ namespace Wobble.Audio.Tracks
         ///     Loads an audio track from a stream
         /// </summary>
         /// <param name="data"></param>
-        public AudioTrack(Stream data)
+        /// <param name="preview"></param>
+        public AudioTrack(Stream data, bool preview = false)
         {
-            Stream = Bass.CreateStream(data.ToArray(), 0, data.Length, BassFlags.Decode);
+            IsPreview = preview;
+
+            var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
+            Stream = Bass.CreateStream(data.ToArray(), 0, data.Length,  flags);
+
             AfterLoad();
         }
 
@@ -239,7 +253,6 @@ namespace Wobble.Audio.Tracks
                 throw new AudioEngineException("You can only seek to a position greater than -1 and below its length.");
 
             Bass.ChannelSetPosition(Stream, Bass.ChannelSeconds2Bytes(Stream, pos / 1000d));
-            Time = Position;
         }
 
         /// <summary>
@@ -257,36 +270,6 @@ namespace Wobble.Audio.Tracks
                 Bass.ChannelSetAttribute(Stream, ChannelAttribute.Pitch, Math.Log(Math.Pow(Rate, 12), 2));
             else
                 Bass.ChannelSetAttribute(Stream, ChannelAttribute.Pitch, 0);
-        }
-
-        /// <summary>
-        ///     Corrects the true time of the track with the actual passed frame time.
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        internal void CorrectTime(double timeSinceLastFrame)
-        {
-            if (!StreamLoaded || IsStopped)
-            {
-                Time = 0;
-                return;
-            }
-
-            if (!IsPlaying)
-            {
-                Time = Position;
-                return;
-            }
-
-            // Audio Position will stablize if BASS Audio Track Position is above the target value.
-            var target = Time + timeSinceLastFrame * Rate;
-            if (Position > target)
-            {
-                Time = (Position + target) / 2;
-                return;
-            }
-
-            // Use Delta Time if Audio position doesn't need to be stablized.
-            Time = target;
         }
 
         /// <inheritdoc />
@@ -313,8 +296,9 @@ namespace Wobble.Audio.Tracks
 
             AudioManager.Tracks.Add(this);
 
+            Length = Bass.ChannelBytes2Seconds(Stream,Bass.ChannelGetLength(Stream)) * 1000;
+            Frequency = Bass.ChannelGetInfo(Stream).Frequency;
             Stream = BassFx.TempoCreate(Stream, BassFlags.FxFreeSource);
-            Bass.ChannelAddFlag(Stream, BassFlags.AutoFree);
         }
 
         /// <summary>
