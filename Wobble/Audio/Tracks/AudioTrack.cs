@@ -178,7 +178,7 @@ namespace Wobble.Audio.Tracks
             IsPreview = preview;
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
-            Stream = Bass.CreateStream(data.ToArray(), 0, data.Length,  flags);
+            Stream = Bass.CreateStream(data.ToArray(), 0, data.Length, flags);
 
             AfterLoad();
         }
