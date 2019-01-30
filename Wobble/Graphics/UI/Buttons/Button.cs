@@ -185,6 +185,8 @@ namespace Wobble.Graphics.UI.Buttons
         {
             Clicked = null;
             ClickedOutside = null;
+            Hovered = null;
+            LeftHover = null;
             ButtonManager.Remove(this);
 
             base.Destroy();
