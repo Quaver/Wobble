@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics.Sprites;
@@ -422,6 +423,31 @@ namespace Wobble.Graphics.UI.Form
 
                 if (!string.IsNullOrEmpty(clipboardText))
                     RawText += clipboardText;
+
+                ReadjustTextbox();
+                Selected = false;
+            }
+
+            // CTRL+W: kill word backwards.
+            // This means killing all trailing whitespace and then all trailing non-whitespace.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.W))
+            {
+                var withoutTrailingWhitespace = RawText.TrimEnd();
+                var nonWhitespacesInTheEnd = withoutTrailingWhitespace.ToCharArray()
+                    .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                RawText = withoutTrailingWhitespace.Substring(0,
+                    withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd);
+
+                ReadjustTextbox();
+                Selected = false;
+            }
+
+            // Ctrl+U: kill line backwards.
+            // Delete from the cursor position to the start of the line.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.U))
+            {
+                // Since we don't have a concept of a cursor, simply delete the whole text.
+                RawText = "";
 
                 ReadjustTextbox();
                 Selected = false;
