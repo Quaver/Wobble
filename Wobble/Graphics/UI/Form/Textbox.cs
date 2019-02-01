@@ -5,6 +5,7 @@ using Wobble.Assets;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
+using Wobble.Platform;
 using Wobble.Platform.Windows;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
@@ -123,7 +124,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Clipboard for the windows instance.
         /// </summary>
-        private WindowsClipboard Clipboard { get; } = new WindowsClipboard();
+        private Clipboard Clipboard { get; } = Clipboard.NativeClipboard;
 
         /// <inheritdoc />
         /// <summary>
