@@ -423,7 +423,12 @@ namespace Wobble.Graphics.UI.Form
                 var clipboardText = Clipboard.GetText().Replace("\n", "").Replace("\r", "");
 
                 if (!string.IsNullOrEmpty(clipboardText))
-                    RawText += clipboardText;
+                {
+                    if (Selected)
+                        RawText = clipboardText;
+                    else
+                        RawText += clipboardText;
+                }
 
                 ReadjustTextbox();
                 Selected = false;
