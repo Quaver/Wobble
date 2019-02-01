@@ -417,6 +417,16 @@ namespace Wobble.Graphics.UI.Form
             if (KeyboardManager.IsUniqueKeyPress(Keys.C) && Selected)
                 Clipboard.SetText(RawText);
 
+            // CTRL+X, Cut the text to the clipboard.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.X) && Selected)
+            {
+                Clipboard.SetText(RawText);
+                RawText = "";
+
+                ReadjustTextbox();
+                Selected = false;
+            }
+
             // CTRL+V Paste text
             if (KeyboardManager.IsUniqueKeyPress(Keys.V))
             {
