@@ -5,6 +5,7 @@ using Wobble.Assets;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
+using Wobble.Platform;
 using Wobble.Platform.Windows;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
@@ -123,7 +124,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Clipboard for the windows instance.
         /// </summary>
-        private WindowsClipboard Clipboard { get; } = new WindowsClipboard();
+        private Clipboard Clipboard { get; } = Clipboard.NativeClipboard;
 
         /// <inheritdoc />
         /// <summary>
@@ -416,13 +417,28 @@ namespace Wobble.Graphics.UI.Form
             if (KeyboardManager.IsUniqueKeyPress(Keys.C) && Selected)
                 Clipboard.SetText(RawText);
 
+            // CTRL+X, Cut the text to the clipboard.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.X) && Selected)
+            {
+                Clipboard.SetText(RawText);
+                RawText = "";
+
+                ReadjustTextbox();
+                Selected = false;
+            }
+
             // CTRL+V Paste text
             if (KeyboardManager.IsUniqueKeyPress(Keys.V))
             {
                 var clipboardText = Clipboard.GetText().Replace("\n", "").Replace("\r", "");
 
                 if (!string.IsNullOrEmpty(clipboardText))
-                    RawText += clipboardText;
+                {
+                    if (Selected)
+                        RawText = clipboardText;
+                    else
+                        RawText += clipboardText;
+                }
 
                 ReadjustTextbox();
                 Selected = false;
