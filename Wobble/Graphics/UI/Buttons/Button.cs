@@ -31,7 +31,7 @@ namespace Wobble.Graphics.UI.Buttons
         public event EventHandler Hovered;
 
         /// <summary>
-        ///     Event invoked when the user stops hovering over the button 
+        ///     Event invoked when the user stops hovering over the button
         /// </summary>
         public event EventHandler LeftHover;
 
@@ -123,7 +123,8 @@ namespace Wobble.Graphics.UI.Buttons
 
                     // If we're not waiting for a click reelase and the mouse button is currently held down,
                     // then we'll set this to true.
-                    if (!WaitingForClickRelease && MouseManager.CurrentState.LeftButton == ButtonState.Pressed)
+                    if (!WaitingForClickRelease && MouseManager.CurrentState.LeftButton == ButtonState.Pressed
+                                                && MouseManager.PreviousState.LeftButton == ButtonState.Released)
                     {
                         WaitingForClickRelease = true;
                         IsHeld = true;
