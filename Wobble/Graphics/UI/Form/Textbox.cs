@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics.Sprites;
@@ -36,6 +37,11 @@ namespace Wobble.Graphics.UI.Form
         ///     The button for the text box to control if it is focused or not.
         /// </summary>
         public ImageButton Button { get; }
+
+        /// <summary>
+        ///     Regular expression for <see cref="RawText"/>
+        /// </summary>
+        public Regex AllowedCharacters { get; set; } = new Regex("(.*?)");
 
         /// <summary>
         ///     The raw text for this sprite.
@@ -282,7 +288,14 @@ namespace Wobble.Graphics.UI.Form
                     // For all other key presses, we reset the string and append the new character
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
-                            RawText += e.Character;
+                        {
+                            var proposedText = RawText + e.Character;
+
+                            if (!AllowedCharacters.IsMatch(proposedText))
+                                return;
+
+                            RawText += proposedText;
+                        }
                         break;
                 }
 
@@ -334,7 +347,14 @@ namespace Wobble.Graphics.UI.Form
                     // Input text
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
-                            RawText += e.Character;
+                        {
+                            var proposedText = RawText + e.Character;
+
+                            if (!AllowedCharacters.IsMatch(proposedText))
+                                return;
+
+                            RawText = proposedText;
+                        }
                         break;
                 }
             }
@@ -435,9 +455,21 @@ namespace Wobble.Graphics.UI.Form
                 if (!string.IsNullOrEmpty(clipboardText))
                 {
                     if (Selected)
+                    {
+                        if (!AllowedCharacters.IsMatch(clipboardText))
+                            return;
+
                         RawText = clipboardText;
+                    }
                     else
+                    {
+                        var proposed = RawText += clipboardText;
+
+                        if (!AllowedCharacters.IsMatch(proposed))
+                            return;
+
                         RawText += clipboardText;
+                    }
                 }
 
                 ReadjustTextbox();
