@@ -454,7 +454,6 @@ namespace Wobble.Graphics.UI.Form
 
                 if (!string.IsNullOrEmpty(clipboardText))
                 {
-
                     if (Selected)
                     {
                         if (!AllowedCharacters.IsMatch(clipboardText))
