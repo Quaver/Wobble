@@ -3,6 +3,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.ImGUI;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Logging;
@@ -12,15 +13,29 @@ namespace Wobble.Tests.Screens.Tests.Imgui
 {
     public class TestImGuiScreenView : ScreenView
     {
-        private HelloImGui HelloImGui { get; set; }
+        /// <summary>
+        /// </summary>
+        private TestImGuiMenu TestImGuiMenu { get; }
 
+        /// <summary>
+        /// </summary>
+        private ImageButton Box { get; }
+
+        /// <summary>
+        /// </summary>
+        private Random RNG { get; } = new Random();
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="screen"></param>
         public TestImGuiScreenView(Screen screen) : base(screen)
         {
-            HelloImGui = new HelloImGui();
+            TestImGuiMenu = new TestImGuiMenu();
 
             // Make a button
             // ReSharper disable once ObjectCreationAsStatement
-            new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Logger.Important("CLICKED", LogType.Runtime, false))
+            Box = new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Logger.Important("CLICKED", LogType.Runtime, false))
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
@@ -29,15 +44,59 @@ namespace Wobble.Tests.Screens.Tests.Imgui
             };
         }
 
-        public override void Update(GameTime gameTime) => Container?.Update(gameTime);
-
-        public override void Draw(GameTime gameTime)
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public override void Update(GameTime gameTime)
         {
-            GameBase.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
-            Container?.Draw(gameTime);
-            HelloImGui.Draw(gameTime);
+            TestImGuiMenu.Update(gameTime);
+
+            if (TestImGuiMenu.Rotation)
+            {
+                if (Box.Animations.Count == 0)
+                {
+                    var rotation = MathHelper.ToDegrees(Box.Rotation);
+                    Box.ClearAnimations();
+                    Box.Animations.Add(new Animation(AnimationProperty.Rotation, Easing.Linear, rotation, rotation + 360, 1000));
+                }
+            }
+
+            Container?.Update(gameTime);
         }
 
-        public override void Destroy() => Container?.Destroy();
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public override void Draw(GameTime gameTime)
+        {
+            var color = Color.CornflowerBlue;
+
+            if (TestImGuiMenu.Lightshow)
+            {
+                color = new Color(RNG.Next(255), RNG.Next(255), RNG.Next(255));
+                Box.Tint = new Color(RNG.Next(255), RNG.Next(255), RNG.Next(255));
+            }
+            else
+            {
+                Box.Tint = Color.Red;
+            }
+
+            GameBase.Game.GraphicsDevice.Clear(color);
+            Container?.Draw(gameTime);
+
+            GameBase.Game.SpriteBatch.End();
+            TestImGuiMenu.Draw(gameTime);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public override void Destroy()
+        {
+            Container?.Destroy();
+            TestImGuiMenu.Destroy();
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
         }
 

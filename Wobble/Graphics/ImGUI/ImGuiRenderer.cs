@@ -290,6 +290,10 @@ namespace Wobble.Graphics.ImGUI
             // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, vertex/texcoord/color pointers
             var lastViewport = GraphicsDevice.Viewport;
             var lastScissorBox = GraphicsDevice.ScissorRectangle;
+            var lastBlendFactor = GraphicsDevice.BlendFactor;
+            var lastBlendState = GraphicsDevice.BlendState;
+            var lastRasterizerState = GraphicsDevice.RasterizerState;
+            var lastDepthStencilState = GraphicsDevice.DepthStencilState;
 
             GraphicsDevice.BlendFactor = Color.White;
             GraphicsDevice.BlendState = BlendState.NonPremultiplied;
@@ -309,6 +313,10 @@ namespace Wobble.Graphics.ImGUI
             // Restore modified state
             GraphicsDevice.Viewport = lastViewport;
             GraphicsDevice.ScissorRectangle = lastScissorBox;
+            GraphicsDevice.BlendFactor = lastBlendFactor;
+            GraphicsDevice.BlendState = lastBlendState;
+            GraphicsDevice.RasterizerState = lastRasterizerState;
+            GraphicsDevice.DepthStencilState = lastDepthStencilState;
         }
 
         /// <summary>
@@ -370,6 +378,9 @@ namespace Wobble.Graphics.ImGUI
         /// <exception cref="InvalidOperationException"></exception>
         private void RenderCommandLists(ImDrawDataPtr drawData)
         {
+            var lastIndecies = GraphicsDevice.Indices;
+            var lastScissorRectangle = GraphicsDevice.ScissorRectangle;
+
             GraphicsDevice.SetVertexBuffer(VertexBuffer);
             GraphicsDevice.Indices = IndexBuffer;
 
@@ -419,6 +430,10 @@ namespace Wobble.Graphics.ImGUI
 
                 vtxOffset += cmdList.VtxBuffer.Size;
             }
+
+            GraphicsDevice.SetVertexBuffer(null);
+            GraphicsDevice.Indices = lastIndecies;
+            GraphicsDevice.ScissorRectangle = lastScissorRectangle;
         }
 
         #endregion Internals
