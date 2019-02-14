@@ -9,11 +9,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Wobble.Graphics.ImGUI
 {
-    /// <summary>
-    /// ImGui renderer for use with XNA-likes (FNA & MonoGame)
-    /// </summary>
-    public sealed class ImGuiRenderer
+    public sealed class ImGuiRenderer : IDisposable
     {
+        /// <summary>
+        /// </summary>
+        private IntPtr Context { get; }
+
         /// <summary>
         /// </summary>
         private static Game Game => GameBase.Game;
@@ -78,8 +79,8 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public ImGuiRenderer()
         {
-            var context = ImGui.CreateContext();
-            ImGui.SetCurrentContext(context);
+            Context = ImGui.CreateContext();
+            ImGui.SetCurrentContext(Context);
 
             LoadedTextures = new Dictionary<IntPtr, Texture2D>();
 
@@ -437,5 +438,17 @@ namespace Wobble.Graphics.ImGUI
         }
 
         #endregion Internals
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public void Dispose()
+        {
+            ImGui.DestroyContext(Context);
+            Effect?.Dispose();
+            RasterizerState?.Dispose();
+            VertexBuffer?.Dispose();
+            IndexBuffer?.Dispose();
+        }
     }
 }

@@ -40,9 +40,7 @@ namespace Wobble.Graphics.ImGUI
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public void Destroy()
-        {
-        }
+        public void Destroy() => Renderer.Dispose();
 
         /// <summary>
         ///     Renders the imgui layout
