@@ -84,14 +84,16 @@ namespace Wobble.Graphics.BitmapFonts
 
             // Here we're creating a "virtual" graphics instance to measure
             // the size of the text.
-            using (var g = System.Drawing.Graphics.FromHwnd(IntPtr.Zero))
+            using (var bmp = new Bitmap(1, 1, PixelFormat.Format32bppArgb))
+            using (var g = System.Drawing.Graphics.FromImage(bmp))
             using (var format = new StringFormat())
             {
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 g.InterpolationMode = InterpolationMode.HighQualityBilinear;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+                g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
                 g.CompositingQuality = CompositingQuality.HighQuality;
+                g.PageUnit = GraphicsUnit.Pixel;
 
                 format.Alignment = alignment;
                 format.LineAlignment = alignment;
@@ -101,7 +103,7 @@ namespace Wobble.Graphics.BitmapFonts
             }
 
             // Create the actual bitmap using the size of the text.
-            using (var bmp = new Bitmap((int) textSize.Width, (int) textSize.Height, PixelFormat.Format32bppArgb))
+            using (var bmp = new Bitmap((int) (textSize.Width + 0.5), (int) (textSize.Height + 0.5), PixelFormat.Format32bppArgb))
             using (var g = System.Drawing.Graphics.FromImage(bmp))
             using (var brush = new SolidBrush(System.Drawing.Color.White))
             using (var format = new StringFormat())
@@ -111,6 +113,7 @@ namespace Wobble.Graphics.BitmapFonts
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
                 g.CompositingQuality = CompositingQuality.HighQuality;
+                g.PageUnit = GraphicsUnit.Pixel;
 
                 format.Alignment = alignment;
                 format.LineAlignment = alignment;

@@ -61,8 +61,6 @@ namespace Wobble.Audio
                     Tracks.Remove(track);
                     continue;
                 }
-
-                track.CorrectTime(GameBase.Game.TimeSinceLastFrame);
             }
         }
     }

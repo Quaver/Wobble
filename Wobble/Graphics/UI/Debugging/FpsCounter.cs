@@ -61,7 +61,8 @@ namespace Wobble.Graphics.UI.Debugging
             FrameRate = FrameCounter;
             FrameCounter = 0;
 
-            TextFps.Text = $"FPS: {FrameRate}";
+            TextFps.Text = $"{FrameRate} FPS";
+            Size = TextFps.Size;
             base.Update(gameTime);
         }
 

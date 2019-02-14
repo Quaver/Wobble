@@ -11,6 +11,7 @@ namespace Wobble.Graphics.Animations
         Height,
         Alpha,
         Rotation,
-        Color
+        Color,
+        Wait
     }
 }

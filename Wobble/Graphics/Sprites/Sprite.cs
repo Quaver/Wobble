@@ -237,10 +237,26 @@ namespace Wobble.Graphics.Sprites
         /// <param name="color"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void FadeToColor(Color color, Easing easingType, int time)
+        public Sprite FadeToColor(Color color, Easing easingType, int time)
         {
             lock (Animations)
                 Animations.Add(new Animation(easingType, Tint, color, time));
+
+            return this;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="alpha"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public Sprite FadeTo(float alpha, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.Alpha, easingType, Alpha, alpha, time));
+
+            return this;
         }
     }
 }
