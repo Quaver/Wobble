@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Mime;
 using System.Runtime.InteropServices;
@@ -13,7 +13,7 @@ namespace Wobble.Graphics.ImGUI
     {
         /// <summary>
         /// </summary>
-        private IntPtr Context { get; }
+        public IntPtr Context { get; }
 
         /// <summary>
         /// </summary>
