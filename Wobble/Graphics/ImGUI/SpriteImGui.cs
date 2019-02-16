@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 
 namespace Wobble.Graphics.ImGUI
@@ -32,6 +33,7 @@ namespace Wobble.Graphics.ImGUI
         /// <param name="gameTime"></param>
         public void Draw(GameTime gameTime)
         {
+            ImGui.SetCurrentContext(Renderer.Context);
             Renderer.BeforeLayout(gameTime);
             RenderImguiLayout();
             Renderer.AfterLayout();
