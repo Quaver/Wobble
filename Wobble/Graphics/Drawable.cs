@@ -344,6 +344,10 @@ namespace Wobble.Graphics
                 if (!e.Message.Contains("Collection was modified; enumeration operation may not execute."))
                     throw;
             }
+            catch (Exception e)
+            {
+                Logger.Error(e, LogType.Runtime);
+            }
         }
 
         /// <summary>
