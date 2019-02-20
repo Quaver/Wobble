@@ -103,10 +103,7 @@ namespace Wobble.Audio.Tracks
                     throw new ArgumentException("Cannot set rate to 0 or below.");
 
                 _rate = value;
-                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency * _rate);
-
-                // When the rate changes, we also want to set the pitching again with the new rate.
-                ToggleRatePitching(IsPitched);
+                ApplyRate(IsPitched);
             }
         }
 
@@ -196,10 +193,6 @@ namespace Wobble.Audio.Tracks
             if (IsPlaying)
                 throw new AudioEngineException("Cannot play track if it is already playing.");
 
-            // If the track has never played before, we'll want to set its rate pitching.
-            if (!HasPlayed)
-                ToggleRatePitching(IsPitched);
-
             Bass.ChannelPlay(Stream);
             HasPlayed = true;
         }
@@ -256,20 +249,27 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
-        ///     Toggles the pitching for the audio track.
-        ///     Used if you want to have songs pitched when the rate changes.
+        ///     Applies current rate with or without pitching.
         /// </summary>
         /// <param name="shouldPitch"></param>
-        public void ToggleRatePitching(bool shouldPitch)
+        public void ApplyRate(bool shouldPitch)
         {
             CheckIfDisposed();
 
             IsPitched = shouldPitch;
 
             if (IsPitched)
-                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Pitch, Math.Log(Math.Pow(Rate, 12), 2));
+            {
+                // When pitching is enabled, adjust rate using frequency.
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency * _rate);
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Tempo, 0);
+            }
             else
-                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Pitch, 0);
+            {
+                // When pitching is disabled, adjust rate using tempo.
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency);
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Tempo, _rate * 100 - 100);
+            }
         }
 
         /// <inheritdoc />
