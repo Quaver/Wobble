@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
@@ -318,7 +319,8 @@ namespace Wobble.Graphics.UI.Form
                         if (string.IsNullOrEmpty(RawText))
                             return;
 
-                        RawText = RawText.Remove(RawText.Length - 1);
+                        var charStartIndices = StringInfo.ParseCombiningCharacters(RawText);
+                        RawText = RawText.Remove(charStartIndices.Last());
 
                         if (RawText == "")
                         {
@@ -463,12 +465,12 @@ namespace Wobble.Graphics.UI.Form
                     }
                     else
                     {
-                        var proposed = RawText += clipboardText;
+                        var proposed = RawText + clipboardText;
 
                         if (!AllowedCharacters.IsMatch(proposed))
                             return;
 
-                        RawText += clipboardText;
+                        RawText = proposed;
                     }
                 }
 
