@@ -102,6 +102,10 @@ namespace Wobble.Graphics.BitmapFonts
                 textSize = g.MeasureString(text, font, maxWidth, format);
             }
 
+            // Bitmaps must have non-zero size.
+            textSize.Width = Math.Max(1, textSize.Width);
+            textSize.Height = Math.Max(1, textSize.Height);
+
             // Create the actual bitmap using the size of the text.
             using (var bmp = new Bitmap((int) (textSize.Width + 0.5), (int) (textSize.Height + 0.5), PixelFormat.Format32bppArgb))
             using (var g = System.Drawing.Graphics.FromImage(bmp))
