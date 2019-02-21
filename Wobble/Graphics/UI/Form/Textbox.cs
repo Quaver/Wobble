@@ -465,12 +465,12 @@ namespace Wobble.Graphics.UI.Form
                     }
                     else
                     {
-                        var proposed = RawText += clipboardText;
+                        var proposed = RawText + clipboardText;
 
                         if (!AllowedCharacters.IsMatch(proposed))
                             return;
 
-                        RawText += clipboardText;
+                        RawText = proposed;
                     }
                 }
 
