@@ -22,6 +22,7 @@ using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
+using Wobble.Tests.Screens.Tests.TaskHandler;
 using Wobble.Tests.Screens.Tests.TextInput;
 using Wobble.Tests.Screens.Tests.TextSizes;
 using Wobble.Window;
@@ -139,6 +140,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.TextSizes:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestTextSizesScreen());
+                        break;
+                    case ScreenType.TaskHandler:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TaskHandlerScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
