@@ -285,6 +285,8 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Back:
                     case Keys.Tab:
                     case Keys.Delete:
+                    case Keys.VolumeUp:
+                    case Keys.VolumeDown:
                         break;
                     // For all other key presses, we reset the string and append the new character
                     default:
@@ -312,6 +314,8 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Tab:
                     case Keys.Delete:
                     case Keys.Escape:
+                    case Keys.VolumeUp:
+                    case Keys.VolumeDown:
 
                         return;
                     // Back spacing
