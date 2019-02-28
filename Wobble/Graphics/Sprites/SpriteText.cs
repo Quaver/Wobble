@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Logging;
+using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -137,8 +138,14 @@ namespace Wobble.Graphics.Sprites
                 return;
             }
 
-            Image = BitmapFontFactory.Create(Font, Text, FontSize, Color.White, TextAlignment, MaxWidth);
-            Size = new ScalableVector2(Image.Width, Image.Height);
+            var scale = WindowManager.ScreenScale.X;
+
+            // Some stuff (namely DrawableLog and the FPS counter) wants to draw text before anything is initialized.
+            if (scale == 0)
+                scale = 1;
+
+            Image = BitmapFontFactory.Create(Font, Text, FontSize * scale, Color.White, TextAlignment, (int) (MaxWidth * scale));
+            Size = new ScalableVector2(Image.Width / scale, Image.Height / scale);
 
             AmountOfTextUpdatesInSecond++;
 
