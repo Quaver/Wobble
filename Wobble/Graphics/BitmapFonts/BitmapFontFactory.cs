@@ -73,7 +73,7 @@ namespace Wobble.Graphics.BitmapFonts
         /// <param name="textAlignment"></param>
         /// <param name="maxWidth"></param>
         ///  <returns></returns>
-        internal static Texture2D Create(string fontName, string text, int fontSize, Color color, Alignment textAlignment, int maxWidth)
+        internal static Texture2D Create(string fontName, string text, float fontSize, Color color, Alignment textAlignment, int maxWidth)
         {
             // Stores the size of the text & Texture2D
             SizeF textSize;
@@ -142,7 +142,7 @@ namespace Wobble.Graphics.BitmapFonts
         /// <param name="name"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        private static Font GetCustomFont(string name, int size)
+        private static Font GetCustomFont(string name, float size)
         {
             if (!CustomFonts.ContainsKey(name))
                 return null;
