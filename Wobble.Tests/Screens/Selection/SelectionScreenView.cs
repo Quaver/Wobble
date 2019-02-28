@@ -81,7 +81,6 @@ namespace Wobble.Tests.Screens.Selection
                     Text =
                     {
                         Tint = Color.Black,
-                        ForceDrawAtSize = false
                     },
                     X = 5,
                     Y = i * 50 + i * 10 + 10,

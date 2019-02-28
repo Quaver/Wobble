@@ -83,21 +83,6 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
-        ///     If set to true, it will draw at the font size given instead of drawing higher and
-        ///     scaling down.
-        /// </summary>
-        private bool _forceDrawAtSize;
-        public bool ForceDrawAtSize
-        {
-            get => _forceDrawAtSize;
-            set
-            {
-                _forceDrawAtSize = value;
-                LoadTexture();
-            }
-        }
-
-        /// <summary>
         ///     The amount of text updates that have occurred in the previous second.
         /// </summary>
         private int AmountOfTextUpdatesInSecond { get; set; }
@@ -113,10 +98,9 @@ namespace Wobble.Graphics.Sprites
         /// <param name="font"></param>
         /// <param name="text"></param>
         /// <param name="fontSize"></param>
-        /// <param name="forceDrawAtSize"></param>
         /// <param name="maxWidth">The maximum width before it wraps to the next line</param>
         /// <exception cref="T:System.ArgumentException"></exception>
-        public SpriteText(string font, string text, int fontSize, bool forceDrawAtSize = true, int maxWidth = int.MaxValue)
+        public SpriteText(string font, string text, int fontSize, int maxWidth = int.MaxValue)
         {
             if (string.IsNullOrEmpty(font))
                 throw new ArgumentException("Font must be not null or empty.");
@@ -125,7 +109,6 @@ namespace Wobble.Graphics.Sprites
             _text = text;
             _fontSize = fontSize;
             _maxWidth = maxWidth;
-            _forceDrawAtSize = forceDrawAtSize;
 
             LoadTexture();
         }
@@ -154,10 +137,8 @@ namespace Wobble.Graphics.Sprites
                 return;
             }
 
-            Image = BitmapFontFactory.Create(Font, Text, ForceDrawAtSize ? FontSize : (int) (FontSize * 1.5f), Color.White, TextAlignment, MaxWidth);
-
-            var ratio = ForceDrawAtSize ? 1f : (float) FontSize / (FontSize * 1.5f);
-            Size = new ScalableVector2(Image.Width * ratio, Image.Height * ratio);
+            Image = BitmapFontFactory.Create(Font, Text, FontSize, Color.White, TextAlignment, MaxWidth);
+            Size = new ScalableVector2(Image.Width, Image.Height);
 
             AmountOfTextUpdatesInSecond++;
 
