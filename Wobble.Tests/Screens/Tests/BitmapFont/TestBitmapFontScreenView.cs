@@ -38,7 +38,6 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
             {
                 Parent = Container,
                 Alignment = Alignment.MidRight,
-                ForceDrawAtSize = false
             };
         }
 
