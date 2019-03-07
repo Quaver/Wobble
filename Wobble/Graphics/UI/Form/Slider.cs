@@ -213,12 +213,14 @@ namespace Wobble.Graphics.UI.Form
         {
             if (IsVertical)
             {
-                ProgressBall.Y = MathHelper.Lerp(ProgressBall.Y, (1 - NormalizedBallPosition) * Height,
+                ProgressBall.Y = MathHelper.Lerp(ProgressBall.Y,
+                    (1 - NormalizedBallPosition) * Height - ProgressBall.Height / 2,
                     (float) Math.Min(dt / 30, 1));
             }
             else
             {
-                ProgressBall.X = MathHelper.Lerp(ProgressBall.X, NormalizedBallPosition * Width,
+                ProgressBall.X = MathHelper.Lerp(ProgressBall.X,
+                    NormalizedBallPosition * Width - ProgressBall.Width / 2,
                     (float) Math.Min(dt / 30, 1));
             }
         }
