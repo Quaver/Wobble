@@ -41,9 +41,9 @@ namespace Wobble.Graphics.UI.Form
         private bool IsVertical { get; }
 
         /// <summary>
-        ///     The last percentage that the slider has changed the BindableInt to.
+        ///     The last normalized slider value in [0, 1].
         /// </summary>
-        private int LastPercentage { get; set; }
+        private float LastValue { get; set; }
 
         /// <summary>
         ///     The mouse state of the previous frame.
@@ -61,9 +61,9 @@ namespace Wobble.Graphics.UI.Form
         private int PreviousValue { get; set; }
 
          /// <summary>
-        ///     The percentage of the current slider value.
+        ///     The ball position normalized to [0, 1].
         /// </summary>
-        private int ProgressPercentage => (BindedValue.Value - BindedValue.MinValue) * 100 / BindedValue.MaxValue - BindedValue.MinValue * 100;
+        private float NormalizedBallPosition => (float) (BindedValue.Value - BindedValue.MinValue) / (BindedValue.MaxValue - BindedValue.MinValue);
 
         /// <inheritdoc />
         /// <summary>
@@ -85,7 +85,7 @@ namespace Wobble.Graphics.UI.Form
             // Create the progress sliding thing.
             ProgressBall = new Sprite()
             {
-                Alignment = Alignment.TopLeft,
+                Alignment = IsVertical ? Alignment.TopCenter : Alignment.MidLeft,
                 Image = progressBall,
                 Size = ProgressBallSize,
                 Tint = Color.White,
@@ -116,6 +116,14 @@ namespace Wobble.Graphics.UI.Form
             // Handle the changing of the value for this button.
             if (MouseInHoldSequence)
                 HandleSliderValueChanges();
+            else if (IsMouseInClickArea())
+            {
+                if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
+                    BindedValue.Value--;
+
+                if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
+                    BindedValue.Value++;
+            }
 
             PreviousMouseState = Mouse.GetState();
             SetProgressPosition(gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -141,24 +149,25 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void HandleSliderValueChanges()
         {
-            // Get the percentage of the mouse position, to the size of the slider.
-            int percentage;
+            // Compute the normalized value in [0, 1].
+            float value;
             if (IsVertical)
-                percentage = 100 - (int)((MouseManager.CurrentState.Y - AbsolutePosition.Y) / AbsoluteSize.Y * 100);
+                value = 1 - (MouseManager.CurrentState.Y - AbsolutePosition.Y) / AbsoluteSize.Y;
             else
-                percentage = (int)((MouseManager.CurrentState.X - AbsolutePosition.X) / AbsoluteSize.X * 100);
+                value = (MouseManager.CurrentState.X - AbsolutePosition.X) / AbsoluteSize.X;
 
-            // If the percentage of the MouseX/SliderX is 0% or lower, set the binded value to the minimum.
-            if (percentage <= 0 && LastPercentage > 0)
+            // If the value is 0 or lower, set the binded value to the minimum.
+            if (value <= 0 && LastValue > 0)
                 BindedValue.Value = BindedValue.MinValue;
-            // If the percentage of the MouseX/SliderX is 100% or higher set the binded value to the maximum.
-            else if (percentage >= 100 && LastPercentage < 100)
+            // If the value is 1 or higher set the binded value to the maximum.
+            else if (value >= 1 && LastValue < 1)
                 BindedValue.Value = BindedValue.MaxValue;
-            // If the percentage is anything else, set it accordingly.
-            else if (percentage > 0 && percentage < 100 && LastPercentage != percentage)
-                BindedValue.Value = (int)(percentage / 100f * BindedValue.MaxValue);
+            // If the value is anything else, set it accordingly.
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            else if (value > 0 && value < 1 && LastValue != value)
+                BindedValue.Value = (int)(value * (BindedValue.MaxValue - BindedValue.MinValue) + BindedValue.MinValue);
 
-            LastPercentage = percentage;
+            LastValue = value;
         }
 
         /// <inheritdoc />
@@ -212,13 +221,15 @@ namespace Wobble.Graphics.UI.Form
         {
             if (IsVertical)
             {
-                ProgressBall.X = MathHelper.Lerp(ProgressBall.X, Width / 2 - ProgressBall.Width / 2, (float) Math.Min(dt / 30, 1));
-                ProgressBall.Y = MathHelper.Lerp(ProgressBall.Y, (100 - ProgressPercentage) / 100f * Height, (float) Math.Min(dt / 30, 1))
-;            }
+                ProgressBall.Y = MathHelper.Lerp(ProgressBall.Y,
+                    (1 - NormalizedBallPosition) * Height - ProgressBall.Height / 2,
+                    (float) Math.Min(dt / 30, 1));
+            }
             else
             {
-                ProgressBall.X = MathHelper.Lerp(ProgressBall.X, ProgressPercentage / 100f * Width, (float) Math.Min(dt / 30, 1));
-                ProgressBall.Y = MathHelper.Lerp(ProgressBall.Y, Height / 2 - ProgressBall.Height / 2, (float) Math.Min(dt / 30, 1));
+                ProgressBall.X = MathHelper.Lerp(ProgressBall.X,
+                    NormalizedBallPosition * Width - ProgressBall.Width / 2,
+                    (float) Math.Min(dt / 30, 1));
             }
         }
 
@@ -250,6 +261,7 @@ namespace Wobble.Graphics.UI.Form
 
             // Update the previous value.
             PreviousValue = e.Value;
+            LastValue = NormalizedBallPosition;
         }
     }
 }
