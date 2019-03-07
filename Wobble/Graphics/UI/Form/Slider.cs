@@ -85,7 +85,7 @@ namespace Wobble.Graphics.UI.Form
             // Create the progress sliding thing.
             ProgressBall = new Sprite()
             {
-                Alignment = Alignment.TopLeft,
+                Alignment = IsVertical ? Alignment.TopCenter : Alignment.MidLeft,
                 Image = progressBall,
                 Size = ProgressBallSize,
                 Tint = Color.White,
@@ -213,16 +213,12 @@ namespace Wobble.Graphics.UI.Form
         {
             if (IsVertical)
             {
-                ProgressBall.X = MathHelper.Lerp(ProgressBall.X, Width / 2 - ProgressBall.Width / 2,
-                    (float) Math.Min(dt / 30, 1));
                 ProgressBall.Y = MathHelper.Lerp(ProgressBall.Y, (1 - NormalizedBallPosition) * Height,
                     (float) Math.Min(dt / 30, 1));
             }
             else
             {
                 ProgressBall.X = MathHelper.Lerp(ProgressBall.X, NormalizedBallPosition * Width,
-                    (float) Math.Min(dt / 30, 1));
-                ProgressBall.Y = MathHelper.Lerp(ProgressBall.Y, Height / 2 - ProgressBall.Height / 2,
                     (float) Math.Min(dt / 30, 1));
             }
         }
