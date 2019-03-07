@@ -116,6 +116,14 @@ namespace Wobble.Graphics.UI.Form
             // Handle the changing of the value for this button.
             if (MouseInHoldSequence)
                 HandleSliderValueChanges();
+            else if (IsMouseInClickArea())
+            {
+                if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
+                    BindedValue.Value--;
+
+                if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
+                    BindedValue.Value++;
+            }
 
             PreviousMouseState = Mouse.GetState();
             SetProgressPosition(gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -253,6 +261,7 @@ namespace Wobble.Graphics.UI.Form
 
             // Update the previous value.
             PreviousValue = e.Value;
+            LastValue = NormalizedBallPosition;
         }
     }
 }
