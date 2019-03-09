@@ -431,8 +431,8 @@ namespace Wobble.Graphics.UI.Form
         private void HandleCtrlInput()
         {
             // Make sure the textbox is focused and that the control buttons are down before handling anything.
-            if ((!Focused || !KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl))
-                && !KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+            if (!Focused || (!KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
+                && !KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl)))
                 return;
 
             // CTRL+A, Select the text.
