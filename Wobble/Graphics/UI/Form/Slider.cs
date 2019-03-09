@@ -116,7 +116,7 @@ namespace Wobble.Graphics.UI.Form
             // Handle the changing of the value for this button.
             if (MouseInHoldSequence)
                 HandleSliderValueChanges();
-            else if (IsMouseInClickArea())
+            else if (IsHovered)
             {
                 if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
                     BindedValue.Value--;
