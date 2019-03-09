@@ -320,6 +320,11 @@ namespace Wobble.Graphics.UI.Form
                         return;
                     // Back spacing
                     case Keys.Back:
+                        // CTRL+Backspace is handled in HandleCtrlInput()
+                        if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
+                            || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+                            return;
+
                         if (string.IsNullOrEmpty(RawText))
                             return;
 
@@ -482,9 +487,9 @@ namespace Wobble.Graphics.UI.Form
                 Selected = false;
             }
 
-            // CTRL+W: kill word backwards.
+            // CTRL+W or CTRL+Backspace: kill word backwards.
             // This means killing all trailing whitespace and then all trailing non-whitespace.
-            if (KeyboardManager.IsUniqueKeyPress(Keys.W))
+            if (KeyboardManager.IsUniqueKeyPress(Keys.W) || KeyboardManager.IsUniqueKeyPress(Keys.Back))
             {
                 var withoutTrailingWhitespace = RawText.TrimEnd();
                 var nonWhitespacesInTheEnd = withoutTrailingWhitespace.ToCharArray()
