@@ -27,7 +27,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.TextInput, "Text Input"},
             {ScreenType.SpriteMaskContainer, "Sprite Masking"},
             {ScreenType.BitmapFont, "Bitmap Font"},
-            {ScreenType.Primitives, "Primitives"}
+            {ScreenType.Primitives, "Primitives"},
+            {ScreenType.ImGui, "Imgui"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -50,6 +51,7 @@ namespace Wobble.Tests.Screens.Selection
         TextInput,
         SpriteMaskContainer,
         BitmapFont,
-        Primitives
+        Primitives,
+        ImGui
     }
 }

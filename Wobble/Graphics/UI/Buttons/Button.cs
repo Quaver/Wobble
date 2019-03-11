@@ -26,6 +26,16 @@ namespace Wobble.Graphics.UI.Buttons
         public event EventHandler ClickedOutside;
 
         /// <summary>
+        ///     Event invoked when the user hovers into the button
+        /// </summary>
+        public event EventHandler Hovered;
+
+        /// <summary>
+        ///     Event invoked when the user stops hovering over the button
+        /// </summary>
+        public event EventHandler LeftHover;
+
+        /// <summary>
         ///     Returns true if the mouse is truly hovering over the button
         ///     and this button is the top layered one.
         /// </summary>
@@ -105,12 +115,16 @@ namespace Wobble.Graphics.UI.Buttons
                 // Set this to be truly hovered and follow up with click actions for this button.
                 if (topLayerButton == this)
                 {
+                    if (!IsHovered)
+                        Hovered?.Invoke(this, EventArgs.Empty);
+
                     IsHovered = true;
                     OnHover(gameTime);
 
                     // If we're not waiting for a click reelase and the mouse button is currently held down,
                     // then we'll set this to true.
-                    if (!WaitingForClickRelease && MouseManager.CurrentState.LeftButton == ButtonState.Pressed)
+                    if (!WaitingForClickRelease && MouseManager.CurrentState.LeftButton == ButtonState.Pressed
+                                                && MouseManager.PreviousState.LeftButton == ButtonState.Released)
                     {
                         WaitingForClickRelease = true;
                         IsHeld = true;
@@ -129,6 +143,9 @@ namespace Wobble.Graphics.UI.Buttons
                 // If the button isn't the top layered button, then we'll want to consider it not hovered.
                 else
                 {
+                    if (IsHovered)
+                        LeftHover?.Invoke(this, EventArgs.Empty);
+
                     IsHovered = false;
                     WaitingForClickRelease = false;
 
@@ -139,6 +156,9 @@ namespace Wobble.Graphics.UI.Buttons
             // However,
             else
             {
+                if (IsHovered)
+                    LeftHover?.Invoke(this, EventArgs.Empty);
+
                 IsHoveredWithoutDrawOrder = false;
                 IsHovered = false;
                 WaitingForClickRelease = false;
@@ -166,6 +186,8 @@ namespace Wobble.Graphics.UI.Buttons
         {
             Clicked = null;
             ClickedOutside = null;
+            Hovered = null;
+            LeftHover = null;
             ButtonManager.Remove(this);
 
             base.Destroy();

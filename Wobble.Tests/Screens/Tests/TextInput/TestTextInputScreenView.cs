@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
@@ -49,6 +50,17 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                         new Animation(AnimationProperty.X, Easing.Linear, -100, WindowManager.Width + 500, 5000)
                     }
                 };
+            };
+
+            var regexpTextbox = new Textbox(new ScalableVector2(500, 30), "exo2-bold", 14, "", "This should only allow you to type numbers")
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                Y = 100,
+                Tint = Color.Black,
+                Alpha = 0.75f,
+                Focused = false,
+                AllowedCharacters = new Regex("^[0-9]*$")
             };
         }
 

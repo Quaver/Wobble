@@ -34,13 +34,13 @@ namespace Wobble.Tests.Screens.Tests.Scrolling
                 Tint = Color.Black
             });
 
-            ScrollContainer.AddContainedDrawable(new SpriteText("exo2-regular", "I love eggplants.", 12, true)
+            ScrollContainer.AddContainedDrawable(new SpriteText("exo2-regular", "I love eggplants.", 12)
             {
                 Alignment = Alignment.MidCenter,
                 Tint = Color.Purple
             });
 
-            var testText = new SpriteText("exo2-regular", "This should be clipped off-screen!", 12, true)
+            var testText = new SpriteText("exo2-regular", "This should be clipped off-screen!", 12)
             {
                 Alignment = Alignment.BotCenter,
                 Y = 0,

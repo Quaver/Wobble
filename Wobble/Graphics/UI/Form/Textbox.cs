@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
@@ -38,6 +38,11 @@ namespace Wobble.Graphics.UI.Form
         ///     The button for the text box to control if it is focused or not.
         /// </summary>
         public ImageButton Button { get; }
+
+        /// <summary>
+        ///     Regular expression for <see cref="RawText"/>
+        /// </summary>
+        public Regex AllowedCharacters { get; set; } = new Regex("(.*?)");
 
         /// <summary>
         ///     The raw text for this sprite.
@@ -126,7 +131,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Clipboard for the windows instance.
         /// </summary>
-        private WindowsClipboard Clipboard { get; } = new WindowsClipboard();
+        private Clipboard Clipboard { get; } = Clipboard.NativeClipboard;
 
         /// <inheritdoc />
         /// <summary>
@@ -145,7 +150,7 @@ namespace Wobble.Graphics.UI.Form
             PlaceholderText = placeHolderText;
             _rawText = initialText;
 
-            InputText = new SpriteText(font, RawText, fontSize, false)
+            InputText = new SpriteText(font, RawText, fontSize)
             {
                 TextAlignment = Alignment.TopLeft,
                 X = 5,
@@ -280,11 +285,20 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Back:
                     case Keys.Tab:
                     case Keys.Delete:
+                    case Keys.VolumeUp:
+                    case Keys.VolumeDown:
                         break;
                     // For all other key presses, we reset the string and append the new character
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
-                            RawText += e.Character;
+                        {
+                            var proposedText = RawText + e.Character;
+
+                            if (!AllowedCharacters.IsMatch(proposedText))
+                                return;
+
+                            RawText += proposedText;
+                        }
                         break;
                 }
 
@@ -300,14 +314,22 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Tab:
                     case Keys.Delete:
                     case Keys.Escape:
+                    case Keys.VolumeUp:
+                    case Keys.VolumeDown:
 
                         return;
                     // Back spacing
                     case Keys.Back:
+                        // CTRL+Backspace is handled in HandleCtrlInput()
+                        if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
+                            || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+                            return;
+
                         if (string.IsNullOrEmpty(RawText))
                             return;
 
-                        RawText = RawText.TrimEnd(RawText[RawText.Length - 1]);
+                        var charStartIndices = StringInfo.ParseCombiningCharacters(RawText);
+                        RawText = RawText.Remove(charStartIndices.Last());
 
                         if (RawText == "")
                         {
@@ -336,7 +358,14 @@ namespace Wobble.Graphics.UI.Form
                     // Input text
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
-                            RawText += e.Character;
+                        {
+                            var proposedText = RawText + e.Character;
+
+                            if (!AllowedCharacters.IsMatch(proposedText))
+                                return;
+
+                            RawText = proposedText;
+                        }
                         break;
                 }
             }
@@ -407,8 +436,8 @@ namespace Wobble.Graphics.UI.Form
         private void HandleCtrlInput()
         {
             // Make sure the textbox is focused and that the control buttons are down before handling anything.
-            if ((!Focused || !KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl))
-                && !KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+            if (!Focused || (!KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
+                && !KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl)))
                 return;
 
             // CTRL+A, Select the text.
@@ -419,13 +448,65 @@ namespace Wobble.Graphics.UI.Form
             if (KeyboardManager.IsUniqueKeyPress(Keys.C) && Selected)
                 Clipboard.SetText(RawText);
 
+            // CTRL+X, Cut the text to the clipboard.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.X) && Selected)
+            {
+                Clipboard.SetText(RawText);
+                RawText = "";
+
+                ReadjustTextbox();
+                Selected = false;
+            }
+
             // CTRL+V Paste text
             if (KeyboardManager.IsUniqueKeyPress(Keys.V))
             {
                 var clipboardText = Clipboard.GetText().Replace("\n", "").Replace("\r", "");
 
                 if (!string.IsNullOrEmpty(clipboardText))
-                    RawText += clipboardText;
+                {
+                    if (Selected)
+                    {
+                        if (!AllowedCharacters.IsMatch(clipboardText))
+                            return;
+
+                        RawText = clipboardText;
+                    }
+                    else
+                    {
+                        var proposed = RawText + clipboardText;
+
+                        if (!AllowedCharacters.IsMatch(proposed))
+                            return;
+
+                        RawText = proposed;
+                    }
+                }
+
+                ReadjustTextbox();
+                Selected = false;
+            }
+
+            // CTRL+W or CTRL+Backspace: kill word backwards.
+            // This means killing all trailing whitespace and then all trailing non-whitespace.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.W) || KeyboardManager.IsUniqueKeyPress(Keys.Back))
+            {
+                var withoutTrailingWhitespace = RawText.TrimEnd();
+                var nonWhitespacesInTheEnd = withoutTrailingWhitespace.ToCharArray()
+                    .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                RawText = withoutTrailingWhitespace.Substring(0,
+                    withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd);
+
+                ReadjustTextbox();
+                Selected = false;
+            }
+
+            // Ctrl+U: kill line backwards.
+            // Delete from the cursor position to the start of the line.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.U))
+            {
+                // Since we don't have a concept of a cursor, simply delete the whole text.
+                RawText = "";
 
                 ReadjustTextbox();
                 Selected = false;

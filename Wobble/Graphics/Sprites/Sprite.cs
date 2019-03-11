@@ -58,7 +58,7 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///    The rectangle for the origin of the sprite.
         /// </summary>
-        public DrawRectangle OriginRectangle { get; } = new DrawRectangle();
+        public DrawRectangle OriginRectangle { get; protected set; }
 
         /// <summary>
         ///     The tint this QuaverSprite will inherit.
@@ -207,10 +207,9 @@ namespace Wobble.Graphics.Sprites
                 return;
 
             // Update Origin Rect
-            OriginRectangle.Width = ScreenRectangle.Width;
-            OriginRectangle.Height = ScreenRectangle.Height;
-            OriginRectangle.X = ScreenRectangle.X + ScreenRectangle.Width / 2f;
-            OriginRectangle.Y = ScreenRectangle.Y + ScreenRectangle.Height / 2f;
+            OriginRectangle = new DrawRectangle(ScreenRectangle.X + ScreenRectangle.Width / 2f, ScreenRectangle.Y + ScreenRectangle.Height / 2f,
+                ScreenRectangle.Width, ScreenRectangle.Height);
+
 
             // Update Render Rect
             RenderRectangle = new Rectangle((int)OriginRectangle.X, (int)OriginRectangle.Y,
@@ -238,10 +237,26 @@ namespace Wobble.Graphics.Sprites
         /// <param name="color"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void FadeToColor(Color color, Easing easingType, int time)
+        public Sprite FadeToColor(Color color, Easing easingType, int time)
         {
             lock (Animations)
                 Animations.Add(new Animation(easingType, Tint, color, time));
+
+            return this;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="alpha"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public Sprite FadeTo(float alpha, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.Alpha, easingType, Alpha, alpha, time));
+
+            return this;
         }
     }
 }

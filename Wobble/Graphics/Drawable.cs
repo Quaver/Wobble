@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
@@ -71,12 +72,12 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
         /// </summary>
-        public DrawRectangle ScreenRectangle { get; private set; } = new DrawRectangle();
+        public Rectangle ScreenRectangle { get; private set; } = new Rectangle();
 
         /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
-        public DrawRectangle RelativeRectangle { get; private set; } = new DrawRectangle();
+        public Rectangle RelativeRectangle { get; private set; } = new Rectangle();
 
         /// <summary>
         ///     The position of the drawable
@@ -233,6 +234,10 @@ namespace Wobble.Graphics
         }
 
         /// <summary>
+        /// </summary>
+        public float AnimationWaitTime { get; private set; }
+
+        /// <summary>
         ///     Dictates whether or not when we set the visibility of this object, the children's
         ///     get set as well.
         /// </summary>
@@ -339,6 +344,10 @@ namespace Wobble.Graphics
                 if (!e.Message.Contains("Collection was modified; enumeration operation may not execute."))
                     throw;
             }
+            catch (Exception e)
+            {
+                Logger.Error(e, LogType.Runtime);
+            }
         }
 
         /// <summary>
@@ -398,7 +407,7 @@ namespace Wobble.Graphics
                 var x = Position.X.Value;
                 var y = Position.Y.Value;
 
-                RelativeRectangle = new DrawRectangle(x, y, width, height);
+                RelativeRectangle = new Rectangle((int) x, (int) y, (int) width, (int) height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle);
             }
             // Make it relative to the screen size.
@@ -409,7 +418,7 @@ namespace Wobble.Graphics
                 var x = Position.X.Value;
                 var y = Position.Y.Value;
 
-                RelativeRectangle = new DrawRectangle(x, y, width, height);
+                RelativeRectangle = new Rectangle((int) x, (int) y, (int) width, (int) height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
             }
 
@@ -448,83 +457,128 @@ namespace Wobble.Graphics
         /// </summary>
         private void PerformTransformations(GameTime gameTime)
         {
-            // Keep a list of Animations that are marked as done that'll be queued for removal.
-            var queuedForDeletion = new List<Animation>();
-
-            lock (Animations)
+            foreach (var animation in Animations.ToArray())
             {
-                for (var i = Animations.Count - 1; i >= 0; i--)
+                try
                 {
-                    var Animation = Animations[i];
+                    var breakOutOfLoop = false;
 
-                    try
+                    switch (animation.Properties)
                     {
-                        switch (Animation.Properties)
-                        {
-                            case AnimationProperty.X:
-                                X = Animation.PerformInterpolation(gameTime);
+                        case AnimationProperty.Wait:
+                            if (animation != Animations.First())
+                            {
+                                breakOutOfLoop = true;
                                 break;
-                            case AnimationProperty.Y:
-                                Y = Animation.PerformInterpolation(gameTime);
-                                break;
-                            case AnimationProperty.Width:
-                                Width = Animation.PerformInterpolation(gameTime);
-                                break;
-                            case AnimationProperty.Height:
-                                Height = Animation.PerformInterpolation(gameTime);
-                                break;
-                            case AnimationProperty.Alpha:
-                                var type = GetType();
+                            }
 
-                                if (this is Sprite)
-                                {
-                                    var sprite = (Sprite) this;
-                                    sprite.Alpha = Animation.PerformInterpolation(gameTime);
-                                }
+                            AnimationWaitTime = animation.PerformInterpolation(gameTime);
+                            break;
+                        case AnimationProperty.X:
+                            X = animation.PerformInterpolation(gameTime);
+                            break;
+                        case AnimationProperty.Y:
+                            Y = animation.PerformInterpolation(gameTime);
+                            break;
+                        case AnimationProperty.Width:
+                            Width = animation.PerformInterpolation(gameTime);
+                            break;
+                        case AnimationProperty.Height:
+                            Height = animation.PerformInterpolation(gameTime);
+                            break;
+                        case AnimationProperty.Alpha:
+                            var type = GetType();
 
-                                break;
-                            case AnimationProperty.Rotation:
-                                if (this is Sprite)
-                                {
-                                    var sprite = (Sprite) this;
-                                    sprite.Rotation = Animation.PerformInterpolation(gameTime);
-                                }
-                                else
-                                    throw new NotImplementedException();
-                                break;
-                            case AnimationProperty.Color:
-                                if (this is Sprite)
-                                {
-                                    var sprite = (Sprite) this;
-                                    sprite.Tint = Animation.PerformColorInterpolation(gameTime);
-                                }
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-
-                        if (Animation.Done)
-                            queuedForDeletion.Add(Animation);
+                            if (this is Sprite)
+                            {
+                                var sprite = (Sprite) this;
+                                sprite.Alpha = animation.PerformInterpolation(gameTime);
+                            }
+                            break;
+                        case AnimationProperty.Rotation:
+                            if (this is Sprite)
+                            {
+                                var sprite = (Sprite) this;
+                                sprite.Rotation = animation.PerformInterpolation(gameTime);
+                            }
+                            else
+                                throw new NotImplementedException();
+                            break;
+                        case AnimationProperty.Color:
+                            if (this is Sprite)
+                            {
+                                var sprite = (Sprite) this;
+                                sprite.Tint = animation.PerformColorInterpolation(gameTime);
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
-                    catch (Exception e)
-                    {
+
+                    if (animation.Properties == AnimationProperty.Wait && !animation.Done || breakOutOfLoop)
                         break;
+
+                    if (animation.Done)
+                    {
+                        Animations.Remove(animation);
+
+                        if (animation.Properties == AnimationProperty.Wait)
+                        {
+                            AnimationWaitTime = 0;
+
+                            foreach (var a in Animations.ToArray())
+                            {
+                                switch (a.Properties)
+                                {
+                                    case AnimationProperty.X:
+                                        a.Start = X;
+                                        break;
+                                    case AnimationProperty.Y:
+                                        a.Start = Y;
+                                        break;
+                                    case AnimationProperty.Width:
+                                        a.Start = Width;
+                                        break;
+                                    case AnimationProperty.Height:
+                                        a.Start = Height;
+                                        break;
+                                    case AnimationProperty.Alpha:
+                                        var type = GetType();
+
+                                        if (this is Sprite)
+                                        {
+                                            var sprite = (Sprite) this;
+                                            a.Start = sprite.Alpha;
+                                        }
+                                        break;
+                                    case AnimationProperty.Rotation:
+                                        if (this is Sprite)
+                                        {
+                                            var sprite = (Sprite) this;
+                                            a.Start = sprite.Rotation;
+                                        }
+                                        else
+                                            throw new NotImplementedException();
+                                        break;
+                                    case AnimationProperty.Color:
+                                        if (this is Sprite)
+                                        {
+                                            var sprite = (Sprite) this;
+                                            a.StartColor = sprite.Tint;
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
                     }
                 }
-
-                // Remove all completed Animations.
-                queuedForDeletion.ForEach(x =>
+                catch (Exception e)
                 {
-                    try
-                    {
-                        if (Animations.Contains(x))
-                            Animations.Remove(x);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e, LogType.Runtime);
-                    }
-                });
+                    Console.WriteLine(e);
+                    break;
+                }
             }
         }
 
@@ -543,10 +597,12 @@ namespace Wobble.Graphics
         /// <param name="x"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void MoveToX(float x, Easing easingType, int time)
+        public Drawable MoveToX(float x, Easing easingType, int time)
         {
             lock (Animations)
                 Animations.Add(new Animation(AnimationProperty.X, easingType, X, x, time));
+
+            return this;
         }
 
         /// <summary>
@@ -555,22 +611,26 @@ namespace Wobble.Graphics
         /// <param name="y"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void MoveToY(int y, Easing easingType, int time)
+        public Drawable MoveToY(int y, Easing easingType, int time)
         {
             lock (Animations)
                 Animations.Add(new Animation(AnimationProperty.Y, easingType, Y, y, time));
+
+            return this;
         }
 
         /// <summary>
         ///     Moves the drawable to a given position
         /// </summary>
-        public void MoveToPosition(Vector2 position, Easing easingType, int time)
+        public Drawable MoveToPosition(Vector2 position, Easing easingType, int time)
         {
             lock (Animations)
             {
                 Animations.Add(new Animation(AnimationProperty.X, easingType, X, position.X, time));
                 Animations.Add(new Animation(AnimationProperty.Y, easingType, Y, position.Y, time));
             }
+
+            return this;
         }
 
         /// <summary>
@@ -579,10 +639,12 @@ namespace Wobble.Graphics
         /// <param name="height"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void ChangeHeightTo(int height, Easing easingType, int time)
+        public Drawable ChangeHeightTo(int height, Easing easingType, int time)
         {
             lock (Animations)
                 Animations.Add(new Animation(AnimationProperty.Height, easingType, Height, height, time));
+
+            return this;
         }
 
         /// <summary>
@@ -591,10 +653,12 @@ namespace Wobble.Graphics
         /// <param name="width"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void ChangeWidthTo(int width, Easing easingType, int time)
+        public Drawable ChangeWidthTo(int width, Easing easingType, int time)
         {
             lock (Animations)
                 Animations.Add(new Animation(AnimationProperty.Width, easingType, Width, width, time));
+
+            return this;
         }
 
         /// <summary>
@@ -603,13 +667,26 @@ namespace Wobble.Graphics
         /// <param name="size"></param>
         /// <param name="easingType"></param>
         /// <param name="time"></param>
-        public void ChangeSizeTo(Vector2 size, Easing easingType, int time)
+        public Drawable ChangeSizeTo(Vector2 size, Easing easingType, int time)
         {
             lock (Animations)
             {
                 Animations.Add(new Animation(AnimationProperty.Width, easingType, Width, size.X, time));
                 Animations.Add(new Animation(AnimationProperty.Height, easingType, Height, size.Y, time));
             }
+
+            return this;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public virtual Drawable Wait(int time = 0)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.Wait, Easing.Linear, 0, time, time));
+
+            return this;
         }
     }
 }

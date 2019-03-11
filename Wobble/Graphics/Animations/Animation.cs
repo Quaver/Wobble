@@ -18,7 +18,7 @@ namespace Wobble.Graphics.Animations
         /// <summary>
         ///     The starting value of the property.
         /// </summary>
-        public float Start { get; }
+        public float Start { get; set; }
 
         /// <summary>
         ///     The ending value of the property
@@ -93,6 +93,9 @@ namespace Wobble.Graphics.Animations
                 CurrentAnimationTime = Time;
 
             var val = EasingFunctions.Perform(EasingType, Start, End, (float)(CurrentAnimationTime / Time));
+
+            if (Properties == AnimationProperty.Wait)
+                val = (float) CurrentAnimationTime;
 
             if (Math.Abs(val - End) < 0.01)
                 Done = true;

@@ -17,6 +17,7 @@ using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
+using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
@@ -80,7 +81,6 @@ namespace Wobble.Tests.Screens.Selection
                     Text =
                     {
                         Tint = Color.Black,
-                        ForceDrawAtSize = false
                     },
                     X = 5,
                     Y = i * 50 + i * 10 + 10,
@@ -123,6 +123,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.Primitives:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestPrimitivesScreen());
+                        break;
+                    case ScreenType.ImGui:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestImGuiScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

@@ -2,7 +2,7 @@
 
 namespace Wobble.Graphics
 {
-    public class DrawRectangle
+    public struct DrawRectangle
     {
         /// <summary>
         ///     Position X

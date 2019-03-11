@@ -25,6 +25,11 @@ namespace Wobble.Graphics.UI
         public float ExpandScale { get; set; }
 
         /// <summary>
+        ///     Whether to center the cursor image on the cursor position.
+        /// </summary>
+        public bool Center { get; set; } = false;
+
+        /// <summary>
         ///     If the cursor is currently shown
         /// </summary>
         private bool IsShown { get; set; } = true;
@@ -75,6 +80,12 @@ namespace Wobble.Graphics.UI
 
             X = MouseManager.CurrentState.X;
             Y = MouseManager.CurrentState.Y;
+
+            if (Center)
+            {
+                X -= Width / 2;
+                Y -= Height / 2;
+            }
 
             PerformShowAndHideAnimations(gameTime);
 

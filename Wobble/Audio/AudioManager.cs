@@ -25,7 +25,10 @@ namespace Wobble.Audio
         internal static void Initialize()
         {
             if (!Bass.Init())
-                throw new AudioEngineException("BASS has failed to initialize! Are your platform-specific dlls present?");
+            {
+                var error = Bass.LastError;
+                throw new AudioEngineException($"BASS has failed to initialize (error code: {(int) error}, name: \"{error}\")! Are your platform-specific dlls present?");
+            }
 
             Tracks = new List<AudioTrack>();
         }
@@ -61,8 +64,6 @@ namespace Wobble.Audio
                     Tracks.Remove(track);
                     continue;
                 }
-
-                track.CorrectTime(GameBase.Game.TimeSinceLastFrame);
             }
         }
     }

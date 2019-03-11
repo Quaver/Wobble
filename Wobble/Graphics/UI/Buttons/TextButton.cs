@@ -23,10 +23,15 @@ namespace Wobble.Graphics.UI.Buttons
         /// <param name="fontSize"></param>
         /// <param name="clickAction"></param>
         public TextButton(Texture2D image, string font, string text, int fontSize, EventHandler clickAction = null)
-            : base(image, clickAction) => Text = new SpriteText(font, text, fontSize)
+            : base(image, clickAction)
         {
-            Parent = this,
-            Alignment = Alignment.MidCenter
-        };
+            Text = new SpriteText(font, text, fontSize)
+            {
+                Parent = this,
+                Alignment = Alignment.MidCenter,
+            };
+
+            Size = Text.Size;
+        }
     }
 }
