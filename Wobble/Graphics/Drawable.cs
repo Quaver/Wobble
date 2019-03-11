@@ -77,7 +77,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
-        public Rectangle RelativeRectangle { get; private set; } = new Rectangle();
+        public Rectangle RelativeRectangle { get; private set; }
 
         /// <summary>
         ///     The position of the drawable
@@ -116,11 +116,7 @@ namespace Wobble.Graphics
         public float X
         {
             get => Position.X.Value;
-            set
-            {
-                Position = new ScalableVector2(value, Position.Y.Value, Position.X.Scale, Position.Y.Scale);
-                RecalculateRectangles();
-            }
+            set => Position = new ScalableVector2(value, Position.Y.Value, Position.X.Scale, Position.Y.Scale);
         }
 
         /// <summary>
@@ -129,11 +125,7 @@ namespace Wobble.Graphics
         public float Y
         {
             get => Position.Y.Value;
-            set
-            {
-                Position = new ScalableVector2(Position.X.Value, value, Position.X.Scale, Position.Y.Scale);
-                RecalculateRectangles();
-            }
+            set => Position = new ScalableVector2(Position.X.Value, value, Position.X.Scale, Position.Y.Scale);
         }
 
         /// <summary>
@@ -145,9 +137,7 @@ namespace Wobble.Graphics
             set
             {
                 value = MathHelper.Clamp(value, 0, int.MaxValue);
-
                 Size = new ScalableVector2(value, Size.Y.Value, Size.X.Scale, Size.Y.Scale);
-                RecalculateRectangles();
             }
         }
 
@@ -157,11 +147,7 @@ namespace Wobble.Graphics
         public float WidthScale
         {
             get => Size.X.Scale;
-            set
-            {
-                Size = new ScalableVector2(Size.X.Value, Size.Y.Value, value, Size.Y.Scale);
-                RecalculateRectangles();
-            }
+            set => Size = new ScalableVector2(Size.X.Value, Size.Y.Value, value, Size.Y.Scale);
         }
 
         /// <summary>
@@ -173,9 +159,7 @@ namespace Wobble.Graphics
             set
             {
                 value = MathHelper.Clamp(value, 0, int.MaxValue);
-
                 Size = new ScalableVector2(Size.X.Value, value, Size.X.Scale, Size.Y.Scale);
-                RecalculateRectangles();
             }
         }
 
@@ -277,11 +261,6 @@ namespace Wobble.Graphics
         ///    The border around the drawable.
         /// </summary>
         public PrimitiveLineBatch Border { get; private set; }
-
-        /// <summary>
-        ///     Event raised when the rectangle has been recalculated.
-        /// </summary>
-        protected event EventHandler RectangleRecalculated;
 
         /// <inheritdoc />
         /// <summary>
@@ -387,11 +366,7 @@ namespace Wobble.Graphics
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public virtual void Dispose()
-        {
-            RectangleRecalculated = null;
-            IsDisposed = true;
-        }
+        public virtual void Dispose() => IsDisposed = true;
 
         /// <summary>
         ///     Recalculates the local and global rectangles of the object. Makes sure that the position
@@ -438,13 +413,19 @@ namespace Wobble.Graphics
             Children.ForEach(x => x.RecalculateRectangles());
 
             // Raise recalculated event.
-            RectangleRecalculated?.Invoke(this, EventArgs.Empty);
+            OnRectangleRecalculated();
         }
+
+        /// <summary>
+        /// </summary>
+        public abstract void DrawToSpriteBatch();
 
         /// <summary>
         ///
         /// </summary>
-        public abstract void DrawToSpriteBatch();
+        protected virtual void OnRectangleRecalculated()
+        {
+        }
 
         /// <summary>
         ///     Resets the count of total drawn objects.
