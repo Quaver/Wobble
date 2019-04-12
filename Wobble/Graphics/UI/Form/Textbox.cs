@@ -267,6 +267,10 @@ namespace Wobble.Graphics.UI.Form
             if (!Focused)
                 return;
 
+            // On Linux this gets sent on switching the keyboard layout.
+            if (e.Character == '\0')
+                return;
+
             // If the text is selected (in a CTRL+A) operation
             if (Selected)
             {
