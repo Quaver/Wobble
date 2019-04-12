@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using Wobble.Assets;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Shaders;
@@ -52,12 +53,7 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     The rectangle used to render the sprite.
         /// </summary>
-        public Rectangle RenderRectangle { get; private set; }
-
-        /// <summary>
-        ///    The rectangle for the origin of the sprite.
-        /// </summary>
-        public DrawRectangle OriginRectangle { get; protected set; }
+        public RectangleF RenderRectangle { get; private set; }
 
         /// <summary>
         ///     The tint this QuaverSprite will inherit.
@@ -200,13 +196,9 @@ namespace Wobble.Graphics.Sprites
             if (Image == null)
                 return;
 
-            // Update Origin Rect
-            OriginRectangle = new DrawRectangle(ScreenRectangle.X + ScreenRectangle.Width / 2f, ScreenRectangle.Y + ScreenRectangle.Height / 2f,
+            // Update the render rectangle
+            RenderRectangle = new RectangleF(ScreenRectangle.X + ScreenRectangle.Width / 2f, ScreenRectangle.Y + ScreenRectangle.Height / 2f,
                 ScreenRectangle.Width, ScreenRectangle.Height);
-
-            // Update Render Rect
-            RenderRectangle = new Rectangle((int)OriginRectangle.X, (int)OriginRectangle.Y,
-                                                (int) OriginRectangle.Width,(int) OriginRectangle.Height);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace Wobble.Graphics
 {
@@ -26,7 +27,7 @@ namespace Wobble.Graphics
         /// <param name="objectRect">The size of the object.</param>
         /// <param name="boundary">The Rectangle of the boundary.</param>
         /// <returns></returns>
-        internal static Rectangle AlignRect(Alignment objectAlignment, Rectangle objectRect, Rectangle boundary)
+        internal static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary)
         {
             float alignX = 0;
             float alignY = 0;
@@ -69,7 +70,7 @@ namespace Wobble.Graphics
             alignX = Align(alignX, objectRect.Width, boundary.X, boundary.X + boundary.Width, objectRect.X);
             alignY = Align(alignY, objectRect.Height, boundary.Y, boundary.Y + boundary.Height, objectRect.Y);
 
-            return new Rectangle((int) alignX, (int) alignY, objectRect.Width, objectRect.Height);
+            return new RectangleF(alignX, alignY, objectRect.Width, objectRect.Height);
         }
 
         /// <summary>
@@ -97,7 +98,7 @@ namespace Wobble.Graphics
             return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
         }
 
-        public static bool RectangleContains(Rectangle rect, Vector2 point)
+        public static bool RectangleContains(RectangleF rect, Vector2 point)
         {
             return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
         }
