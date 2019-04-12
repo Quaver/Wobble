@@ -19,14 +19,19 @@ using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Primitives;
+using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
 using Wobble.Tests.Screens.Tests.TextInput;
+using Wobble.Window;
 
 namespace Wobble.Tests.Screens.Selection
 {
     public class SelectionScreenView : ScreenView
     {
+        private static readonly ScalableVector2 ButtonSize = new ScalableVector2(150, 50);
+        private static readonly float ButtonGap = 5;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -69,6 +74,7 @@ namespace Wobble.Tests.Screens.Selection
         private void CreateSelectionButtons()
         {
             var screen = (SelectionScreen) Screen;
+            var buttonsInColumn = (int) ((WindowManager.VirtualScreen.Y - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
 
             var i = 0;
             foreach (var testScreens in screen.TestCasesScreens)
@@ -77,13 +83,13 @@ namespace Wobble.Tests.Screens.Selection
                 var button = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", testScreens.Value, 12)
                 {
                     Parent = Container,
-                    Size = new ScalableVector2(150, 50),
+                    Size = ButtonSize,
                     Text =
                     {
                         Tint = Color.Black,
                     },
-                    X = 5,
-                    Y = i * 50 + i * 10 + 10,
+                    X = (i / buttonsInColumn) * (ButtonGap + ButtonSize.X.Value) + ButtonGap,
+                    Y = (i % buttonsInColumn) * (ButtonGap + ButtonSize.Y.Value) + ButtonGap,
                 };
 
                 switch (testScreens.Key)
@@ -126,6 +132,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.ImGui:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestImGuiScreen());
+                        break;
+                    case ScreenType.Scaling:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestScalingScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

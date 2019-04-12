@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using Wobble.Bindables;
 using Wobble.Graphics.Animations;
 using Wobble.Input;
@@ -158,11 +159,13 @@ namespace Wobble.Graphics.Sprites
             var heightScale = GameBase.Game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
 
             // Calculate the new rectangle taking into account the scaling of the window.
-            var rect = new Rectangle(ScreenRectangle.X, ScreenRectangle.Y, ScreenRectangle.Width, ScreenRectangle.Height);
-            rect.X = (int)(rect.X * widthScale);
-            rect.Y = (int)(rect.Y * heightScale);
-            rect.Width = (int)(rect.Width * widthScale);
-            rect.Height = (int)(rect.Height * heightScale);
+            var rect = new Rectangle()
+            {
+                X = (int)(ScreenRectangle.X * widthScale),
+                Y = (int)(ScreenRectangle.Y * heightScale),
+                Width = (int)(ScreenRectangle.Width * widthScale),
+                Height = (int)(ScreenRectangle.Height * heightScale),
+            };
 
             // Set new scissor rect to the scaled rect.
             GameBase.Game.GraphicsDevice.ScissorRectangle = rect;
