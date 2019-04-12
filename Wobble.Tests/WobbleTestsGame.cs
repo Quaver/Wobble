@@ -33,9 +33,6 @@ namespace Wobble.Tests
 
             Window.AllowUserResizing = true;
 
-            Graphics.PreferredBackBufferWidth = (int) WindowManager.VirtualScreen.X;
-            Graphics.PreferredBackBufferHeight = (int)WindowManager.VirtualScreen.Y;
-
             Content.RootDirectory = "Content";
 
             Graphics.SynchronizeWithVerticalRetrace = false;
