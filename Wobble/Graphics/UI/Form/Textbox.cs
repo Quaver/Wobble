@@ -271,6 +271,12 @@ namespace Wobble.Graphics.UI.Form
             if (e.Character == '\0')
                 return;
 
+            // On Linux some characters (like Backspace, plus or minus) get sent here even when CTRL is down, and we
+            // don't handle that here.
+            if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
+                || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+                return;
+
             // If the text is selected (in a CTRL+A) operation
             if (Selected)
             {
@@ -324,11 +330,6 @@ namespace Wobble.Graphics.UI.Form
                         return;
                     // Back spacing
                     case Keys.Back:
-                        // CTRL+Backspace is handled in HandleCtrlInput()
-                        if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
-                            || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
-                            return;
-
                         if (string.IsNullOrEmpty(RawText))
                             return;
 
