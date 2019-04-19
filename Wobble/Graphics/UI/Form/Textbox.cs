@@ -370,11 +370,11 @@ namespace Wobble.Graphics.UI.Form
         {
             if (string.IsNullOrEmpty(RawText))
             {
-                Cursor.X = 3;
+                Cursor.X = InputText.X;
                 return;
             }
 
-            Cursor.X = InputText.Width;
+            Cursor.X = InputText.X + InputText.Width;
             SelectedSprite.Width = Cursor.X;
         }
 
