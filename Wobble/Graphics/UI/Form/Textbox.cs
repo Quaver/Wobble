@@ -236,6 +236,7 @@ namespace Wobble.Graphics.UI.Form
 
             // Handle all input.
             HandleCtrlInput();
+            HandleEnter();
             CalculateContainerX();
             ChangeCursorLocation();
 
@@ -275,6 +276,10 @@ namespace Wobble.Graphics.UI.Form
             // don't handle that here.
             if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
                 || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+                return;
+
+            // Enter is handled in Update() because TextInput only receives the regular Enter and not the NumPad Enter.
+            if (e.Key == Keys.Enter)
                 return;
 
             // If the text is selected (in a CTRL+A) operation
@@ -345,20 +350,6 @@ namespace Wobble.Graphics.UI.Form
                                 InputText.Alpha = 0.50f;
                             }
                         }
-                        break;
-                    // On Submit
-                    case Keys.Enter:
-                        if (!AllowSubmission)
-                            return;
-
-                        if (string.IsNullOrEmpty(RawText))
-                            return;
-
-                        // Run the callback function that was passed in.
-                        OnSubmit?.Invoke(RawText);
-
-                        // Clear text box.
-                        RawText = "";
                         break;
                     // Input text
                     default:
@@ -515,6 +506,29 @@ namespace Wobble.Graphics.UI.Form
 
                 ReadjustTextbox();
                 Selected = false;
+            }
+        }
+
+        /// <summary>
+        ///     Handles the Enter button (both regular and numpad) for the textbox.
+        /// </summary>
+        private void HandleEnter()
+        {
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Enter))
+            {
+                if (!AllowSubmission)
+                    return;
+
+                if (string.IsNullOrEmpty(RawText))
+                    return;
+
+                // Run the callback function that was passed in.
+                OnSubmit?.Invoke(RawText);
+
+                // Clear text box.
+                RawText = "";
+                Selected = false;
+                ReadjustTextbox();
             }
         }
     }
