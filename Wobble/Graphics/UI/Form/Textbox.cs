@@ -326,7 +326,6 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Escape:
                     case Keys.VolumeUp:
                     case Keys.VolumeDown:
-
                         return;
                     // Back spacing
                     case Keys.Back:
