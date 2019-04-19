@@ -54,8 +54,17 @@ namespace Wobble.Graphics.UI.Form
             set
             {
                 _rawText = value;
-                InputText.Text = value;
-                InputText.Alpha = 1;
+
+                if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(PlaceholderText))
+                {
+                    InputText.Text = PlaceholderText;
+                    InputText.Alpha = 0.50f;
+                }
+                else
+                {
+                    InputText.Text = value;
+                    InputText.Alpha = 1;
+                }
             }
         }
 
@@ -198,13 +207,6 @@ namespace Wobble.Graphics.UI.Form
             Button.ClickedOutside += (o, e) =>
             {
                 Focused = false;
-
-                // Change back to placeholder text if the textbox is indeed empty.
-                if (!string.IsNullOrEmpty(PlaceholderText) && string.IsNullOrEmpty(RawText))
-                {
-                    InputText.Text = PlaceholderText;
-                    InputText.Alpha = 0.50f;
-                }
             };
 
             CalculateContainerX();
@@ -288,13 +290,6 @@ namespace Wobble.Graphics.UI.Form
                 // Clear text
                 RawText = "";
 
-                // Use place holder text after backspacing to nothing.
-                if (!string.IsNullOrEmpty(PlaceholderText))
-                {
-                    InputText.Text = PlaceholderText;
-                    InputText.Alpha = 0.50f;
-                }
-
                 switch (e.Key)
                 {
                     case Keys.Back:
@@ -340,16 +335,6 @@ namespace Wobble.Graphics.UI.Form
 
                         var charStartIndices = StringInfo.ParseCombiningCharacters(RawText);
                         RawText = RawText.Remove(charStartIndices.Last());
-
-                        if (RawText == "")
-                        {
-                            // Use place holder text after backspacing to nothing.
-                            if (!string.IsNullOrEmpty(PlaceholderText))
-                            {
-                                InputText.Text = PlaceholderText;
-                                InputText.Alpha = 0.50f;
-                            }
-                        }
                         break;
                     // Input text
                     default:
