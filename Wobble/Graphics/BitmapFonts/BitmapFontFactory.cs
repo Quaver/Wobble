@@ -131,6 +131,11 @@ namespace Wobble.Graphics.BitmapFonts
                 // Dispose of the font.
                 font.Dispose();
 
+                // On Windows the alpha is not premultiplied. This results in subtle border artifacts when scaled or
+                // moved around improperly.
+                // On Linux the alpha is premultipled.
+                // This is regardless of the Bitmap PixelFormat.
+
                // bmp.RawFormat = ImageFormat.Png;
                 return AssetLoader.LoadTexture2D(ImageToByte2(bmp));
             }
