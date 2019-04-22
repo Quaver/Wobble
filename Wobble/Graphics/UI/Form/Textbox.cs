@@ -54,8 +54,17 @@ namespace Wobble.Graphics.UI.Form
             set
             {
                 _rawText = value;
-                InputText.Text = value;
-                InputText.Alpha = 1;
+
+                if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(PlaceholderText))
+                {
+                    InputText.Text = PlaceholderText;
+                    InputText.Alpha = 0.50f;
+                }
+                else
+                {
+                    InputText.Text = value;
+                    InputText.Alpha = 1;
+                }
             }
         }
 
@@ -198,13 +207,6 @@ namespace Wobble.Graphics.UI.Form
             Button.ClickedOutside += (o, e) =>
             {
                 Focused = false;
-
-                // Change back to placeholder text if the textbox is indeed empty.
-                if (!string.IsNullOrEmpty(PlaceholderText) && string.IsNullOrEmpty(RawText))
-                {
-                    InputText.Text = PlaceholderText;
-                    InputText.Alpha = 0.50f;
-                }
             };
 
             CalculateContainerX();
@@ -236,6 +238,7 @@ namespace Wobble.Graphics.UI.Form
 
             // Handle all input.
             HandleCtrlInput();
+            HandleEnter();
             CalculateContainerX();
             ChangeCursorLocation();
 
@@ -267,18 +270,25 @@ namespace Wobble.Graphics.UI.Form
             if (!Focused)
                 return;
 
+            // On Linux this gets sent on switching the keyboard layout.
+            if (e.Character == '\0')
+                return;
+
+            // On Linux some characters (like Backspace, plus or minus) get sent here even when CTRL is down, and we
+            // don't handle that here.
+            if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
+                || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+                return;
+
+            // Enter is handled in Update() because TextInput only receives the regular Enter and not the NumPad Enter.
+            if (e.Key == Keys.Enter)
+                return;
+
             // If the text is selected (in a CTRL+A) operation
             if (Selected)
             {
                 // Clear text
                 RawText = "";
-
-                // Use place holder text after backspacing to nothing.
-                if (!string.IsNullOrEmpty(PlaceholderText))
-                {
-                    InputText.Text = PlaceholderText;
-                    InputText.Alpha = 0.50f;
-                }
 
                 switch (e.Key)
                 {
@@ -316,44 +326,14 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Escape:
                     case Keys.VolumeUp:
                     case Keys.VolumeDown:
-
                         return;
                     // Back spacing
                     case Keys.Back:
-                        // CTRL+Backspace is handled in HandleCtrlInput()
-                        if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
-                            || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
-                            return;
-
                         if (string.IsNullOrEmpty(RawText))
                             return;
 
                         var charStartIndices = StringInfo.ParseCombiningCharacters(RawText);
                         RawText = RawText.Remove(charStartIndices.Last());
-
-                        if (RawText == "")
-                        {
-                            // Use place holder text after backspacing to nothing.
-                            if (!string.IsNullOrEmpty(PlaceholderText))
-                            {
-                                InputText.Text = PlaceholderText;
-                                InputText.Alpha = 0.50f;
-                            }
-                        }
-                        break;
-                    // On Submit
-                    case Keys.Enter:
-                        if (!AllowSubmission)
-                            return;
-
-                        if (string.IsNullOrEmpty(RawText))
-                            return;
-
-                        // Run the callback function that was passed in.
-                        OnSubmit?.Invoke(RawText);
-
-                        // Clear text box.
-                        RawText = "";
                         break;
                     // Input text
                     default:
@@ -389,11 +369,11 @@ namespace Wobble.Graphics.UI.Form
         {
             if (string.IsNullOrEmpty(RawText))
             {
-                Cursor.X = 3;
+                Cursor.X = InputText.X;
                 return;
             }
 
-            Cursor.X = InputText.Width;
+            Cursor.X = InputText.X + InputText.Width;
             SelectedSprite.Width = Cursor.X;
         }
 
@@ -510,6 +490,29 @@ namespace Wobble.Graphics.UI.Form
 
                 ReadjustTextbox();
                 Selected = false;
+            }
+        }
+
+        /// <summary>
+        ///     Handles the Enter button (both regular and numpad) for the textbox.
+        /// </summary>
+        private void HandleEnter()
+        {
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Enter))
+            {
+                if (!AllowSubmission)
+                    return;
+
+                if (string.IsNullOrEmpty(RawText))
+                    return;
+
+                // Run the callback function that was passed in.
+                OnSubmit?.Invoke(RawText);
+
+                // Clear text box.
+                RawText = "";
+                Selected = false;
+                ReadjustTextbox();
             }
         }
     }

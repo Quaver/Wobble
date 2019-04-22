@@ -146,7 +146,7 @@ namespace Wobble
 
             // Update the time since the last frame and the game's clock.
             TimeSinceLastFrame = gameTime.ElapsedGameTime.TotalMilliseconds;
-            TimeRunning += gameTime.ElapsedGameTime.Milliseconds;
+            TimeRunning += (long) gameTime.ElapsedGameTime.TotalMilliseconds;
 
             // Keep the window updated with the current resolution.
             WindowManager.Update();

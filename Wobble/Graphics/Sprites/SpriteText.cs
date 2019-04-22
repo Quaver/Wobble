@@ -134,6 +134,7 @@ namespace Wobble.Graphics.Sprites
             if (string.IsNullOrEmpty(Text))
             {
                 Image = new Texture2D(GameBase.Game.GraphicsDevice, 1, 1);
+                Size = new ScalableVector2(0, 0);
                 oldTexture?.Dispose();
                 return;
             }

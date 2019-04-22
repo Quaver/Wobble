@@ -28,7 +28,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.SpriteMaskContainer, "Sprite Masking"},
             {ScreenType.BitmapFont, "Bitmap Font"},
             {ScreenType.Primitives, "Primitives"},
-            {ScreenType.ImGui, "Imgui"}
+            {ScreenType.ImGui, "Imgui"},
+            {ScreenType.Scaling, "Scaling"},
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -52,6 +53,7 @@ namespace Wobble.Tests.Screens.Selection
         SpriteMaskContainer,
         BitmapFont,
         Primitives,
-        ImGui
+        ImGui,
+        Scaling,
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
@@ -72,12 +73,12 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
         /// </summary>
-        public Rectangle ScreenRectangle { get; private set; } = new Rectangle();
+        public RectangleF ScreenRectangle { get; private set; } = new RectangleF();
 
         /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
-        public Rectangle RelativeRectangle { get; private set; }
+        public RectangleF RelativeRectangle { get; private set; }
 
         /// <summary>
         ///     The position of the drawable
@@ -382,7 +383,7 @@ namespace Wobble.Graphics
                 var x = Position.X.Value;
                 var y = Position.Y.Value;
 
-                RelativeRectangle = new Rectangle((int) x, (int) y, (int) width, (int) height);
+                RelativeRectangle = new RectangleF(x, y, width, height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle);
             }
             // Make it relative to the screen size.
@@ -393,7 +394,7 @@ namespace Wobble.Graphics
                 var x = Position.X.Value;
                 var y = Position.Y.Value;
 
-                RelativeRectangle = new Rectangle((int) x, (int) y, (int) width, (int) height);
+                RelativeRectangle = new RectangleF(x, y, width, height);
                 ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
             }
 
