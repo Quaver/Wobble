@@ -91,9 +91,9 @@ namespace Wobble.Audio.Tracks
         public bool IsPreview { get; }
 
         /// <summary>
-        ///     Will determine if the Audio Track will dispose when finished.
+        ///     Will determine if the Audio Track will dispose automatically by the AudioManager.
         /// </summary>
-        public bool AutoDispose { get; private set; }
+        public bool AutoDispose { get; }
 
         /// <summary>
         ///     The rate at which the audio plays at.
