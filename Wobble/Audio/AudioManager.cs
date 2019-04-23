@@ -56,7 +56,7 @@ namespace Wobble.Audio
                 var track = Tracks[i];
 
                 // If the track is left over, we just want to dispose of it and remove it from our tracks.
-                if (track.IsLeftOver)
+                if (track.IsLeftOver && track.AutoDispose)
                 {
                     if (!track.IsDisposed)
                         track.Dispose();
