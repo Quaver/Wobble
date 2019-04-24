@@ -228,7 +228,9 @@ namespace Wobble.Audio.Tracks
         {
             CheckIfDisposed();
             Bass.ChannelStop(Stream);
-            Dispose();
+
+            if (!AutoDispose)
+                Dispose();
         }
 
         /// <summary>
