@@ -145,11 +145,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         /// <param name="path"></param>
         /// <param name="preview"></param>
-        /// <param name="dontAutoDispose></param>
-        public AudioTrack(string path, bool preview = false, bool dontAutoDispose = false)
+        /// <param name="autoDispose"></param>
+        public AudioTrack(string path, bool preview = false, bool autoDispose = true)
         {
             IsPreview = preview;
-            AutoDispose = !dontAutoDispose;
+            AutoDispose = autoDispose;
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
             Stream = Bass.CreateStream(path, Flags: flags);
@@ -162,11 +162,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         /// <param name="data"></param>
         /// <param name="preview"></param>
-        /// <param name="dontAutoDispose></param>
-        public AudioTrack(byte[] data, bool preview = false, bool dontAutoDispose = false)
+        /// <param name="autoDispose"></param>
+        public AudioTrack(byte[] data, bool preview = false, bool autoDispose = true)
         {
             IsPreview = preview;
-            AutoDispose = !dontAutoDispose;
+            AutoDispose = autoDispose;
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
             Stream = Bass.CreateStream(data, 0, data.Length, flags);
@@ -179,11 +179,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         /// <param name="data"></param>
         /// <param name="preview"></param>
-        /// <param name="dontAutoDispose></param>
-        public AudioTrack(Stream data, bool preview = false, bool dontAutoDispose = false)
+        /// <param name="autoDispose"></param>
+        public AudioTrack(Stream data, bool preview = false, bool autoDispose = true)
         {
             IsPreview = preview;
-            AutoDispose = !dontAutoDispose;
+            AutoDispose = autoDispose;
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
             Stream = Bass.CreateStream(data.ToArray(), 0, data.Length, flags);
