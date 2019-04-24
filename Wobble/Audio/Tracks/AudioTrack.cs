@@ -91,7 +91,7 @@ namespace Wobble.Audio.Tracks
         public bool IsPreview { get; }
 
         /// <summary>
-        ///     Will determine if the Audio Track will dispose automatically by the AudioManager.
+        ///     Will determine if the Audio Track will dispose automatically.
         /// </summary>
         public bool AutoDispose { get; }
 
@@ -229,7 +229,7 @@ namespace Wobble.Audio.Tracks
             CheckIfDisposed();
             Bass.ChannelStop(Stream);
 
-            if (!AutoDispose)
+            if (AutoDispose)
                 Dispose();
         }
 
