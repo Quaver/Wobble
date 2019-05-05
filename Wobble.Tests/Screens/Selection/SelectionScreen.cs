@@ -30,7 +30,7 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.Primitives, "Primitives"},
             {ScreenType.ImGui, "Imgui"},
             {ScreenType.Scaling, "Scaling"},
-            {ScreenType.TextSizes, "Text Sizes"},
+            {ScreenType.TextSizes, "memes"},
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);

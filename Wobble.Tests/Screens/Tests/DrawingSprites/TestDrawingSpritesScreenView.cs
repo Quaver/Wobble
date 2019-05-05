@@ -82,7 +82,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region HELLO_WORLD_TEXT
-            HelloWorldText = new SpriteText("exo2-bold", "Hello, World!", 18)
+            HelloWorldText = new SpriteText("exo2-bold", "Hi, how are u", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -100,7 +100,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
             {
                 Parent = Container,
                 Size = new ScalableVector2(150, 50),
-                Tint = Color.White,
+                Tint = Color.Red,
                 Text = { Tint = Color.Black},
                 Alignment = Alignment.TopCenter,
                 Y = HelloWorldText.Y + 40
