@@ -5,6 +5,7 @@ using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.ImGUI;
+using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Logging;
 using Wobble.Screens;
@@ -40,8 +41,21 @@ namespace Wobble.Tests.Screens.Tests.Imgui
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
                 Size = new ScalableVector2(100, 100),
-                Tint = Color.Crimson
+                Tint = Color.Crimson,
             };
+
+            // ReSharper disable once ObjectCreationAsStatement
+            var box2 = new Sprite()
+            {
+                Parent = Container,
+                Alignment = Alignment.TopLeft,
+                Size = new ScalableVector2(75, 75),
+                Position = new ScalableVector2(0, 400),
+                Tint = Color.Red,
+                Rotation = 60
+            };
+
+            box2.MoveToX(1200, Easing.OutQuint, 4000);
         }
 
         /// <inheritdoc />
@@ -80,7 +94,7 @@ namespace Wobble.Tests.Screens.Tests.Imgui
             }
             else
             {
-                Box.Tint = Color.Red;
+                Box.Tint = Color.Crimson;
             }
 
             GameBase.Game.GraphicsDevice.Clear(color);
