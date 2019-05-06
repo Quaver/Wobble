@@ -82,7 +82,7 @@ namespace Wobble.Extended.HotReload
         /// </summary>
         public void LoadDll()
         {
-            var path = $@"../../../../{ProjectName}/bin/debug/netcoreapp2.1/{ProjectName}.dll";
+            var path = $@"../../../../{ProjectName}/bin/Debug/netcoreapp2.1/{ProjectName}.dll";
 
             Asm = Assembly.Load(File.ReadAllBytes(path));
 
