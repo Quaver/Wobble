@@ -197,6 +197,7 @@ namespace Wobble.Graphics.Sprites
                 return;
 
             // Update the render rectangle
+            // Add Width / 2 and Height / 2 to X, Y because that's what Origin is set to (in the Image setter).
             RenderRectangle = new RectangleF(ScreenRectangle.X + ScreenRectangle.Width / 2f, ScreenRectangle.Y + ScreenRectangle.Height / 2f,
                 ScreenRectangle.Width, ScreenRectangle.Height);
         }

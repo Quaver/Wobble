@@ -99,11 +99,11 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
                 })
             {
                 Parent = Container,
-                Size = new ScalableVector2(150, 50),
-                Tint = Color.White,
-                Text = { Tint = Color.Black},
+                Size = new ScalableVector2(200, 50),
+                Tint = Color.Red,
+                Text = { Tint = Color.White},
                 Alignment = Alignment.TopCenter,
-                Y = HelloWorldText.Y + 40
+                Y = HelloWorldText.Y + 50
             };
 #endregion
 

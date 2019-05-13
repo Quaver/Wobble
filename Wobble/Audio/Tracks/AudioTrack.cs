@@ -91,6 +91,11 @@ namespace Wobble.Audio.Tracks
         public bool IsPreview { get; }
 
         /// <summary>
+        ///     Will determine if the Audio Track will dispose automatically.
+        /// </summary>
+        public bool AutoDispose { get; }
+
+        /// <summary>
         ///     The rate at which the audio plays at.
         /// </summary>
         private float _rate = 1.0f;
@@ -140,9 +145,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         /// <param name="path"></param>
         /// <param name="preview"></param>
-        public AudioTrack(string path, bool preview = false)
+        /// <param name="autoDispose"></param>
+        public AudioTrack(string path, bool preview = false, bool autoDispose = true)
         {
             IsPreview = preview;
+            AutoDispose = autoDispose;
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
             Stream = Bass.CreateStream(path, Flags: flags);
@@ -155,9 +162,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         /// <param name="data"></param>
         /// <param name="preview"></param>
-        public AudioTrack(byte[] data, bool preview = false)
+        /// <param name="autoDispose"></param>
+        public AudioTrack(byte[] data, bool preview = false, bool autoDispose = true)
         {
             IsPreview = preview;
+            AutoDispose = autoDispose;
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
             Stream = Bass.CreateStream(data, 0, data.Length, flags);
@@ -170,9 +179,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         /// <param name="data"></param>
         /// <param name="preview"></param>
-        public AudioTrack(Stream data, bool preview = false)
+        /// <param name="autoDispose"></param>
+        public AudioTrack(Stream data, bool preview = false, bool autoDispose = true)
         {
             IsPreview = preview;
+            AutoDispose = autoDispose;
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
             Stream = Bass.CreateStream(data.ToArray(), 0, data.Length, flags);
@@ -217,7 +228,9 @@ namespace Wobble.Audio.Tracks
         {
             CheckIfDisposed();
             Bass.ChannelStop(Stream);
-            Dispose();
+
+            if (AutoDispose)
+                Dispose();
         }
 
         /// <summary>
