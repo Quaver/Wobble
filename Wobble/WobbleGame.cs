@@ -148,6 +148,8 @@ namespace Wobble
             TimeSinceLastFrame = gameTime.ElapsedGameTime.TotalMilliseconds;
             TimeRunning += (long) gameTime.ElapsedGameTime.TotalMilliseconds;
 
+            Drawable.ResetTotalDrawnCount();
+
             // Keep the window updated with the current resolution.
             WindowManager.Update();
             MouseManager.Update();
@@ -176,8 +178,6 @@ namespace Wobble
                 return;
 
             base.Draw(gameTime);
-
-            Drawable.ResetTotalDrawnCount();
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);

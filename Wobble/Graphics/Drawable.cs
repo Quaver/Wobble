@@ -25,7 +25,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The order of which this object was drawn. Higher means the object was drawn later.
         /// </summary>
-        public int DrawOrder { get; private set; }
+        public int DrawOrder { get; set; }
 
         /// <summary>
         ///     The parent of this drawable in which it depends on for its position and size.
@@ -269,6 +269,11 @@ namespace Wobble.Graphics
         /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
+            // Increase the total amount of drawables that were drawn and set the order to the current
+            // total.
+            TotalDrawn++;
+            DrawOrder = TotalDrawn;
+
             PerformTransformations(gameTime);
 
             // Update all of the contained children.
@@ -276,6 +281,8 @@ namespace Wobble.Graphics
             {
                 try
                 {
+                    TotalDrawn++;
+                    Children[i].DrawOrder = TotalDrawn;
                     Children[i].Update(gameTime);
                 }
                 // Handle
@@ -301,11 +308,6 @@ namespace Wobble.Graphics
         {
             if (!Visible)
                 return;
-
-            // Increase the total amount of drawables that were drawn and set the order to the current
-            // total.
-            TotalDrawn++;
-            DrawOrder = TotalDrawn;
 
             // Draw the children and set their order.
             try

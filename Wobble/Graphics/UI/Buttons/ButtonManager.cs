@@ -24,5 +24,7 @@ namespace Wobble.Graphics.UI.Buttons
         /// </summary>
         /// <param name="btn"></param>
         public static void Remove(Button btn) => Buttons.Remove(btn);
+
+        public static void ResetDrawOrder() => Buttons.ForEach(x => x.DrawOrder = 0);
     }
 }

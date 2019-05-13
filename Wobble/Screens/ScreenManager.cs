@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Wobble.Graphics.UI.Buttons;
 
 namespace Wobble.Screens
 {
@@ -21,7 +22,11 @@ namespace Wobble.Screens
         ///     the ones under it will still persist at the same state.
         /// </summary>
         /// <param name="screen"></param>
-        public static void AddScreen(Screen screen) => Screens.Push(screen);
+        public static void AddScreen(Screen screen)
+        {
+            Screens.Push(screen);
+            ButtonManager.ResetDrawOrder();
+        }
 
         /// <summary>
         ///     If there are currently any screens in the stack.
@@ -44,6 +49,7 @@ namespace Wobble.Screens
 
             // Remove the screen.
             Screens.Pop();
+            ButtonManager.ResetDrawOrder();
         }
 
         /// <summary>
