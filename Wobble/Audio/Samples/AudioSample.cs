@@ -85,6 +85,22 @@ namespace Wobble.Audio.Samples
         }
 
         /// <summary>
+        ///     Creates a new audio sample with undefined contents.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <param name="onlycanPlayOnce"></param>
+        /// <param name="frequency"></param>
+        /// <param name="channels"></param>
+        /// <param name="concurrentPlaybacks"></param>
+        public AudioSample(int length = 0, bool onlycanPlayOnce = false, int frequency = 44100, int channels = 2,
+            int concurrentPlaybacks = DEFAULT_CONCURRENCY)
+        {
+            OnlyCanPlayOnce = onlycanPlayOnce;
+            Id = Bass.CreateSample(length, frequency, channels, concurrentPlaybacks,
+                BassFlags.Default | BassFlags.SampleOverrideLongestPlaying);
+        }
+
+        /// <summary>
         ///     Creates an audio sample channel to be played.
         /// </summary>
         /// <returns></returns>
