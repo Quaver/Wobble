@@ -43,7 +43,7 @@ namespace Wobble.Audio.Samples
         ///     Ctor
         /// </summary>
         /// <param name="sample"></param>
-        public AudioSampleChannel(AudioSample sample)
+        public AudioSampleChannel(AudioSample sample, bool isPitched = true, float rate = 1f)
         {
             Sample = sample ?? throw new ArgumentNullException();
 
@@ -51,6 +51,28 @@ namespace Wobble.Audio.Samples
                 throw new PlayableAudioDisposedException("Cannot create an AudioSampleChannel from a sample that is already disposed.");
 
             Id = Bass.SampleGetChannel(sample.Id);
+
+            if (rate == 1f)
+                return;
+
+            // Apply rate.
+            if (isPitched)
+            {
+                // When pitching is enabled, adjust rate using frequency.
+                var frequency = Bass.ChannelGetInfo(Id).Frequency;
+                Bass.ChannelSetAttribute(Id, ChannelAttribute.Frequency, frequency * rate);
+            }
+            else
+            {
+                // When pitching is disabled, adjust rate using tempo.
+
+                // FIXME: BassFX can't be used with samples, so to make this work streams need to be used instead.
+                // https://www.un4seen.com/forum/?topic=4932.msg118858#msg118858
+
+                // Adjust with pitching enabled as a fall-back.
+                var frequency = Bass.ChannelGetInfo(Id).Frequency;
+                Bass.ChannelSetAttribute(Id, ChannelAttribute.Frequency, frequency * rate);
+            }
         }
 
         /// <summary>

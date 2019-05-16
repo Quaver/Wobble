@@ -104,9 +104,9 @@ namespace Wobble.Audio.Samples
         ///     Creates an audio sample channel to be played.
         /// </summary>
         /// <returns></returns>
-        public AudioSampleChannel CreateChannel()
+        public AudioSampleChannel CreateChannel(bool isPitched = true, float rate = 1f)
         {
-            var sampleChannel = new AudioSampleChannel(this) { Volume = GlobalVolume };
+            var sampleChannel = new AudioSampleChannel(this, isPitched, rate) { Volume = GlobalVolume };
             return sampleChannel;
         }
 
