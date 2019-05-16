@@ -26,6 +26,11 @@ namespace Wobble.Audio.Samples
         public bool HasStopped { get; private set; }
 
         /// <summary>
+        ///     If the Bass channel is stopped, for example after the playback has finished.
+        /// </summary>
+        public bool IsStopped => Bass.ChannelIsActive(Id) == PlaybackState.Stopped;
+
+        /// <summary>
         ///     The volume of the current stream as a percentage.
         /// </summary>
         public double Volume
