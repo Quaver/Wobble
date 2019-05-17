@@ -115,5 +115,9 @@ namespace Wobble.Audio.Samples
             Bass.ChannelStop(Id);
             HasStopped = true;
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

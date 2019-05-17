@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ManagedBass;
+using Microsoft.Xna.Framework;
 using Wobble.Audio.Tracks;
 
 namespace Wobble.Audio
@@ -17,7 +18,7 @@ namespace Wobble.Audio
         /// <summary>
         ///     The audio tracks that are currently loaded and available.
         /// </summary>
-        public static List<AudioTrack> Tracks { get; private set; }
+        public static List<IAudioTrack> Tracks { get; private set; }
 
         /// <summary>
         ///     Initializes BASS and throws an exception if it fails.
@@ -30,7 +31,7 @@ namespace Wobble.Audio
                 throw new AudioEngineException($"BASS has failed to initialize (error code: {(int) error}, name: \"{error}\")! Are your platform-specific dlls present?");
             }
 
-            Tracks = new List<AudioTrack>();
+            Tracks = new List<IAudioTrack>();
         }
 
         /// <summary>
@@ -41,12 +42,12 @@ namespace Wobble.Audio
         /// <summary>
         ///     Updates the AudioManager and keeps things up-to-date.
         /// </summary>
-        internal static void Update() => UpdateTracks();
+        internal static void Update(GameTime gameTime) => UpdateTracks(gameTime);
 
         /// <summary>
         ///     Updates the real time for each track to keep updated.
         /// </summary>
-        private static void UpdateTracks()
+        private static void UpdateTracks(GameTime gameTime)
         {
             for (var i = Tracks.Count - 1; i >= 0; i--)
             {
@@ -56,13 +57,27 @@ namespace Wobble.Audio
                 var track = Tracks[i];
 
                 // If the track is left over, we just want to dispose of it and remove it from our tracks.
-                if (track.IsLeftOver && track.AutoDispose)
+                if (track is AudioTrack t)
                 {
-                    if (!track.IsDisposed)
-                        track.Dispose();
+                    if (t.IsLeftOver && t.AutoDispose)
+                    {
+                        if (!t.IsDisposed)
+                            t.Dispose();
 
-                    Tracks.Remove(track);
-                    continue;
+                        Tracks.Remove(t);
+                        continue;
+                    }
+                }
+
+                if (track is AudioTrackVirtual atv)
+                {
+                    if (atv.IsDisposed)
+                    {
+                        Tracks.Remove(atv);
+                        continue;
+                    }
+
+                    atv.Update(gameTime);
                 }
             }
         }

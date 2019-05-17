@@ -155,7 +155,7 @@ namespace Wobble
             MouseManager.Update();
             KeyboardManager.Update();
             ScreenManager.Update(gameTime);
-            AudioManager.Update();
+            AudioManager.Update(gameTime);
 
             // Update the global sprite container
             GlobalUserInterface.Update(gameTime);

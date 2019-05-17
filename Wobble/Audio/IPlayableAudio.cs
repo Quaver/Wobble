@@ -5,7 +5,7 @@ namespace Wobble.Audio
     /// <summary>
     ///     An interface for all types of playable audio. This includes AudioTrack & AudioSampleChannel
     /// </summary>
-    public interface IPlayableAudio
+    public interface IPlayableAudio : IDisposable
     {
         /// <summary>
         ///      Plays the audio

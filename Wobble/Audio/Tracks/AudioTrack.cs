@@ -10,7 +10,7 @@ namespace Wobble.Audio.Tracks
     ///     This playable audio track should be used for bigger audio files such as songs.
     /// </summary>
     // ReSharper disable once InheritdocConsiderUsage
-    public class AudioTrack : IPlayableAudio, IDisposable
+    public class AudioTrack : IAudioTrack, IPlayableAudio
     {
         /// <summary>
         ///     The currently loaded audio stream, if there is one.
@@ -20,7 +20,19 @@ namespace Wobble.Audio.Tracks
         /// <summary>
         ///     The length of the current audio stream in milliseconds.
         /// </summary>
-        public double Length { get; private set; }
+        private double _length = -1;
+        public double Length
+        {
+            get => _length;
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (_length != -1)
+                    throw new AudioEngineException("Cannot set length of AudioTrack manually");
+
+                _length = value;
+            }
+        }
 
         /// <summary>
         ///     The position of the current audio stream in milliseconds (from BASS library)
