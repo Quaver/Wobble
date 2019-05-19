@@ -8,7 +8,7 @@ using Wobble.Assets;
 
 namespace Wobble.Graphics.Sprites
 {
-    public class SpriteTextBitmap : Drawable
+    public class SpriteTextBitmap : Sprite
     {
         /// <summary>
         ///     The font used to draw the text
@@ -59,61 +59,6 @@ namespace Wobble.Graphics.Sprites
             {
                 _maxWidth = value;
                 DisplayedText = WrapText(Text);
-            }
-        }
-
-        /// <summary>
-        ///     The rotation of the text upon drawing it.
-        /// </summary>
-        private float _rotation;
-        public float Rotation
-        {
-            get => _rotation;
-            set => _rotation = MathHelper.ToRadians(value);
-        }
-
-        /// <summary>
-        ///     Dictates if we want to set the alpha of the children as well.
-        /// </summary>
-        public bool SetChildrenAlpha { get; set; }
-
-        /// <summary>
-        ///     The transparency of this QuaverSprite.
-        /// </summary>
-        private float _alpha = 1f;
-        public float Alpha
-        {
-            get => _alpha;
-            set
-            {
-                _alpha = value;
-                _color = _tint * _alpha;
-
-                if (!SetChildrenAlpha)
-                    return;
-
-                Children.ForEach(x =>
-                {
-                    if (x is Sprite sprite)
-                    {
-                        sprite.Alpha = value;
-                    }
-                });
-            }
-        }
-
-        /// <summary>
-        ///     The absolute color the text including alpha.
-        /// </summary>
-        private Color _tint = Color.White;
-        public Color _color = Color.White;
-        public Color Tint
-        {
-            get => _tint;
-            set
-            {
-                _tint = value;
-                _color = _tint * _alpha;
             }
         }
 
@@ -211,7 +156,7 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
-        ///     Performs text wrapping based on 
+        ///     Performs text wrapping based on
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
