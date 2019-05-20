@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,15 @@ namespace Wobble.Audio
         /// </summary>
         internal static void Initialize()
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Do not stop the output device to ensure consistent latency.
+                //
+                // Without this setting samples are played with lower latency when there's nothing else playing,
+                // resulting in inconsistent hitsound and keysound latency.
+                Bass.Configure(Configuration.DevNonStop, true);
+            }
+
             if (!Bass.Init())
             {
                 var error = Bass.LastError;
