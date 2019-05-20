@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ManagedBass;
 using Microsoft.Xna.Framework;
 using Wobble.Audio.Tracks;
+using Wobble.Logging;
 
 namespace Wobble.Audio
 {
@@ -30,6 +31,8 @@ namespace Wobble.Audio
                 var error = Bass.LastError;
                 throw new AudioEngineException($"BASS has failed to initialize (error code: {(int) error}, name: \"{error}\")! Are your platform-specific dlls present?");
             }
+
+            Logger.Debug($"BASS version: {Bass.Version}", LogType.Runtime);
 
             Tracks = new List<IAudioTrack>();
         }
