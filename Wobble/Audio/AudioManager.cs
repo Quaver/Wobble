@@ -25,7 +25,9 @@ namespace Wobble.Audio
         /// <summary>
         ///     Initializes BASS and throws an exception if it fails.
         /// </summary>
-        internal static void Initialize()
+        /// <param name="devicePeriod">Set to override the device period, milliseconds.</param>
+        /// <param name="deviceBufferLength">Set to override the device buffer length, milliseconds.</param>
+        internal static void Initialize(int? devicePeriod, int? deviceBufferLength)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -35,6 +37,13 @@ namespace Wobble.Audio
                 // resulting in inconsistent hitsound and keysound latency.
                 Bass.Configure(Configuration.DevNonStop, true);
             }
+
+            if (devicePeriod.HasValue)
+                Bass.Configure(Configuration.DevicePeriod, devicePeriod.Value);
+            if (deviceBufferLength.HasValue)
+                Bass.Configure(Configuration.DeviceBufferLength, deviceBufferLength.Value);
+
+            Logger.Debug($"BASS options: DevicePeriod = {Bass.GetConfig(Configuration.DevicePeriod)}, DeviceBufferLength = {Bass.GetConfig(Configuration.DeviceBufferLength)}", LogType.Runtime);
 
             if (!Bass.Init())
             {
