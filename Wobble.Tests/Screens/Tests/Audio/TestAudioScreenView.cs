@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Wobble.Assets;
 using Wobble.Audio.Tracks;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI;
 using Wobble.Graphics.UI.Buttons;
+using Wobble.Input;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 using Wobble.Window;
@@ -37,6 +39,12 @@ namespace Wobble.Tests.Screens.Tests.Audio
             {
                 Parent = Container,
                 Alignment = Alignment.BotLeft
+            };
+
+            new SpriteText("exo2-regular",
+                "Press Space to pause or resume the song.\nUse the mouse wheel to adjust the song volume.\nPress T and Y to play a hitsound.", 10)
+            {
+                Parent = Container,
             };
 
             // Create play/pause button
@@ -136,6 +144,26 @@ namespace Wobble.Tests.Screens.Tests.Audio
 
             // Update the bindable's value for the song progress bar.
             AudioTimeProgress.Bindable.Value = audioScreen.Song.Time;
+
+            var song = audioScreen.Song;
+            if (song != null)
+            {
+                if (KeyboardManager.IsUniqueKeyPress(Keys.Space))
+                {
+                    if (song.IsPlaying)
+                        song.Pause();
+                    else
+                        song.Play();
+                }
+
+                if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
+                    song.Volume += 9;
+                else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
+                    song.Volume -= 9;
+            }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.T) || KeyboardManager.IsUniqueKeyPress(Keys.Y))
+                audioScreen.HitSound?.CreateChannel().Play();
 
             // When the song stops, reset the button text.
             //f (audioScreen.Song.IsStopped || audioScreen.Song.IsDisposed)
