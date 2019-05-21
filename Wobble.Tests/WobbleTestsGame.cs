@@ -29,6 +29,18 @@ namespace Wobble.Tests
         /// </summary>
         protected override void Initialize()
         {
+            // Get device period and buffer from the environment variables.
+            // Must be done before calling base.Initialize().
+            var env = Environment.GetEnvironmentVariables();
+
+            if (env.Contains("WOBBLE_TESTS_BASS_DEV_PERIOD") &&
+                int.TryParse(env["WOBBLE_TESTS_BASS_DEV_PERIOD"] as string, out var period))
+                DevicePeriod = period;
+
+            if (env.Contains("WOBBLE_TESTS_BASS_DEV_BUFFER") &&
+                int.TryParse(env["WOBBLE_TESTS_BASS_DEV_BUFFER"] as string, out var buffer))
+                DeviceBufferLength = buffer;
+
             base.Initialize();
 
             Window.AllowUserResizing = true;

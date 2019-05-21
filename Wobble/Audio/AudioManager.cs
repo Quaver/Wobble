@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ManagedBass;
 using Microsoft.Xna.Framework;
 using Wobble.Audio.Tracks;
+using Wobble.Logging;
 
 namespace Wobble.Audio
 {
@@ -23,13 +25,33 @@ namespace Wobble.Audio
         /// <summary>
         ///     Initializes BASS and throws an exception if it fails.
         /// </summary>
-        internal static void Initialize()
+        /// <param name="devicePeriod">Set to override the device period, milliseconds.</param>
+        /// <param name="deviceBufferLength">Set to override the device buffer length, milliseconds.</param>
+        internal static void Initialize(int? devicePeriod, int? deviceBufferLength)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                // Do not stop the output device to ensure consistent latency.
+                //
+                // Without this setting samples are played with lower latency when there's nothing else playing,
+                // resulting in inconsistent hitsound and keysound latency.
+                Bass.Configure(Configuration.DevNonStop, true);
+            }
+
+            if (devicePeriod.HasValue)
+                Bass.Configure(Configuration.DevicePeriod, devicePeriod.Value);
+            if (deviceBufferLength.HasValue)
+                Bass.Configure(Configuration.DeviceBufferLength, deviceBufferLength.Value);
+
+            Logger.Debug($"BASS options: DevicePeriod = {Bass.GetConfig(Configuration.DevicePeriod)}, DeviceBufferLength = {Bass.GetConfig(Configuration.DeviceBufferLength)}", LogType.Runtime);
+
             if (!Bass.Init())
             {
                 var error = Bass.LastError;
                 throw new AudioEngineException($"BASS has failed to initialize (error code: {(int) error}, name: \"{error}\")! Are your platform-specific dlls present?");
             }
+
+            Logger.Debug($"BASS version: {Bass.Version}", LogType.Runtime);
 
             Tracks = new List<IAudioTrack>();
         }

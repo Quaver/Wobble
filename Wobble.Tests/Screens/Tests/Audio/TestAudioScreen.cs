@@ -31,11 +31,17 @@ namespace Wobble.Tests.Screens.Tests.Audio
         public AudioSample Train { get; }
 
         /// <summary>
+        ///     Replayable hitsound sample.
+        /// </summary>
+        public AudioSample HitSound { get; }
+
+        /// <summary>
         /// </summary>
         public TestAudioScreen()
         {
             Song = new AudioTrack(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Tracks/virt - Send My Love To Mars.mp3"));
             Train = new AudioSample(GameBase.Game.Resources.Get("Wobble.Tests.Resources/SFX/train.wav"));
+            HitSound = new AudioSample(GameBase.Game.Resources.Get("Wobble.Tests.Resources/SFX/sound-hit.wav"));
 
             Song?.Play();
 

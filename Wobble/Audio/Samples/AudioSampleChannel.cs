@@ -35,8 +35,8 @@ namespace Wobble.Audio.Samples
         /// </summary>
         public double Volume
         {
-            get => Bass.ChannelGetAttribute(Id, ChannelAttribute.Volume);
-            set => Bass.ChannelSetAttribute(Id, ChannelAttribute.Volume, value);
+            get => Bass.ChannelGetAttribute(Id, ChannelAttribute.Volume) * 100;
+            set => Bass.ChannelSetAttribute(Id, ChannelAttribute.Volume, (float)(value / 100f));
         }
 
         /// <summary>

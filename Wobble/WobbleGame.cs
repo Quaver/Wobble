@@ -33,6 +33,16 @@ namespace Wobble
         public static string WorkingDirectory => AppDomain.CurrentDomain.BaseDirectory;
 
         /// <summary>
+        ///     Device period to pass to AudioManager.Initialize().
+        /// </summary>
+        public int? DevicePeriod { get; set; } = null;
+
+        /// <summary>
+        ///     Device buffer length to pass to AudioManager.Initialize().
+        /// </summary>
+        public int? DeviceBufferLength { get; set; } = null;
+
+        /// <summary>
         /// </summary>
         public GraphicsDeviceManager Graphics { get; }
 
@@ -104,7 +114,7 @@ namespace Wobble
 
             Logger.Initialize();
             LogManager.Initialize();
-            AudioManager.Initialize();
+            AudioManager.Initialize(DevicePeriod, DeviceBufferLength);
             Window.ClientSizeChanged += WindowManager.OnClientSizeChanged;
 
             base.Initialize();

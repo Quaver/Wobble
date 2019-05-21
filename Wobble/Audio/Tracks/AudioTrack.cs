@@ -125,12 +125,12 @@ namespace Wobble.Audio.Tracks
         }
 
         /// <summary>
-        ///     The master volume of all audio streams
+        ///     The master volume of all audio streams.
         /// </summary>
-        public static int GlobalVolume
+        public static double GlobalVolume
         {
-            get => Bass.GlobalStreamVolume;
-            set => Bass.GlobalStreamVolume = value * 100;
+            get => Bass.GlobalStreamVolume / 100f;
+            set => Bass.GlobalStreamVolume = (int) (value * 100);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         public double Volume
         {
-            get => Bass.ChannelGetAttribute(Stream, ChannelAttribute.Volume);
+            get => Bass.ChannelGetAttribute(Stream, ChannelAttribute.Volume) * 100;
             set => Bass.ChannelSetAttribute(Stream, ChannelAttribute.Volume, (float)(value / 100f));
         }
 
