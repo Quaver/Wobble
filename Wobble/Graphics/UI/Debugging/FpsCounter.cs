@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.BitmapFonts;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 
@@ -26,7 +27,7 @@ namespace Wobble.Graphics.UI.Debugging
         /// <summary>
         ///     The SpriteText that displays the FPS value.
         /// </summary>
-        public SpriteText TextFps { get; }
+        public SpriteTextBitmap TextFps { get; }
 
         /// <summary>
         ///     The last FPS recorded, so we know if to update the counter.
@@ -37,10 +38,11 @@ namespace Wobble.Graphics.UI.Debugging
         /// <summary>
         ///     Ctor
         /// </summary>
-        public FpsCounter(string font, int size) => TextFps = new SpriteText(font, " ", size)
+        public FpsCounter(BitmapFont font, int size) => TextFps = new SpriteTextBitmap(font, " ")
         {
             Parent = this,
-            Alignment = Alignment.MidCenter
+            Alignment = Alignment.MidCenter,
+            FontSize = size
         };
 
         /// <inheritdoc />
@@ -58,11 +60,17 @@ namespace Wobble.Graphics.UI.Debugging
             }
 
             ElapsedTime -= TimeSpan.FromSeconds(1);
+
+            var oldFrameRate = FrameRate;
             FrameRate = FrameCounter;
             FrameCounter = 0;
 
-            TextFps.Text = $"{FrameRate} FPS";
-            Size = TextFps.Size;
+            if (oldFrameRate != FrameRate)
+            {
+                TextFps.Text = $"{FrameRate} FPS";
+                Size = TextFps.Size;
+            }
+
             base.Update(gameTime);
         }
 
