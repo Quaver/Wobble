@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
@@ -76,6 +77,10 @@ namespace Wobble
         ///     All the resources used by the game.
         /// </summary>
         public ResourceStore<byte[]> Resources { get; set; }
+
+        /// <summary>
+        /// </summary>
+        public List<Action> ScheduledRenderTargetDraws { get; } = new List<Action>();
 
         /// <summary>
         ///     Creates a game with embedded resources as a content manager.
@@ -186,6 +191,12 @@ namespace Wobble
         {
             if (!IsReadyToUpdate)
                 return;
+
+            for (var i = ScheduledRenderTargetDraws.Count - 1; i >= 0; i--)
+            {
+                ScheduledRenderTargetDraws[i]?.Invoke();
+                ScheduledRenderTargetDraws.Remove(ScheduledRenderTargetDraws[i]);
+            }
 
             base.Draw(gameTime);
 

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.BitmapFonts;
 using Wobble.Assets;
+using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -26,6 +27,7 @@ namespace Wobble.Graphics.Sprites
             {
                 _fontSize = value;
                 DisplayedText = WrapText(Text);
+                CachedTexture = false;
             }
         }
 
@@ -40,6 +42,7 @@ namespace Wobble.Graphics.Sprites
             {
                 _text = value;
                 DisplayedText = WrapText(value);
+                CachedTexture = false;
             }
         }
 
@@ -59,6 +62,7 @@ namespace Wobble.Graphics.Sprites
             {
                 _maxWidth = value;
                 DisplayedText = WrapText(Text);
+                CachedTexture = false;
             }
         }
 
@@ -69,13 +73,31 @@ namespace Wobble.Graphics.Sprites
 
         /// <summary>
         /// </summary>
+        private bool CacheToRenderTarget { get; }
+
+        /// <summary>
+        /// </summary>
+        private bool CachedTexture { get; set; }
+
+        /// <summary>
+        /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
-        public SpriteTextBitmap(BitmapFont font, string text)
+        /// <param name="cacheToRenderTarget"></param>
+        public SpriteTextBitmap(BitmapFont font, string text, bool cacheToRenderTarget = true)
         {
+            CacheToRenderTarget = cacheToRenderTarget;
             Font = font;
             FontSize = font.LineHeight;
             Text = text;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (!CachedTexture && CacheToRenderTarget)
+                CacheTexture();
+
+            base.Update(gameTime);
         }
 
         /// <inheritdoc />
@@ -86,9 +108,17 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, AbsolutePosition, _color, Rotation,
-                Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),
-                Effects, 0, null);
+            if (CachedTexture && CacheToRenderTarget)
+            {
+                base.DrawToSpriteBatch();
+                return;
+            }
+            else
+            {
+                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, AbsolutePosition, _color, Rotation,
+                    Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),
+                    Effects, 0, null);
+            }
         }
 
         /// <inheritdoc />
@@ -155,6 +185,14 @@ namespace Wobble.Graphics.Sprites
             base.Draw(gameTime);
         }
 
+        public override void Destroy()
+        {
+            if (CacheToRenderTarget)
+                Image?.Dispose();
+
+            base.Destroy();
+        }
+
         /// <summary>
         ///     Performs text wrapping based on
         /// </summary>
@@ -196,6 +234,51 @@ namespace Wobble.Graphics.Sprites
             Height = Font.MeasureString(wrappedText.ToString()).Height * ((float)FontSize / Font.LineHeight);
 
             return wrappedText.ToString();
+        }
+
+        private void CacheTexture()
+        {
+            GameBase.Game.ScheduledRenderTargetDraws.Add(() =>
+            {
+                var (pixelWidth, pixelHeight) = AbsoluteSize;
+
+                // ReSharper disable twice CompareOfFloatsByEqualityOperator
+                if (pixelWidth == 0 || pixelHeight == 0)
+                    return;
+
+
+                var renderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) pixelWidth, (int) pixelHeight, false,
+                    GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+
+                GameBase.Game.GraphicsDevice.SetRenderTarget(renderTarget);
+
+                GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
+
+                try
+                {
+                    GameBase.Game.SpriteBatch.End();
+                }
+                catch (Exception e)
+                {
+                    // ignored
+
+                }
+                finally
+                {
+                    GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                }
+
+                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, new Vector2(0, 0), _color, Rotation,
+                    Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),
+                    Effects, 0, null);
+
+                GameBase.Game.SpriteBatch.End();
+
+                Image = renderTarget;
+
+                GameBase.Game.GraphicsDevice.SetRenderTarget(null);
+                CachedTexture = true;
+            });
         }
     }
 }
