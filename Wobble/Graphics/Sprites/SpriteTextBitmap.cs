@@ -81,6 +81,10 @@ namespace Wobble.Graphics.Sprites
 
         /// <summary>
         /// </summary>
+        private RenderTarget2D RenderTarget { get; set; }
+
+        /// <summary>
+        /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
         /// <param name="cacheToRenderTarget"></param>
@@ -192,8 +196,11 @@ namespace Wobble.Graphics.Sprites
 
         public override void Destroy()
         {
-            if (CachedTexture && Image != null)
+            if (CachedTexture)
+            {
                 Image?.Dispose();
+                RenderTarget?.Dispose();
+            }
 
             base.Destroy();
         }
@@ -257,10 +264,13 @@ namespace Wobble.Graphics.Sprites
                 if (pixelHeight < 1)
                     pixelHeight = 1;
 
-                var renderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) pixelWidth, (int) pixelHeight, false,
+                if (RenderTarget != null && RenderTarget.IsDisposed)
+                    RenderTarget.Dispose();
+
+                RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) pixelWidth, (int) pixelHeight, false,
                     GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
-                GameBase.Game.GraphicsDevice.SetRenderTarget(renderTarget);
+                GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
                 GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
 
                 try
@@ -283,7 +293,7 @@ namespace Wobble.Graphics.Sprites
 
                 GameBase.Game.SpriteBatch.End();
 
-                Image = renderTarget;
+                Image = RenderTarget;
 
                 GameBase.Game.GraphicsDevice.SetRenderTarget(null);
                 CachedTexture = true;
