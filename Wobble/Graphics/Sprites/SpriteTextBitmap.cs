@@ -95,7 +95,12 @@ namespace Wobble.Graphics.Sprites
         public override void Update(GameTime gameTime)
         {
             if (!CachedTexture && CacheToRenderTarget)
+            {
+                if (Image != null && Image != WobbleAssets.WhiteBox)
+                    Image.Dispose();
+
                 CacheTexture();
+            }
 
             base.Update(gameTime);
         }
@@ -238,14 +243,14 @@ namespace Wobble.Graphics.Sprites
 
         private void CacheTexture()
         {
+            var (pixelWidth, pixelHeight) = AbsoluteSize;
+
+            // ReSharper disable twice CompareOfFloatsByEqualityOperator
+            if (pixelWidth == 0 || pixelHeight == 0 || string.IsNullOrEmpty(Text))
+                return;
+
             GameBase.Game.ScheduledRenderTargetDraws.Add(() =>
             {
-                var (pixelWidth, pixelHeight) = AbsoluteSize;
-
-                // ReSharper disable twice CompareOfFloatsByEqualityOperator
-                if (pixelWidth == 0 || pixelHeight == 0 || string.IsNullOrEmpty(Text))
-                    return;
-
                 if (pixelWidth < 1)
                     pixelWidth = 1;
 
