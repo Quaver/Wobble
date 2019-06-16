@@ -38,7 +38,7 @@ namespace Wobble.Graphics.UI.Debugging
         /// <summary>
         ///     Ctor
         /// </summary>
-        public FpsCounter(BitmapFont font, int size) => TextFps = new SpriteTextBitmap(font, " ")
+        public FpsCounter(BitmapFont font, int size) => TextFps = new SpriteTextBitmap(font, "0 FPS", false)
         {
             Parent = this,
             Alignment = Alignment.MidCenter,
