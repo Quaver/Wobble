@@ -339,6 +339,7 @@ namespace Wobble.Graphics
         public virtual void Destroy()
         {
             Dispose();
+            DestroyIfParentIsNull = true;
             Parent = null;
         }
 
@@ -671,6 +672,15 @@ namespace Wobble.Graphics
                 Animations.Add(new Animation(AnimationProperty.Wait, Easing.Linear, 0, time, time));
 
             return this;
+        }
+
+        ~Drawable()
+        {
+            if (IsDisposed)
+                return;
+
+            Dispose();
+            IsDisposed = true;
         }
     }
 }
