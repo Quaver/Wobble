@@ -187,7 +187,7 @@ namespace Wobble.Graphics.Sprites
 
         public override void Destroy()
         {
-            if (CacheToRenderTarget)
+            if (CacheToRenderTarget && Image != null && Image != WobbleAssets.WhiteBox)
                 Image?.Dispose();
 
             base.Destroy();
@@ -243,15 +243,19 @@ namespace Wobble.Graphics.Sprites
                 var (pixelWidth, pixelHeight) = AbsoluteSize;
 
                 // ReSharper disable twice CompareOfFloatsByEqualityOperator
-                if (pixelWidth == 0 || pixelHeight == 0)
+                if (pixelWidth == 0 || pixelHeight == 0 || string.IsNullOrEmpty(Text))
                     return;
 
+                if (pixelWidth < 1)
+                    pixelWidth = 1;
+
+                if (pixelHeight < 1)
+                    pixelHeight = 1;
 
                 var renderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) pixelWidth, (int) pixelHeight, false,
                     GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
                 GameBase.Game.GraphicsDevice.SetRenderTarget(renderTarget);
-
                 GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
 
                 try
@@ -265,10 +269,10 @@ namespace Wobble.Graphics.Sprites
                 }
                 finally
                 {
-                    GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
                 }
 
-                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, new Vector2(0, 0), _color, Rotation,
+                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, new Vector2(0, 0), Color.White, Rotation,
                     Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),
                     Effects, 0, null);
 
