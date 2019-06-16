@@ -187,7 +187,7 @@ namespace Wobble.Graphics.Sprites
 
         public override void Destroy()
         {
-            if (CacheToRenderTarget && Image != null && Image != WobbleAssets.WhiteBox)
+            if (CachedTexture && Image != null)
                 Image?.Dispose();
 
             base.Destroy();
