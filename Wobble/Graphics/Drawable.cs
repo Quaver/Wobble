@@ -679,7 +679,7 @@ namespace Wobble.Graphics
             if (IsDisposed)
                 return;
 
-            Dispose();
+            Destroy();
             IsDisposed = true;
         }
     }
