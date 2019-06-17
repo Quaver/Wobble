@@ -200,7 +200,6 @@ namespace Wobble.Graphics.Sprites
             {
                 Image?.Dispose();
                 RenderTarget?.Dispose();
-                Console.WriteLine($"Disposed: {Text}");
             }
 
             base.Destroy();
