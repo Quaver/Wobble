@@ -1,3 +1,6 @@
 [submodule "MonoGame"]
 	path = MonoGame
 	url = https://github.com/Quaver/MonoGame
+[submodule "SpriteFontPlus"]
+	path = SpriteFontPlus
+	url = https://github.com/Quaver/SpriteFontPlus
