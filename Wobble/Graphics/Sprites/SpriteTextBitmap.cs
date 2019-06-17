@@ -200,6 +200,7 @@ namespace Wobble.Graphics.Sprites
             {
                 Image?.Dispose();
                 RenderTarget?.Dispose();
+                Console.WriteLine($"Disposed: {Text}");
             }
 
             base.Destroy();
@@ -264,10 +265,16 @@ namespace Wobble.Graphics.Sprites
                 if (pixelHeight < 1)
                     pixelHeight = 1;
 
-                if (RenderTarget != null && RenderTarget.IsDisposed)
+                if (RenderTarget != null)
+                {
                     RenderTarget.Dispose();
+                    Image.Dispose();
 
-                RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) pixelWidth, (int) pixelHeight, false,
+                    RenderTarget = null;
+                    Image = null;
+                }
+
+                RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int)pixelWidth, (int)pixelHeight, false,
                     GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
                 GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
