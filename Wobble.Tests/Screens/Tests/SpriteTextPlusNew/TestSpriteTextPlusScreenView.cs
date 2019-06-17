@@ -28,7 +28,7 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
             Font.AddFont("Japanese", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/droid-sans-japanese.ttf"));
 
 
-            var text = new SpriteTextPlus(Font, "Hello, World! いろはにほへど \n this should be on a new line 🍆😀 😁 😂 🤣😃 😄 😅 😆 😉 😊 😋 😎",
+            var text = new SpriteTextPlus(Font, "Hello, World! いろはにほへど\nthis should be on a new line 🍆😀 😁 😂 🤣😃 😄 😅 😆 😉 😊 😋 😎",
                 32)
             {
                 Parent = Container,

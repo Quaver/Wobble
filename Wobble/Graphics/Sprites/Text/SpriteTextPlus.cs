@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using SpriteFontPlus;
 
 namespace Wobble.Graphics.Sprites.Text
 {
-    public class SpriteTextPlus : Sprite
+    public class SpriteTextPlus : Container
     {
         /// <summary>
         ///     The font to be used
@@ -22,7 +22,7 @@ namespace Wobble.Graphics.Sprites.Text
             set
             {
                 _fontSize = value;
-                DisplayedText = WrapText(Text);
+                RefreshText();
             }
         }
 
@@ -36,26 +36,48 @@ namespace Wobble.Graphics.Sprites.Text
             set
             {
                 _text = value;
-                DisplayedText = WrapText(value);
+                RefreshText();
             }
         }
 
         /// <summary>
-        ///     The text that'll be displayed on-screen (after wrapping)
+        ///     The tint this QuaverSprite will inherit.
         /// </summary>
-        public string DisplayedText { get; private set; }
-
-        /// <summary>
-        ///     The maximum width of the text.
-        /// </summary>
-        private int _maxWidth = int.MaxValue;
-        public int MaxWidth
+        private Color _tint = Color.White;
+        public Color Tint
         {
-            get => _maxWidth;
+            get => _tint;
             set
             {
-                _maxWidth = value;
-                DisplayedText = WrapText(Text);
+                _tint = value;
+
+                Children.ForEach(x =>
+                {
+                    if (x is Sprite sprite)
+                    {
+                        sprite.Tint = value;
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        ///     The transparency of this QuaverSprite.
+        /// </summary>
+        private float _alpha = 1f;
+        public float Alpha {
+            get => _alpha;
+            set
+            {
+                _alpha = value;
+
+                Children.ForEach(x =>
+                {
+                    if (x is Sprite sprite)
+                    {
+                        sprite.Alpha = value;
+                    }
+                });
             }
         }
 
@@ -72,30 +94,25 @@ namespace Wobble.Graphics.Sprites.Text
             FontSize = size == 0 ? Font.DefaultSize : size;
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        public override void DrawToSpriteBatch()
+        private void RefreshText()
         {
-            if (!Visible)
-                return;
+            for (var i = Children.Count - 1; i >= 0; i--)
+                Children[i].Destroy();
 
-            Font.Store.Size = FontSize;
-            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _color);
-        }
+            float width = 0, height = 0;
+            foreach (var line in Text.Split('\n'))
+            {
+                var lineSprite = new SpriteTextPlusLine(Font, line, FontSize)
+                {
+                    Parent = this,
+                    Y = height,
+                };
 
-        /// <summary>
-        ///     <see cref="SpriteTextBitmap"/> OR <see cref="SpriteText"/> for wrapping examples
-        /// </summary>
-        /// <param name="value"></param>
-        private string WrapText(string value)
-        {
-            Font.Store.Size = FontSize;
+                width = Math.Max(width, lineSprite.Width);
+                height += Font.Store.GetLineHeight();
+            }
 
-            var (x, y) = Font.Store.MeasureString(value);
-            Size = new ScalableVector2(x, y);
-
-            return value;
+            Size = new ScalableVector2(width, height);
         }
     }
 }
