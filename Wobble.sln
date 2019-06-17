@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2043
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wobble.Tests.Hotload", "Wobble.Tests.Hotload\Wobble.Tests.Hotload.csproj", "{AB46D815-2DA6-452A-9A99-4AF5CF06D19F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.DesktopGL", "MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj", "{C93E372C-7A7D-4657-A514-C4EF20960E50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpriteFontPlus", "SpriteFontPlus\src\SpriteFontPlus\SpriteFontPlus.csproj", "{8C770216-930A-4C0B-92F7-4E747F905C89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{C93E372C-7A7D-4657-A514-C4EF20960E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C93E372C-7A7D-4657-A514-C4EF20960E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C93E372C-7A7D-4657-A514-C4EF20960E50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C770216-930A-4C0B-92F7-4E747F905C89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C770216-930A-4C0B-92F7-4E747F905C89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C770216-930A-4C0B-92F7-4E747F905C89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C770216-930A-4C0B-92F7-4E747F905C89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

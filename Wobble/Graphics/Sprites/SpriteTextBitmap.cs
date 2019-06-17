@@ -92,6 +92,10 @@ namespace Wobble.Graphics.Sprites
         {
             CacheToRenderTarget = cacheToRenderTarget;
             Font = font;
+
+            if (Font == null)
+                return;
+
             FontSize = font.LineHeight;
             Text = text;
         }
@@ -114,7 +118,7 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public override void DrawToSpriteBatch()
         {
-            if (!Visible)
+            if (!Visible || Font == null)
                 return;
 
             if (CachedTexture && CacheToRenderTarget)
@@ -212,6 +216,9 @@ namespace Wobble.Graphics.Sprites
         /// <returns></returns>
         private string WrapText(string text)
         {
+            if (Font == null)
+                return null;
+
             if (Font.MeasureString(text).Width * ((float) FontSize / Font.LineHeight) < MaxWidth)
             {
                 Width = Font.MeasureString(text).Width * ((float) FontSize / Font.LineHeight);
