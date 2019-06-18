@@ -283,7 +283,7 @@ namespace Wobble.Audio.Tracks
 
             IsPitched = shouldPitch;
 
-            if (IsPitched)
+            if (IsPitched || IsPreview)
             {
                 // When pitching is enabled, adjust rate using frequency.
                 Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency * _rate);
@@ -323,13 +323,17 @@ namespace Wobble.Audio.Tracks
 
             Length = Bass.ChannelBytes2Seconds(Stream,Bass.ChannelGetLength(Stream)) * 1000;
             Frequency = Bass.ChannelGetInfo(Stream).Frequency;
-            Stream = BassFx.TempoCreate(Stream, BassFlags.FxFreeSource);
 
-            // Settings from osu-framework. With default settings there's a huge offset on rates below 1.
-            // With these settings there's still an offset on rates below 1, but it's not as bad (just like HT in osu!).
-            Bass.ChannelSetAttribute(Stream, ChannelAttribute.TempoUseQuickAlgorithm, 1);
-            Bass.ChannelSetAttribute(Stream, ChannelAttribute.TempoOverlapMilliseconds, 4);
-            Bass.ChannelSetAttribute(Stream, ChannelAttribute.TempoSequenceMilliseconds, 30);
+            if (!IsPreview)
+            {
+                Stream = BassFx.TempoCreate(Stream, BassFlags.FxFreeSource);
+
+                // Settings from osu-framework. With default settings there's a huge offset on rates below 1.
+                // With these settings there's still an offset on rates below 1, but it's not as bad (just like HT in osu!).
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.TempoUseQuickAlgorithm, 1);
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.TempoOverlapMilliseconds, 4);
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.TempoSequenceMilliseconds, 30);
+            }
         }
 
         /// <summary>
