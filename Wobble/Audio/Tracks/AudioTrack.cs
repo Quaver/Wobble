@@ -283,7 +283,7 @@ namespace Wobble.Audio.Tracks
 
             IsPitched = shouldPitch;
 
-            if (IsPitched || IsPreview)
+            if (IsPitched)
             {
                 // When pitching is enabled, adjust rate using frequency.
                 Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency * _rate);
