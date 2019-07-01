@@ -19,9 +19,15 @@ namespace Wobble.Graphics.UI
         public Sprite BrightnessSprite { get; }
 
         /// <summary>
+        ///      This is to keep the image centered; calculated when the background is resized.
+        /// </summary>
+        private Vector2 Offset { get; set; }
+
+        /// <summary>
         ///     The dim of the background as a percentage.
         /// </summary>
         private int _dim;
+
         public int Dim
         {
             get => _dim;
@@ -38,9 +44,29 @@ namespace Wobble.Graphics.UI
         ///     Determines if we this background image has a parallax effect
         ///     when moving the mouse cursor.
         /// </summary>
-        public bool HasParallaxEffect { get; set; }
+        private bool _hasParallaxEffect;
 
-        /// <inheritdoc />
+        public bool HasParallaxEffect
+        {
+            get => _hasParallaxEffect;
+            set
+            {
+                _hasParallaxEffect = value;
+                AutoResize();
+            }
+        }
+
+        public new Texture2D Image
+        {
+            get => base.Image;
+            set
+            {
+                base.Image = value;
+                AutoResize();
+            }
+        }
+
+    /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="image">The background image to use.</param>
@@ -49,8 +75,7 @@ namespace Wobble.Graphics.UI
         public BackgroundImage(Texture2D image, int dim = 0, bool hasParallaxEffect = true)
         {
             Image = image;
-
-            AutoResize();
+            HasParallaxEffect = hasParallaxEffect;
 
             BrightnessSprite = new Sprite
             {
@@ -61,7 +86,6 @@ namespace Wobble.Graphics.UI
             };
 
             Dim = dim;
-            HasParallaxEffect = hasParallaxEffect;
 
             // Hook onto the event when the resolution changes, so the background's size can change
             // accordingly.
@@ -90,18 +114,33 @@ namespace Wobble.Graphics.UI
 
         /// <summary>
         ///     Scale the background sprite to the virtual window.
+        ///     Depends on HasParallaxEffect being properly initialized.
         /// </summary>
-        private void AutoResize() {
-            // az: let's fit this into the virtual screen box across the smallest dimension.
+        private void AutoResize()
+        {
+            // az: In the future, maybe override HasParallaxEffect so this is set up automatically
+            // additionally, override the image property, as the editor modifies Image after
+            // the size of the image has already been fixed.
+            // let's fit this into the virtual screen box across the smallest dimension.
             var ratioX = Image.Height / WindowManager.VirtualScreen.Y;
             var ratioY = Image.Width / WindowManager.VirtualScreen.X;
 
             // what dimension is this image smaller in? scale against that
             var scaleRatio = 1 / Math.Min(ratioX, ratioY);
 
-            var delta = HasParallaxEffect ? 100 : 0;
-            Size = new ScalableVector2(Image.Width * scaleRatio + delta,
-                Image.Height * scaleRatio + delta);
+            var delta = (HasParallaxEffect ? 820.0f / 720.0f : 1.0f);
+
+            var width = Image.Width * scaleRatio * delta;
+            var height = Image.Height * scaleRatio * delta;
+            Size = new ScalableVector2(width, height);
+
+            // "crop off" the excess
+            Offset = new Vector2(-(width  - WindowManager.VirtualScreen.X) / 2.0f,
+                                 -(height - WindowManager.VirtualScreen.Y) / 2.0f);
+
+
+            X = Offset.X;
+            Y = Offset.Y;
 
             // Given this can be called at construction time, we must check null.
             if (BrightnessSprite != null)
@@ -130,8 +169,11 @@ namespace Wobble.Graphics.UI
             // Parallax
             var mousePos = MouseManager.CurrentState.Position;
 
-            Y = (mousePos.Y - WindowManager.VirtualScreen.Y / 2f) / 60f - 50;
-            X = (mousePos.X - WindowManager.VirtualScreen.X / 2f) / 60f - 50;
+            Y = (mousePos.Y - WindowManager.VirtualScreen.Y / 2f) / 60f;
+            X = (mousePos.X - WindowManager.VirtualScreen.X / 2f) / 60f;
+
+            Y += Offset.Y;
+            X += Offset.X;
         }
     }
 }
