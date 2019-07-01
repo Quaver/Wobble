@@ -50,10 +50,7 @@ namespace Wobble.Graphics.UI
         {
             Image = image;
 
-            if (hasParallaxEffect)
-                Size = new ScalableVector2(WindowManager.VirtualScreen.X + 100, WindowManager.VirtualScreen.Y + 100);
-            else
-                Size = new ScalableVector2(WindowManager.VirtualScreen.X, WindowManager.VirtualScreen.Y);
+            AutoResize();
 
             BrightnessSprite = new Sprite
             {
@@ -92,6 +89,26 @@ namespace Wobble.Graphics.UI
         }
 
         /// <summary>
+        ///     Scale the background sprite to the virtual window.
+        /// </summary>
+        private void AutoResize() {
+            // az: let's fit this into the virtual screen box across the smallest dimension.
+            var ratioX = Image.Height / WindowManager.VirtualScreen.Y;
+            var ratioY = Image.Width / WindowManager.VirtualScreen.X;
+
+            // what dimension is this image smaller in? scale against that
+            var scaleRatio = 1 / Math.Min(ratioX, ratioY);
+
+            var delta = HasParallaxEffect ? 100 : 0;
+            Size = new ScalableVector2(Image.Width * scaleRatio + delta,
+                Image.Height * scaleRatio + delta);
+
+            // Given this can be called at construction time, we must check null.
+            if (BrightnessSprite != null)
+                BrightnessSprite.Size = Size;
+        }
+
+        /// <summary>
         ///     When the resolution of the game changes, we'll want to change the size of the background
         ///     as well to fit the screen.
         /// </summary>
@@ -99,8 +116,7 @@ namespace Wobble.Graphics.UI
         /// <param name="e"></param>
         private void OnResolutionChanged(object sender, EventArgs e)
         {
-            Size = new ScalableVector2(WindowManager.VirtualScreen.X + 100, WindowManager.VirtualScreen.Y + 100);
-            BrightnessSprite.Size = Size;
+            AutoResize();
         }
 
         /// <summary>
