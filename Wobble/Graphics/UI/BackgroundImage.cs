@@ -138,7 +138,6 @@ namespace Wobble.Graphics.UI
             Offset = new Vector2(-(width  - WindowManager.VirtualScreen.X) / 2.0f,
                                  -(height - WindowManager.VirtualScreen.Y) / 2.0f);
 
-
             X = Offset.X;
             Y = Offset.Y;
 
