@@ -84,13 +84,15 @@ namespace Wobble.Graphics.Sprites
                 if (!SetChildrenAlpha)
                     return;
 
-                Children.ForEach(x =>
+                for (var i = 0; i < Children.Count; i++)
                 {
+                    var x = Children[i];
+
                     if (x is Sprite sprite)
                     {
                         sprite.Alpha = value;
                     }
-                });
+                }
             }
         }
 

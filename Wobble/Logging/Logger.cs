@@ -36,8 +36,8 @@ namespace Wobble.Logging
         /// </summary>
         internal static void Initialize()
         {
-            Listener = new LogListener();
-            Trace.Listeners.Add(Listener);
+            // Listener = new LogListener();
+            // Trace.Listeners.Add(Listener);
 
             Directory.CreateDirectory(LogsFolder);
 
@@ -148,6 +148,9 @@ namespace Wobble.Logging
         /// <summary>
         ///     Updates the logger with new messages.
         /// </summary>
-        public static void Update() => Listener.GetLogs().ForEach(x => Debug(x, LogType.Runtime, false));
+        public static void Update()
+        {
+            // Listener.GetLogs().ForEach(x => Debug(x, LogType.Runtime, false));
+        }
     }
 }

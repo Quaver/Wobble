@@ -214,7 +214,10 @@ namespace Wobble.Graphics
 
                 // Set children visibility if specified.
                 if (SetChildrenVisibility)
-                    Children.ForEach(x => x.Visible = value);
+                {
+                    for (var i = 0; i < Children.Count; i++)
+                        Children[i].Visible = value;
+                }
             }
         }
 
@@ -312,8 +315,9 @@ namespace Wobble.Graphics
             // Draw the children and set their order.
             try
             {
-                foreach (var drawable in Children)
+                for (var i = 0; i < Children.Count; i++)
                 {
+                    var drawable = Children[i];
                     drawable.Draw(gameTime);
 
                     TotalDrawn++;
@@ -414,7 +418,8 @@ namespace Wobble.Graphics
                 };
             }
 
-            Children.ForEach(x => x.RecalculateRectangles());
+            for (var i = 0; i < Children.Count; i++)
+                Children[i].RecalculateRectangles();
 
             // Raise recalculated event.
             OnRectangleRecalculated();
@@ -442,8 +447,9 @@ namespace Wobble.Graphics
         /// </summary>
         private void PerformTransformations(GameTime gameTime)
         {
-            foreach (var animation in Animations.ToArray())
+            for (var i = 0; i < Animations.Count; i++)
             {
+                var animation = Animations[i];
                 try
                 {
                     var breakOutOfLoop = false;
@@ -451,7 +457,7 @@ namespace Wobble.Graphics
                     switch (animation.Properties)
                     {
                         case AnimationProperty.Wait:
-                            if (animation != Animations.First())
+                            if (animation != Animations[0])
                             {
                                 breakOutOfLoop = true;
                                 break;
@@ -479,6 +485,7 @@ namespace Wobble.Graphics
                                 var sprite = (Sprite) this;
                                 sprite.Alpha = animation.PerformInterpolation(gameTime);
                             }
+
                             break;
                         case AnimationProperty.Rotation:
                             if (this is Sprite)
@@ -488,6 +495,7 @@ namespace Wobble.Graphics
                             }
                             else
                                 throw new NotImplementedException();
+
                             break;
                         case AnimationProperty.Color:
                             if (this is Sprite)
@@ -495,6 +503,7 @@ namespace Wobble.Graphics
                                 var sprite = (Sprite) this;
                                 sprite.Tint = animation.PerformColorInterpolation(gameTime);
                             }
+
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -511,8 +520,9 @@ namespace Wobble.Graphics
                         {
                             AnimationWaitTime = 0;
 
-                            foreach (var a in Animations.ToArray())
+                            for (var j = 0; j < Animations.Count; j++)
                             {
+                                var a = Animations[j];
                                 switch (a.Properties)
                                 {
                                     case AnimationProperty.X:
@@ -535,6 +545,7 @@ namespace Wobble.Graphics
                                             var sprite = (Sprite) this;
                                             a.Start = sprite.Alpha;
                                         }
+
                                         break;
                                     case AnimationProperty.Rotation:
                                         if (this is Sprite)
@@ -544,6 +555,7 @@ namespace Wobble.Graphics
                                         }
                                         else
                                             throw new NotImplementedException();
+
                                         break;
                                     case AnimationProperty.Color:
                                         if (this is Sprite)
@@ -551,6 +563,7 @@ namespace Wobble.Graphics
                                             var sprite = (Sprite) this;
                                             a.StartColor = sprite.Tint;
                                         }
+
                                         break;
                                     default:
                                         break;
