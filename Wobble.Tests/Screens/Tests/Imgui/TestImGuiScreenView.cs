@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
@@ -18,6 +19,8 @@ namespace Wobble.Tests.Screens.Tests.Imgui
         /// </summary>
         private TestImGuiMenu TestImGuiMenu { get; }
 
+        private List<ImageButton> Boxes { get; } = new List<ImageButton>();
+
         /// <summary>
         /// </summary>
         private ImageButton Box { get; }
@@ -36,13 +39,16 @@ namespace Wobble.Tests.Screens.Tests.Imgui
 
             // Make a button
             // ReSharper disable once ObjectCreationAsStatement
-            Box = new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Logger.Important("CLICKED", LogType.Runtime, false))
+            for (var i = 0; i < 5000; i++)
             {
-                Parent = Container,
-                Alignment = Alignment.MidCenter,
-                Size = new ScalableVector2(100, 100),
-                Tint = Color.Crimson,
-            };
+                Boxes.Add(new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Logger.Important("CLICKED", LogType.Runtime, false))
+                {
+                    Parent = Container,
+                    Alignment = Alignment.MidCenter,
+                    Size = new ScalableVector2(100, 100),
+                    Tint = Color.Crimson,
+                });
+            }
 
             // ReSharper disable once ObjectCreationAsStatement
             var box2 = new Sprite()
@@ -68,11 +74,17 @@ namespace Wobble.Tests.Screens.Tests.Imgui
 
             if (TestImGuiMenu.Rotation)
             {
-                if (Box.Animations.Count == 0)
+                for (var i = 0; i < Boxes.Count; i++)
                 {
-                    var rotation = MathHelper.ToDegrees(Box.Rotation);
-                    Box.ClearAnimations();
-                    Box.Animations.Add(new Animation(AnimationProperty.Rotation, Easing.Linear, rotation, rotation + 360, 1000));
+                    var box = Boxes[i];
+
+                    if (box.Animations.Count == 0)
+                    {
+                        if (box.Y > 0)
+                            box.MoveToY(-300, Easing.Linear, 3000);
+                        else
+                            box.MoveToY(300, Easing.Linear, 3000);
+                    }
                 }
             }
 
@@ -87,7 +99,7 @@ namespace Wobble.Tests.Screens.Tests.Imgui
         {
             var color = Color.CornflowerBlue;
 
-            if (TestImGuiMenu.Lightshow)
+           /* if (TestImGuiMenu.Lightshow)
             {
                 color = new Color(RNG.Next(255), RNG.Next(255), RNG.Next(255));
                 Box.Tint = new Color(RNG.Next(255), RNG.Next(255), RNG.Next(255));
@@ -95,7 +107,7 @@ namespace Wobble.Tests.Screens.Tests.Imgui
             else
             {
                 Box.Tint = Color.Crimson;
-            }
+            }*/
 
             GameBase.Game.GraphicsDevice.Clear(color);
             Container?.Draw(gameTime);

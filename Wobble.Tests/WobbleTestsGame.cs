@@ -29,6 +29,8 @@ namespace Wobble.Tests
         /// </summary>
         protected override void Initialize()
         {
+            WindowManager.ChangeScreenResolution(new Point(1366, 768));
+
             // Get device period and buffer from the environment variables.
             // Must be done before calling base.Initialize().
             var env = Environment.GetEnvironmentVariables();
