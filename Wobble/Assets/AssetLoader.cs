@@ -77,8 +77,8 @@ namespace Wobble.Assets
             for (var i = 0; i < rows * columns; i++)
             {
                 // Get the specific row and column from the index.
-                var column = i / rows;
-                var row = i % rows;
+                var row = i / columns;
+                var column = i % columns;
 
                 var sourceRect = new Rectangle(imgWidth * column, imgHeight * row, imgWidth, imgHeight);
                 var cropTexture = new Texture2D(GameBase.Game.GraphicsDevice, sourceRect.Width, sourceRect.Height);
