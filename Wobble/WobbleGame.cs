@@ -117,7 +117,6 @@ namespace Wobble
             Resources = new ResourceStore<byte[]>();
             Resources.AddStore(new DllResourceStore("Wobble.Resources.dll"));
 
-            Logger.Initialize();
             LogManager.Initialize();
             AudioManager.Initialize(DevicePeriod, DeviceBufferLength);
             Window.ClientSizeChanged += WindowManager.OnClientSizeChanged;
