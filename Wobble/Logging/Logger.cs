@@ -34,7 +34,7 @@ namespace Wobble.Logging
         /// <summary>
         ///     Initializes the logger. Creates the folder and all necessary files.
         /// </summary>
-        internal static void Initialize()
+        public static void Initialize()
         {
             Listener = new LogListener();
             Trace.Listeners.Add(Listener);
