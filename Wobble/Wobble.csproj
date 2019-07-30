@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.1</LangVersion>
@@ -13,6 +13,7 @@
     <PackageReference Include="ImGui.NET" Version="1.67.0" />
     <PackageReference Include="ManagedBass" Version="2.0.4" />
     <PackageReference Include="ManagedBass.Fx" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.6.0-preview7.19362.9" />
     <PackageReference Include="MonoGame.Extended" Version="1.1.0" />
     <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
