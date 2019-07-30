@@ -38,5 +38,12 @@ namespace Wobble.Platform
         /// </summary>
         /// <param name="path">path to the file or folder to open</param>
         public abstract void OpenNatively(string path);
+
+        /// <summary>
+        ///     Registers the current executable as a URI scheme handler.
+        /// </summary>
+        /// <param name="scheme">the url scheme to register, MUST NOT contain spaces, quotes or any other weird characters</param>
+        /// <param name="friendlyName">a friendly name for the scheme, MUST NOT contain spaces, quotes or any other weird characters</param>
+        public abstract void RegisterURIScheme(string scheme, string friendlyName);
     }
 }
