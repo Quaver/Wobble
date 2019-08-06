@@ -39,7 +39,6 @@ namespace Wobble.Tests.Hotload
             base.LoadContent();
 
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
-            Textures.Load();
             IsReadyToUpdate = true;
         }
 

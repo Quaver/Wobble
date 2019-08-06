@@ -65,7 +65,6 @@ namespace Wobble.Tests
             base.LoadContent();
 
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
-            Textures.Load();
 
             if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-bold"))
                 BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.ttf"));

@@ -8,7 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
-    <ProjectReference Include="..\Wobble.Tests.Assets\Wobble.Tests.Assets.csproj" />
     <ProjectReference Include="..\Wobble.Tests.Resources\Wobble.Tests.Resources.csproj" />
     <ProjectReference Include="..\Wobble\Wobble.csproj" />
   </ItemGroup>

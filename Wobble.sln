@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wobble.Extended", "Wobble.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wobble.Tests.Hotload", "Wobble.Tests.Hotload\Wobble.Tests.Hotload.csproj", "{AB46D815-2DA6-452A-9A99-4AF5CF06D19F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wobble.Tests.Assets", "Wobble.Tests.Assets\Wobble.Tests.Assets.csproj", "{758537B2-7192-4E41-A886-835041C7AD24}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.DesktopGL", "MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj", "{C93E372C-7A7D-4657-A514-C4EF20960E50}"
 EndProject
 Global
@@ -49,10 +47,6 @@ Global
 		{AB46D815-2DA6-452A-9A99-4AF5CF06D19F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB46D815-2DA6-452A-9A99-4AF5CF06D19F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB46D815-2DA6-452A-9A99-4AF5CF06D19F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{758537B2-7192-4E41-A886-835041C7AD24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{758537B2-7192-4E41-A886-835041C7AD24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{758537B2-7192-4E41-A886-835041C7AD24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{758537B2-7192-4E41-A886-835041C7AD24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C93E372C-7A7D-4657-A514-C4EF20960E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C93E372C-7A7D-4657-A514-C4EF20960E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C93E372C-7A7D-4657-A514-C4EF20960E50}.Release|Any CPU.ActiveCfg = Release|Any CPU

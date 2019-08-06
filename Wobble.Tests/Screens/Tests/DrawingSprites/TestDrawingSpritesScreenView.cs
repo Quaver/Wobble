@@ -108,7 +108,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region ANIMATING_LIGHTING
-            AnimatingLighting = new AnimatableSprite(Textures.TestSpritesheet)
+            AnimatingLighting = new AnimatableSprite(Textures.TestSpriteSheet)
             {
                 Parent = Container,
                 Size = new ScalableVector2(200, 200),
