@@ -7,7 +7,7 @@ namespace Wobble.Managers
     {
         /// <summary>
         /// </summary>
-        public static Dictionary<string, BitmapFont> BitmapFonts { get; }
+        public static Dictionary<string, BitmapFont> BitmapFonts { get; } = new Dictionary<string, BitmapFont>();
 
         /// <summary>
         ///     Loads and caches a bitmap font
