@@ -67,7 +67,10 @@ namespace Wobble.Managers
         ///     Language files should be setup similar to ini.
         ///
         ///     Key=Value
-        ///     Example: Hello!=¡Hola!
+        ///
+        ///     Examples:
+        ///         * (in en.txt) - Greeting=Hello
+        ///         * (in es.txt) - Greeting=¡Hola!
         /// </summary>
         /// <returns></returns>
         private static Dictionary<string, string> ParseLanguageFile(byte[] file)
