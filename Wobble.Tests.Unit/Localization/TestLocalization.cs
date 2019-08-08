@@ -80,6 +80,15 @@ namespace Wobble.Tests.Unit.Localization
             }
         }
 
+        [Fact]
+        public void TestInterpolation()
+        {
+            Setup();
+            
+            LocalizationManager.SetCurrentLanguage($"{FolderPath}/en.txt");
+            Assert.True(LocalizationManager.Get(LocalizationStrings.Results_Found, 3) == "3 Results Found");
+        }
+
         private void Setup()
         {
             if (GameBase.Game != null)
@@ -95,6 +104,7 @@ namespace Wobble.Tests.Unit.Localization
     public enum LocalizationStrings
     {
         Greeting,
-        Bye
+        Bye,
+        Results_Found
     }
 }

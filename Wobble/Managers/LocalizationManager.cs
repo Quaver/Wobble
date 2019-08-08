@@ -44,16 +44,17 @@ namespace Wobble.Managers
         ///     an exception
         /// </summary>
         /// <param name="key"></param>
+        /// <param name="interpolated"></param>
         /// <returns></returns>
-        public static string Get(string key)
+        public static string Get(string key, params object[] interpolated)
         {
             const string header = "Strings";
 
             if (CurrentLanguage[header].ContainsKey(key))
-                return CurrentLanguage[header][key];
+                return string.Format(CurrentLanguage[header][key], interpolated);
 
             if (DefaultLanguage[header].ContainsKey(key))
-                return DefaultLanguage[header][key];
+                return string.Format(DefaultLanguage[header][key], interpolated);
 
             throw new ArgumentException($"Cannot find localized string for key: {key}");
         }
@@ -64,9 +65,10 @@ namespace Wobble.Managers
         ///     Useful if you want to define all of your possible keys in an enum rather than using strings everywhere
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="interpolated"></param>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns></returns>
-        public static string Get<TEnum>(TEnum value) => Get(value.ToString());
+        public static string Get<TEnum>(TEnum value, params object[] interpolated) => Get(value.ToString(), interpolated);
 
         /// <summary>
         ///     Language files should be setup similar to ini.
