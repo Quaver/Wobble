@@ -37,6 +37,22 @@ namespace Wobble.Tests.Unit.Localization
         }
 
         [Fact]
+        public void TestJapanese()
+        {
+            Setup();
+
+            LocalizationManager.SetCurrentLanguage($"{FolderPath}/jp.txt");
+            Assert.True(LocalizationManager.Get(LocalizationStrings.Greeting) == "こんにちは こんにちは こんにちは");
+        }
+
+        [Fact]
+        public void TestArabic()
+        {
+            LocalizationManager.SetCurrentLanguage($"{FolderPath}/ar.txt");
+            Assert.True(LocalizationManager.Get(LocalizationStrings.Greeting) == "مرحبا كيف حالك");
+        }
+
+        [Fact]
         public void TestFallback()
         {
             Setup();
@@ -44,6 +60,8 @@ namespace Wobble.Tests.Unit.Localization
             LocalizationManager.SetCurrentLanguage($"{FolderPath}/es.txt");
 
             // Should fallback to English in this case
+            Console.WriteLine(LocalizationManager.Get(LocalizationStrings.Bye));
+
             Assert.True(LocalizationManager.Get(LocalizationStrings.Bye) == "Goodbye");
         }
 
