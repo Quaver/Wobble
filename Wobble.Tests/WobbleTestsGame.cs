@@ -1,20 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.BitmapFonts;
-using Wobble.Assets;
-using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
-using Wobble.Graphics.Sprites;
 using Wobble.Input;
 using Wobble.IO;
 using Wobble.Screens;
-using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Selection;
 using Wobble.Window;
 
