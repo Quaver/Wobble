@@ -60,8 +60,6 @@ namespace Wobble.Tests.Unit.Localization
             LocalizationManager.SetCurrentLanguage($"{FolderPath}/es.txt");
 
             // Should fallback to English in this case
-            Console.WriteLine(LocalizationManager.Get(LocalizationStrings.Bye));
-
             Assert.True(LocalizationManager.Get(LocalizationStrings.Bye) == "Goodbye");
         }
 
