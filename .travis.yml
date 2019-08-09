@@ -4,6 +4,7 @@ dotnet: 2.0.0
 script:
   - dotnet restore
   - dotnet build ./Wobble
+  - dotnet test ./Wobble.Tests.Unit/Wobble.Tests.Unit.csproj
 after_success:
  - wget https://raw.githubusercontent.com/Swan/travis-ci-discord-webhook/master/send.sh
  - chmod +x send.sh
