@@ -76,7 +76,7 @@ namespace Wobble
         /// <summary>
         ///     All the resources used by the game.
         /// </summary>
-        public ResourceStore<byte[]> Resources { get; set; }
+        public ResourceStore<byte[]> Resources { get; set; } = new ResourceStore<byte[]>();
 
         /// <summary>
         /// </summary>
@@ -114,7 +114,6 @@ namespace Wobble
         /// </summary>
         protected override void Initialize()
         {
-            Resources = new ResourceStore<byte[]>();
             Resources.AddStore(new DllResourceStore("Wobble.Resources.dll"));
 
             LogManager.Initialize();
