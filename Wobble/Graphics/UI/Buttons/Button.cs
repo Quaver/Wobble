@@ -136,7 +136,7 @@ namespace Wobble.Graphics.UI.Buttons
                     IsHovered = true;
                     OnHover(gameTime);
 
-                    // If we're not waiting for a click relase and the mouse button is currently held down,
+                    // If we're not waiting for a click release and the mouse button is currently held down,
                     // then we'll set this to true.
                     if (!WaitingForClickRelease && MouseManager.IsUniquePress(MouseButton.Left) || MouseManager.IsUniquePress(MouseButton.Right)
                         || MouseManager.IsUniquePress(MouseButton.Middle))

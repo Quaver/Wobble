@@ -42,7 +42,7 @@ namespace Wobble.Input
                 case MouseButton.Thumb1:
                     return CurrentState.XButton1 == ButtonState.Released  && PreviousState.XButton1 == ButtonState.Pressed;
                 case MouseButton.Thumb2:
-                    return CurrentState.XButton2== ButtonState.Released  && PreviousState.XButton2 == ButtonState.Pressed;
+                    return CurrentState.XButton2 == ButtonState.Released  && PreviousState.XButton2 == ButtonState.Pressed;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(button), button, null);
             }
@@ -67,7 +67,7 @@ namespace Wobble.Input
                 case MouseButton.Thumb1:
                     return CurrentState.XButton1 == ButtonState.Pressed  && PreviousState.XButton1 == ButtonState.Released;
                 case MouseButton.Thumb2:
-                    return CurrentState.XButton2== ButtonState.Pressed  && PreviousState.XButton2 == ButtonState.Released;
+                    return CurrentState.XButton2 == ButtonState.Pressed  && PreviousState.XButton2 == ButtonState.Released;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(button), button, null);
             }
