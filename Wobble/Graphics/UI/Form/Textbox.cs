@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
 using Wobble.Platform;
@@ -21,7 +22,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     The text that is currently displayed
         /// </summary>
-        public SpriteText InputText { get; }
+        public SpriteTextPlus InputText { get; }
 
         /// <summary>
         ///     The cursor that displays where the text input currently is.
@@ -152,18 +153,17 @@ namespace Wobble.Graphics.UI.Form
         /// <param name="placeHolderText"></param>
         /// <param name="onSubmit"></param>
         /// <param name="onStoppedTyping"></param>
-        public Textbox(ScalableVector2 size, string font, int fontSize,
+        public Textbox(ScalableVector2 size, WobbleFontStore font, int fontSize,
             string initialText = "", string placeHolderText = "",  Action<string> onSubmit = null, Action<string> onStoppedTyping = null)
             : base(size, size)
         {
             PlaceholderText = placeHolderText;
             _rawText = initialText;
 
-            InputText = new SpriteText(font, RawText, fontSize)
+            InputText = new SpriteTextPlus(font, RawText, fontSize)
             {
-                TextAlignment = Alignment.TopLeft,
                 X = 5,
-                Y = 3,
+                Alignment = Alignment.MidLeft
             };
 
             if (!string.IsNullOrEmpty(initialText))
@@ -177,10 +177,9 @@ namespace Wobble.Graphics.UI.Form
             Cursor = new Sprite()
             {
                 Parent = this,
-                Alignment = Alignment.TopLeft,
+                Alignment = Alignment.MidLeft,
                 Size = new ScalableVector2(2, InputText.Height), // Height is equivalent to text height.
                 Tint = Color.White,
-                Y = 2,
                 Visible = false
             };
 
@@ -359,7 +358,7 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void CalculateContainerX()
         {
-            ContentContainer.X = InputText.Width > Width ? Width - InputText.Width - Cursor.Width: 0;
+            ContentContainer.X = InputText.Width > Width ? Width - InputText.Width - Cursor.Width - 10: 0;
         }
 
         /// <summary>
