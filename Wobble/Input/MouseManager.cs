@@ -42,7 +42,32 @@ namespace Wobble.Input
                 case MouseButton.Thumb1:
                     return CurrentState.XButton1 == ButtonState.Released  && PreviousState.XButton1 == ButtonState.Pressed;
                 case MouseButton.Thumb2:
-                    return CurrentState.XButton2== ButtonState.Released  && PreviousState.XButton2 == ButtonState.Pressed;
+                    return CurrentState.XButton2 == ButtonState.Released  && PreviousState.XButton2 == ButtonState.Pressed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(button), button, null);
+            }
+        }
+
+        /// <summary>
+        ///     If the mouse button was uniquely pressed in this frame. NOT a click. Use <see cref="IsUniqueClick"/> for clicks.
+        /// </summary>
+        /// <param name="button"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static bool IsUniquePress(MouseButton button)
+        {
+            switch (button)
+            {
+                case MouseButton.Left:
+                    return CurrentState.LeftButton == ButtonState.Pressed && PreviousState.LeftButton == ButtonState.Released;
+                case MouseButton.Right:
+                    return CurrentState.RightButton == ButtonState.Pressed  && PreviousState.RightButton == ButtonState.Released;
+                case MouseButton.Middle:
+                    return CurrentState.MiddleButton == ButtonState.Pressed  && PreviousState.MiddleButton == ButtonState.Released;
+                case MouseButton.Thumb1:
+                    return CurrentState.XButton1 == ButtonState.Pressed  && PreviousState.XButton1 == ButtonState.Released;
+                case MouseButton.Thumb2:
+                    return CurrentState.XButton2 == ButtonState.Pressed  && PreviousState.XButton2 == ButtonState.Released;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(button), button, null);
             }
