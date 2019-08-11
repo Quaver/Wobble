@@ -12,7 +12,7 @@ namespace Wobble.Graphics.UI.Debugging
         /// <summary>
         ///     The current frame rate.
         /// </summary>
-        private int FrameRate { get; set; }
+        public int FrameRate { get; private set; }
 
         /// <summary>
         ///     The amount of frames that we currently have.
