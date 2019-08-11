@@ -21,10 +21,17 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <param name="size"></param>
         /// <param name="font"></param>
-        public WobbleFontStore(int size, byte[] font)
+        /// <param name="addedFonts"></param>
+        public WobbleFontStore(int size, byte[] font, Dictionary<string, byte[]> addedFonts = null)
         {
             DefaultSize = size;
             Store = DynamicSpriteFont.FromTtf(font, size);
+
+            if (addedFonts == null)
+                return;
+
+            foreach (var f in addedFonts)
+                AddFont(f.Key, f.Value);
         }
 
         /// <summary>

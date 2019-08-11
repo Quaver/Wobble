@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using MonoGame.Extended.BitmapFonts;
+using Wobble.Graphics.Sprites.Text;
 
 namespace Wobble.Managers
 {
@@ -8,6 +10,10 @@ namespace Wobble.Managers
         /// <summary>
         /// </summary>
         public static Dictionary<string, BitmapFont> BitmapFonts { get; } = new Dictionary<string, BitmapFont>();
+
+        /// <summary>
+        /// </summary>
+        public static Dictionary<string, WobbleFontStore> WobbleFonts { get; } = new Dictionary<string, WobbleFontStore>();
 
         /// <summary>
         ///     Loads and caches a bitmap font
@@ -24,5 +30,27 @@ namespace Wobble.Managers
 
             return font;
         }
+
+        /// <summary>
+        ///     Loads and caches a WobbleFont
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="font"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static void CacheWobbleFont(string name, WobbleFontStore font)
+        {
+            if (WobbleFonts.ContainsKey(name))
+                throw new ArgumentException("A font with this name already exists!");
+
+            WobbleFonts.Add(name, font);
+        }
+
+        /// <summary>
+        ///     Retrieves a WobbleFont if cached
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static WobbleFontStore GetWobbleFont(string name) => WobbleFonts[name];
     }
 }

@@ -65,7 +65,8 @@ namespace Wobble.Graphics.Sprites.Text
         ///     The transparency of this QuaverSprite.
         /// </summary>
         private float _alpha = 1f;
-        public float Alpha {
+        public float Alpha
+        {
             get => _alpha;
             set
             {

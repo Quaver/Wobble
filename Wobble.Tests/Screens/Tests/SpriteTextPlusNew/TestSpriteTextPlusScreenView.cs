@@ -5,8 +5,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpriteFontPlus;
 using Wobble.Graphics;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Debugging;
+using Wobble.Managers;
 using Wobble.Screens;
 using Alignment = Wobble.Graphics.Alignment;
 
@@ -23,19 +25,18 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
         /// <param name="screen"></param>
         public TestSpriteTextPlusScreenView(Screen screen) : base(screen)
         {
-            Font = new WobbleFontStore(20, GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-semibold.ttf"));
-            Font.AddFont("Emoji", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/symbola-emoji.ttf"));
-            Font.AddFont("Japanese", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/droid-sans-japanese.ttf"));
+            Font = FontManager.GetWobbleFont("exo2-semibold");
 
-
-            var text = new SpriteTextPlus(Font, "Hello, World! いろはにほへど\nthis should be on a new line 🍆😀 😁 😂 🤣😃 😄 😅 😆 😉 😊 😋 😎",
-                32)
+            var text = new SpriteTextPlus(Font, "Hello, World! いろはにほへど\nthis should be on a new line\n🍆😀 😁 😂 🤣😃 😄 😅 😆 😉 😊 😋 😎\nhi",
+                48)
             {
                 Parent = Container,
-                Alignment = Alignment.MidCenter
+                Alignment = Alignment.MidCenter,
             };
 
             text.AddBorder(Color.Crimson, 2);
+
+            text.MoveToY(-300, Easing.Linear, 2000);
 
             var cyrillic = new SpriteTextPlus(Font, "Лорем ипсум долор сит амет, еяуидем маиорум медиоцрем ут дуо", 22)
             {
