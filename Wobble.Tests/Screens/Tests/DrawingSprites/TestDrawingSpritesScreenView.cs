@@ -9,6 +9,7 @@ using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
+using Wobble.Logging;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 
@@ -105,6 +106,9 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
                 Alignment = Alignment.TopCenter,
                 Y = HelloWorldText.Y + 50
             };
+
+            ClickMeButton.RightClicked += (sender, args) => Logger.Debug("Right Clicked", LogType.Runtime);
+            ClickMeButton.MiddleMouseClicked += (sender, args) => Logger.Debug("Middle Mouse Clicked", LogType.Runtime);
 #endregion
 
 #region ANIMATING_LIGHTING
