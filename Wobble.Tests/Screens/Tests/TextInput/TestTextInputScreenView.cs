@@ -8,6 +8,7 @@ using Wobble.Graphics.Animations;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Form;
+using Wobble.Managers;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 using Wobble.Window;
@@ -26,7 +27,8 @@ namespace Wobble.Tests.Screens.Tests.TextInput
         public TestTextInputScreenView(Screen screen) : base(screen)
         {
             // Simple text box that when submitted, will send the text flying across the screen.
-            var textbox = new Textbox(new ScalableVector2(500, 30), "exo2-bold", 14, "", "Type to see a cool effect!")
+            var textbox = new Textbox(new ScalableVector2(500, 36), FontManager.GetWobbleFont("exo2-semibold"),
+                24, "", "Type to see a cool effect!")
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
@@ -52,7 +54,8 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 };
             };
 
-            var regexpTextbox = new Textbox(new ScalableVector2(500, 30), "exo2-bold", 14, "", "This should only allow you to type numbers")
+            var regexpTextbox = new Textbox(new ScalableVector2(500, 30), FontManager.GetWobbleFont("exo2-semibold"),
+                14, "", "This should only allow you to type numbers")
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
