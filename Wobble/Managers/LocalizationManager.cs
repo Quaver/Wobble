@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using IniParser;
-using IniParser.Model;
+using IniFileParser.Model;
 
 namespace Wobble.Managers
 {
@@ -82,7 +81,7 @@ namespace Wobble.Managers
         /// <returns></returns>
         private static IniData ParseLanguageFile(Stream file)
         {
-            var parser = new FileIniDataParser();
+            var parser = new IniFileParser.IniFileParser();
             return parser.ReadData(new StreamReader(file));
         }
     }

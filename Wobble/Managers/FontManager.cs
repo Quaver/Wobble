@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MonoGame.Extended.BitmapFonts;
 using Wobble.Graphics.Sprites.Text;
+using Wobble.Logging;
 
 namespace Wobble.Managers
 {
@@ -44,6 +45,7 @@ namespace Wobble.Managers
                 throw new ArgumentException("A font with this name already exists!");
 
             WobbleFonts.Add(name, font);
+            Logger.Debug($"Loaded font: {name}", LogType.Runtime);
         }
 
         /// <summary>
