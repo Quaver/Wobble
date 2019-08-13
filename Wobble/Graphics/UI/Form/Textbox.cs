@@ -162,7 +162,7 @@ namespace Wobble.Graphics.UI.Form
 
             InputText = new SpriteTextPlus(font, RawText, fontSize)
             {
-                X = 5,
+                X = 10,
                 Alignment = Alignment.MidLeft
             };
 
