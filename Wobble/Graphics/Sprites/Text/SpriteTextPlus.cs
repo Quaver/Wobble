@@ -107,7 +107,9 @@ namespace Wobble.Graphics.Sprites.Text
                 {
                     Parent = this,
                     Y = height,
-                    UsePreviousSpriteBatchOptions = true
+                    UsePreviousSpriteBatchOptions = true,
+                    Tint = Tint,
+                    Alpha = Alpha
                 };
 
                 width = Math.Max(width, lineSprite.Width);
