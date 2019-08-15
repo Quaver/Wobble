@@ -262,6 +262,11 @@ namespace Wobble.Graphics
         public List<Animation> Animations { get; } = new List<Animation>();
 
         /// <summary>
+        ///     A list of completed animations to remove at the start of a frame
+        /// </summary>
+        private List<Animation> AnimationsToRemove { get; } = new List<Animation>();
+
+        /// <summary>
         ///    The border around the drawable.
         /// </summary>
         public PrimitiveLineBatch Border { get; private set; }
@@ -447,6 +452,12 @@ namespace Wobble.Graphics
         /// </summary>
         private void PerformTransformations(GameTime gameTime)
         {
+            for (var i = 0; i < AnimationsToRemove.Count; i++)
+                Animations.Remove(AnimationsToRemove[i]);
+
+            if (AnimationsToRemove.Count != 0)
+                AnimationsToRemove.Clear();
+
             for (var i = 0; i < Animations.Count; i++)
             {
                 var animation = Animations[i];
@@ -466,16 +477,16 @@ namespace Wobble.Graphics
                             AnimationWaitTime = animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.X:
-                            X = animation.PerformInterpolation(gameTime);
+                            X = (int) animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Y:
-                            Y = animation.PerformInterpolation(gameTime);
+                            Y = (int) animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Width:
-                            Width = animation.PerformInterpolation(gameTime);
+                            Width = (int) animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Height:
-                            Height = animation.PerformInterpolation(gameTime);
+                            Height = (int) animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Alpha:
                             var type = GetType();
@@ -514,7 +525,7 @@ namespace Wobble.Graphics
 
                     if (animation.Done)
                     {
-                        Animations.Remove(animation);
+                        AnimationsToRemove.Add(animation);
 
                         if (animation.Properties == AnimationProperty.Wait)
                         {
@@ -583,11 +594,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Removes all animations from the drawable
         /// </summary>
-        public void ClearAnimations()
-        {
-            lock (Animations)
-                Animations.Clear();
-        }
+        public void ClearAnimations() => Animations.Clear();
 
         /// <summary>
         ///     Moves the drawable to an x position.
