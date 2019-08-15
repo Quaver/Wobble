@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Wobble.Graphics.Animations;
 
 namespace Wobble.Graphics.Sprites.Text
 {
-    public class SpriteTextPlus : Container
+    public class SpriteTextPlus : Sprite
     {
         /// <summary>
         ///     The font to be used
@@ -117,6 +118,10 @@ namespace Wobble.Graphics.Sprites.Text
             }
 
             Size = new ScalableVector2(width, height);
+        }
+
+        public override void DrawToSpriteBatch()
+        {
         }
     }
 }
