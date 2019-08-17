@@ -63,27 +63,6 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         /// <summary>
-        ///     The transparency of this QuaverSprite.
-        /// </summary>
-        private float _alpha = 1f;
-        public float Alpha
-        {
-            get => _alpha;
-            set
-            {
-                _alpha = value;
-
-                Children.ForEach(x =>
-                {
-                    if (x is Sprite sprite)
-                    {
-                        sprite.Alpha = value;
-                    }
-                });
-            }
-        }
-
-        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
@@ -94,6 +73,7 @@ namespace Wobble.Graphics.Sprites.Text
             Text = text;
 
             FontSize = size == 0 ? Font.DefaultSize : size;
+            SetChildrenAlpha = true;
         }
 
         private void RefreshText()
