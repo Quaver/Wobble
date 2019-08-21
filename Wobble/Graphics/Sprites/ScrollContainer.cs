@@ -52,6 +52,11 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public bool InputEnabled { get; set; }
 
+        /// <summary>
+        ///     The minimum y the scrollbar will be clamped to
+        /// </summary>
+        protected int MinScrollBarY { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -122,6 +127,9 @@ namespace Wobble.Graphics.Sprites
             // Calculate the scrollbar's y position.
             var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
             Scrollbar.Y = percentage / 100 * (Height - Scrollbar.Height) - (Height - Scrollbar.Height);
+
+            if (Scrollbar.Y < MinScrollBarY)
+                Scrollbar.Y = MinScrollBarY;
 
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (TargetY != PreviousTargetY)
