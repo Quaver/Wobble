@@ -90,6 +90,15 @@ namespace Wobble.Graphics.UI.Buttons
         /// </summary>
         public MouseButton? MouseButtonClicked { get; private set; }
 
+        /// <summary>
+        ///     The depth/z-index the button will have when determining if it should be the one that is clickable.
+        ///     Higher numbers give higher priority.
+        ///
+        ///     If two buttons have the same depth, it will use <see cref="Drawable.DrawOrder"/> to determine which
+        ///     one should be clicked
+        /// </summary>
+        public int Depth { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -119,7 +128,7 @@ namespace Wobble.Graphics.UI.Buttons
                 try
                 {
                     topLayerButton = ButtonManager.Buttons.FindAll(x => x.IsHoveredWithoutDrawOrder && x.IsClickable && IsGloballyClickable)
-                        .OrderByDescending(x => x.DrawOrder).First();
+                        .OrderBy(x => x.Depth).ThenByDescending(x => x.DrawOrder).First();
                 }
                 catch (Exception e)
                 {
