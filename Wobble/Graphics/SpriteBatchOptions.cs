@@ -14,7 +14,7 @@ namespace Wobble.Graphics
     {
         public SpriteSortMode SortMode { get; set; } = SpriteSortMode.Immediate;
         public BlendState BlendState { get; set; } = BlendState.NonPremultiplied;
-        public SamplerState SamplerState { get; set; }
+        public SamplerState SamplerState { get; set; } = SamplerState.LinearClamp;
         public DepthStencilState DepthStencilState { get; set; }
         public RasterizerState RasterizerState { get; set; }
         /// <summary>
