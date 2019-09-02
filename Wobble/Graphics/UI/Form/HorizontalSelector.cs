@@ -21,7 +21,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     The index of the currently selected element.
         /// </summary>
-        public int SelectedIndex { get; private set; }
+        public int SelectedIndex { get; set; }
 
         /// <summary>
         ///     When the horizontal selector's value changes, this method will be called.
