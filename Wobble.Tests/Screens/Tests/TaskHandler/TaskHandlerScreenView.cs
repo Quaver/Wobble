@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Wobble.Scheduling;
 using Wobble.Assets;
@@ -47,6 +48,7 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
             RandomNumbersTask = new TaskHandler<int, int>(TestFunction);
             RandomNumbersTask.OnCompleted += OnTaskComplete;
             RandomNumbersTask.OnCancelled += OnTaskCancelled;
+            RandomNumbersTask.OnStarted += OnTaskStarted;
 
             TestButton = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", "Start Task", 16)
             {
@@ -83,18 +85,33 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
         /// </summary>
         private void ButtonPressed(object sender, EventArgs args)
         {
-            var input = RNG.Next(1000, 9999);
-
-            if (!RandomNumbersTask.IsRunning)
+            if (RandomNumbersTask.IsRunning)
             {
-                TestButton.Tint = Color.Red;
-                TestButton.Text.Text = "Cancel Task";
-                ProgressionText.Text = $"Computing... Current Input = {input}";
-                RandomNumbersTask.Run(input, 2000);
+                RandomNumbersTask.Cancel();
                 return;
             }
 
-            RandomNumbersTask.Cancel();
+            // Initial Input
+            var input = RNG.Next(1000, 9999);
+            //Console.WriteLine($"INITIAL INPUT: {input}");
+
+            // This Code will Run Random Numbers Task 10 times at once. Previous tasks will automatically be cancelled.
+            for (var i = 0; i < 10; i++)
+            {
+                RandomNumbersTask.Run(input, 2000);
+                input = RNG.Next(1000, 9999);
+            }
+
+            // The previous tasks should've been cancelled and the output in the current task should match the final input.
+            //Console.WriteLine($"FINAL INPUT: {input}");
+            RandomNumbersTask.Run(input, 2000);
+        }
+
+        private void OnTaskStarted(object sender, TaskStartedEventArgs<int> args)
+        {
+            TestButton.Tint = Color.Red;
+            TestButton.Text.Text = "Cancel Task";
+            ProgressionText.Text = $"Computing... Current Input = {args.Input}";
         }
 
         /// <summary>

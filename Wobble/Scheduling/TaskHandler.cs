@@ -33,6 +33,16 @@ namespace Wobble.Scheduling
         public event EventHandler<TaskCancelledEventArgs<T>> OnCancelled;
 
         /// <summary>
+        ///     Event Invoked when the task gets run.
+        /// </summary>
+        public event EventHandler<TaskStartedEventArgs<T>> OnStarted;
+
+        /// <summary>
+        ///    SemaphoreSlim used to sync tasks with a delay.
+        /// </summary>
+        private SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
+
+        /// <summary>
         ///     Used to handle Task Cancellation.
         /// </summary>
         public CancellationTokenSource Source { get; private set; } = new CancellationTokenSource();
@@ -62,6 +72,7 @@ namespace Wobble.Scheduling
         /// </summary>
         /// <param name="input"></param>
         /// <param name="delay"></param>
+        /// <returns></returns>
         public CancellationToken Run(T input, int delay = 0)
         {
             // We want to automatically cancel the previous task and dispose the other
@@ -71,42 +82,56 @@ namespace Wobble.Scheduling
                 Source.Cancel();
                 Source.Dispose();
                 Source = new CancellationTokenSource();
-
-                IsCompleted = false;
-                IsCancelled = false;
-                IsRunning = true;
+                TaskRun(Source.Token, input, delay);
             }
 
-            var token = Source.Token;
-            Task.Run(async () =>
+            return Source.Token;
+        }
+
+        /// <summary>
+        ///     This method will run the task asynchronously.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="input"></param>
+        /// <param name="delay"></param>
+        private async void TaskRun(CancellationToken token, T input, int delay = 0)
+        {
+            try
             {
+                token.ThrowIfCancellationRequested();
+                await SemaphoreSlim.WaitAsync(token);
+
                 try
                 {
+                    IsCompleted = false;
+                    IsCancelled = false;
+                    IsRunning = true;
+
+                    OnStarted?.Invoke(typeof(TaskHandler<T, TResult>), new TaskStartedEventArgs<T>(input));
+
                     await Task.Delay(delay, token);
+                    var result = await Task.Factory.StartNew(() => Function(input, token), token);
 
-                    var result = Function(input, token);
+                    token.ThrowIfCancellationRequested();
+                    IsCompleted = true;
+                    IsRunning = false;
 
-                    lock (_lock)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        IsCompleted = true;
-                        IsRunning = false;
-
-                        OnCompleted?.Invoke(typeof(TaskHandler<T, TResult>),
-                            new TaskCompleteEventArgs<T, TResult>(input, result));
-                    }
+                    OnCompleted?.Invoke(typeof(TaskHandler<T, TResult>),
+                        new TaskCompleteEventArgs<T, TResult>(input, result));
                 }
-                catch (OperationCanceledException e)
+                finally
                 {
-                    OnSourceCancelled(input);
+                    SemaphoreSlim.Release();
                 }
-                catch (Exception e)
-                {
-                    Logger.Error(e, LogType.Runtime);
-                }
-            });
-
-            return token;
+            }
+            catch (OperationCanceledException e)
+            {
+                OnSourceCancelled(input);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, LogType.Runtime);
+            }
         }
 
         /// <summary>
