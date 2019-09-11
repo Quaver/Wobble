@@ -594,7 +594,11 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Removes all animations from the drawable
         /// </summary>
-        public void ClearAnimations() => Animations.Clear();
+        public void ClearAnimations()
+        {
+            lock (Animations)
+                Animations.Clear();
+        }
 
         /// <summary>
         ///     Moves the drawable to an x position.
