@@ -7,6 +7,7 @@ using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
+using Wobble.Input;
 using Wobble.Logging;
 using Wobble.Window;
 
@@ -599,6 +600,12 @@ namespace Wobble.Graphics
             lock (Animations)
                 Animations.Clear();
         }
+
+        /// <summary>
+        ///     Returns if the Drawable is currently hovered
+        /// </summary>
+        /// <returns></returns>
+        public bool IsHovered() => GraphicsHelper.RectangleContains(ScreenRectangle, MouseManager.CurrentState.Position);
 
         /// <summary>
         ///     Moves the drawable to an x position.
