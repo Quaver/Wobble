@@ -68,6 +68,12 @@ namespace Wobble.Bindables
             Value = defaultVal;
         }
 
+        /// <summary>
+        ///     Manually triggers the event that the bindable has changed. Normally this won't happen if the old value
+        ///     and new value are the same
+        /// </summary>
+        public void TriggerChangeEvent() => ValueChanged?.Invoke(this, new BindableValueChangedEventArgs<int>(Value, Value));
+
         /// <inheritdoc />
         /// <summary>
         ///     Prints a stringified value of the Bindable.
