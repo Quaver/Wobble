@@ -135,6 +135,10 @@ namespace Wobble.Graphics.Sprites
                     TargetY += ScrollSpeed;
                 else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
                     TargetY -= ScrollSpeed;
+                else if (KeyboardManager.IsUniqueKeyPress(Keys.PageUp))
+                    TargetY += ScrollSpeed * 5;
+                else if (KeyboardManager.IsUniqueKeyPress(Keys.PageDown))
+                    TargetY -= ScrollSpeed * 5;
             }
 
             // Make sure content container is clamped to the viewport.
