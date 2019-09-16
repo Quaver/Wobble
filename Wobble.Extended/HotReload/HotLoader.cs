@@ -68,13 +68,17 @@ namespace Wobble.Extended.HotReload
             Watcher = new FileSystemWatcher
             {
                 Path = ProjectDirectory,
-                NotifyFilter = NotifyFilters.Size,
+                NotifyFilter = NotifyFilters.LastWrite
+                                 | NotifyFilters.FileName
+                                 | NotifyFilters.DirectoryName
+                                 | NotifyFilters.Size,
                 Filter = filter,
                 EnableRaisingEvents = true,
                 IncludeSubdirectories = true
             };
 
             Watcher.Changed += OnChanged;
+            Watcher.Renamed += OnChanged;
         }
 
         /// <summary>
