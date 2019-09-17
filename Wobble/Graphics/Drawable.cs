@@ -233,6 +233,11 @@ namespace Wobble.Graphics
         public bool SetChildrenVisibility { get; set; }
 
         /// <summary>
+        ///     If the drawable will still draw even if it is off-screen
+        /// </summary>
+        public bool DrawIfOffScreen { get; set; }
+
+        /// <summary>
         ///     If the drawable has been disposed of already.
         /// </summary>
         public bool IsDisposed { get; private set; }
@@ -316,6 +321,9 @@ namespace Wobble.Graphics
         public virtual void Draw(GameTime gameTime)
         {
             if (!Visible)
+                return;
+
+            if (!RectangleF.Intersects(ScreenRectangle, new RectangleF(0, 0, WindowManager.Width, WindowManager.Height)) && !DrawIfOffScreen)
                 return;
 
             // Draw the children and set their order.
