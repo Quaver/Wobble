@@ -36,7 +36,8 @@ namespace Wobble.Graphics.Sprites.Text
             get => _text;
             set
             {
-                _text = value;
+                _text = value ?? "";
+
                 RefreshText();
             }
         }
