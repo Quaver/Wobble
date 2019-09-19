@@ -67,6 +67,11 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public int TimeToCompleteMiddleMouseScroll { get; set; } = 600;
 
+        /// <summary>
+        ///     If <see cref="MinScrollBarY"/> will be taken into account
+        /// </summary>
+        public bool IsMinScrollYEnabled { get; set; } = false;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -148,7 +153,7 @@ namespace Wobble.Graphics.Sprites
             var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
             Scrollbar.Y = percentage / 100 * (Height - Scrollbar.Height) - (Height - Scrollbar.Height);
 
-            if (Scrollbar.Y < MinScrollBarY)
+            if (IsMinScrollYEnabled && Scrollbar.Y < MinScrollBarY)
                 Scrollbar.Y = MinScrollBarY;
 
             // ReSharper disable once CompareOfFloatsByEqualityOperator
