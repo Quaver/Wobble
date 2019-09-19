@@ -24,6 +24,11 @@ namespace Wobble.Graphics.UI.Form
         public BindableInt BindedValue { get; }
 
         /// <summary>
+        ///     The active color of the slider
+        /// </summary>
+        public Sprite ActiveColor { get; }
+
+        /// <summary>
         ///     The progress slider image.
         /// </summary>
         public Sprite ProgressBall { get; }
@@ -81,6 +86,13 @@ namespace Wobble.Graphics.UI.Form
             Width = size.X;
             Height = size.Y;
             Tint = Color.White;
+
+            ActiveColor = new Sprite()
+            {
+                Parent = this,
+                Size = Size,
+                Tint = Color.White
+            };
 
             // Create the progress sliding thing.
             ProgressBall = new Sprite()
@@ -230,6 +242,8 @@ namespace Wobble.Graphics.UI.Form
                 ProgressBall.X = MathHelper.Lerp(ProgressBall.X,
                     NormalizedBallPosition * Width - ProgressBall.Width / 2,
                     (float) Math.Min(dt / 30, 1));
+
+                ActiveColor.Width = ProgressBall.X;
             }
         }
 
