@@ -83,5 +83,7 @@ namespace Wobble.Bindables
         /// <summary>
         /// </summary>
         public void Dispose() => UnHookEventHandlers();
+
+        public void TriggerChange() => ValueChanged?.Invoke(this, new BindableValueChangedEventArgs<T>(Value, Value));
     }
 }
