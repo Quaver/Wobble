@@ -101,6 +101,21 @@ namespace Wobble.Graphics.Sprites.Text
             Size = new ScalableVector2(width, height);
         }
 
+        /// <summary>
+        ///     Truncates the text with an elipsis according to <see cref="maxWidth"/>
+        /// </summary>
+        /// <param name="maxWidth"></param>
+        public void TruncateWithEllipsis(int maxWidth)
+        {
+            var originalText = Text;
+
+            while (Width > maxWidth)
+                Text = Text.Substring(0, Text.Length - 1);
+
+            if (Text != originalText)
+                Text += "...";
+        }
+
         public override void DrawToSpriteBatch()
         {
         }
