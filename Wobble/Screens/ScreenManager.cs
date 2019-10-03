@@ -42,10 +42,13 @@ namespace Wobble.Screens
                 return;
 
             // Destroy the screen. If specified to destroy in a task, it will do so.
-            if (destroyInTask)
-               Task.Run(() => Screens.Peek().Destroy());
-            else
-                Screens.Peek().Destroy();
+            if (Screens.Peek().AutomaticallyDestroyOnScreenSwitch)
+            {
+                if (destroyInTask)
+                    Task.Run(() => Screens.Peek().Destroy());
+                else
+                    Screens.Peek().Destroy();
+            }
 
             // Remove the screen.
             Screens.Pop();
