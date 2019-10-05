@@ -112,7 +112,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     The time since the cursor's visiblity has changed.
         /// </summary>
-        private double TimeSinceCursorVisibllityChanged { get; set; }
+        public double TimeSinceCursorVisibllityChanged { get; set; }
 
         /// <summary>
         ///     The amount of time in milliseconds it'll take before firing OnStoppedTyping

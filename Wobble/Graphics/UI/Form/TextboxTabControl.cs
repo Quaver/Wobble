@@ -58,8 +58,10 @@ namespace Wobble.Graphics.UI.Form
 
                 Textboxes[selectedTextbox].Focused = false;
                 Textboxes[selectedTextbox].Cursor.Visible = false;
+
                 Textboxes[selectedTextbox - 1].Focused = true;
                 Textboxes[selectedTextbox - 1].Cursor.Visible = true;
+                Textboxes[selectedTextbox - 1].TimeSinceCursorVisibllityChanged = 0;
 
                 return;
             }
@@ -70,8 +72,10 @@ namespace Wobble.Graphics.UI.Form
 
             Textboxes[selectedTextbox].Focused = false;
             Textboxes[selectedTextbox].Cursor.Visible = false;
+
             Textboxes[selectedTextbox + 1].Focused = true;
             Textboxes[selectedTextbox + 1].Cursor.Visible = true;
+            Textboxes[selectedTextbox + 1].TimeSinceCursorVisibllityChanged = 0;
         }
     }
 }
