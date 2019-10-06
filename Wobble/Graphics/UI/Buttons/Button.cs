@@ -191,12 +191,14 @@ namespace Wobble.Graphics.UI.Buttons
                 // If the button isn't the top layered button, then we'll want to consider it not hovered.
                 else
                 {
-                    if (IsHovered)
-                        LeftHover?.Invoke(this, EventArgs.Empty);
-
+                    var wasHovered = IsHovered;
                     IsHovered = false;
+
                     WaitingForClickRelease = false;
                     MouseButtonClicked = null;
+
+                    if (wasHovered)
+                        LeftHover?.Invoke(this, EventArgs.Empty);
 
                     OnNotHovered(gameTime);
                 }
@@ -205,12 +207,14 @@ namespace Wobble.Graphics.UI.Buttons
             // However,
             else
             {
-                if (IsHovered)
-                    LeftHover?.Invoke(this, EventArgs.Empty);
-
                 IsHoveredWithoutDrawOrder = false;
-                IsHovered = false;
                 WaitingForClickRelease = false;
+
+                var wasHovered = IsHovered;
+                IsHovered = false;
+
+                if (wasHovered)
+                    LeftHover?.Invoke(this, EventArgs.Empty);
 
                 OnNotHovered(gameTime);
             }
