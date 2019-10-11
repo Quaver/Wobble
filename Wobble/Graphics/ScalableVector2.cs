@@ -29,5 +29,8 @@
         }
 
         public override string ToString() => $"X: {X}, Y: {Y}";
+
+        public static ScalableVector2 operator /(ScalableVector2 lhs, float rhs)
+            => new ScalableVector2(lhs.X.Value / rhs, lhs.Y.Value / rhs, lhs.X.Scale, lhs.Y.Scale);
     }
 }

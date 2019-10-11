@@ -53,7 +53,7 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     The rectangle used to render the sprite.
         /// </summary>
-        public RectangleF RenderRectangle { get; private set; }
+        public RectangleF RenderRectangle { get; set; }
 
         /// <summary>
         ///     The tint this QuaverSprite will inherit.

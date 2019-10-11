@@ -95,6 +95,8 @@ namespace Wobble.Graphics.Sprites.Text
                 };
 
                 width = Math.Max(width, lineSprite.Width);
+
+                Font.Store.Size = FontSize;
                 height += Font.Store.GetLineHeight();
             }
 
