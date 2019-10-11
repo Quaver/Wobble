@@ -32,7 +32,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.Scaling, "Scaling"},
             {ScreenType.TextSizes, "Text Sizes"},
             {ScreenType.TaskHandler, "Task Handler"},
-            {ScreenType.SpriteTextPlus, "SpriteTextPlus"}
+            {ScreenType.SpriteTextPlus, "SpriteTextPlus"},
+            {ScreenType.ScheduledUpdates, "Scheduled Updates"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -60,6 +61,7 @@ namespace Wobble.Tests.Screens.Selection
         Scaling,
         TextSizes,
         TaskHandler,
-        SpriteTextPlus
+        SpriteTextPlus,
+        ScheduledUpdates
     }
 }
