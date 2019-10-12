@@ -22,6 +22,9 @@ namespace Wobble.Graphics.Sprites.Text
             get => _fontSize;
             set
             {
+                if (value == _fontSize)
+                    return;
+
                 _fontSize = value;
                 RefreshText();
             }
@@ -36,6 +39,9 @@ namespace Wobble.Graphics.Sprites.Text
             get => _text;
             set
             {
+                if (value == _text)
+                    return;
+
                 _text = value ?? "";
 
                 RefreshText();
