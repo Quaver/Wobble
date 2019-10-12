@@ -665,10 +665,11 @@ namespace Wobble.Graphics
                 if (ScheduledUpdates.Count == 0)
                     return;
 
-                foreach (var update in ScheduledUpdates)
-                    update.Invoke();
-
+                var updates = new List<Action>(ScheduledUpdates);
                 ScheduledUpdates.Clear();
+
+                foreach (var update in updates)
+                    update.Invoke();
             }
         }
 
