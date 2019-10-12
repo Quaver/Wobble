@@ -31,7 +31,6 @@ namespace Wobble.Tests.Screens.Tests.ScheduledUpdates
                 Y = 250
             };
 
-
             Task.Run(() =>
             {
                 while (!Scheduled.IsDisposed)
