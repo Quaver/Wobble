@@ -77,6 +77,11 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         /// <summary>
+        ///     The rendertarget used to cache the text
+        /// </summary>
+        private RenderTarget2D RenderTarget { get; set; }
+
+        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
@@ -84,6 +89,7 @@ namespace Wobble.Graphics.Sprites.Text
         public SpriteTextPlusLine(WobbleFontStore font, string text, float size = 0)
         {
             _scale = GetScale();
+
             _raw = new SpriteTextPlusLineRaw(font, text, size * _scale)
             {
                 SpriteBatchOptions = new SpriteBatchOptions
@@ -92,7 +98,9 @@ namespace Wobble.Graphics.Sprites.Text
                     BlendState = BlendState.AlphaBlend
                 }
             };
+
             SetSize();
+
             Image = WobbleAssets.WhiteBox;
             _dirty = true;
         }
@@ -122,6 +130,7 @@ namespace Wobble.Graphics.Sprites.Text
             Size = flooredSize / _scale;
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Update the Scale and schedules the component to be rendered into a texture if necessary.
         /// </summary>
@@ -137,6 +146,17 @@ namespace Wobble.Graphics.Sprites.Text
             }
 
             base.Update(gameTime);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public override void Destroy()
+        {
+            if (RenderTarget != null && !RenderTarget.IsDisposed)
+                RenderTarget.Dispose();
+
+            base.Destroy();
         }
 
         /// <summary>
@@ -170,13 +190,6 @@ namespace Wobble.Graphics.Sprites.Text
         private void Cache(GameTime gameTime)
         {
             // Logger.Debug($"Rendering line `{Text}`", LogType.Runtime);
-
-            if (Image != WobbleAssets.WhiteBox)
-            {
-                Image.Dispose();
-                Image = WobbleAssets.WhiteBox;
-            }
-
             try
             {
                 GameBase.Game.SpriteBatch.End();
@@ -198,17 +211,20 @@ namespace Wobble.Graphics.Sprites.Text
 
             Visible = true;
 
-            var renderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, pixelWidth, pixelHeight, false,
+            if (RenderTarget != null && !RenderTarget.IsDisposed)
+                RenderTarget?.Dispose();
+
+            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, pixelWidth, pixelHeight, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
-            GameBase.Game.GraphicsDevice.SetRenderTarget(renderTarget);
+            GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
             GameBase.Game.GraphicsDevice.Clear(Color.TransparentBlack);
             _raw.Draw(gameTime);
             GameBase.Game.SpriteBatch.End();
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(null);
 
-            Image = renderTarget;
+            Image = RenderTarget;
         }
     }
 }
