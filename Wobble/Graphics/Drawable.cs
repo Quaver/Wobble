@@ -277,12 +277,20 @@ namespace Wobble.Graphics
         /// </summary>
         public PrimitiveLineBatch Border { get; private set; }
 
+        /// <summary>
+        ///    A list of updates that are scheduled to be run at the beginning of <see cref="Update"/>.
+        ///    Should be used for scheduling UI updates from a separate thread.
+        /// </summary>
+        private List<Action> ScheduledUpdates { get; } = new List<Action>();
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
+            RunScheduledUpdates();
+
             // Increase the total amount of drawables that were drawn and set the order to the current
             // total.
             TotalDrawn++;
@@ -614,6 +622,56 @@ namespace Wobble.Graphics
         /// </summary>
         /// <returns></returns>
         public bool IsHovered() => GraphicsHelper.RectangleContains(ScreenRectangle, MouseManager.CurrentState.Position);
+
+        /// <summary>
+        ///     Removes all previously scheduled updates, and schedules a new one to run in the next frame
+        /// </summary>
+        /// <param name="action"></param>
+        public void ScheduleUpdate(Action action)
+        {
+            lock (ScheduledUpdates)
+            {
+                ScheduledUpdates.Clear();
+                ScheduledUpdates.Add(action);
+            }
+        }
+
+        /// <summary>
+        ///     Schedules a new update to be run in the next frame, but does not remove previously scheduled updates.
+        /// </summary>
+        /// <param name="action"></param>
+        public void AddScheduledUpdate(Action action)
+        {
+            lock (ScheduledUpdates)
+                ScheduledUpdates.Add(action);
+        }
+
+        /// <summary>
+        ///     Removes all
+        /// </summary>
+        public void RemoveScheduledUpdates()
+        {
+            lock (ScheduledUpdates)
+                ScheduledUpdates.Clear();
+        }
+
+        /// <summary>
+        ///     Runs all updates that are scheduled for this drawable during <see cref="Update"/>
+        /// </summary>
+        private void RunScheduledUpdates()
+        {
+            lock (ScheduledUpdates)
+            {
+                if (ScheduledUpdates.Count == 0)
+                    return;
+
+                var updates = new List<Action>(ScheduledUpdates);
+                ScheduledUpdates.Clear();
+
+                foreach (var update in updates)
+                    update.Invoke();
+            }
+        }
 
         /// <summary>
         ///     Moves the drawable to an x position.

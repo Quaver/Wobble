@@ -34,17 +34,21 @@ namespace Wobble.Graphics
             }
         }
 
-        public Matrix TransformMatrix { get; set; } = WindowManager.Scale;
+        public bool DoNotScale = false;
 
         /// <summary>
         ///     Begins the spritebatch with the specified settings.
         /// </summary>
         public void Begin()
         {
+            Matrix? matrix = WindowManager.Scale;
+            if (DoNotScale)
+                matrix = null;
+
             // ReSharper disable once ArrangeMethodOrOperatorBody
             try
             {
-                GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, WindowManager.Scale);
+                GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix);
                 return;
             }
             catch (Exception e)
@@ -52,7 +56,7 @@ namespace Wobble.Graphics
                 GameBase.Game.SpriteBatch.End();
             }
 
-            GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, WindowManager.Scale);
+            GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix);
         }
     }
 }

@@ -77,12 +77,15 @@ namespace Wobble.Graphics.Sprites.Text
             SetChildrenAlpha = true;
         }
 
+        /// <summary>
+        /// </summary>
         private void RefreshText()
         {
             for (var i = Children.Count - 1; i >= 0; i--)
                 Children[i].Destroy();
 
             float width = 0, height = 0;
+
             foreach (var line in Text.Split('\n'))
             {
                 var lineSprite = new SpriteTextPlusLine(Font, line, FontSize)
@@ -95,6 +98,8 @@ namespace Wobble.Graphics.Sprites.Text
                 };
 
                 width = Math.Max(width, lineSprite.Width);
+
+                Font.Store.Size = FontSize;
                 height += Font.Store.GetLineHeight();
             }
 
