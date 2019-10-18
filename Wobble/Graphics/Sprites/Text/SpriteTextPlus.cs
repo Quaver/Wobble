@@ -70,6 +70,23 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         /// <summary>
+        ///     The alignment of the text
+        /// </summary>
+        private TextAlignment _textAlignment = TextAlignment.LeftToRight;
+        public TextAlignment TextAlignment
+        {
+            get => _textAlignment;
+            set
+            {
+                if (value == _textAlignment)
+                    return;
+
+                _textAlignment = value;
+                RefreshText();
+            }
+        }
+
+        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
@@ -97,10 +114,11 @@ namespace Wobble.Graphics.Sprites.Text
                 var lineSprite = new SpriteTextPlusLine(Font, line, FontSize)
                 {
                     Parent = this,
+                    Alignment = ConvertTextAlignmment(),
                     Y = height,
                     UsePreviousSpriteBatchOptions = true,
                     Tint = Tint,
-                    Alpha = Alpha
+                    Alpha = Alpha,
                 };
 
                 width = Math.Max(width, lineSprite.Width);
@@ -129,6 +147,25 @@ namespace Wobble.Graphics.Sprites.Text
 
         public override void DrawToSpriteBatch()
         {
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private Alignment ConvertTextAlignmment()
+        {
+            switch (TextAlignment)
+            {
+                case TextAlignment.LeftToRight:
+                    return Alignment.TopLeft;
+                case TextAlignment.Center:
+                    return Alignment.TopCenter;
+                case TextAlignment.RightToLeft:
+                    return Alignment.TopRight;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
