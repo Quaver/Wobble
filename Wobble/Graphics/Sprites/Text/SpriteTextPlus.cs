@@ -114,7 +114,7 @@ namespace Wobble.Graphics.Sprites.Text
                 var lineSprite = new SpriteTextPlusLine(Font, line, FontSize)
                 {
                     Parent = this,
-                    Alignment = ConvertTextAlignmment(),
+                    Alignment = ConvertTextAlignment(),
                     Y = height,
                     UsePreviousSpriteBatchOptions = true,
                     Tint = Tint,
@@ -153,7 +153,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private Alignment ConvertTextAlignmment()
+        private Alignment ConvertTextAlignment()
         {
             switch (TextAlignment)
             {
