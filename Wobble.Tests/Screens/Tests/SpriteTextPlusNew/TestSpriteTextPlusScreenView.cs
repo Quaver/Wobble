@@ -47,6 +47,40 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
             };
 
             cyrillic.AddBorder(Color.Cyan, 2);
+
+            var ltr = new SpriteTextPlus(Font, "This text is aligned from\nleft to right", 22)
+            {
+                Parent = Container,
+                Alignment = Alignment.MidLeft,
+                TextAlignment = TextAlignment.Left,
+                X = 20,
+                Y = 100
+            };
+
+            ltr.AddBorder(Color.White, 2);
+
+            // ReSharper disable once ObjectCreationAsStatement
+            var rtl = new SpriteTextPlus(Font, "This text is aligned from\nright to left", 22)
+            {
+                Parent = Container,
+                Alignment = Alignment.MidRight,
+                TextAlignment = TextAlignment.Right,
+                X = -20,
+                Y = 100
+            };
+
+            rtl.AddBorder(Color.White, 2);
+
+            // ReSharper disable once ObjectCreationAsStatement
+            var center = new SpriteTextPlus(Font, "This text is aligned\nin the center", 22)
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                TextAlignment = TextAlignment.Center,
+                Y = 100
+            };
+
+            center.AddBorder(Color.White, 2);
         }
 
         /// <inheritdoc />
