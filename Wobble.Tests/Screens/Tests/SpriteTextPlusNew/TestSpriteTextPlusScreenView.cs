@@ -52,7 +52,7 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
             {
                 Parent = Container,
                 Alignment = Alignment.MidLeft,
-                TextAlignment = TextAlignment.Left
+                TextAlignment = TextAlignment.Left,
                 X = 20,
                 Y = 100
             };
