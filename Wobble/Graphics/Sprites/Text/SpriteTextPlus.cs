@@ -72,7 +72,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// <summary>
         ///     The alignment of the text
         /// </summary>
-        private TextAlignment _textAlignment = TextAlignment.LeftToRight;
+        private TextAlignment _textAlignment = TextAlignment.Left;
         public TextAlignment TextAlignment
         {
             get => _textAlignment;
@@ -157,11 +157,11 @@ namespace Wobble.Graphics.Sprites.Text
         {
             switch (TextAlignment)
             {
-                case TextAlignment.LeftToRight:
+                case TextAlignment.Left:
                     return Alignment.TopLeft;
                 case TextAlignment.Center:
                     return Alignment.TopCenter;
-                case TextAlignment.RightToLeft:
+                case TextAlignment.Right:
                     return Alignment.TopRight;
                 default:
                     throw new ArgumentOutOfRangeException();

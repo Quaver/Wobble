@@ -2,8 +2,8 @@ namespace Wobble.Graphics.Sprites.Text
 {
     public enum TextAlignment
     {
-        LeftToRight,
+        Left,
         Center,
-        RightToLeft
+        Right
     }
 }
