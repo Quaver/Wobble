@@ -658,7 +658,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Runs all updates that are scheduled for this drawable during <see cref="Update"/>
         /// </summary>
-        private void RunScheduledUpdates()
+        protected void RunScheduledUpdates()
         {
             lock (ScheduledUpdates)
             {
