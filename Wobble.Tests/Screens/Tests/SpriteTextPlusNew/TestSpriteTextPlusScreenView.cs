@@ -20,6 +20,8 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
         /// </summary>
         private WobbleFontStore Font { get; }
 
+        private SpriteTextPlus wrapped;
+
         /// <summary>
         /// </summary>
         /// <param name="screen"></param>
@@ -31,7 +33,7 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
                 48)
             {
                 Parent = Container,
-                Alignment = Alignment.MidCenter,
+                Alignment = Alignment.MidLeft,
             };
 
             text.AddBorder(Color.Crimson, 2);
@@ -81,6 +83,16 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
             };
 
             center.AddBorder(Color.White, 2);
+
+            wrapped = new SpriteTextPlus(Font,
+                "This text is too long and will be wrapped. Also AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA.\n\n     Hello      there         as well          !         ",
+                22)
+            {
+                Parent = Container,
+                Alignment = Alignment.TopLeft,
+                TextAlignment = TextAlignment.Left,
+                MaxWidth = 100
+            };
         }
 
         /// <inheritdoc />
@@ -89,6 +101,13 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            if (gameTime.TotalGameTime.TotalSeconds % 6 > 3)
+                wrapped.MaxWidth = 1 + 899 * (float) (gameTime.TotalGameTime.TotalSeconds % 3) / 3;
+            else
+                wrapped.MaxWidth = 1 + 899 * (1 - (float) (gameTime.TotalGameTime.TotalSeconds % 3) / 3);
+
+            wrapped.X = Container.Width - wrapped.MaxWidth.Value;
+
             Container?.Update(gameTime);
         }
 
