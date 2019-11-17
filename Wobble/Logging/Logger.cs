@@ -140,8 +140,9 @@ namespace Wobble.Logging
             }
 
 #if DEBUG
-            if (DisplayMessages)
-                LogManager.AddLog(log, level);
+            // https://github.com/Quaver/Quaver/issues/1269
+            //if (DisplayMessages)
+            //    LogManager.AddLog(log, level);
 #endif
         }
 
