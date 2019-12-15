@@ -11,6 +11,7 @@ using Wobble.Audio;
 using Wobble.Discord;
 using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
+using Wobble.Graphics.Sprites;
 using Wobble.Input;
 using Wobble.IO;
 using Wobble.Logging;
@@ -83,6 +84,11 @@ namespace Wobble
         public List<Action> ScheduledRenderTargetDraws { get; } = new List<Action>();
 
         /// <summary>
+        ///     The sprite used for clearing the alpha channel. Its alpha must be 1 (fully opaque) and its color does not matter.
+        /// </summary>
+        private readonly Sprite alphaOneSprite;
+
+        /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
         protected WobbleGame()
@@ -104,6 +110,21 @@ namespace Wobble
                 // Required for libbass_fx.so to load properly on Linux and not crash (see https://github.com/ppy/osu/issues/2852).
                 NativeLibrary.Load("libbass.so", NativeLibrary.LoadFlags.RTLD_LAZY | NativeLibrary.LoadFlags.RTLD_GLOBAL);
             }
+
+            alphaOneSprite = new Sprite
+            {
+                SpriteBatchOptions = new SpriteBatchOptions
+                {
+                    // We want to copy the source alpha and leave the destination color.
+                    BlendState = new BlendState
+                    {
+                        AlphaSourceBlend = Blend.One,
+                        AlphaDestinationBlend = Blend.Zero,
+                        ColorSourceBlend = Blend.Zero,
+                        ColorDestinationBlend = Blend.One
+                    }
+                }
+            };
         }
 
         /// <summary>
@@ -200,6 +221,21 @@ namespace Wobble
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
+        }
+
+        /// <summary>
+        ///     Resets the backbuffer alpha channel to 1 (fully opaque).
+        /// </summary>
+        /// <param name="gameTime"></param>
+        protected void ClearAlphaChannel(GameTime gameTime)
+        {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (alphaOneSprite.Width != WindowManager.VirtualScreen.X
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                || alphaOneSprite.Height != WindowManager.VirtualScreen.Y)
+                alphaOneSprite.Size = new ScalableVector2(WindowManager.VirtualScreen.X, WindowManager.VirtualScreen.Y);
+
+            alphaOneSprite.Draw(gameTime);
         }
     }
 }
