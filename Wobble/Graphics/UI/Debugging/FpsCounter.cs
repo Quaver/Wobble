@@ -7,7 +7,7 @@ using Wobble.Graphics.Sprites;
 
 namespace Wobble.Graphics.UI.Debugging
 {
-    public class FpsCounter : Sprite
+    public class FpsCounter : Container
     {
         /// <summary>
         ///     The current frame rate.
@@ -20,30 +20,51 @@ namespace Wobble.Graphics.UI.Debugging
         private int FrameCounter { get; set; }
 
         /// <summary>
-        ///     The amount of time elapsed so we can begin counting each second.
-        /// </summary>
-        private TimeSpan ElapsedTime { get; set; } = TimeSpan.Zero;
-
-        /// <summary>
         ///     The SpriteText that displays the FPS value.
         /// </summary>
         public SpriteTextBitmap TextFps { get; }
 
         /// <summary>
-        ///     The last FPS recorded, so we know if to update the counter.
+        ///     The current update rate.
         /// </summary>
-        private int LastRecordedFps { get; set; }
+        public int UpdateRate { get; private set; }
+
+        /// <summary>
+        ///     The amount of updates that we currently have.
+        /// </summary>
+        private int UpdateCounter { get; set; }
+
+        /// <summary>
+        ///     The SpriteText that displays the UPS value.
+        /// </summary>
+        public SpriteTextBitmap TextUps { get; }
+
+        /// <summary>
+        ///     The amount of time elapsed so we can begin counting each second.
+        /// </summary>
+        private TimeSpan ElapsedTime { get; set; } = TimeSpan.Zero;
 
         /// <inheritdoc />
         /// <summary>
         ///     Ctor
         /// </summary>
-        public FpsCounter(BitmapFont font, int size) => TextFps = new SpriteTextBitmap(font, "0 FPS", false)
+        public FpsCounter(BitmapFont font, int size)
         {
-            Parent = this,
-            Alignment = Alignment.MidCenter,
-            FontSize = size
-        };
+            TextFps = new SpriteTextBitmap(font, "0 FPS", false)
+            {
+                Parent = this,
+                Alignment = Alignment.TopRight,
+                FontSize = size
+            };
+
+            TextUps = new SpriteTextBitmap(font, "0 UPS", false)
+            {
+                Parent = this,
+                Alignment = Alignment.TopRight,
+                FontSize = size,
+                Y = TextFps.Size.Y.Value
+            };
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -53,23 +74,32 @@ namespace Wobble.Graphics.UI.Debugging
         {
             ElapsedTime += gameTime.ElapsedGameTime;
 
-            if (ElapsedTime <= TimeSpan.FromSeconds(1))
+            if (ElapsedTime > TimeSpan.FromSeconds(1))
             {
-                base.Update(gameTime);
-                return;
+                ElapsedTime -= TimeSpan.FromSeconds(1);
+
+                var oldFrameRate = FrameRate;
+                FrameRate = FrameCounter;
+                FrameCounter = 0;
+                if (oldFrameRate != FrameRate)
+                    TextFps.Text = $"{FrameRate} FPS";
+
+                var oldUpdateRate = UpdateRate;
+                UpdateRate = UpdateCounter;
+                UpdateCounter = 0;
+                if (oldUpdateRate != UpdateRate)
+                    TextUps.Text = $"{UpdateRate} UPS";
+
+                TextUps.Y = TextFps.Y + TextFps.Size.Y.Value;
+                Size = new ScalableVector2(
+                    Math.Max(TextFps.Size.X.Value, TextUps.Size.X.Value),
+                    TextFps.Size.Y.Value + TextUps.Size.Y.Value
+                );
             }
 
-            ElapsedTime -= TimeSpan.FromSeconds(1);
-
-            var oldFrameRate = FrameRate;
-            FrameRate = FrameCounter;
-            FrameCounter = 0;
-
-            if (oldFrameRate != FrameRate)
-            {
-                TextFps.Text = $"{FrameRate} FPS";
-                Size = TextFps.Size;
-            }
+            // The frame counter updates after the text is refreshed (since Draw happens after Update),
+            // so update the update counter after the text is refreshed, too.
+            UpdateCounter++;
 
             base.Update(gameTime);
         }
