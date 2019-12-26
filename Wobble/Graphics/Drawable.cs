@@ -290,12 +290,6 @@ namespace Wobble.Graphics
         public virtual void Update(GameTime gameTime)
         {
             RunScheduledUpdates();
-
-            // Increase the total amount of drawables that were drawn and set the order to the current
-            // total.
-            TotalDrawn++;
-            DrawOrder = TotalDrawn;
-
             PerformTransformations(gameTime);
 
             // Update all of the contained children.
@@ -303,8 +297,8 @@ namespace Wobble.Graphics
             {
                 try
                 {
-                    TotalDrawn++;
-                    Children[i].DrawOrder = TotalDrawn;
+                    //TotalDrawn++;
+                    //Children[i].DrawOrder = TotalDrawn;
                     Children[i].Update(gameTime);
                 }
                 // Handle
@@ -335,6 +329,11 @@ namespace Wobble.Graphics
                 return;
 
             // Draw the children and set their order.
+            // Increase the total amount of drawables that were drawn and set the order to the current
+            // total.
+            TotalDrawn++;
+            DrawOrder = TotalDrawn;
+
             try
             {
                 for (var i = 0; i < Children.Count; i++)
