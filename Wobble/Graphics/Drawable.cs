@@ -466,7 +466,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Performs all of the Animations in the queue.
         /// </summary>
-        private void PerformTransformations(GameTime gameTime)
+        public void PerformTransformations(GameTime gameTime)
         {
             for (var i = 0; i < AnimationsToRemove.Count; i++)
                 Animations.Remove(AnimationsToRemove[i]);
