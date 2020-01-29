@@ -199,7 +199,22 @@ namespace Wobble.Audio.Tracks
 
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
             Stream = Bass.CreateStream(data.ToArray(), 0, data.Length, flags);
+            AfterLoad();
+        }
 
+        /// <summary>
+        ///     Loads an audio track from a uri (internet resource)
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="preview"></param>
+        /// <param name="autoDispose"></param>
+        public AudioTrack(Uri uri, bool preview = false, bool autoDispose = true)
+        {
+            IsPreview = preview;
+            AutoDispose = autoDispose;
+
+            var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
+            Stream = Bass.CreateStream(uri.ToString(), 0, flags, null);
             AfterLoad();
         }
 
