@@ -113,6 +113,10 @@ namespace Wobble.Graphics.Sprites.Text
         {
             var scale = WindowManager.ScreenScale.X;
             Debug.Assert(scale > 0, "You're setting up text too early (WindowManager.ScreenScale.X is 0).");
+
+            if (GameBase.Game.Graphics.PreferredBackBufferWidth < 1600)
+                return scale * 2;
+
             return scale;
         }
 
