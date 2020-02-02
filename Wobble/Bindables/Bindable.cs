@@ -85,5 +85,11 @@ namespace Wobble.Bindables
         public void Dispose() => UnHookEventHandlers();
 
         public void TriggerChange() => ValueChanged?.Invoke(this, new BindableValueChangedEventArgs<T>(Value, Value));
+
+        /// <summary>
+        ///     Allows changing a bindable's value without triggering <see cref="ValueChanged"/>.
+        /// </summary>
+        /// <param name="val"></param>
+        public void ChangeWithoutTrigger(T val) => _value = val;
     }
 }
