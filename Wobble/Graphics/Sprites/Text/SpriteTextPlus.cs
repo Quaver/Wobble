@@ -155,7 +155,7 @@ namespace Wobble.Graphics.Sprites.Text
                         var lineBeforeSpace = line.Substring(0, spacePosition);
                         var sprite = new SpriteTextPlusLine(Font, lineBeforeSpace, FontSize);
                         var lineWidth = sprite.Width;
-                        sprite.Dispose();
+                        sprite.Destroy();
                         return lineWidth <= MaxWidth;
                     });
 
@@ -184,11 +184,11 @@ namespace Wobble.Graphics.Sprites.Text
                             // If we're left with 1 character, just go with it even if we're over MaxWidth.
                             if (sprite.Width > MaxWidth && i > 1)
                             {
-                                sprite.Dispose();
+                                sprite.Destroy();
                                 continue;
                             }
 
-                            lineSprite.Dispose();
+                            lineSprite.Destroy();
                             lineSprite = sprite;
                             nextLineStart = i;
                             break;
@@ -197,7 +197,7 @@ namespace Wobble.Graphics.Sprites.Text
                     else
                     {
                         var lineBeforeSpace = line.Substring(0, spaces[splitOnIndex]);
-                        lineSprite.Dispose();
+                        lineSprite.Destroy();
                         lineSprite = new SpriteTextPlusLine(Font, lineBeforeSpace, FontSize);
                         nextLineStart = spaces[splitOnIndex] + 1; // Skip over the space that we replaced.
                     }
