@@ -160,6 +160,8 @@ namespace Wobble.Graphics.Sprites.Text
             if (RenderTarget != null && !RenderTarget.IsDisposed)
                 RenderTarget.Dispose();
 
+            Image = null;
+
             base.Destroy();
         }
 
@@ -193,7 +195,9 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="gameTime"></param>
         private void Cache(GameTime gameTime)
         {
-            // Logger.Debug($"Rendering line `{Text}`", LogType.Runtime);
+            if (IsDisposed)
+                return;
+
             try
             {
                 GameBase.Game.SpriteBatch.End();
