@@ -35,7 +35,7 @@ namespace Wobble.Graphics.ImGUI
         {
             if (ImGui.GetCurrentContext() != Renderer.Context)
                 ImGui.SetCurrentContext(Renderer.Context);
-            
+
             Renderer.BeforeLayout(gameTime);
             RenderImguiLayout();
             Renderer.AfterLayout();
@@ -44,7 +44,7 @@ namespace Wobble.Graphics.ImGUI
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public void Destroy() => Renderer.Dispose();
+        public virtual void Destroy() => Renderer.Dispose();
 
         /// <summary>
         ///     Renders the imgui layout
