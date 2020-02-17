@@ -42,6 +42,11 @@ namespace Wobble.Audio.Tracks
         bool HasPlayed { get; }
 
         /// <summary>
+        ///     Event invoked when the track has been seeked
+        /// </summary>
+        event EventHandler<TrackSeekedEventArgs> Seeked;
+
+        /// <summary>
         ///     The time of the audio track
         /// </summary>
         double Time { get; }

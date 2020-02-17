@@ -46,6 +46,11 @@ namespace Wobble.Audio.Tracks
         /// <inheritdoc />
         /// <summary>
         /// </summary>
+        public event EventHandler<TrackSeekedEventArgs> Seeked;
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
         public double Time => CurrentTime;
 
         /// <inheritdoc />
@@ -138,7 +143,12 @@ namespace Wobble.Audio.Tracks
         public void Seek(double position)
         {
             if (position >= 0 || position < Length)
+            {
+                var previous = CurrentTime;
                 CurrentTime = position;
+
+                Seeked?.Invoke(this, new TrackSeekedEventArgs(previous, CurrentTime));
+            }
             else
                 throw new AudioEngineException("CAnnot seek below 0 or above the track's length");
         }
@@ -146,6 +156,10 @@ namespace Wobble.Audio.Tracks
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public void Dispose() => IsDisposed = true;
+        public void Dispose()
+        {
+            IsDisposed = true;
+            Seeked = null;
+        }
     }
 }

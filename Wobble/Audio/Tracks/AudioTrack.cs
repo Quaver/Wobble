@@ -72,6 +72,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         public bool HasPlayed { get; private set; }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public event EventHandler<TrackSeekedEventArgs> Seeked;
+
         /// <summary>
         ///     Returns if the audio stream is currently playing.
         /// </summary>
@@ -231,8 +236,13 @@ namespace Wobble.Audio.Tracks
             if (IsPlaying)
                 throw new AudioEngineException("Cannot play track if it is already playing.");
 
+            var previous = Time;
+
             Bass.ChannelPlay(Stream);
             HasPlayed = true;
+
+            if (Time < previous)
+                Seeked?.Invoke(this, new TrackSeekedEventArgs(previous, Time));
         }
 
         /// <inheritdoc />
@@ -285,7 +295,10 @@ namespace Wobble.Audio.Tracks
             if (pos > Length || pos < -1)
                 throw new AudioEngineException("You can only seek to a position greater than -1 and below its length.");
 
+            var previous = Time;
             Bass.ChannelSetPosition(Stream, Bass.ChannelSeconds2Bytes(Stream, pos / 1000d));
+
+            Seeked?.Invoke(this, new TrackSeekedEventArgs(previous, Time));
         }
 
         /// <summary>
@@ -321,6 +334,7 @@ namespace Wobble.Audio.Tracks
             Bass.StreamFree(Stream);
             Stream = 0;
             IsDisposed = true;
+            Seeked = null;
 
             AudioManager.Tracks.Remove(this);
         }
