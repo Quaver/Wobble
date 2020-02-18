@@ -229,17 +229,9 @@ namespace Wobble.Graphics.ImGUI
 
             var io = ImGui.GetIO();
 
-            // MonoGame-specific //////////////////////
-            var offset = .5f;
-            ///////////////////////////////////////////
-
-            // FNA-specific ///////////////////////////
-            //var offset = 0f;
-            ///////////////////////////////////////////
-
             Effect.World = Matrix.Identity;
             Effect.View = Matrix.Identity;
-            Effect.Projection = Matrix.CreateOrthographicOffCenter(offset, io.DisplaySize.X + offset, io.DisplaySize.Y + offset, offset, -1f, 1f);
+            Effect.Projection = Matrix.CreateOrthographicOffCenter(0, io.DisplaySize.X, io.DisplaySize.Y, 0, -1f, 1f);
             Effect.TextureEnabled = true;
             Effect.Texture = texture;
             Effect.VertexColorEnabled = true;
