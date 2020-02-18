@@ -13,9 +13,9 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        protected SpriteImGui()
+        protected SpriteImGui(bool destroyContext = true)
         {
-            Renderer = new ImGuiRenderer();
+            Renderer = new ImGuiRenderer(destroyContext);
             Renderer.RebuildFontAtlas();
         }
 

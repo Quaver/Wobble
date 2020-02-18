@@ -77,8 +77,13 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        public ImGuiRenderer()
+        private bool DestroyContext { get; }
+
+        /// <summary>
+        /// </summary>
+        public ImGuiRenderer(bool destroyContext = true)
         {
+            DestroyContext = destroyContext;
             Context = ImGui.CreateContext();
             ImGui.SetCurrentContext(Context);
 
@@ -436,7 +441,9 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void Dispose()
         {
-            ImGui.DestroyContext(Context);
+            if (DestroyContext)
+                ImGui.DestroyContext(Context);
+
             Effect?.Dispose();
             RasterizerState?.Dispose();
             VertexBuffer?.Dispose();
