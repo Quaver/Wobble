@@ -13,9 +13,15 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        protected SpriteImGui(bool destroyContext = true)
+        protected ImGuiOptions Options { get; }
+
+        /// <summary>
+        /// </summary>
+        protected SpriteImGui(bool destroyContext = true, ImGuiOptions options = null)
         {
-            Renderer = new ImGuiRenderer(destroyContext);
+            Options = options;
+
+            Renderer = new ImGuiRenderer(destroyContext, options);
             Renderer.RebuildFontAtlas();
         }
 
@@ -36,9 +42,16 @@ namespace Wobble.Graphics.ImGUI
             if (ImGui.GetCurrentContext() != Renderer.Context)
                 ImGui.SetCurrentContext(Renderer.Context);
 
-            Renderer.BeforeLayout(gameTime);
-            RenderImguiLayout();
-            Renderer.AfterLayout();
+            try
+            {
+                Renderer.BeforeLayout(gameTime);
+                RenderImguiLayout();
+                Renderer.AfterLayout();
+            }
+            catch (Exception e)
+            {
+                // ignored
+            }
         }
 
         /// <inheritdoc />

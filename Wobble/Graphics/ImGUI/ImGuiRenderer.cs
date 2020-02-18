@@ -81,9 +81,19 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        public ImGuiRenderer(bool destroyContext = true)
+        private ImGuiOptions Options { get; }
+
+        /// <summary>
+        /// </summary>
+        public ImFontPtr DefaultFontPtr { get; private set; }
+
+        /// <summary>
+        /// </summary>
+        public ImGuiRenderer(bool destroyContext = true, ImGuiOptions options = null)
         {
             DestroyContext = destroyContext;
+            Options = options;
+
             Context = ImGui.CreateContext();
             ImGui.SetCurrentContext(Context);
 
@@ -113,6 +123,16 @@ namespace Wobble.Graphics.ImGUI
         {
             // Get font texture from ImGui
             var io = ImGui.GetIO();
+
+            if (Options != null)
+            {
+                if (Options.LoadDefaultFont)
+                    DefaultFontPtr = io.Fonts.AddFontDefault();
+
+                foreach (var font in Options.Fonts)
+                    font.Context = io.Fonts.AddFontFromFileTTF(font.Path, font.Size);
+            }
+
             io.Fonts.GetTexDataAsRGBA32(out var pixelData, out var width, out var height, out var bytesPerPixel);
 
             // Copy the data to a managed array
@@ -124,7 +144,8 @@ namespace Wobble.Graphics.ImGUI
             tex2D.SetData(pixels);
 
             // Should a texture already have been build previously, unbind it first so it can be deallocated
-            if (FontTextureId.HasValue) UnbindTexture(FontTextureId.Value);
+            if (FontTextureId.HasValue)
+                UnbindTexture(FontTextureId.Value);
 
             // Bind the new texture to an ImGui-friendly id
             FontTextureId = BindTexture(tex2D);
