@@ -17,7 +17,18 @@ namespace Wobble.Audio.Tracks
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public float Rate { get; set; } = 1.0f;
+        private float _rate = 1.0f;
+        public float Rate
+        {
+            get => _rate;
+            set
+            {
+                var previous = _rate;
+                _rate = value;
+                
+                RateChanged?.Invoke(this, new TrackRateChangedEventArgs(previous, value));
+            }
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -47,6 +58,11 @@ namespace Wobble.Audio.Tracks
         /// <summary>
         /// </summary>
         public event EventHandler<TrackSeekedEventArgs> Seeked;
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public event EventHandler<TrackRateChangedEventArgs> RateChanged;
 
         /// <inheritdoc />
         /// <summary>
@@ -160,6 +176,7 @@ namespace Wobble.Audio.Tracks
         {
             IsDisposed = true;
             Seeked = null;
+            RateChanged = null;
         }
     }
 }

@@ -47,6 +47,11 @@ namespace Wobble.Audio.Tracks
         event EventHandler<TrackSeekedEventArgs> Seeked;
 
         /// <summary>
+        ///     Event invoked when the track's rate has changed
+        /// </summary>
+        event EventHandler<TrackRateChangedEventArgs> RateChanged;
+
+        /// <summary>
         ///     The time of the audio track
         /// </summary>
         double Time { get; }

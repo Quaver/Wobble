@@ -77,6 +77,11 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         public event EventHandler<TrackSeekedEventArgs> Seeked;
 
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public event EventHandler<TrackRateChangedEventArgs> RateChanged;
+
         /// <summary>
         ///     Returns if the audio stream is currently playing.
         /// </summary>
@@ -124,8 +129,12 @@ namespace Wobble.Audio.Tracks
                 if (value <= 0)
                     throw new ArgumentException("Cannot set rate to 0 or below.");
 
+                var previous = _rate;
+
                 _rate = value;
                 ApplyRate(IsPitched);
+
+                RateChanged?.Invoke(this, new TrackRateChangedEventArgs(previous, _rate));
             }
         }
 
@@ -335,6 +344,7 @@ namespace Wobble.Audio.Tracks
             Stream = 0;
             IsDisposed = true;
             Seeked = null;
+            RateChanged = null;
 
             AudioManager.Tracks.Remove(this);
         }
