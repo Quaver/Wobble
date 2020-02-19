@@ -51,6 +51,7 @@ namespace Wobble.Bindables
                 ValueChanged += action;
 
             Default = defaultVal;
+            Value = defaultVal;
         }
 
         /// <summary>
@@ -65,6 +66,7 @@ namespace Wobble.Bindables
 
             Name = name;
             Default = defaultVal;
+            Value = Default;
         }
 
         /// <summary>
