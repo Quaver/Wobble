@@ -99,9 +99,9 @@ namespace Wobble.Extended.HotReload
                 {
                     // We found our gamelogic type, set our dynamic types logic, and state
                     var oldScreen = Screen;
+                    oldScreen?.Destroy();
 
                     Screen = Activator.CreateInstance(type);
-                    oldScreen?.Destroy();
                     break;
                 }
             }
