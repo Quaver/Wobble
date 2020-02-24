@@ -118,7 +118,14 @@ namespace Wobble.Graphics
         public float X
         {
             get => Position.X.Value;
-            set => Position = new ScalableVector2(value, Position.Y.Value, Position.X.Scale, Position.Y.Scale);
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (value == Position.X.Value)
+                    return;
+                
+                Position = new ScalableVector2(value, Position.Y.Value, Position.X.Scale, Position.Y.Scale);
+            }
         }
 
         /// <summary>
@@ -127,7 +134,14 @@ namespace Wobble.Graphics
         public float Y
         {
             get => Position.Y.Value;
-            set => Position = new ScalableVector2(Position.X.Value, value, Position.X.Scale, Position.Y.Scale);
+            set
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (value == Position.Y.Value)
+                    return;
+                
+                Position = new ScalableVector2(Position.X.Value, value, Position.X.Scale, Position.Y.Scale);
+            }
         }
 
         /// <summary>
@@ -139,6 +153,11 @@ namespace Wobble.Graphics
             set
             {
                 value = MathHelper.Clamp(value, 0, int.MaxValue);
+
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (value == Size.X.Value)
+                    return;
+                
                 Size = new ScalableVector2(value, Size.Y.Value, Size.X.Scale, Size.Y.Scale);
             }
         }
@@ -161,6 +180,11 @@ namespace Wobble.Graphics
             set
             {
                 value = MathHelper.Clamp(value, 0, int.MaxValue);
+
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
+                if (value == Size.Y.Value)
+                    return;
+                
                 Size = new ScalableVector2(Size.X.Value, value, Size.X.Scale, Size.Y.Scale);
             }
         }
