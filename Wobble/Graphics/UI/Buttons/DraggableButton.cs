@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Input;
+using Wobble.Window;
 
 namespace Wobble.Graphics.UI.Buttons
 {
@@ -27,7 +28,10 @@ namespace Wobble.Graphics.UI.Buttons
 
                 Alignment = Alignment.TopLeft;
 
-                Position = new ScalableVector2(MouseManager.CurrentState.X - GrabOffset.Value.X, MouseManager.CurrentState.Y - GrabOffset.Value.Y);
+                var x = MathHelper.Clamp(MouseManager.CurrentState.X - GrabOffset.Value.X, 0, WindowManager.Width - Width);
+                var y = MathHelper.Clamp(MouseManager.CurrentState.Y - GrabOffset.Value.Y, 0, WindowManager.Height - Height);
+
+                Position = new ScalableVector2(x, y);
             }
             else
             {
