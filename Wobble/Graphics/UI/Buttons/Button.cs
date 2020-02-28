@@ -162,30 +162,48 @@ namespace Wobble.Graphics.UI.Buttons
                     }
                     // In the event that we are waiting for a click release, and the user doesn, then we can call
                     // the click action.
-                    else if (WaitingForClickRelease && MouseManager.CurrentState.LeftButton == ButtonState.Released)
+                    else if (WaitingForClickRelease)
                     {
-                        // Now that the button is clicked, reset the waiting property.
-                        WaitingForClickRelease = false;
-
-                        if (IsClickable)
+                        // Check to see if the clicked button was released.
+                        var released = false;
+                        switch (MouseButtonClicked)
                         {
-                            switch (MouseButtonClicked)
-                            {
-                                case MouseButton.Left:
-                                    Clicked?.Invoke(this, new EventArgs());
-                                    break;
-                                case MouseButton.Right:
-                                    RightClicked?.Invoke(this, new EventArgs());
-                                    break;
-                                case MouseButton.Middle:
-                                    MiddleMouseClicked?.Invoke(this, new EventArgs());
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException();
-                            }
+                            case MouseButton.Left:
+                                released = MouseManager.CurrentState.LeftButton == ButtonState.Released;
+                                break;
+                            case MouseButton.Right:
+                                released = MouseManager.CurrentState.RightButton == ButtonState.Released;
+                                break;
+                            case MouseButton.Middle:
+                                released = MouseManager.CurrentState.MiddleButton == ButtonState.Released;
+                                break;
                         }
 
-                        MouseButtonClicked = null;
+                        // If the button was released, reset the waiting property.
+                        if (released)
+                        {
+                            WaitingForClickRelease = false;
+
+                            if (IsClickable)
+                            {
+                                switch (MouseButtonClicked)
+                                {
+                                    case MouseButton.Left:
+                                        Clicked?.Invoke(this, new EventArgs());
+                                        break;
+                                    case MouseButton.Right:
+                                        RightClicked?.Invoke(this, new EventArgs());
+                                        break;
+                                    case MouseButton.Middle:
+                                        MiddleMouseClicked?.Invoke(this, new EventArgs());
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException();
+                                }
+                            }
+
+                            MouseButtonClicked = null;
+                        }
                     }
                 }
                 // If the button isn't the top layered button, then we'll want to consider it not hovered.
