@@ -57,6 +57,9 @@
     <None Update="x64\libSDL2-2.0.so.0">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="x64\libgdiplus.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="x64\SDL2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -79,6 +82,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="x86\libSDL2-2.0.so.0">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\libgdiplus.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="x86\SDL2.dll">
