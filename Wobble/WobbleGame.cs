@@ -59,9 +59,14 @@ namespace Wobble
         public double TimeSinceLastFrame { get; private set; }
 
         /// <summary>
+        ///     The amount of time the game has been running, as a double so it doesn't break above 1000 FPS and maintains precision.
+        /// </summary>
+        private double TimeRunningPrecise { get; set; }
+
+        /// <summary>
         ///     The amount of time the game has been running.
         /// </summary>
-        public long TimeRunning { get; private set; }
+        public long TimeRunning => (long) TimeRunningPrecise;
 
         /// <summary>
         ///     For any sprites that are being displayed globally, this is the container that it should
@@ -180,7 +185,7 @@ namespace Wobble
 
             // Update the time since the last frame and the game's clock.
             TimeSinceLastFrame = gameTime.ElapsedGameTime.TotalMilliseconds;
-            TimeRunning += (long) gameTime.ElapsedGameTime.TotalMilliseconds;
+            TimeRunningPrecise += gameTime.ElapsedGameTime.TotalMilliseconds;
 
             Drawable.ResetTotalDrawnCount();
 
