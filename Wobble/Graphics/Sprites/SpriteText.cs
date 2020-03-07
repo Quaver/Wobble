@@ -94,12 +94,6 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         private double TimeSinceLastSecond { get; set; }
 
-        /// <summary>
-        ///     The blend state to use for text rendering. Can't use SpriteBatchOptions because it breaks some
-        ///     containers (like the scroll container).
-        /// </summary>
-        private BlendState DesiredBlendState { get; }
-
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -118,12 +112,6 @@ namespace Wobble.Graphics.Sprites
             _fontSize = fontSize;
             _maxWidth = maxWidth;
 
-            // On Linux GDI outputs premultiplied alpha.
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                DesiredBlendState = BlendState.AlphaBlend;
-            else
-                DesiredBlendState = BlendState.NonPremultiplied;
-
             LoadTexture();
         }
 
@@ -135,18 +123,6 @@ namespace Wobble.Graphics.Sprites
         {
             MonitorPerformance(gameTime);
             base.Update(gameTime);
-        }
-
-        public override void DrawToSpriteBatch()
-        {
-            var blendState = GameBase.Game.GraphicsDevice.BlendState;
-            if (blendState != DesiredBlendState)
-                GameBase.Game.GraphicsDevice.BlendState = DesiredBlendState;
-
-            base.DrawToSpriteBatch();
-
-            if (blendState != DesiredBlendState)
-                GameBase.Game.GraphicsDevice.BlendState = blendState;
         }
 
         /// <summary>
