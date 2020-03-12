@@ -13,6 +13,29 @@ namespace Wobble.Audio.Tracks
     public class AudioTrack : IAudioTrack, IPlayableAudio
     {
         /// <summary>
+        ///     The method/input the track was loaded from.
+        /// </summary>
+        public AudioTrackLoadType Type { get; }
+
+        /// <summary>
+        ///     The original file path to the file if the user loaded the track with one.
+        ///     Only works with <see cref="AudioTrackLoadType.FilePath"/>
+        /// </summary>
+        public string OriginalFilePath { get; }
+
+        /// <summary>
+        ///     The original byte array of the data if the user loaded the track with one.
+        ///     Only works with <see cref="AudioTrackLoadType.ByteArray"/>
+        /// </summary>
+        public byte[] OriginalByteArray { get; }
+
+        /// <summary>
+        ///     The original Uri of the file if the user loaded the track with one.
+        ///     Only works with <see cref="AudioTrackLoadType.Uri"/>
+        /// </summary>
+        public Uri OriginalUri { get; }
+
+        /// <summary>
         ///     The currently loaded audio stream, if there is one.
         /// </summary>
         public int Stream { get; private set; }
@@ -174,6 +197,9 @@ namespace Wobble.Audio.Tracks
         /// <param name="autoDispose"></param>
         public AudioTrack(string path, bool preview = false, bool autoDispose = true)
         {
+            Type = AudioTrackLoadType.FilePath;
+            OriginalFilePath = path;
+
             IsPreview = preview;
             AutoDispose = autoDispose;
 
@@ -191,6 +217,9 @@ namespace Wobble.Audio.Tracks
         /// <param name="autoDispose"></param>
         public AudioTrack(byte[] data, bool preview = false, bool autoDispose = true)
         {
+            Type = AudioTrackLoadType.ByteArray;
+            OriginalByteArray = data;
+
             IsPreview = preview;
             AutoDispose = autoDispose;
 
@@ -208,11 +237,16 @@ namespace Wobble.Audio.Tracks
         /// <param name="autoDispose"></param>
         public AudioTrack(Stream data, bool preview = false, bool autoDispose = true)
         {
+            Type = AudioTrackLoadType.ByteArray;
             IsPreview = preview;
             AutoDispose = autoDispose;
 
+            var byteArrayData = data.ToArray();
+            OriginalByteArray = byteArrayData;
+
             var flags = preview ? 0 : BassFlags.Decode | BassFlags.Prescan;
-            Stream = Bass.CreateStream(data.ToArray(), 0, data.Length, flags);
+
+            Stream = Bass.CreateStream(byteArrayData, 0, data.Length, flags);
             AfterLoad();
         }
 
@@ -224,6 +258,8 @@ namespace Wobble.Audio.Tracks
         /// <param name="autoDispose"></param>
         public AudioTrack(Uri uri, bool preview = false, bool autoDispose = true)
         {
+            Type = AudioTrackLoadType.Uri;
+            OriginalUri = uri;
             IsPreview = preview;
             AutoDispose = autoDispose;
 
