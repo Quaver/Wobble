@@ -41,17 +41,12 @@ namespace Wobble.Screens
             if (!HasScreens)
                 return;
 
-            // Destroy the screen. If specified to destroy in a task, it will do so.
-            if (Screens.Peek().AutomaticallyDestroyOnScreenSwitch)
-            {
-                if (destroyInTask)
-                    Task.Run(() => Screens.Peek().Destroy());
-                else
-                    Screens.Peek().Destroy();
-            }
+            var screen = Screens.Pop();
 
-            // Remove the screen.
-            Screens.Pop();
+            // Destroy the screen. If specified to destroy in a task, it will do so.
+            if (screen.AutomaticallyDestroyOnScreenSwitch)
+                Task.Run(() => screen.Destroy());
+
             ButtonManager.ResetDrawOrder();
         }
 
