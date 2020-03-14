@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using SpriteFontPlus;
 using Wobble.Graphics.Animations;
 
 namespace Wobble.Graphics.Sprites.Text
@@ -105,14 +106,23 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         /// <summary>
+        ///     If the text uses caching to a RenderTarget2D rather than drawing as-is.
+        ///     Caching is useful for text that does not change often to increase performance and is on by default.
+        ///     However, you may want to turn caching off for text that frequently changes (ex. millisecond clocks/timers)
+        /// </summary>
+        public bool IsCached { get; }
+
+        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
         /// <param name="size"></param>
-        public SpriteTextPlus(WobbleFontStore font, string text, int size = 0)
+        /// <param name="cache"></param>
+        public SpriteTextPlus(WobbleFontStore font, string text, int size = 0, bool cache = true)
         {
             Font = font;
             Text = text;
+            IsCached = cache;
 
             FontSize = size == 0 ? Font.DefaultSize : size;
             SetChildrenAlpha = true;
@@ -122,6 +132,13 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         private void RefreshText()
         {
+            // TODO: Actually make this work to set the width/height.
+            if (!IsCached)
+            {
+                SetSize();
+                return;
+            }
+
             for (var i = Children.Count - 1; i >= 0; i--)
                 Children[i].Destroy();
 
@@ -241,6 +258,19 @@ namespace Wobble.Graphics.Sprites.Text
 
         public override void DrawToSpriteBatch()
         {
+            if (IsCached)
+                return;
+
+
+            SetSize();
+            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _color);
+        }
+
+        private void SetSize()
+        {
+            Font.Store.Size = FontSize;
+            var (x, y) = Font.Store.MeasureString(Text);
+            Size = new ScalableVector2(x, y);
         }
 
         /// <summary>
