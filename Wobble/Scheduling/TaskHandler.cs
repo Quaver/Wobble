@@ -91,10 +91,12 @@ namespace Wobble.Scheduling
                         token.ThrowIfCancellationRequested();
                         IsCompleted = true;
                         IsRunning = false;
-
-                        OnCompleted?.Invoke(typeof(TaskHandler<T, TResult>),
-                            new TaskCompleteEventArgs<T, TResult>(input, result));
                     }
+
+                    // Invoke the callback outside of the lock to avoid accidental deadlocks
+                    // caused by the callback code.
+                    OnCompleted?.Invoke(typeof(TaskHandler<T, TResult>),
+                        new TaskCompleteEventArgs<T, TResult>(input, result));
                 }
                 catch (OperationCanceledException e)
                 {
