@@ -55,6 +55,9 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         public override void Destroy()
         {
+            // ReSharper disable once DelegateSubtraction
+            BindedValue.ValueChanged -= OnBindedValueChanged;
+
             if (DisposeBindableOnDestroy)
                 BindedValue.Dispose();
 
