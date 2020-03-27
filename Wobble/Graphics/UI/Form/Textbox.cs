@@ -163,7 +163,7 @@ namespace Wobble.Graphics.UI.Form
             InputText = new SpriteTextPlus(font, RawText, fontSize)
             {
                 X = 10,
-                Alignment = Alignment.MidLeft
+                Alignment = Alignment.MidLeft,
             };
 
             if (!string.IsNullOrEmpty(initialText))
@@ -358,7 +358,8 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void CalculateContainerX()
         {
-            ContentContainer.X = InputText.Width > Width ? Width - InputText.Width - Cursor.Width - 10: 0;
+            ContentContainer.Width = InputText.Width;
+            ContentContainer.X = InputText.Width > Width ? Width - InputText.Width - Cursor.Width - 20 : 0;
         }
 
         /// <summary>
