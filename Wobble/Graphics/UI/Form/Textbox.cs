@@ -157,8 +157,8 @@ namespace Wobble.Graphics.UI.Form
             string initialText = "", string placeHolderText = "",  Action<string> onSubmit = null, Action<string> onStoppedTyping = null)
             : base(size, size)
         {
-            PlaceholderText = placeHolderText;
-            _rawText = initialText;
+            PlaceholderText = placeHolderText ?? "";
+            _rawText = initialText ?? "";
 
             InputText = new SpriteTextPlus(font, RawText, fontSize)
             {
