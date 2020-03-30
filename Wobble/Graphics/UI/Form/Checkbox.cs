@@ -15,7 +15,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     If true, when the checkbox is destroyed, it will also dispose of the Bindable's event handlers.
         /// </summary>
-        public bool DisposeBindableOnDestroy { get; }
+        public bool DisposeBindableOnDestroy { get; set; }
 
         /// <summary>
         ///     The image displayed when the checkbox is active.
