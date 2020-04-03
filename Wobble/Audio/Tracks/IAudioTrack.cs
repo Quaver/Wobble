@@ -97,5 +97,7 @@ namespace Wobble.Audio.Tracks
         /// <param name="to"></param>
         /// <param name="time"></param>
         void Fade(float to, int time);
+
+        void FadeSpeed(float rate, int time);
     }
 }

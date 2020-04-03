@@ -359,8 +359,8 @@ namespace Wobble.Audio.Tracks
             if (IsPitched)
             {
                 // When pitching is enabled, adjust rate using frequency.
-                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency * _rate);
                 Bass.ChannelSetAttribute(Stream, ChannelAttribute.Tempo, 0);
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency * _rate);
             }
             else
             {
@@ -426,5 +426,25 @@ namespace Wobble.Audio.Tracks
         /// <param name="to"></param>
         /// <param name="time"></param>
         public void Fade(float to, int time) => Bass.ChannelSlideAttribute(Stream, ChannelAttribute.Volume, to / 100, time);
+
+        /// <summary>
+        ///     Fades the speed of the track to a given rate
+        /// </summary>
+        /// <param name="rate"></param>
+        /// <param name="time"></param>
+        public void FadeSpeed(float rate, int time)
+        {
+            if (IsPitched)
+            {
+                // When pitching is enabled, adjust rate using frequency.
+                Bass.ChannelSlideAttribute(Stream, ChannelAttribute.Frequency, Frequency * rate, time);
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Tempo, 0);
+            }
+            else
+            {
+                Bass.ChannelSetAttribute(Stream, ChannelAttribute.Frequency, Frequency);
+                Bass.ChannelSlideAttribute(Stream, ChannelAttribute.Tempo, rate * 100 - 100, time);
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using Wobble.Graphics.Animations;
 
 namespace Wobble.Audio.Tracks
 {
@@ -25,7 +26,7 @@ namespace Wobble.Audio.Tracks
             {
                 var previous = _rate;
                 _rate = value;
-                
+
                 RateChanged?.Invoke(this, new TrackRateChangedEventArgs(previous, value));
             }
         }
@@ -84,6 +85,11 @@ namespace Wobble.Audio.Tracks
         private double CurrentTime { get; set; }
 
         /// <summary>
+        ///     The animation to fade the speed of the track
+        /// </summary>
+        private Animation SpeedFade { get; set; }
+
+        /// <summary>
         /// </summary>
         /// <param name="length"></param>
         public AudioTrackVirtual(double length)
@@ -98,6 +104,15 @@ namespace Wobble.Audio.Tracks
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
+            if (SpeedFade != null)
+            {
+                var rate = SpeedFade.PerformInterpolation(gameTime);
+                Rate = rate;
+
+                if (SpeedFade.Done)
+                    SpeedFade = null;
+            }
+
             if (IsPlaying)
             {
                 var proposed = CurrentTime + gameTime.ElapsedGameTime.TotalMilliseconds * Rate;
@@ -150,6 +165,16 @@ namespace Wobble.Audio.Tracks
         /// <param name="time"></param>
         public void Fade(float to, int time)
         {
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="rate"></param>
+        /// <param name="time"></param>
+        public void FadeSpeed(float rate, int time)
+        {
+            // We can use any animation property value here to perform it, so just use alpha.
+            SpeedFade = new Animation(AnimationProperty.Alpha, Easing.Linear, Rate, rate, time);
         }
 
         /// <inheritdoc />
