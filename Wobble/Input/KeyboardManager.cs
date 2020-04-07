@@ -41,5 +41,11 @@ namespace Wobble.Input
         /// <param name="k"></param>
         /// <returns></returns>
         public static bool IsUniqueKeyRelease(Keys k) => CurrentState.IsKeyUp(k) && PreviousState.IsKeyDown(k);
+
+        /// <summary>
+        ///     Returns if either the control keys are down
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsCtrlDown() => CurrentState.IsKeyDown(Keys.LeftControl) || CurrentState.IsKeyDown(Keys.RightControl);
     }
 }
