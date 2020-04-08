@@ -8,6 +8,7 @@ using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.UI;
 using Wobble.Graphics.UI.Dialogs;
+using Wobble.Window;
 
 namespace Wobble
 {
@@ -23,6 +24,8 @@ namespace Wobble
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            Width = WindowManager.Width;
+            Height = WindowManager.Height;
             base.Update(gameTime);
         }
 
