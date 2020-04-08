@@ -47,5 +47,17 @@ namespace Wobble.Input
         /// </summary>
         /// <returns></returns>
         public static bool IsCtrlDown() => CurrentState.IsKeyDown(Keys.LeftControl) || CurrentState.IsKeyDown(Keys.RightControl);
+
+        /// <summary>
+        ///     Returns if either Alt key is held down
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsAltDown() => CurrentState.IsKeyDown(Keys.LeftAlt) || CurrentState.IsKeyDown(Keys.RightAlt);
+
+        /// <summary>
+        ///     Returns if either shift key is held down
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsShiftDown() => CurrentState.IsKeyDown(Keys.LeftShift) || CurrentState.IsKeyDown(Keys.RightShift);
     }
 }
