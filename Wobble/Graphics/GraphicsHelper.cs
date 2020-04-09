@@ -27,7 +27,7 @@ namespace Wobble.Graphics
         /// <param name="objectRect">The size of the object.</param>
         /// <param name="boundary">The Rectangle of the boundary.</param>
         /// <returns></returns>
-        internal static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary)
+        public static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary)
         {
             float alignX = 0;
             float alignY = 0;
