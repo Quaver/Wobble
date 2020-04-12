@@ -21,10 +21,20 @@ namespace Wobble.Window
         private static int PreferredBackBufferHeight { get; set; }
 
         /// <summary>
+        ///     The base resolution to draw at for sizes, positions, and scaling.
+        /// </summary>
+        public static Vector2 BaseResolution { get; private set; } = new Vector2(1366, 768);
+
+        /// <summary>
         ///     The virtual screen size. The default is 1280x720. This is the resolution at which the
         ///     game will render at.
         /// </summary>
         public static Vector2 VirtualScreen { get; private set; } = new Vector2(1366, 768);
+
+        /// <summary>
+        ///     The ratio of <see cref="BaseResolution"/> to <see cref="BaseToVirtualRatio"/>
+        /// </summary>
+        public static float BaseToVirtualRatio => VirtualScreen.Y / BaseResolution.Y;
 
         /// <summary>
         ///     The width of the virtual screen.
@@ -98,6 +108,12 @@ namespace Wobble.Window
         /// </summary>
         /// <param name="newScreenSize"></param>
         public static void ChangeVirtualScreenSize(Vector2 newScreenSize) => VirtualScreen = newScreenSize;
+
+        /// <summary>
+        ///     Changes the base resolution of the game
+        /// </summary>
+        /// <param name="size"></param>
+        public static void ChangeBaseResolution(Vector2 size) => BaseResolution = size;
 
         /// <summary>
         ///     Determines the draw scaling.
