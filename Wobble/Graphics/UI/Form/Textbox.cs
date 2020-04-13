@@ -536,6 +536,9 @@ namespace Wobble.Graphics.UI.Form
             }
         }
 
+        /// <summary>
+        ///		Plays a sound sample randomly from the KeyClickSamples list.
+        ///	</summary>
         private void PlayKeyClickSound()
         {
             if (KeyClickSamples == null)
