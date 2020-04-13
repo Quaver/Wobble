@@ -18,6 +18,11 @@ namespace Wobble.Graphics.UI.Dialogs
         /// </summary>
         public Container Container { get; }
 
+        /// <summary>
+        ///     If true, the dialog screen's size will always be that of the window size
+        /// </summary>
+        protected bool AutoResizeForResolutions { get; set; } = true;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -43,6 +48,12 @@ namespace Wobble.Graphics.UI.Dialogs
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            if (AutoResizeForResolutions)
+            {
+                Width = WindowManager.Width;
+                Height = WindowManager.Height;
+            }
+
             base.Update(gameTime);
         }
 
