@@ -123,7 +123,7 @@ namespace Wobble.Graphics
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value == Position.X.Value)
                     return;
-                
+
                 Position = new ScalableVector2(value, Position.Y.Value, Position.X.Scale, Position.Y.Scale);
             }
         }
@@ -139,7 +139,7 @@ namespace Wobble.Graphics
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value == Position.Y.Value)
                     return;
-                
+
                 Position = new ScalableVector2(Position.X.Value, value, Position.X.Scale, Position.Y.Scale);
             }
         }
@@ -154,10 +154,13 @@ namespace Wobble.Graphics
             {
                 value = MathHelper.Clamp(value, 0, int.MaxValue);
 
+                if (AutoScaleWidth)
+                    value += WindowManager.VirtualScreen.X - WindowManager.BaseResolution.X;
+
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value == Size.X.Value)
                     return;
-                
+
                 Size = new ScalableVector2(value, Size.Y.Value, Size.X.Scale, Size.Y.Scale);
             }
         }
@@ -181,10 +184,13 @@ namespace Wobble.Graphics
             {
                 value = MathHelper.Clamp(value, 0, int.MaxValue);
 
+                if (AutoScaleHeight)
+                    value += WindowManager.VirtualScreen.Y - WindowManager.BaseResolution.Y;
+
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value == Size.Y.Value)
                     return;
-                
+
                 Size = new ScalableVector2(Size.X.Value, value, Size.X.Scale, Size.Y.Scale);
             }
         }
@@ -213,6 +219,36 @@ namespace Wobble.Graphics
             {
                 _alignment = value;
                 RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     Determines whether the width will be automatically scaled according to
+        ///     <see cref="WindowManager.BaseResolution"/> and <see cref="WindowManager.VirtualScreen"/>
+        /// </summary>
+        private bool _autoScaleWidth;
+        public bool AutoScaleWidth
+        {
+            get => _autoScaleWidth;
+            set
+            {
+                _autoScaleWidth = value;
+                Width = Width;
+            }
+        }
+
+        /// <summary>
+        ///     Determines whether the height will be automatically scaled according to
+        ///     <see cref="WindowManager.BaseResolution"/> and <see cref="WindowManager.VirtualScreen"/>
+        /// </summary>
+        private bool _autoScaleHeight;
+        public bool AutoScaleHeight
+        {
+            get => _autoScaleHeight;
+            set
+            {
+                _autoScaleHeight = value;
+                Height = Height;
             }
         }
 
