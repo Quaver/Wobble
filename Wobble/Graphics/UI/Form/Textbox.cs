@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
+using Wobble.Audio.Samples;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
@@ -11,8 +13,6 @@ using Wobble.Input;
 using Wobble.Platform;
 using Wobble.Platform.Windows;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
-using System.Collections.Generic;
-using Wobble.Audio.Samples;
 
 namespace Wobble.Graphics.UI.Form
 {
