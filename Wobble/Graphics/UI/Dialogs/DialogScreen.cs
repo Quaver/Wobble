@@ -43,6 +43,9 @@ namespace Wobble.Graphics.UI.Dialogs
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            Width = WindowManager.Width;
+            Height = WindowManager.Height;
+
             base.Update(gameTime);
         }
 
