@@ -11,6 +11,8 @@ using Wobble.Input;
 using Wobble.Platform;
 using Wobble.Platform.Windows;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
+using System.Collections.Generic;
+using Wobble.Audio.Samples;
 
 namespace Wobble.Graphics.UI.Form
 {
@@ -142,6 +144,22 @@ namespace Wobble.Graphics.UI.Form
         ///     Clipboard for the windows instance.
         /// </summary>
         private Clipboard Clipboard { get; } = Clipboard.NativeClipboard;
+
+        /// <summary>
+        ///		List of AudioSamples to use for textbox keyclick sound effects.
+        ///	</summary>
+        public static List<AudioSample> KeyClickSamples;
+
+        /// <summary>
+        ///		When enabled, key presses when focusing a textbox will play a randomly selected sfx
+        ///		from SkinStore#SoundMenuKeyClicks
+        ///	</summary>
+        private bool EnableKeyClickSounds { get; set; } = true;
+
+        /// <summary>
+        ///		Random Number Generator
+        ///	</summary>
+        private Random Rng = new Random();
 
         /// <inheritdoc />
         /// <summary>
@@ -333,6 +351,7 @@ namespace Wobble.Graphics.UI.Form
 
                         var charStartIndices = StringInfo.ParseCombiningCharacters(RawText);
                         RawText = RawText.Remove(charStartIndices.Last());
+                        PlayKeyClickSound();
                         break;
                     // Input text
                     default:
@@ -344,6 +363,7 @@ namespace Wobble.Graphics.UI.Form
                                 return;
 
                             RawText = proposedText;
+                            PlayKeyClickSound();
                         }
                         break;
                 }
@@ -514,6 +534,18 @@ namespace Wobble.Graphics.UI.Form
                 Selected = false;
                 ReadjustTextbox();
             }
+        }
+
+        private void PlayKeyClickSound()
+        {
+            if (KeyClickSamples == null)
+                return;
+
+            if(!EnableKeyClickSounds && !(KeyClickSamples.Count > 0))
+                return;
+
+            var r = Rng.Next(KeyClickSamples.Count);
+            KeyClickSamples[r].CreateChannel().Play();
         }
     }
 }
