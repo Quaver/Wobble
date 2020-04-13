@@ -72,6 +72,11 @@ namespace Wobble.Window
         public static event EventHandler<WindowResolutionChangedEventArgs> ResolutionChanged;
 
         /// <summary>
+        ///     Event raised when <see cref="VirtualScreen"/> has been changed
+        /// </summary>
+        public static event EventHandler<WindowVirtualScreenSizeChangedEventArgs> VirtualScreenSizeChanged;
+
+        /// <summary>
         ///     Called every frame. This will continuously update our screen scale & matrix
         ///     based on the back buffer's current resolution.
         /// </summary>
@@ -107,7 +112,11 @@ namespace Wobble.Window
         ///     Changes the size of the virtual screen to be used.
         /// </summary>
         /// <param name="newScreenSize"></param>
-        public static void ChangeVirtualScreenSize(Vector2 newScreenSize) => VirtualScreen = newScreenSize;
+        public static void ChangeVirtualScreenSize(Vector2 newScreenSize)
+        {
+            VirtualScreen = newScreenSize;
+            VirtualScreenSizeChanged?.Invoke(typeof(WindowManager), new WindowVirtualScreenSizeChangedEventArgs(VirtualScreen));
+        }
 
         /// <summary>
         ///     Changes the base resolution of the game
