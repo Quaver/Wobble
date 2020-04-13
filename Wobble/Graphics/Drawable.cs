@@ -155,7 +155,7 @@ namespace Wobble.Graphics
                 value = MathHelper.Clamp(value, 0, int.MaxValue);
 
                 if (AutoScaleWidth)
-                    value *= WindowManager.BaseToVirtualRatio;
+                    value += WindowManager.VirtualScreen.X - WindowManager.BaseResolution.X;
 
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (value == Size.X.Value)
