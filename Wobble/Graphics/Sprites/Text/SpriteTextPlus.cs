@@ -13,7 +13,19 @@ namespace Wobble.Graphics.Sprites.Text
         /// <summary>
         ///     The font to be used
         /// </summary>
-        public WobbleFontStore Font { get; }
+        private WobbleFontStore _font;
+        public WobbleFontStore Font
+        {
+            get => _font;
+            set
+            {
+                if (value == _font)
+                    return;
+
+                _font = value;
+                RefreshText();
+            }
+        }
 
         /// <summary>
         ///     The pt. font size
