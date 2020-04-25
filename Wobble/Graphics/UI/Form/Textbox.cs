@@ -148,7 +148,16 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///		List of AudioSamples to use for textbox keyclick sound effects.
         ///	</summary>
-        public static List<AudioSample> KeyClickSamples;
+        private static List<AudioSample> _keyClickSamples;
+        public static List<AudioSample> KeyClickSamples
+        {
+            get => _keyClickSamples;
+            set
+            {
+                _keyClickSamples?.ForEach(x => x.Dispose());
+                _keyClickSamples = value;
+            }
+        }
 
         /// <summary>
         ///		When enabled, key presses when focusing a textbox will play a randomly selected sfx
@@ -544,7 +553,7 @@ namespace Wobble.Graphics.UI.Form
             if (KeyClickSamples == null)
                 return;
 
-            if(!EnableKeyClickSounds && !(KeyClickSamples.Count > 0))
+            if(!EnableKeyClickSounds || KeyClickSamples.Count == 0)
                 return;
 
             var r = Rng.Next(KeyClickSamples.Count);
