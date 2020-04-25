@@ -83,13 +83,13 @@ These are the following steps that we find to be particularly handy when using W
 
 **1.** Create a new C# .NET Core project.  
 
-**3.** Clone Wobble and add it as a submodule to your project.
+**2.** Clone Wobble and add it as a submodule to your project.
 
-**4.** Run `git submodule update --init --recursive` to install all of Wobble's dependencies.
+**3.** Run `git submodule update --init --recursive` to install all of Wobble's dependencies.
 
-**5.** Reference both Wobble and MonoGame.Framework.DesktopGL.Core in your project.
+**4.** Reference both Wobble and MonoGame.Framework.DesktopGL.Core in your project.
 
-**4.** Create a class that derives from `WobbleGame`. In this case, we'll call it `MyGame`. It should look similar to this:
+**5.** Create a class that derives from `WobbleGame`. In this case, we'll call it `MyGame`. It should look similar to this:
 
 ```cs
 public class MyGame : WobbleGame
@@ -174,7 +174,7 @@ public class MyGame : WobbleGame
 }
 ```
 
-**5.** The **main method** *(usually in Program.cs)* of your application should look very straight forward. 
+**6.** The **main method** *(usually in Program.cs)* of your application should look very straight forward. 
 
 ```cs
 internal static class Program
@@ -190,9 +190,9 @@ internal static class Program
 }
 ```
 
-**6.** Start building screens!
+**7.** Start building screens!
 
-**7.** Profit?
+**8.** Profit?
 
 ## Creating Screens
 
