@@ -273,9 +273,8 @@ namespace Wobble.Graphics.Sprites.Text
             if (IsCached)
                 return;
 
-
             SetSize();
-            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _color);
+            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _tint);
         }
 
         private void SetSize()
