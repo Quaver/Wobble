@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Wobble.Platform.Linux;
+using Wobble.Platform.OSX;
 using Wobble.Platform.Windows;
 
 namespace Wobble.Platform
@@ -24,7 +25,10 @@ namespace Wobble.Platform
                     }
                 }
 
-                throw new NotImplementedException();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    return new OsxClipboard();
+
+                return null;
             }
         }
 
