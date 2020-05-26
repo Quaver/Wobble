@@ -9,6 +9,7 @@ using Wobble.Graphics;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Form;
+using Wobble.Managers;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 using Wobble.Window;
@@ -47,7 +48,7 @@ namespace Wobble.Tests.Screens.Tests.EasingAnimations
 
             // Create the horizontal selector
             EasingSelection = new HorizontalSelector(Enum.GetNames(typeof(Easing)).ToList(), new ScalableVector2(300, 45),
-                                    "exo2-bold", 18, Textures.LeftButtonSquare, Textures.RightButtonSquare,
+                                    FontManager.GetWobbleFont("exo2-semibold"), 24, Textures.LeftButtonSquare, Textures.RightButtonSquare,
                                     new ScalableVector2(45, 45), 10,
             // Create the method that'll be called when a new option is selected.
             (val, index) =>
