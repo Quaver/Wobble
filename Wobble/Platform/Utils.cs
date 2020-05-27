@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using Wobble.Platform.Linux;
+using Wobble.Platform.OSX;
 using Wobble.Platform.Windows;
 
 namespace Wobble.Platform
@@ -13,14 +14,13 @@ namespace Wobble.Platform
             get
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
                     return new WindowsUtils();
-                }
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
                     return new LinuxUtils();
-                }
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    return new OsxUtils();
 
                 throw new NotImplementedException();
             }
