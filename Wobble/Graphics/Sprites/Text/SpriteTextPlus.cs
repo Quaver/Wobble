@@ -261,8 +261,30 @@ namespace Wobble.Graphics.Sprites.Text
         {
             var originalText = Text;
 
-            while (Width > maxWidth)
-                Text = Text.Substring(0, Text.Length - 1);
+            // Multi-line (MaxWidth) + Ellipis truncation
+            if (Children.Count > 1 && Children.All(x => x is SpriteTextPlusLine))
+            {
+                var text = Text;
+
+                Font.Store.Size = FontSize;
+                var totalWidth = Font.Store.MeasureString(text).X;
+
+                while (totalWidth > maxWidth)
+                {
+                    text = text.Substring(0, text.Length - 1);
+
+                    Font.Store.Size = FontSize;
+                    totalWidth = Font.Store.MeasureString(text).X;
+                }
+
+                Text = text;
+            }
+            // Single line truncation
+            else
+            {
+                while (Width > maxWidth)
+                    Text = Text.Substring(0, Text.Length - 1);
+            }
 
             if (Text != originalText)
                 Text += "...";
