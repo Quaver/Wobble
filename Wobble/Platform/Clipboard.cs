@@ -17,16 +17,13 @@ namespace Wobble.Platform
                     return new WindowsClipboard();
                 }
 
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
                     if (GameBase.Game.Window.GetType().Name == "SdlGameWindow")
                     {
                         return new SdlClipboard();
                     }
                 }
-
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                    return new OsxClipboard();
 
                 return null;
             }
