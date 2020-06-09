@@ -244,7 +244,47 @@ namespace Wobble.Graphics.ImGUI
             ///////////////////////////////////////////
 
             ImGui.GetIO().Fonts.AddFontDefault();
+
+            // ImGUI provides out-of-the-box clipboard only on Windows. For other platforms, we need to set up the function pointers.
+            io.SetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(SetClipboardTextFnDelegate);
+            io.GetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(GetClipboardTextFnDelegate);
         }
+
+        /*
+         * ImGUI clipboard handling callbacks.
+         *
+         * For setting the clipboard text, ImGUI passes us a (const char*) to a UTF-8 encoded string.
+         *
+         * For getting the clipboard text, ImGUI expects a UTF-8 encoded (const char*). In ImGUI's example implementations,
+         * they store the clipboard contents in a global char array and return the pointer to that char array. This means
+         * that the contents of the returned pointer are overwritten on every call to GetClipboardTextFn().
+         *
+         * What we do here is a little stricter than that, we invalidate the pointer on every call to GetClipboardTextFn()
+         * by freeing that buffer and allocating a new one. I think it's valid to do that given how example implementations
+         * operate.
+         */
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void d_set_clipboard_text_fn(IntPtr userData, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+        private static readonly d_set_clipboard_text_fn SetClipboardTextFnDelegate = SetClipboardTextFn;
+
+        private static void SetClipboardTextFn(IntPtr userData, string text) => Platform.Clipboard.NativeClipboard.SetText(text);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate IntPtr d_get_clipboard_text_fn(IntPtr userData);
+        private static readonly d_get_clipboard_text_fn GetClipboardTextFnDelegate = GetClipboardTextFn;
+
+        private static IntPtr GetClipboardTextFn(IntPtr userData)
+        {
+            Marshal.FreeCoTaskMem(ClipboardTextMemory);
+            ClipboardTextMemory = Marshal.StringToCoTaskMemUTF8(Platform.Clipboard.NativeClipboard.GetText());
+            return ClipboardTextMemory;
+        }
+
+        /// <summary>
+        ///     Pointer to the latest clipboard contents buffer returned to ImGUI.
+        /// </summary>
+        private static IntPtr ClipboardTextMemory = IntPtr.Zero;
 
         /// <summary>
         ///     Updates the <see cref="Microsoft.Xna.Framework.Graphics.Effect" /> to the current matrices and texture
