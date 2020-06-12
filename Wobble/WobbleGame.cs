@@ -96,7 +96,7 @@ namespace Wobble
         /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
-        protected WobbleGame()
+        protected WobbleGame(bool preferWayland) : base(preferWayland)
         {
             Directory.SetCurrentDirectory(WorkingDirectory);
             Environment.CurrentDirectory = WorkingDirectory;
