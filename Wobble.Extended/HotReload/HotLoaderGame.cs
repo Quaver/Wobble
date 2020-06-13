@@ -19,7 +19,7 @@ namespace Wobble.Extended.HotReload
         /// </summary>
         public HotLoaderScreen HotLoaderScreen { get; protected set; }
 
-        public HotLoaderGame(HotLoader hl, bool preferWayland) : base(preferWayland)
+        public HotLoaderGame(HotLoader hl, bool preferWayland = false) : base(preferWayland)
         {
             HotLoader = hl;
             IsMouseVisible = true;
