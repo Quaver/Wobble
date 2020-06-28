@@ -16,7 +16,7 @@ namespace Wobble.Platform.Linux
                 // Try launching nautilus (GNOME's file manager) first as it can highlight a file by path.
                 Process.Start("nautilus", path);
             }
-            catch (Win32Exception)
+            catch (Exception)
             {
                 // There isn't really a standard way of doing this on Linux, so fall back to just opening the containing
                 // folder.
@@ -31,7 +31,7 @@ namespace Wobble.Platform.Linux
                 // Try opening via xdg-open.
                 Process.Start("xdg-open", path);
             }
-            catch (Win32Exception)
+            catch (Exception)
             {
                 // No xdg-open? Oh well.
             }
@@ -64,7 +64,7 @@ namespace Wobble.Platform.Linux
             {
                 Process.Start("xdg-mime", $"default {friendlyName}.desktop x-scheme-handler/{scheme}");
             }
-            catch (Win32Exception)
+            catch (Exception)
             {
                 // No xdg-mime? Oh well.
             }
