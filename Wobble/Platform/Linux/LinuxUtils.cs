@@ -34,6 +34,9 @@ namespace Wobble.Platform.Linux
             // This returns Something.dll, on Linux the published executable is usually called Something.
             var applicationLocation = Path.ChangeExtension(Assembly.GetEntryAssembly().Location, null);
 
+            // Just "friendlyName" is taken by Steam's own shortcut to the game.
+            friendlyName = friendlyName + "-scheme-handler";
+
             var dataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME") ?? Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".local/share");
             var desktopFilePath = Path.Combine(dataHome, $"applications/{friendlyName}.desktop");
 
