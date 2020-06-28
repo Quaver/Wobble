@@ -11,9 +11,17 @@ namespace Wobble.Platform.Linux
     {
         public override void HighlightInFileManager(string path)
         {
-            // There isn't really a standard way of doing this on Linux, so fall back to just opening the containing
-            // folder.
-            OpenNatively(Path.GetDirectoryName(path));
+            try
+            {
+                // Try launching nautilus (GNOME's file manager) first as it can highlight a file by path.
+                Process.Start("nautilus", path);
+            }
+            catch (Win32Exception)
+            {
+                // There isn't really a standard way of doing this on Linux, so fall back to just opening the containing
+                // folder.
+                OpenNatively(Path.GetDirectoryName(path));
+            }
         }
 
         public override void OpenNatively(string path)
