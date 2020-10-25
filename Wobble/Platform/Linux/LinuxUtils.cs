@@ -14,7 +14,11 @@ namespace Wobble.Platform.Linux
             try
             {
                 // Try launching nautilus (GNOME's file manager) first as it can highlight a file by path.
-                Process.Start("nautilus", path);
+                var info = new ProcessStartInfo("nautilus")
+                {
+                    ArgumentList = {path}
+                };
+                Process.Start(info);
             }
             catch (Exception)
             {
@@ -29,7 +33,11 @@ namespace Wobble.Platform.Linux
             try
             {
                 // Try opening via xdg-open.
-                Process.Start("xdg-open", path);
+                var info = new ProcessStartInfo("xdg-open")
+                {
+                    ArgumentList = {path}
+                };
+                Process.Start(info);
             }
             catch (Exception)
             {
