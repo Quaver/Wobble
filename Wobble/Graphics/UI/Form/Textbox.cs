@@ -500,11 +500,19 @@ namespace Wobble.Graphics.UI.Form
             // This means killing all trailing whitespace and then all trailing non-whitespace.
             if (KeyboardManager.IsUniqueKeyPress(Keys.W) || KeyboardManager.IsUniqueKeyPress(Keys.Back))
             {
-                var withoutTrailingWhitespace = RawText.TrimEnd();
-                var nonWhitespacesInTheEnd = withoutTrailingWhitespace.ToCharArray()
-                    .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
-                RawText = withoutTrailingWhitespace.Substring(0,
-                    withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd);
+                if (Selected)
+                {
+                    // When everything is selected we act as a normal backspace and delete everything
+                    RawText = "";
+                }
+                else
+                {
+                    var withoutTrailingWhitespace = RawText.TrimEnd();
+                    var nonWhitespacesInTheEnd = withoutTrailingWhitespace.ToCharArray()
+                        .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                    RawText = withoutTrailingWhitespace.Substring(0,
+                        withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd);
+                }
 
                 ReadjustTextbox();
                 Selected = false;
