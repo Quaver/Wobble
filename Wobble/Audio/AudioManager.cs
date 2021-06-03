@@ -71,32 +71,35 @@ namespace Wobble.Audio
         /// </summary>
         private static void UpdateTracks(GameTime gameTime)
         {
-            for (var i = Tracks.Count - 1; i >= 0; i--)
+            lock (Tracks)
             {
-                if (i > Tracks.Count)
-                    break;
-
-                var track = Tracks[i];
-
-                // If the track is left over, we just want to dispose of it and remove it from our tracks.
-                if (track is AudioTrack t)
+                for (var i = Tracks.Count - 1; i >= 0; i--)
                 {
-                    if ((t.IsLeftOver && t.AutoDispose) || t.IsDisposed)
-                    {
-                        Tracks.Remove(t);
-                        continue;
-                    }
-                }
+                    if (i > Tracks.Count)
+                        break;
 
-                if (track is AudioTrackVirtual atv)
-                {
-                    if (atv.IsDisposed)
+                    var track = Tracks[i];
+
+                    // If the track is left over, we just want to dispose of it and remove it from our tracks.
+                    if (track is AudioTrack t)
                     {
-                        Tracks.Remove(atv);
-                        continue;
+                        if ((t.IsLeftOver && t.AutoDispose) || t.IsDisposed)
+                        {
+                            Tracks.Remove(t);
+                            continue;
+                        }
                     }
 
-                    atv.Update(gameTime);
+                    if (track is AudioTrackVirtual atv)
+                    {
+                        if (atv.IsDisposed)
+                        {
+                            Tracks.Remove(atv);
+                            continue;
+                        }
+
+                        atv.Update(gameTime);
+                    }
                 }
             }
         }

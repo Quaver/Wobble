@@ -95,7 +95,9 @@ namespace Wobble.Audio.Tracks
         public AudioTrackVirtual(double length)
         {
             Length = length;
-            AudioManager.Tracks.Add(this);
+
+            lock (AudioManager.Tracks)
+                AudioManager.Tracks.Add(this);
         }
 
         /// <summary>

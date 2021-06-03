@@ -392,7 +392,8 @@ namespace Wobble.Audio.Tracks
             if (!StreamLoaded)
                 throw new AudioEngineException("Cannot call AfterLoad if stream isn't loaded.");
 
-            AudioManager.Tracks.Add(this);
+            lock (AudioManager.Tracks)
+                AudioManager.Tracks.Add(this);
 
             Length = Bass.ChannelBytes2Seconds(Stream,Bass.ChannelGetLength(Stream)) * 1000;
             Frequency = Bass.ChannelGetInfo(Stream).Frequency;
