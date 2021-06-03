@@ -381,8 +381,6 @@ namespace Wobble.Audio.Tracks
             IsDisposed = true;
             Seeked = null;
             RateChanged = null;
-
-            AudioManager.Tracks.Remove(this);
         }
 
         /// <summary>

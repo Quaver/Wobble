@@ -81,11 +81,8 @@ namespace Wobble.Audio
                 // If the track is left over, we just want to dispose of it and remove it from our tracks.
                 if (track is AudioTrack t)
                 {
-                    if (t.IsLeftOver && t.AutoDispose)
+                    if ((t.IsLeftOver && t.AutoDispose) || t.IsDisposed)
                     {
-                        if (!t.IsDisposed)
-                            t.Dispose();
-
                         Tracks.Remove(t);
                         continue;
                     }
