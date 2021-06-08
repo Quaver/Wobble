@@ -22,17 +22,17 @@ namespace Wobble.Screens
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void Update(GameTime gameTime) => View.Update(gameTime);
+        public virtual void Update(GameTime gameTime) => View?.Update(gameTime);
 
         /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void Draw(GameTime gameTime) => View.Draw(gameTime);
+        public virtual void Draw(GameTime gameTime) => View?.Draw(gameTime);
 
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public virtual void Destroy() => View.Destroy();
+        public virtual void Destroy() => View?.Destroy();
     }
 }
