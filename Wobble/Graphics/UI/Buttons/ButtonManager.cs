@@ -27,8 +27,13 @@ namespace Wobble.Graphics.UI.Buttons
 
         public static void ResetDrawOrder()
         {
-            for (var i = 0; i < Buttons.Count; i++)
-                Buttons[i].DrawOrder = 0;
+            for (var i = Buttons.Count - 1; i >= 0; i--)
+            {
+                if (Buttons[i] == null)
+                    Buttons.RemoveAt(i);
+                else
+                    Buttons[i].DrawOrder = 0;
+            }
         }
     }
 }
