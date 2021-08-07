@@ -1,7 +1,3 @@
-<p align="center"> 
-  <img src="https://eggplants.org/m3g41m.png">
-</p>
-
 # Wobble [![Build Status](https://travis-ci.com/Quaver/Wobble.svg?branch=master)](https://travis-ci.com/Quaver/Wobble) [![CodeFactor](https://www.codefactor.io/repository/github/quaver/wobble/badge/master)](https://www.codefactor.io/repository/github/quaver/wobble/overview/master) [![Trello](https://img.shields.io/badge/Trello-Roadmap-blue.svg)](https://trello.com/b/QVbVwKN1/quaver-client) [![Discord](https://discordapp.com/api/guilds/354206121386573824/widget.png?style=shield)](https://discord.gg/nJa8VFr)
 
 Wobble is a powerful and bare-bones extension of the [MonoGame Framework](https://github.com/MonoGame/MonoGame) designed to make the initial boilerplate process of developing games so much simpler. 
@@ -12,62 +8,9 @@ The original purpose of Wobble was to provide an underlying and organized framew
 
 If you can master this framework, you'll have no problem jumping in on the Quaver development which is encouraged.
 
-# Features
-
-While this framework is still in its early stages and fairly bare-bones, you get a ton of boilerplate that can be used to help you get right into development.
-
-**The features include but are not limited to:**
-
-* An awesome audio library
-* Game State/Screen Management
-* Fully customizable drawable and sprite management system
-* Basic, reusable, and customizable GUI (buttons, sprites, text)
-* Sprite transformations with tons of easing animations
-* Automatic GUI -> Window Scaling
-* Clean shader usage
-* Resource and asset loading
-* Discord Rich Presence
-* Input handling
-* Bindable values
-* And tons more!
-
-# Goals
-
-We have several goals with the creation and development of this framework.
-
-* The primary goal is to make it easier for people to jump in on the Quaver development.
-* To move some of our base code that was originally copyleft licensed to something more permissive.
-* To make the boilerplate process of developing new games a lot faster.
-* Have a clean and easy way of building out scenes while still giving the developer full control.
-
 # Requirements
 
-* [.NET Core SDK 2.1](https://www.microsoft.com/net/download)
-
-# Understanding the Design Paradigm
-
-The key of understanding how to use Wobble is understanding how it works at its core. 
-
-**tl;dr - We want developers to skip the boilerplate process and just get right to developing their game screens. Everything is managed for you.**
-
-Here is a diagram that shows how it works under the hood, and where your code will be placed on top of:
-
-<p align="center"> 
-  <img src="https://eggplants.org/ianljd.png">
-</p>
-
-### Legend
-
-Every plain rectangle is implemented by you. Every non-plain rectangle is implemented under the hood by Wobble.
-
-* **WobbleGame** - The abstract base class that new games should derive from. It contains a ton of intiailization and under-the-hood updating to keep development simple. It is a derivative of `Game` from the MonoGame Framework.
-* **Your Game** - This is your derivative of `WobbleGame`. You can perform any initialization updating, or drawing of the game at a global state.
-* **GameBase** - This is simply a static class to reference your Game and a few extra configuration properties such as `DefaultSpriteBatchOptions`
-* **ScreenManager** - Handles the initailization, updating, and drawing of game screens. It's a [Stack](https://msdn.microsoft.com/en-us/library/system.collections.stack(v=vs.110).aspx) where the the last screen added is the one on top, and is the first screen to be removed. Any class of type `Screen` can be used here.
-* **Screen** - `Screen` is an abstract class that contains a new game state/screen. It is its own entity to be able to update/draw a single screen.
-* **ScreenView** - This is the GUI for the screen. It is best to separate business logic from the actual view - just like the MVC paradigm. **This is a requirement and dependency of `Screen`.**
-* **Container** - This is a container for all `Drawable`s. Each screen automatically has one, and this should be the parent of all *base* Drawable's in the screen (unless going for custom functionality). A Drawable's position and size depends on the container. When a container is destroyed, updated, or drawn, so are its children.
-* **Sprite** - Any GUI element wanting to be placed on the screen. Its parent can be the container itself, or another Sprite/Drawable.
+* [.NET Core SDK 3.1](https://www.microsoft.com/net/download)
 
 # Getting Started
 
