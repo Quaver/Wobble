@@ -187,7 +187,7 @@ namespace Wobble.Graphics.UI.Form
             PlaceholderText = placeHolderText ?? "";
             _rawText = initialText ?? "";
 
-            InputText = new SpriteTextPlus(font, RawText, fontSize)
+            InputText = new SpriteTextPlus(font, RawText, fontSize, false)
             {
                 X = 10,
                 Alignment = Alignment.MidLeft,
