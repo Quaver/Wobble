@@ -120,7 +120,7 @@ namespace Wobble.Graphics.Sprites
         ///  <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            // Set scrollbar heigt.
+            // Set scrollbar height.
             Scrollbar.Height = Height / ContentContainer.Height * Height;
 
             // Set min scroll height to 30.
@@ -151,7 +151,7 @@ namespace Wobble.Graphics.Sprites
 
             // Calculate the scrollbar's y position.
             var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
-            Scrollbar.Y = percentage / 100 * (Height - Scrollbar.Height) - (Height - Scrollbar.Height);
+            Scrollbar.Y = percentage / 100 * (Scrollbar.Parent.Height - Scrollbar.Height) - (Scrollbar.Parent.Height - Scrollbar.Height);
 
             if (IsMinScrollYEnabled && Scrollbar.Y < MinScrollBarY)
                 Scrollbar.Y = MinScrollBarY;
