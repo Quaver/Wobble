@@ -17,6 +17,7 @@ using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
+using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Scaling;
@@ -151,6 +152,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.ScheduledUpdates:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestScheduledUpdatesScreen());
+                        break;
+                    case ScreenType.Joystick:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestJoystickScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

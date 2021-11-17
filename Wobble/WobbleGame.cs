@@ -193,6 +193,7 @@ namespace Wobble
             WindowManager.Update();
             MouseManager.Update();
             KeyboardManager.Update();
+            JoystickManager.Update();
             ScreenManager.Update(gameTime);
             AudioManager.Update(gameTime);
 
