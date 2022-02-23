@@ -65,7 +65,7 @@ namespace GreenBox.Screens
             if (GreenBox.Animations.Count == 0 && !GreenBoxMovedBack)
             {
                 // Add the new animation
-                GreenBox.Animations.Add(new Animation(AnimationProperty.X, Easing.EaseInBounce, GreenBox.X, 0, 1000));
+                GreenBox.Animations.Add(new Animation(AnimationProperty.X, Easing.InBounce, GreenBox.X, 0, 1000));
 
                 // Set GreenBoxMovedBack to true so it doesn't keep adding transformations once it's complete.
                 GreenBoxMovedBack = true;
