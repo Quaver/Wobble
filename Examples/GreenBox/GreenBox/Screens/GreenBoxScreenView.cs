@@ -45,7 +45,7 @@ namespace GreenBox.Screens
                     // In this case we're changing the X property to 500 in 2 seconds (2000 milliseconds).
                     // Animations use easing functions, you can learn more about this
                     // at the following resource: https://easings.net/
-                    new Animaion(AnimationProperty.X, Easing.InElastic, 0, 500, 2000) 
+                    new Animation(AnimationProperty.X, Easing.InElastic, 0, 500, 2000) 
                 }
             };
 
