@@ -8,7 +8,7 @@ using Wobble;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Transformations;
+using Wobble.Graphics.Animations;
 using Wobble.Screens;
 
 namespace GreenBox.Screens
@@ -27,7 +27,7 @@ namespace GreenBox.Screens
 
         /// <inheritdoc />
         /// <summary>
-        ///     Initializze your ScreenView and all Drawables here.
+        ///     Initialize your ScreenView and all Drawables here.
         /// </summary>
         /// <param name="screen"></param>
         public GreenBoxScreenView(Screen screen) : base(screen)
@@ -39,13 +39,13 @@ namespace GreenBox.Screens
                 Image = WobbleAssets.WhiteBox, // Wobble Comes with included assets. Here we use a white box
                 Tint = Color.Green, // Color the box green.
                 Size = new ScalableVector2(75, 75),
-                Transformations =
+                Animations =
                 {
-                    // Add a transformation to move and animate the object.
+                    // Add an animation to move and animate the object.
                     // In this case we're changing the X property to 500 in 2 seconds (2000 milliseconds).
-                    // Transformations use easing functions, you can learn more about this
+                    // Animations use easing functions, you can learn more about this
                     // at the following resource: https://easings.net/
-                    new Transformation(TransformationProperty.X, Easing.EaseInElastic, 0, 500, 2000) 
+                    new Animation(AnimationProperty.X, Easing.InElastic, 0, 500, 2000) 
                 }
             };
 
@@ -62,10 +62,10 @@ namespace GreenBox.Screens
             // When transformations are comlpete, they are automatically removed
             // from the Sprite's list. Here we'll want to add another one to move the
             // GreenBox back to its original position!
-            if (GreenBox.Transformations.Count == 0 && !GreenBoxMovedBack)
+            if (GreenBox.Animations.Count == 0 && !GreenBoxMovedBack)
             {
-                // Add the new transformation
-                GreenBox.Transformations.Add(new Transformation(TransformationProperty.X, Easing.EaseInBounce, GreenBox.X, 0, 1000));
+                // Add the new animation
+                GreenBox.Animations.Add(new Animation(AnimationProperty.X, Easing.InBounce, GreenBox.X, 0, 1000));
 
                 // Set GreenBoxMovedBack to true so it doesn't keep adding transformations once it's complete.
                 GreenBoxMovedBack = true;
