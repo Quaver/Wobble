@@ -8,6 +8,10 @@ namespace Wobble.Tests.Assets
     {
         public static Texture2D CircleMask => TextureManager.Load("Wobble.Tests.Resources/Textures/circle-mask.png");
 
+        public static Texture2D CircleAlphaMask => TextureManager.Load("Wobble.Tests.Resources/Textures/circle-alpha-mask.png");
+
+        public static Texture2D RectangleAlphaMask => TextureManager.Load("Wobble.Tests.Resources/Textures/rectangle-alpha-mask.png");
+
         public static Texture2D LeftButtonSquare => TextureManager.Load($"Wobble.Tests.Resources/Textures/left_button_square.png");
 
         public static Texture2D RightButtonSquare => TextureManager.Load($"Wobble.Tests.Resources/Textures/right_button_square.png");
