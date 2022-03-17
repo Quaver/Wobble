@@ -15,29 +15,27 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
         /// <param name="screen"></param>
         public TestSpriteAlphaMaskingBlendScreenView(Screen screen) : base(screen)
         {
-            // Create the Sprite that will get masked
-            var maskedSprite = new Sprite
+            // Create the masked sprite
+            var maskedSprite = new SpriteAlphaMaskBlend()
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
-                Size = new ScalableVector2(500, 200),
-                Image = WobbleAssets.Wallpaper
+                Size = new ScalableVector2(500, 200)
             };
 
-            var maskedText = new SpriteText("exo2-bold", "This is masked!", 16)
+            var textSprite = new SpriteText("exo2-bold", "This is masked!", 16);
+
+            var maskedText = new SpriteAlphaMaskBlend()
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
+                Size = textSprite.Size,
                 Y = 100
             };
 
-            // Create the Mask texture to blend with the Sprite
-            var CircleMask = Textures.CircleAlphaMask;
-            var RectangleMask = Textures.RectangleAlphaMask;
-
             // Perform the blend between the Sprite and the Mask
-            maskedSprite.Image = SpriteAlphaMaskBlend.PerformBlend(maskedSprite.Image, CircleMask);
-            maskedText.Image = SpriteAlphaMaskBlend.PerformBlend(maskedText.Image, RectangleMask);
+            maskedSprite.Image = maskedSprite.PerformBlend(WobbleAssets.Wallpaper, Textures.CircleAlphaMask);
+            maskedText.Image = maskedText.PerformBlend(textSprite.Image, Textures.RectangleAlphaMask);
         }
 
         /// <inheritdoc />

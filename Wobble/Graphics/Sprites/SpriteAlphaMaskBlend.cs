@@ -4,23 +4,23 @@ using System;
 
 namespace Wobble.Graphics.Sprites
 {
-    public class SpriteAlphaMaskBlend
+    public class SpriteAlphaMaskBlend : Sprite
     {
-        static private Game game => GameBase.Game;
+        private RenderTarget2D RenderTarget { get; set; }
 
-        static private readonly BlendState blend = new BlendState
+        private readonly BlendState blend = new BlendState
         {
             AlphaSourceBlend = Blend.DestinationAlpha,
             AlphaBlendFunction = BlendFunction.Subtract,
             AlphaDestinationBlend = Blend.InverseDestinationAlpha
         };
 
-        static public Texture2D PerformBlend(Texture2D srcTexture, Texture2D srcMask)
+        public Texture2D PerformBlend(Texture2D srcTexcture, Texture2D srcMask)
         {
-            var renderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, srcTexture.Width, srcTexture.Height, false,
+            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, srcTexcture.Width, srcTexcture.Height, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
-            game.GraphicsDevice.SetRenderTarget(renderTarget);
+            GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
 
             // Attempt to end the spritebatch
             try
@@ -33,14 +33,23 @@ namespace Wobble.Graphics.Sprites
             }
 
             GameBase.Game.SpriteBatch.Begin(blendState: blend);
-            GameBase.Game.SpriteBatch.Draw(srcMask, srcTexture.Bounds, Color.White);
-            GameBase.Game.SpriteBatch.Draw(srcTexture, srcTexture.Bounds, Color.White);
+            GameBase.Game.SpriteBatch.Draw(srcMask, srcTexcture.Bounds, Color.White);
+            GameBase.Game.SpriteBatch.Draw(srcTexcture, srcTexcture.Bounds, Color.White);
             GameBase.Game.SpriteBatch.End();
 
-            game.GraphicsDevice.SetRenderTarget(null);
-            game.GraphicsDevice.Clear(Color.Black);
+            GameBase.Game.GraphicsDevice.SetRenderTarget(null);
+            GameBase.Game.GraphicsDevice.Clear(Color.Black);
 
-            return renderTarget;
+            return RenderTarget;
+        }
+
+        public override void Destroy()
+        {
+            if (RenderTarget != null)
+            {
+                RenderTarget.Dispose();
+                RenderTarget = null;
+            }
         }
     }
 }
