@@ -15,9 +15,9 @@ namespace Wobble.Graphics.Sprites
             AlphaDestinationBlend = Blend.InverseDestinationAlpha
         };
 
-        public Texture2D PerformBlend(Texture2D srcTexcture, Texture2D srcMask)
+        public Texture2D PerformBlend(Texture2D srcTexture, Texture2D srcMask)
         {
-            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, srcTexcture.Width, srcTexcture.Height, false,
+            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, srcTexture.Width, srcTexture.Height, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
@@ -33,8 +33,8 @@ namespace Wobble.Graphics.Sprites
             }
 
             GameBase.Game.SpriteBatch.Begin(blendState: blend);
-            GameBase.Game.SpriteBatch.Draw(srcMask, srcTexcture.Bounds, Color.White);
-            GameBase.Game.SpriteBatch.Draw(srcTexcture, srcTexcture.Bounds, Color.White);
+            GameBase.Game.SpriteBatch.Draw(srcMask, srcTexture.Bounds, Color.White);
+            GameBase.Game.SpriteBatch.Draw(srcTexture, srcTexture.Bounds, Color.White);
             GameBase.Game.SpriteBatch.End();
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(null);
