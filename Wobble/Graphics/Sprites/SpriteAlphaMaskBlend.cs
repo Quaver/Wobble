@@ -50,6 +50,8 @@ namespace Wobble.Graphics.Sprites
                 RenderTarget.Dispose();
                 RenderTarget = null;
             }
+
+            base.Destroy();
         }
     }
 }
