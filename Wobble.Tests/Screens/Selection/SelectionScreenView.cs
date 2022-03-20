@@ -24,6 +24,7 @@ using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
+using Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend;
 using Wobble.Tests.Screens.Tests.SpriteTextPlusNew;
 using Wobble.Tests.Screens.Tests.TaskHandler;
 using Wobble.Tests.Screens.Tests.TextInput;
@@ -128,6 +129,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.SpriteMaskContainer:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestSpriteMaskingScreen());
+                        break;
+                    case ScreenType.SpriteAlphaMaskingBlend:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestSpriteAlphaMaskingBlendScreen());
                         break;
                     case ScreenType.BitmapFont:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBitmapFontScreen());
