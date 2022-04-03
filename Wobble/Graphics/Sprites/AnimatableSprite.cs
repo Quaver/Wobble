@@ -25,12 +25,22 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     The frame the animation start from.
         /// </summary>
-        public int DefaultFrame { get; set; }
+        public int FirstFrame { get; set; }
 
         /// <summary>
         ///     The last frame of the animation.
         /// </summary>
         public int LastFrame { get; private set; }
+
+        /// <summary>
+        ///     The numbers of row in the sheet.
+        /// </summary>
+        public int Rows { get; set; }
+
+        /// <summary>
+        ///     The numbers of column in the sheet.
+        /// </summary>
+        public int Columns { get; set; }
 
         /// <summary>
         ///     If the animation is currently looping.
@@ -127,7 +137,7 @@ namespace Wobble.Graphics.Sprites
         public void ChangeToNext()
         {
             if (CurrentFrame + 1 > LastFrame - 1)
-                CurrentFrame = DefaultFrame;
+                CurrentFrame = FirstFrame;
             else
                 CurrentFrame++;
 
@@ -139,7 +149,7 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public void ChangeToPrevious()
         {
-            if (CurrentFrame - 1 < DefaultFrame)
+            if (CurrentFrame - 1 < FirstFrame)
                 CurrentFrame = LastFrame - 1;
             else
                 CurrentFrame--;
@@ -186,7 +196,7 @@ namespace Wobble.Graphics.Sprites
             Direction = direction;
             LoopFramesPerSecond = fps;
             IsLooping = true;
-            CurrentFrame = DefaultFrame;
+            CurrentFrame = FirstFrame;
             FrameLoopStartedOn = CurrentFrame;
             TimesLooped = 0;
             TimesToLoop = timesToLoop;
