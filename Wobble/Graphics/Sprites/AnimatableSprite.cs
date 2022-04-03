@@ -23,12 +23,12 @@ namespace Wobble.Graphics.Sprites
         public int CurrentFrame { get; private set; }
 
         /// <summary>
-        ///     
+        ///     The frame the animation start from.
         /// </summary>
         public int DefaultFrame { get; set; }
 
         /// <summary>
-        ///     
+        ///     The last frame of the animation.
         /// </summary>
         public int LastFrame { get; private set; }
 
