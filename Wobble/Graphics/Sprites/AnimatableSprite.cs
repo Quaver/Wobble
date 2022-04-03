@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,6 +21,16 @@ namespace Wobble.Graphics.Sprites
         ///     The current animation frame we're on.
         /// </summary>
         public int CurrentFrame { get; private set; }
+
+        /// <summary>
+        ///     
+        /// </summary>
+        public int DefaultFrame { get; set; }
+
+        /// <summary>
+        ///     
+        /// </summary>
+        public int LastFrame { get; private set; }
 
         /// <summary>
         ///     If the animation is currently looping.
@@ -73,6 +83,7 @@ namespace Wobble.Graphics.Sprites
         {
             Frames = AssetLoader.LoadSpritesheetFromTexture(spritesheet, rows, columns);
             Image = Frames[CurrentFrame];
+            LastFrame = Frames.Count;
         }
 
         /// <inheritdoc />
@@ -84,6 +95,7 @@ namespace Wobble.Graphics.Sprites
         {
             Frames = frames;
             Image = Frames[CurrentFrame];
+            LastFrame = Frames.Count;
         }
 
         /// <inheritdoc />
@@ -114,8 +126,8 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public void ChangeToNext()
         {
-            if (CurrentFrame + 1 > Frames.Count - 1)
-                CurrentFrame = 0;
+            if (CurrentFrame + 1 > LastFrame - 1)
+                CurrentFrame = DefaultFrame;
             else
                 CurrentFrame++;
 
@@ -127,8 +139,8 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public void ChangeToPrevious()
         {
-            if (CurrentFrame - 1 < 0)
-                CurrentFrame = Frames.Count - 1;
+            if (CurrentFrame - 1 < DefaultFrame)
+                CurrentFrame = LastFrame - 1;
             else
                 CurrentFrame--;
 
@@ -169,14 +181,17 @@ namespace Wobble.Graphics.Sprites
         /// <param name="direction"></param>
         /// <param name="fps"></param>
         /// <param name="timesToLoop">The amount of times to loop. If 0, it'll loop infinitely.</param>
-        public void StartLoop(Direction direction, int fps, int timesToLoop = 0)
+        public void StartLoop(Direction direction, int fps, int timesToLoop = 0, int lastFrame = 0)
         {
             Direction = direction;
             LoopFramesPerSecond = fps;
             IsLooping = true;
+            CurrentFrame = DefaultFrame;
             FrameLoopStartedOn = CurrentFrame;
             TimesLooped = 0;
             TimesToLoop = timesToLoop;
+            if (lastFrame != 0)
+                LastFrame = lastFrame;
         }
 
         /// <summary>
