@@ -77,5 +77,13 @@ namespace Wobble.Platform.Linux
                 // No xdg-mime? Oh well.
             }
         }
+
+        public override void EnableWindowsKey()
+        {
+        }
+
+        public override void DisableWindowsKey()
+        {
+        }
     }
 }

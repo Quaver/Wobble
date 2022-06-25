@@ -45,5 +45,15 @@ namespace Wobble.Platform
         /// <param name="scheme">the url scheme to register, MUST NOT contain spaces, quotes or any other weird characters</param>
         /// <param name="friendlyName">a friendly name for the scheme, MUST NOT contain spaces, quotes or any other weird characters</param>
         public abstract void RegisterURIScheme(string scheme, string friendlyName);
+
+        /// <summary>
+        ///     Enables the windows key to be used
+        /// </summary>
+        public abstract void EnableWindowsKey();
+
+        /// <summary>
+        ///     Disables the windows key from being used
+        /// </summary>
+        public abstract void DisableWindowsKey();
     }
 }

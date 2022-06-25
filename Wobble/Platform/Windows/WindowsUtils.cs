@@ -38,5 +38,9 @@ namespace Wobble.Platform.Windows
                 }
             }
         }
+
+        public override void EnableWindowsKey() => WindowsKey.EnableWindowsKey();
+
+        public override void DisableWindowsKey() => WindowsKey.DisableWindowsKey();
     }
 }

@@ -25,5 +25,13 @@ namespace Wobble.Platform.OSX
         public override void RegisterURIScheme(string scheme, string friendlyName)
         {
         }
+
+        public override void EnableWindowsKey()
+        {
+        }
+
+        public override void DisableWindowsKey()
+        {
+        }
     }
 }
