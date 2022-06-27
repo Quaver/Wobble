@@ -37,6 +37,9 @@ namespace Wobble.Audio
                 // resulting in inconsistent hitsound and keysound latency.
                 Bass.Configure(Configuration.DevNonStop, true);
             }
+            
+            // Follow system default audio source
+            Bass.Configure(Configuration.IncludeDefaultDevice, true);
 
             if (devicePeriod.HasValue)
                 Bass.Configure(Configuration.DevicePeriod, devicePeriod.Value);
