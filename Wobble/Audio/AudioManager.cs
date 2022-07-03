@@ -27,8 +27,10 @@ namespace Wobble.Audio
         /// </summary>
         /// <param name="devicePeriod">Set to override the device period, milliseconds.</param>
         /// <param name="deviceBufferLength">Set to override the device buffer length, milliseconds.</param>
-        internal static void Initialize(int? devicePeriod, int? deviceBufferLength)
+        public static void Initialize(int? devicePeriod, int? deviceBufferLength, int? device = -1)
         {
+            Dispose();
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 // Do not stop the output device to ensure consistent latency.
@@ -37,7 +39,7 @@ namespace Wobble.Audio
                 // resulting in inconsistent hitsound and keysound latency.
                 Bass.Configure(Configuration.DevNonStop, true);
             }
-            
+
             // Follow system default audio source
             Bass.Configure(Configuration.IncludeDefaultDevice, true);
 
@@ -48,7 +50,7 @@ namespace Wobble.Audio
 
             Logger.Debug($"BASS options: DevicePeriod = {Bass.GetConfig(Configuration.DevicePeriod)}, DeviceBufferLength = {Bass.GetConfig(Configuration.DeviceBufferLength)}", LogType.Runtime);
 
-            if (!Bass.Init())
+            if (!Bass.Init(device.Value))
             {
                 var error = Bass.LastError;
                 throw new AudioEngineException($"BASS has failed to initialize (error code: {(int) error}, name: \"{error}\")! Are your platform-specific dlls present?");
@@ -68,6 +70,24 @@ namespace Wobble.Audio
         ///     Updates the AudioManager and keeps things up-to-date.
         /// </summary>
         internal static void Update(GameTime gameTime) => UpdateTracks(gameTime);
+
+        /// <summary>
+        ///     Returns an audio device by its name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static DeviceInfo? GetAudioDeviceByName(string name)
+        {
+            for (var i = 1; i < Bass.DeviceCount; i++)
+            {
+                var device = Bass.GetDeviceInfo(i);
+
+                if (device.Name == name)
+                    return device;
+            }
+
+            return null;
+        }
 
         /// <summary>
         ///     Updates the real time for each track to keep updated.
