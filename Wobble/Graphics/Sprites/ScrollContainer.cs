@@ -23,6 +23,11 @@ namespace Wobble.Graphics.Sprites
         public Sprite Scrollbar { get; }
 
         /// <summary>
+        ///     Keeps track of whether the user is dragging to allow for continued dragging outside normal bounds
+        /// </summary>
+        public bool IsMiddleMouseDragging { get; private set; } = false;
+
+        /// <summary>
         ///     The target y position of the container.
         /// </summary>
         public float TargetY { get; set;  }
@@ -127,16 +132,21 @@ namespace Wobble.Graphics.Sprites
             if (Scrollbar.Height < 30)
                 Scrollbar.Height = 30;
 
-            // Handle scrolling
-            if (InputEnabled)
+            // Middle mouse scrolling
+            IsMiddleMouseDragging = AllowMiddleMouseDragging &&
+                                    MouseManager.CurrentState.MiddleButton == ButtonState.Pressed &&
+                                    (IsHovered() || IsMiddleMouseDragging);
+
+            if (IsMiddleMouseDragging)
             {
-                // Middle mouse scrolling
-                if (IsHovered() && AllowMiddleMouseDragging && MouseManager.CurrentState.MiddleButton == ButtonState.Pressed)
-                {
-                    var percent = MathHelper.Clamp((MouseManager.CurrentState.Y - ScreenRectangle.Y) / ScreenRectangle.Height, 0, 1);
-                    TargetY = -ContentContainer.Height * percent;
-                }
-                else if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
+                var percent = MathHelper.Clamp((MouseManager.CurrentState.Y - ScreenRectangle.Y) / ScreenRectangle.Height, 0, 1);
+                TargetY = -ContentContainer.Height * percent;
+            }
+
+            // Handle scrolling
+            if (InputEnabled && !IsMiddleMouseDragging)
+            {
+                if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
                     TargetY += ScrollSpeed;
                 else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
                     TargetY -= ScrollSpeed;
