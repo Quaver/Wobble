@@ -32,7 +32,7 @@ namespace Wobble
         /// </summary>
         public static SpriteBatchOptions DefaultSpriteBatchOptions { get; set; } = new SpriteBatchOptions()
         {
-            SortMode = SpriteSortMode.Deferred,
+            SortMode = SpriteSortMode.Immediate,
             BlendState = BlendState.NonPremultiplied,
         };
 
