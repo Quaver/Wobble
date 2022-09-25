@@ -9,6 +9,10 @@
       <ProjectReference Include="..\Wobble\Wobble.csproj" />
     </ItemGroup>
 
+    <PropertyGroup>
+      <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+    </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     </ItemGroup>
