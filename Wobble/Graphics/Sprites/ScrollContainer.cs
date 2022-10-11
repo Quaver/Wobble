@@ -107,7 +107,7 @@ namespace Wobble.Graphics.Sprites
             // Create the SpriteBatchOptions with scissor rect enabled.
             SpriteBatchOptions = new SpriteBatchOptions
             {
-                SortMode = SpriteSortMode.Deferred,
+                SortMode = SpriteSortMode.Immediate,
                 BlendState = BlendState.NonPremultiplied,
                 RasterizerState = new RasterizerState
                 {
