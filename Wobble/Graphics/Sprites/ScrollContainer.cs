@@ -155,7 +155,7 @@ namespace Wobble.Graphics.Sprites
             // Scrollbar Dragging
             if (AllowScrollbarDragging)
             {
-                if (AllowScrollbarDragging && !IsScrollbarDragging && MouseManager.IsUniquePress(MouseButton.Left) && Scrollbar.IsHovered())
+                if (InputEnabled && !IsScrollbarDragging && MouseManager.IsUniquePress(MouseButton.Left) && Scrollbar.IsHovered())
                 {
                     IsScrollbarDragging = true;
                     ScrollbarDraggingOffset = Scrollbar.ScreenRectangle.Y - MouseManager.CurrentState.Position.Y;
@@ -178,11 +178,12 @@ namespace Wobble.Graphics.Sprites
                     TargetY = -ContentContainer.Height * percent;
                 }
             }
-            // Middle mouse scrolling
+
+            // Middle mouse button dragging
             if (AllowMiddleMouseDragging && !IsScrollbarDragging)
             {
                 IsMiddleMouseDragging = MouseManager.CurrentState.MiddleButton == ButtonState.Pressed &&
-                                        (IsHovered() || IsMiddleMouseDragging);
+                                        ((IsHovered() && InputEnabled) || IsMiddleMouseDragging);
 
                 if (IsMiddleMouseDragging)
                 {
@@ -190,7 +191,8 @@ namespace Wobble.Graphics.Sprites
                     TargetY = -ContentContainer.Height * percent;
                 }
             }
-            // Other scrolling
+
+            // Scroll wheel scrolling
             if (InputEnabled && !IsScrollbarDragging && !IsMiddleMouseDragging)
             {
                 if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
