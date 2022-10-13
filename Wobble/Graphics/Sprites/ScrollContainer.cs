@@ -153,7 +153,7 @@ namespace Wobble.Graphics.Sprites
                 Scrollbar.Height = 30;
 
             // Scrollbar Dragging
-            if (AllowScrollbarDragging)
+            if (AllowScrollbarDragging && !IsMiddleMouseDragging)
             {
                 if (InputEnabled && !IsScrollbarDragging && MouseManager.IsUniquePress(MouseButton.Left) && Scrollbar.IsHovered())
                 {
@@ -162,18 +162,11 @@ namespace Wobble.Graphics.Sprites
                 }
                 else
                 {
-                    IsScrollbarDragging = AllowScrollbarDragging && IsScrollbarDragging &&
-                                            MouseManager.CurrentState.LeftButton == ButtonState.Pressed;
+                    IsScrollbarDragging = IsScrollbarDragging && MouseManager.CurrentState.LeftButton == ButtonState.Pressed;
                 }
 
                 if (IsScrollbarDragging)
                 {
-                    // Scrollbar.Y = MathHelper.Clamp(MouseManager.CurrentState.Position.Y + ScrollbarDraggingOffset,
-                    //                                Scrollbar.Parent.Y, Scrollbar.Parent.Y + Scrollbar.Parent.Height);
-
-                    // var percent = Scrollbar.Y / Scrollbar.Parent.Height;
-                    // TargetY = -ContentContainer.Height * percent;
-
                     var percent = (MouseManager.CurrentState.Position.Y + ScrollbarDraggingOffset - Scrollbar.Parent.ScreenRectangle.Y) / Scrollbar.Parent.Height;
                     TargetY = -ContentContainer.Height * percent;
                 }
