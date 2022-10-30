@@ -23,6 +23,31 @@ namespace Wobble.Graphics.Sprites
         public Sprite Scrollbar { get; }
 
         /// <summary>
+        ///     If the container allows scrolling by dragging the scrollbar
+        /// </summary>
+        public bool AllowScrollbarDragging { get; set; } = false;
+
+        /// <summary>
+        ///     Keeps track of whether the user is dragging to allow for continued dragging outside normal bounds
+        /// </summary>
+        public bool IsScrollbarDragging { get; private set; } = false;
+
+        /// <summary>
+        ///     Used to align scrollbar movement with mouse cursor when scrollbar is being dragged
+        /// </summary>
+        public float ScrollbarDraggingOffset { get; private set; }
+
+        /// <summary>
+        ///     If the container allows fast scrolling with the middle mouse button
+        /// </summary>
+        public bool AllowMiddleMouseDragging { get; set; } = true;
+
+        /// <summary>
+        ///     Keeps track of whether the user is dragging to allow for continued dragging outside normal bounds
+        /// </summary>
+        public bool IsMiddleMouseDragging { get; private set; } = false;
+
+        /// <summary>
         ///     The target y position of the container.
         /// </summary>
         public float TargetY { get; set;  }
@@ -48,6 +73,16 @@ namespace Wobble.Graphics.Sprites
         public int TimeToCompleteScroll { get; set; } = 75;
 
         /// <summary>
+        ///     The time to complete the scroll when the scroll bar is dragged
+        /// </summary>
+        public int TimeToCompleteScrollbarDragScroll { get; set; } = 600;
+
+        /// <summary>
+        ///     The time to complete the scroll when the middle mouse button is pressed
+        /// </summary>
+        public int TimeToCompleteMiddleMouseScroll { get; set; } = 600;
+
+        /// <summary>
         ///     Determines if the scrolling input is enabled for the container.
         /// </summary>
         public bool InputEnabled { get; set; }
@@ -56,16 +91,6 @@ namespace Wobble.Graphics.Sprites
         ///     The minimum y the scrollbar will be clamped to
         /// </summary>
         protected int MinScrollBarY { get; set; }
-
-        /// <summary>
-        ///     If the container allows fast scrolling with the middle mouse button
-        /// </summary>
-        public bool AllowMiddleMouseDragging { get; set; } = true;
-
-        /// <summary>
-        ///     The scroll speed used when the user is holding down the middle mouse button
-        /// </summary>
-        public int TimeToCompleteMiddleMouseScroll { get; set; } = 600;
 
         /// <summary>
         ///     If <see cref="MinScrollBarY"/> will be taken into account
@@ -127,16 +152,43 @@ namespace Wobble.Graphics.Sprites
             if (Scrollbar.Height < 30)
                 Scrollbar.Height = 30;
 
-            // Handle scrolling
-            if (InputEnabled)
+            // Scrollbar Dragging
+            if (AllowScrollbarDragging && !IsMiddleMouseDragging)
             {
-                // Middle mouse scrolling
-                if (IsHovered() && AllowMiddleMouseDragging && MouseManager.CurrentState.MiddleButton == ButtonState.Pressed)
+                if (InputEnabled && !IsScrollbarDragging && MouseManager.IsUniquePress(MouseButton.Left) && Scrollbar.IsHovered())
+                {
+                    IsScrollbarDragging = true;
+                    ScrollbarDraggingOffset = Scrollbar.ScreenRectangle.Y - MouseManager.CurrentState.Position.Y;
+                }
+                else
+                {
+                    IsScrollbarDragging = IsScrollbarDragging && MouseManager.CurrentState.LeftButton == ButtonState.Pressed;
+                }
+
+                if (IsScrollbarDragging)
+                {
+                    var percent = (MouseManager.CurrentState.Position.Y + ScrollbarDraggingOffset - Scrollbar.Parent.ScreenRectangle.Y) / Scrollbar.Parent.Height;
+                    TargetY = -ContentContainer.Height * percent;
+                }
+            }
+
+            // Middle mouse button dragging
+            if (AllowMiddleMouseDragging && !IsScrollbarDragging)
+            {
+                IsMiddleMouseDragging = MouseManager.CurrentState.MiddleButton == ButtonState.Pressed &&
+                                        ((IsHovered() && InputEnabled) || IsMiddleMouseDragging);
+
+                if (IsMiddleMouseDragging)
                 {
                     var percent = MathHelper.Clamp((MouseManager.CurrentState.Y - ScreenRectangle.Y) / ScreenRectangle.Height, 0, 1);
                     TargetY = -ContentContainer.Height * percent;
                 }
-                else if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
+            }
+
+            // Scroll wheel scrolling
+            if (InputEnabled && !IsScrollbarDragging && !IsMiddleMouseDragging)
+            {
+                if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
                     TargetY += ScrollSpeed;
                 else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
                     TargetY -= ScrollSpeed;
@@ -161,9 +213,9 @@ namespace Wobble.Graphics.Sprites
             {
                 ContentContainer.Animations.Clear();
 
-                var timeToComplete = MouseManager.CurrentState.MiddleButton == ButtonState.Pressed
-                    ? TimeToCompleteMiddleMouseScroll
-                    : TimeToCompleteScroll;
+                var timeToComplete = IsScrollbarDragging ? TimeToCompleteScrollbarDragScroll :
+                                     IsMiddleMouseDragging ? TimeToCompleteMiddleMouseScroll :
+                                     TimeToCompleteScroll;
 
                 ContentContainer.Animations.Add(new Animation(AnimationProperty.Y, EasingType,
                                                             ContentContainer.Y, TargetY, timeToComplete));
