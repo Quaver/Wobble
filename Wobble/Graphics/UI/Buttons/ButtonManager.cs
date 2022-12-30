@@ -17,18 +17,34 @@ namespace Wobble.Graphics.UI.Buttons
         ///     Adds a button to the manager.
         /// </summary>
         /// <param name="btn"></param>
-        public static void Add(Button btn) => Buttons.Add(btn);
+        public static void Add(Button btn)
+        {
+            lock (Buttons)
+                Buttons.Add(btn);
+        }
 
         /// <summary>
         ///     Removes a button from the manager.
         /// </summary>
         /// <param name="btn"></param>
-        public static void Remove(Button btn) => Buttons.Remove(btn);
+        public static void Remove(Button btn)
+        {
+            lock (Buttons)
+                Buttons.Remove(btn);
+        }
 
         public static void ResetDrawOrder()
         {
-            for (var i = 0; i < Buttons.Count; i++)
-                Buttons[i].DrawOrder = 0;
+            lock (Buttons)
+            {
+                foreach (var b in Buttons)
+                {
+                    if (b == null)
+                        continue;
+
+                    b.DrawOrder = 0;
+                }
+            }
         }
     }
 }

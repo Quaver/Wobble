@@ -24,35 +24,45 @@ namespace Wobble.Screens
         /// <param name="screen"></param>
         public static void AddScreen(Screen screen)
         {
-            Screens.Push(screen);
-            ButtonManager.ResetDrawOrder();
+            lock (Screens)
+            lock (screen)
+            {
+                Screens.Push(screen);
+                ButtonManager.ResetDrawOrder();
+            }
         }
 
         /// <summary>
         ///     If there are currently any screens in the stack.
         /// </summary>
-        public static bool HasScreens => Screens.Count > 0;
+        public static bool HasScreens
+        {
+            get
+            {
+                lock (Screens)
+                    return Screens.Count > 0;
+            }
+        }
 
         /// <summary>
         ///     Removes the screen on top.
         /// </summary>
-        public static void RemoveScreen(bool destroyInTask = false)
+        public static void RemoveScreen()
         {
             if (!HasScreens)
                 return;
 
-            // Destroy the screen. If specified to destroy in a task, it will do so.
-            if (Screens.Peek().AutomaticallyDestroyOnScreenSwitch)
+            lock (Screens)
             {
-                if (destroyInTask)
-                    Task.Run(() => Screens.Peek().Destroy());
-                else
-                    Screens.Peek().Destroy();
-            }
+                var screen = Screens.Peek();
 
-            // Remove the screen.
-            Screens.Pop();
-            ButtonManager.ResetDrawOrder();
+                if (screen == null)
+                    return;
+
+                screen.Destroy();
+                Screens.Pop();
+                ButtonManager.ResetDrawOrder();
+            }
         }
 
         /// <summary>
@@ -83,7 +93,8 @@ namespace Wobble.Screens
             if (!HasScreens)
                 return;
 
-            Screens.Peek().Update(gameTime);
+            var screen = Screens.Peek();
+            screen?.Update(gameTime);
         }
 
         /// <summary>
@@ -95,13 +106,8 @@ namespace Wobble.Screens
             if (!HasScreens)
                 return;
 
-            Screens.Peek().Draw(gameTime);
+            var screen = Screens.Peek();
+            screen?.Draw(gameTime);
         }
-
-        /// <summary>
-        ///     Asynchronously load a screen and call its initialize method.
-        ///     After doing so, the callback action will be called
-        /// </summary>
-        public static void LoadAsync(Func<Screen> loadAction, Action callback) => Task.Run(loadAction).ContinueWith(t => callback());
     }
 }
