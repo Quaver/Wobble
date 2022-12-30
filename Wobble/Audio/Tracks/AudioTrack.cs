@@ -3,6 +3,7 @@ using System.IO;
 using ManagedBass;
 using ManagedBass.Fx;
 using Wobble.Helpers;
+using Wobble.Logging;
 
 namespace Wobble.Audio.Tracks
 {
@@ -51,7 +52,10 @@ namespace Wobble.Audio.Tracks
             {
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (_length != -1)
-                    throw new AudioEngineException("Cannot set length of AudioTrack manually");
+                {
+                    Logger.Error("Cannot set length of AudioTrack manually", LogType.Runtime);
+                    return;
+                }
 
                 _length = value;
             }
@@ -65,7 +69,10 @@ namespace Wobble.Audio.Tracks
             get
             {
                 if (!StreamLoaded || IsDisposed)
-                    throw new InvalidOperationException("Cannot get track position if disposed or stream not loaded");
+                {
+                    Logger.Warning("Cannot get track position if disposed or stream not loaded", LogType.Runtime);
+                    return 0;
+                }
 
                 return Bass.ChannelBytes2Seconds(Stream, Bass.ChannelGetPosition(Stream)) * 1000;
             }
@@ -274,12 +281,18 @@ namespace Wobble.Audio.Tracks
         public void Play()
         {
             if (!AllowPlayback)
-                throw new AudioEngineException("AllowPlayback is not enabled.");
+            {
+                Logger.Error("AllowPlayback is not enabled", LogType.Runtime);
+                return;
+            }
 
             CheckIfDisposed();
 
             if (IsPlaying)
-                throw new AudioEngineException("Cannot play track if it is already playing.");
+            {
+                Logger.Warning("Cannot play track if it is already playing.", LogType.Runtime);
+                return;
+            }
 
             var previous = Time;
 
@@ -298,7 +311,10 @@ namespace Wobble.Audio.Tracks
             CheckIfDisposed();
 
             if (!IsPlaying || IsPaused)
-                throw new AudioEngineException("Cannot pause audio track if it is not playing or if already paused.");
+            {
+                Logger.Warning("Cannot pause audio track if it is not playing or if already paused.", LogType.Runtime);
+                return;
+            }
 
             Bass.ChannelPause(Stream);
         }
@@ -338,7 +354,10 @@ namespace Wobble.Audio.Tracks
             CheckIfDisposed();
 
             if (pos > Length || pos < -1)
-                throw new AudioEngineException("You can only seek to a position greater than -1 and below its length.");
+            {
+                Logger.Error("You can only seek to a position greater than -1 and below its length.", LogType.Runtime);
+                return;
+            }
 
             var previous = Time;
             Bass.ChannelSetPosition(Stream, Bass.ChannelSeconds2Bytes(Stream, pos / 1000d));
@@ -390,7 +409,10 @@ namespace Wobble.Audio.Tracks
         private void AfterLoad()
         {
             if (!StreamLoaded)
-                throw new AudioEngineException("Cannot call AfterLoad if stream isn't loaded.");
+            {
+                Logger.Error("Cannot call AfterLoad if stream isn't loaded.", LogType.Runtime);
+                return;
+            }
 
             lock (AudioManager.Tracks)
                 AudioManager.Tracks.Add(this);
@@ -415,8 +437,10 @@ namespace Wobble.Audio.Tracks
         /// </summary>
         private void CheckIfDisposed()
         {
-            if (!StreamLoaded || IsDisposed)
-                throw new PlayableAudioDisposedException("You cannot change a disposed/unloaded track's position.");
+            if (StreamLoaded && !IsDisposed)
+                return;
+
+            Logger.Error("You cannot change a disposed/unloaded track's position.", LogType.Runtime);
         }
 
         /// <summary>
