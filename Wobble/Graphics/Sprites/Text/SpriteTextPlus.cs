@@ -292,7 +292,7 @@ namespace Wobble.Graphics.Sprites.Text
 
         public override void DrawToSpriteBatch()
         {
-            if (IsCached)
+            if (IsCached || !Visible)
                 return;
 
             SetSize();
