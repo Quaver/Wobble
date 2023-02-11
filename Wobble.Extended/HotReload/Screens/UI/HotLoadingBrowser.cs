@@ -65,11 +65,12 @@ namespace Wobble.Extended.HotReload.Screens.UI
             };
 
             // ReSharper disable once ObjectCreationAsStatement
-            new SpriteText("Arial", name, 14)
+            new SpriteTextBitmap(HotLoaderGame.Font, name, false)
             {
                 Parent = btn,
                 UsePreviousSpriteBatchOptions = true,
                 Alignment = Alignment.MidCenter,
+                FontSize = 16
             };
 
             Buttons.Add(btn);

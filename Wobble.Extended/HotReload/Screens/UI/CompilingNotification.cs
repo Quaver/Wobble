@@ -9,7 +9,7 @@ namespace Wobble.Extended.HotReload.Screens.UI
     {
         /// <summary>
         /// </summary>
-        public SpriteText Text { get; }
+        public SpriteTextBitmap Text { get; }
 
         /// <summary>
         /// </summary>
@@ -23,10 +23,11 @@ namespace Wobble.Extended.HotReload.Screens.UI
             Size = new ScalableVector2(WindowManager.Width, 75);
             SetChildrenAlpha = true;
 
-            Text = new SpriteText("Arial", "", 14)
+            Text = new SpriteTextBitmap(HotLoaderGame.Font, "", false)
             {
                 Parent = this,
-                Alignment = Alignment.MidCenter
+                Alignment = Alignment.MidCenter,
+                FontSize = 16
             };
 
             SetCompilingText();
