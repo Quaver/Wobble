@@ -122,7 +122,19 @@ namespace Wobble.Graphics.Sprites.Text
         ///     Caching is useful for text that does not change often to increase performance and is on by default.
         ///     However, you may want to turn caching off for text that frequently changes (ex. millisecond clocks/timers)
         /// </summary>
-        public bool IsCached { get; }
+        private bool _isCached;
+        public bool IsCached
+        {
+            get => _isCached;
+            set
+            {
+                if (value == _isCached)
+                    return;
+
+                _isCached = value;
+                RefreshText();
+            }
+        }
 
         /// <summary>
         /// </summary>
@@ -132,27 +144,29 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="cache"></param>
         public SpriteTextPlus(WobbleFontStore font, string text, int size = 0, bool cache = true)
         {
-            Font = font;
-            Text = text;
-            IsCached = cache;
+            _font = font;
+            _text = text;
+            _isCached = cache;
 
-            FontSize = size == 0 ? Font.DefaultSize : size;
+            _fontSize = size == 0 ? Font.DefaultSize : size;
             SetChildrenAlpha = true;
+
+            RefreshText();
         }
 
         /// <summary>
         /// </summary>
         private void RefreshText()
         {
+            for (var i = Children.Count - 1; i >= 0; i--)
+                Children[i].Destroy();
+
             // TODO: Actually make this work to set the width/height.
             if (!IsCached)
             {
                 SetSize();
                 return;
             }
-
-            for (var i = Children.Count - 1; i >= 0; i--)
-                Children[i].Destroy();
 
             float width = 0, height = 0;
 
