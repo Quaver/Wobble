@@ -18,6 +18,16 @@ namespace Wobble.Graphics.Sprites
         public Container ContentContainer { get; }
 
         /// <summary>
+        ///     Y-position of the content container
+        /// </summary>
+        public float CurrentY { get => ContentContainer.Y; }
+
+        /// <summary>
+        ///     Y-position of the content container in the previous frame
+        /// </summary>
+        public float PreviousY { get; private set; }
+
+        /// <summary>
         ///     The scroll bar
         /// </summary>
         public Sprite Scrollbar { get; }
@@ -136,6 +146,7 @@ namespace Wobble.Graphics.Sprites
             };
 
             TargetY = ContentContainer.Y;
+            PreviousY = ContentContainer.Y;
             PreviousTargetY = TargetY;
         }
 
@@ -222,6 +233,7 @@ namespace Wobble.Graphics.Sprites
             }
 
             PreviousTargetY = TargetY;
+            PreviousY = ContentContainer.Y;
             base.Update(gameTime);
         }
 
