@@ -1,4 +1,6 @@
+using System;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Logging;
 
 namespace Wobble.Input
 {
@@ -15,12 +17,33 @@ namespace Wobble.Input
         public static JoystickState PreviousState { get; private set; }
 
         /// <summary>
+        ///     Set to true if we encountered the weird exception and stopped updating the state.
+        /// </summary>
+        private static bool Broken { get; set; }
+
+        /// <summary>
         ///     Keeps our joystick states updated each frame
         /// </summary>
         internal static void Update()
         {
             PreviousState = CurrentState;
-            CurrentState = Joystick.GetState(0); // Get data for "player 1".
+
+            if (Broken)
+            {
+                CurrentState = new JoystickState();
+                return;
+            }
+
+            try
+            {
+                CurrentState = Joystick.GetState(0); // Get data for "player 1".
+            }
+            catch (OverflowException e)
+            {
+                Logger.Error(e, LogType.Runtime);
+                Logger.Warning("Encountered the weird joystick exception. Disabling joystick support.", LogType.Runtime);
+                Broken = true;
+            }
         }
 
         /// <summary>
