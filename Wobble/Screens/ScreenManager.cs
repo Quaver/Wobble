@@ -11,77 +11,36 @@ namespace Wobble.Screens
     public static class ScreenManager
     {
         /// <summary>
-        ///     Holds a stack of all the current game screens. It is setup in a first in, first out
-        ///     way where the screen on top will be the one being updated/drawn, and will also be the
-        ///     first to be removed.
+        ///     The screen that is currently being drawn
         /// </summary>
-        public static Stack<Screen> Screens { get; } = new Stack<Screen>();
+        private static Screen CurrentScreen { get; set; }
 
         /// <summary>
-        ///     Adds a screen to the stack. This screen will become the new main screen, but
-        ///     the ones under it will still persist at the same state.
+        ///     The screen that is queued to be changed.
         /// </summary>
-        /// <param name="screen"></param>
-        public static void AddScreen(Screen screen)
-        {
-            lock (Screens)
-            lock (screen)
-            {
-                Screens.Push(screen);
-                ButtonManager.ResetDrawOrder();
-            }
-        }
+        private static Screen QueuedScreen { get; set; }
 
-        /// <summary>
-        ///     If there are currently any screens in the stack.
-        /// </summary>
-        public static bool HasScreens
-        {
-            get
-            {
-                lock (Screens)
-                    return Screens.Count > 0;
-            }
-        }
-
-        /// <summary>
-        ///     Removes the screen on top.
-        /// </summary>
-        public static void RemoveScreen()
-        {
-            if (!HasScreens)
-                return;
-
-            lock (Screens)
-            {
-                var screen = Screens.Peek();
-
-                if (screen == null)
-                    return;
-
-                screen.Destroy();
-                Screens.Pop();
-                ButtonManager.ResetDrawOrder();
-            }
-        }
-
-        /// <summary>
-        ///     Removes every single screen that we have in the stack.
-        /// </summary>
-        public static void RemoveAllScreens()
-        {
-            while (HasScreens)
-                RemoveScreen();
-        }
+        private static object LockObject { get; } = new object();
 
         /// <summary>
         ///     Removes all screens and places this one in the stack.
         /// </summary>
         /// <param name="screen"></param>
-        public static void ChangeScreen(Screen screen)
-        {
-            RemoveAllScreens();
-            AddScreen(screen);
+        /// <param name="switchImmediately"></param>
+        public static void ChangeScreen(Screen screen, bool switchImmediately = false)
+        {;
+            lock (LockObject)
+            {
+                if (switchImmediately)
+                {
+                    CurrentScreen?.Destroy();
+                    CurrentScreen = screen;
+                    QueuedScreen = null;
+                    return;
+                }
+
+                QueuedScreen = screen;
+            }
         }
 
         /// <summary>
@@ -90,24 +49,21 @@ namespace Wobble.Screens
         /// <param name="gameTime"></param>
         public static void Update(GameTime gameTime)
         {
-            if (!HasScreens)
+            CurrentScreen?.Update(gameTime);
+
+            if (QueuedScreen == null)
                 return;
 
-            var screen = Screens.Peek();
-            screen?.Update(gameTime);
+            // Switch to queued screen after last update.
+            CurrentScreen?.Destroy();
+            CurrentScreen = QueuedScreen;
+            QueuedScreen = null;
         }
 
         /// <summary>
         ///     Draws the current screen.
         /// </summary>
         /// <param name="gameTime"></param>
-        public static void Draw(GameTime gameTime)
-        {
-            if (!HasScreens)
-                return;
-
-            var screen = Screens.Peek();
-            screen?.Draw(gameTime);
-        }
+        public static void Draw(GameTime gameTime) => CurrentScreen?.Draw(gameTime);
     }
 }
