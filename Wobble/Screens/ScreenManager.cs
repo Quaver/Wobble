@@ -23,7 +23,7 @@ namespace Wobble.Screens
         private static object LockObject { get; } = new object();
 
         /// <summary>
-        ///     Removes all screens and places this one in the stack.
+        ///     Queues up a screen to be switched (or switches immediately).
         /// </summary>
         /// <param name="screen"></param>
         /// <param name="switchImmediately"></param>
@@ -44,7 +44,7 @@ namespace Wobble.Screens
         }
 
         /// <summary>
-        ///     Updates the current screen.
+        ///     Updates the current screen, and switches to a queued screen if one exists.
         /// </summary>
         /// <param name="gameTime"></param>
         public static void Update(GameTime gameTime)
