@@ -454,7 +454,6 @@ namespace Wobble.Graphics.UI.Form
 
             SelectedSprite.X = x + InputText.X;
             SelectedSprite.Width = width;
-            Console.WriteLine($"X: {SelectedSprite.X}, Width: {SelectedSprite.Width}");
         }
 
         /// <summary>
@@ -501,8 +500,6 @@ namespace Wobble.Graphics.UI.Form
             if (!Focused)
                 return;
 
-            KeyboardManager.CurrentState.GetPressedKeys().ToList().ForEach(x => Console.WriteLine(x));
-
             var shift = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftShift) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightShift);
             var ctrl = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl);
 
@@ -511,18 +508,12 @@ namespace Wobble.Graphics.UI.Form
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
             {
                 if (ctrl)
-                {
                     MoveCursorToPrevious(c => char.IsWhiteSpace(c));
-                }
                 else
-                {
                     CursorPosition = Math.Max(0, CursorPosition - 1);
-                }
 
                 if (shift)
-                {
                     SetSelectedPart(oldCursorPosition);
-                }
 
                 ReadjustCursor();
                 UpdateSelectedSprite();
@@ -530,42 +521,12 @@ namespace Wobble.Graphics.UI.Form
             if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
             {
                 if (ctrl)
-                {
                     MoveCursorToNext(c => char.IsWhiteSpace(c));
-                }
                 else
-                {
                     CursorPosition = Math.Min(RawText.Length, CursorPosition + 1);
-                }
 
                 if (shift)
-                {
                     SetSelectedPart(oldCursorPosition);
-                }
-
-                ReadjustCursor();
-                UpdateSelectedSprite();
-            }
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
-            {
-                MoveCursorToPrevious(c => c == '\n');
-
-                if (shift)
-                {
-                    SetSelectedPart(oldCursorPosition);
-                }
-
-                ReadjustCursor();
-                UpdateSelectedSprite();
-            }
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Down))
-            {
-                MoveCursorToNext(c => c == '\n');
-
-                if (shift)
-                {
-                    SetSelectedPart(oldCursorPosition);
-                }
 
                 ReadjustCursor();
                 UpdateSelectedSprite();
