@@ -123,6 +123,10 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         public bool AllowCursorMovement { get; set; } = true;
 
+        private double lastCursorMove { get; set; } = 0;
+
+        private Dictionary<Keys, double> keyHeldFor { get; set; } = new Dictionary<Keys, double>();
+
         /// <summary>
         ///     Action called when pressing enter and submitting the text box.
         /// </summary>
@@ -287,9 +291,11 @@ namespace Wobble.Graphics.UI.Form
                 FiredStoppedTypingActionHandlers = true;
             }
 
+            UpdateKeyHeldFor(gameTime);
+
             // Handle all input.
             if (AllowCursorMovement)
-                HandleArrowKeys();
+                HandleArrowKeys(gameTime);
             HandleCtrlInput();
             HandleEnter();
             CalculateContainerX();
@@ -484,6 +490,27 @@ namespace Wobble.Graphics.UI.Form
             SelectedSprite.X = x + InputText.X;
             SelectedSprite.Width = width;
         }
+        private void UpdateKeyHeldFor(GameTime gameTime)
+        {
+            if (!Focused)
+            {
+                keyHeldFor.Clear();
+                return;
+            }
+            var keys = KeyboardManager.CurrentState.GetPressedKeys();
+            foreach (var key in keys)
+            {
+                if (!keyHeldFor.ContainsKey(key))
+                    keyHeldFor.Add(key, 0);
+                else
+                    keyHeldFor[key] += gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+            foreach (var key in keyHeldFor.Keys.ToList())
+            {
+                if (!keys.Contains(key))
+                    keyHeldFor.Remove(key);
+            }
+        }
 
         /// <summary>
         ///     Makes the cursor blink
@@ -524,7 +551,7 @@ namespace Wobble.Graphics.UI.Form
             TimeSinceCursorVisibllityChanged = 0;
         }
 
-        private void HandleArrowKeys()
+        private void HandleArrowKeys(GameTime gameTime)
         {
             if (!Focused)
                 return;
@@ -537,13 +564,15 @@ namespace Wobble.Graphics.UI.Form
 
             var oldCursorPosition = CursorPosition;
 
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Left)
+            || (keyHeldFor.ContainsKey(Keys.Left) && keyHeldFor[Keys.Left] > 750
+                && gameTime.TotalGameTime.TotalMilliseconds - lastCursorMove > 75))
             {
                 if (ctrl)
                     MoveCursorToPrevious(c => char.IsWhiteSpace(c));
                 else
                 {
-                    if (char.IsLowSurrogate(upToCursor[upToCursor.Length - 1]))
+                    if (string.IsNullOrEmpty(upToCursor) || char.IsLowSurrogate(upToCursor[upToCursor.Length - 1]))
                     {
                         CursorPosition = Math.Max(0, CursorPosition - 2);
                     }
@@ -558,14 +587,17 @@ namespace Wobble.Graphics.UI.Form
 
                 ReadjustCursor();
                 UpdateSelectedSprite();
+                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
             }
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Right)
+            || (keyHeldFor.ContainsKey(Keys.Right) && keyHeldFor[Keys.Right] > 750 
+                && gameTime.TotalGameTime.TotalMilliseconds - lastCursorMove > 75))
             {
                 if (ctrl)
                     MoveCursorToNext(c => char.IsWhiteSpace(c));
                 else
                 {
-                    if (char.IsHighSurrogate(afterCursor[0]))
+                    if (string.IsNullOrEmpty(afterCursor) || char.IsHighSurrogate(afterCursor[0]))
                     {
                         CursorPosition = Math.Min(RawText.Length, CursorPosition + 2);
                     }
@@ -580,14 +612,13 @@ namespace Wobble.Graphics.UI.Form
 
                 ReadjustCursor();
                 UpdateSelectedSprite();
+                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
             if (!shift)
             {
                 if (KeyboardManager.IsUniqueKeyPress(Keys.Left)
-                || KeyboardManager.IsUniqueKeyPress(Keys.Right)
-                || KeyboardManager.IsUniqueKeyPress(Keys.Up)
-                || KeyboardManager.IsUniqueKeyPress(Keys.Down))
+                || KeyboardManager.IsUniqueKeyPress(Keys.Right))
                 {
                     Selected = false;
                 }
