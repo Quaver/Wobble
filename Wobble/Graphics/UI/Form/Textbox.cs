@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml.Schema;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Audio.Samples;
@@ -118,6 +117,11 @@ namespace Wobble.Graphics.UI.Form
         ///    The position of the cursor in the textbox. In amount of characters from the start.
         /// </summary>
         public int CursorPosition { get; private set; }
+
+        /// <summary>
+        ///    If true, it'll allow the cursor to move around using the arrow keys.
+        /// </summary>
+        public bool AllowCursorMovement { get; set; } = true;
 
         /// <summary>
         ///     Action called when pressing enter and submitting the text box.
@@ -284,7 +288,8 @@ namespace Wobble.Graphics.UI.Form
             }
 
             // Handle all input.
-            HandleArrowKeys();
+            if (AllowCursorMovement)
+                HandleArrowKeys();
             HandleCtrlInput();
             HandleEnter();
             CalculateContainerX();
