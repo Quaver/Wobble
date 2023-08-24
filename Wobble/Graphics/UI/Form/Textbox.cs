@@ -203,7 +203,7 @@ namespace Wobble.Graphics.UI.Form
         /// <param name="onSubmit"></param>
         /// <param name="onStoppedTyping"></param>
         public Textbox(ScalableVector2 size, WobbleFontStore font, int fontSize,
-            string initialText = "", string placeHolderText = "",  Action<string> onSubmit = null, Action<string> onStoppedTyping = null)
+            string initialText = "", string placeHolderText = "", Action<string> onSubmit = null, Action<string> onStoppedTyping = null)
             : base(size, size)
         {
             PlaceholderText = placeHolderText ?? "";
@@ -297,7 +297,7 @@ namespace Wobble.Graphics.UI.Form
 
             // Change the alpha of the selected sprite depending on if we're currently in a CTRL+A operation.
             SelectedSprite.Alpha = MathHelper.Lerp(SelectedSprite.Alpha, Selected ? 0.5f : 0,
-                (float) Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
+                (float)Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
 
             PerformCursorBlinking(gameTime);
 
@@ -348,6 +348,7 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Back:
                     case Keys.Tab:
                     case Keys.Delete:
+                    case Keys.Escape:
                     case Keys.VolumeUp:
                     case Keys.VolumeDown:
                         break;
@@ -368,6 +369,7 @@ namespace Wobble.Graphics.UI.Form
                 }
 
                 Selected = false;
+                UpdateSelectedSprite();
             }
             // Handle normal key presses.
             else
@@ -376,26 +378,26 @@ namespace Wobble.Graphics.UI.Form
                 switch (e.Key)
                 {
                     // Ignore these keys
+                    case Keys.Back:
                     case Keys.Tab:
                     case Keys.Delete:
                     case Keys.Escape:
                     case Keys.VolumeUp:
                     case Keys.VolumeDown:
                         return;
-                    // Back spacing
-                    case Keys.Back:
-                        if (string.IsNullOrEmpty(RawText))
-                            return;
-                        if (CursorPosition == 0)
-                            return;
+                    // // Back spacing
+                    //     if (string.IsNullOrEmpty(RawText))
+                    //         return;
+                    //     if (CursorPosition == 0)
+                    //         return;
 
-                        var upToCursor = RawText.Substring(0, CursorPosition);
-                        var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
-                        upToCursor = upToCursor.Remove(upToCursor.Length - 1);
-                        RawText = upToCursor + afterCursor;
-                        CursorPosition--;
-                        PlayKeyClickSound();
-                        break;
+                    //     var upToCursor = RawText.Substring(0, CursorPosition);
+                    //     var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+                    //     upToCursor = upToCursor.Remove(upToCursor.Length - 1);
+                    //     RawText = upToCursor + afterCursor;
+                    //     CursorPosition--;
+                    //     PlayKeyClickSound();
+                    //     break;
                     // Input text
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
@@ -441,6 +443,10 @@ namespace Wobble.Graphics.UI.Form
         private void UpdateSelectedSprite()
         {
             SelectedSprite.Visible = Selected;
+            if (!Selected)
+            {
+                SelectedPart = (0, 0);
+            }
             var startSubstring = RawText.Substring(0, SelectedPart.start);
             var selectedSubstring = RawText.Substring(SelectedPart.start, SelectedPart.end - SelectedPart.start);
             var x = InputText.Font.Store.MeasureString(startSubstring).X;
@@ -506,10 +512,7 @@ namespace Wobble.Graphics.UI.Form
             {
                 if (ctrl)
                 {
-                    var upToCursor = RawText.Substring(0, CursorPosition);
-                    var nonWhitespacesInTheEnd = upToCursor.ToCharArray()
-                        .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
-                    CursorPosition = upToCursor.Length - nonWhitespacesInTheEnd;
+                    MoveCursorToPrevious(c => char.IsWhiteSpace(c));
                 }
                 else
                 {
@@ -528,10 +531,7 @@ namespace Wobble.Graphics.UI.Form
             {
                 if (ctrl)
                 {
-                    var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
-                    var nonWhitespacesInTheStart = afterCursor.ToCharArray()
-                        .Select(c => c).TakeWhile(c => !char.IsWhiteSpace(c)).Count();
-                    CursorPosition = CursorPosition + nonWhitespacesInTheStart;
+                    MoveCursorToNext(c => char.IsWhiteSpace(c));
                 }
                 else
                 {
@@ -548,10 +548,7 @@ namespace Wobble.Graphics.UI.Form
             }
             if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
             {
-                var upToCursor = RawText.Substring(0, CursorPosition);
-                var nonNewlinesInTheEnd = upToCursor.ToCharArray()
-                    .Select(c => c).Reverse().TakeWhile(c => c != '\n').Count();
-                CursorPosition = upToCursor.Length - nonNewlinesInTheEnd;
+                MoveCursorToPrevious(c => c == '\n');
 
                 if (shift)
                 {
@@ -563,10 +560,7 @@ namespace Wobble.Graphics.UI.Form
             }
             if (KeyboardManager.IsUniqueKeyPress(Keys.Down))
             {
-                var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
-                var nonNewlinesInTheStart = afterCursor.ToCharArray()
-                    .Select(c => c).TakeWhile(c => c != '\n').Count();
-                CursorPosition = CursorPosition + nonNewlinesInTheStart;
+                MoveCursorToNext(c => c == '\n');
 
                 if (shift)
                 {
@@ -599,6 +593,36 @@ namespace Wobble.Graphics.UI.Form
             var min = Math.Min(SelectionBegin, CursorPosition);
             var max = Math.Max(SelectionBegin, CursorPosition);
             SelectedPart = (min, max);
+        }
+
+        private void MoveCursorToNext(Func<char, bool> func)
+        {
+            var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition).TrimStart();
+            for (var i = 0; i < afterCursor.Length; i++)
+            {
+                if (func(afterCursor[i]))
+                {
+                    CursorPosition = CursorPosition + i + 1;
+                    return;
+                }
+            }
+
+            CursorPosition = RawText.Length;
+        }
+
+        private void MoveCursorToPrevious(Func<char, bool> func)
+        {
+            var upToCursor = RawText.Substring(0, CursorPosition).TrimEnd();
+            for (var i = upToCursor.Length - 1; i >= 0; i--)
+            {
+                if (func(upToCursor[i]))
+                {
+                    CursorPosition = i;
+                    return;
+                }
+            }
+
+            CursorPosition = 0;
         }
 
         /// <summary>
@@ -690,7 +714,7 @@ namespace Wobble.Graphics.UI.Form
                     .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
                 RawText = withoutTrailingWhitespace.Substring(0,
                     withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd) + afterCursor;
-                    CursorPosition = withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd;
+                CursorPosition = withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd;
 
                 ReadjustTextbox();
                 Selected = false;
@@ -753,7 +777,7 @@ namespace Wobble.Graphics.UI.Form
             if (KeyClickSamples == null)
                 return;
 
-            if(!EnableKeyClickSounds || KeyClickSamples.Count == 0)
+            if (!EnableKeyClickSounds || KeyClickSamples.Count == 0)
                 return;
 
             var r = Rng.Next(KeyClickSamples.Count);
