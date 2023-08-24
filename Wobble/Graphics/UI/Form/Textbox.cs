@@ -374,30 +374,35 @@ namespace Wobble.Graphics.UI.Form
             // Handle normal key presses.
             else
             {
+                var upToCursor = RawText.Substring(0, CursorPosition);
+                var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
                 // Handle key inputs.
                 switch (e.Key)
                 {
                     // Ignore these keys
-                    case Keys.Back:
                     case Keys.Tab:
-                    case Keys.Delete:
                     case Keys.Escape:
                     case Keys.VolumeUp:
                     case Keys.VolumeDown:
                         return;
-                    // // Back spacing
-                    //     if (string.IsNullOrEmpty(RawText))
-                    //         return;
-                    //     if (CursorPosition == 0)
-                    //         return;
+                    // text deletion
+                    case Keys.Back:
+                        if (string.IsNullOrEmpty(upToCursor))
+                            return;
 
-                    //     var upToCursor = RawText.Substring(0, CursorPosition);
-                    //     var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
-                    //     upToCursor = upToCursor.Remove(upToCursor.Length - 1);
-                    //     RawText = upToCursor + afterCursor;
-                    //     CursorPosition--;
-                    //     PlayKeyClickSound();
-                    //     break;
+                        upToCursor = upToCursor.Remove(upToCursor.Length - 1);
+                        RawText = upToCursor + afterCursor;
+                        CursorPosition--;
+                        PlayKeyClickSound();
+                        break;
+                    case Keys.Delete:
+                        if (string.IsNullOrEmpty(afterCursor))
+                            return;
+
+                        afterCursor = afterCursor.Remove(0, 1);
+                        RawText = upToCursor + afterCursor;
+                        PlayKeyClickSound();
+                        break;
                     // Input text
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
@@ -676,6 +681,28 @@ namespace Wobble.Graphics.UI.Form
                 RawText = withoutTrailingWhitespace.Substring(0,
                     withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd) + afterCursor;
                 CursorPosition = withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd;
+
+                ReadjustTextbox();
+                Selected = false;
+                UpdateSelectedSprite();
+            }
+
+            // CTRL+DELETE: kill word forwards.
+            // This means killing all leading whitespace and then all leading non-whitespace.
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Delete))
+            {
+                if (Selected)
+                {
+                    RawText = RawText.Remove(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+                    CursorPosition = SelectedPart.start;
+                }
+                var upToCursor = RawText.Substring(0, CursorPosition);
+                var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+
+                var withoutLeadingWhitespace = afterCursor.TrimStart();
+                var nonWhitespacesInTheStart = withoutLeadingWhitespace.ToCharArray()
+                    .Select(c => c).TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                RawText = upToCursor + withoutLeadingWhitespace.Substring(nonWhitespacesInTheStart);
 
                 ReadjustTextbox();
                 Selected = false;
