@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Schema;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Audio.Samples;
@@ -71,6 +72,8 @@ namespace Wobble.Graphics.UI.Form
             }
         }
 
+        public string SelectedRawText => RawText.Substring(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+
         /// <summary>
         ///     The text used as a placeholder.
         /// </summary>
@@ -100,6 +103,21 @@ namespace Wobble.Graphics.UI.Form
         ///     Determines if the text is selected. (CTRL+A) state
         /// </summary>
         public bool Selected { get; set; }
+
+        /// <summary>
+        ///     Determines the part of the text that is selected.
+        /// </summary>
+        public (int start, int end) SelectedPart { get; private set; }
+
+        /// <summary>
+        ///     The position of the cursor when the selection begins.
+        /// </summary>
+        private int SelectionBegin { get; set; }
+
+        /// <summary>
+        ///    The position of the cursor in the textbox. In amount of characters from the start.
+        /// </summary>
+        public int CursorPosition { get; private set; }
 
         /// <summary>
         ///     Action called when pressing enter and submitting the text box.
@@ -201,6 +219,8 @@ namespace Wobble.Graphics.UI.Form
                 InputText.Alpha = 0.50f;
             }
 
+            CursorPosition = RawText.Length;
+
             Cursor = new Sprite()
             {
                 Parent = this,
@@ -237,6 +257,7 @@ namespace Wobble.Graphics.UI.Form
 
             CalculateContainerX();
             ChangeCursorLocation();
+            UpdateSelectedSprite();
 
             AddContainedDrawable(InputText);
             AddContainedDrawable(Cursor);
@@ -263,13 +284,14 @@ namespace Wobble.Graphics.UI.Form
             }
 
             // Handle all input.
+            HandleArrowKeys();
             HandleCtrlInput();
             HandleEnter();
             CalculateContainerX();
             ChangeCursorLocation();
 
             // Change the alpha of the selected sprite depending on if we're currently in a CTRL+A operation.
-            SelectedSprite.Alpha = MathHelper.Lerp(SelectedSprite.Alpha, Selected ? 0.25f : 0,
+            SelectedSprite.Alpha = MathHelper.Lerp(SelectedSprite.Alpha, Selected ? 0.5f : 0,
                 (float) Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
 
             PerformCursorBlinking(gameTime);
@@ -310,11 +332,11 @@ namespace Wobble.Graphics.UI.Form
             if (e.Key == Keys.Enter)
                 return;
 
-            // If the text is selected (in a CTRL+A) operation
+            // If the text is selected
             if (Selected)
             {
-                // Clear text
-                RawText = "";
+                RawText = RawText.Remove(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+                CursorPosition = SelectedPart.start;
 
                 switch (e.Key)
                 {
@@ -328,12 +350,14 @@ namespace Wobble.Graphics.UI.Form
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
                         {
-                            var proposedText = RawText + e.Character;
+                            var proposedText = RawText.Substring(0, CursorPosition) + e.Character +
+                                               RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
 
                             if (!AllowedCharacters.IsMatch(proposedText))
                                 return;
 
-                            RawText += proposedText;
+                            RawText = proposedText;
+                            CursorPosition++;
                         }
                         break;
                 }
@@ -357,21 +381,29 @@ namespace Wobble.Graphics.UI.Form
                     case Keys.Back:
                         if (string.IsNullOrEmpty(RawText))
                             return;
+                        if (CursorPosition == 0)
+                            return;
 
-                        var charStartIndices = StringInfo.ParseCombiningCharacters(RawText);
-                        RawText = RawText.Remove(charStartIndices.Last());
+                        var upToCursor = RawText.Substring(0, CursorPosition);
+                        var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+                        upToCursor = upToCursor.Remove(upToCursor.Length - 1);
+                        RawText = upToCursor + afterCursor;
+                        CursorPosition--;
                         PlayKeyClickSound();
                         break;
                     // Input text
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
                         {
-                            var proposedText = RawText + e.Character;
+                            var proposedText = RawText.Substring(0, CursorPosition) + e.Character +
+                                               RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
 
                             if (!AllowedCharacters.IsMatch(proposedText))
                                 return;
 
                             RawText = proposedText;
+                            CursorPosition++;
+
                             PlayKeyClickSound();
                         }
                         break;
@@ -396,14 +428,22 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void ChangeCursorLocation()
         {
-            if (string.IsNullOrEmpty(RawText))
-            {
-                Cursor.X = InputText.X;
-                return;
-            }
+            var substring = RawText.Substring(0, CursorPosition);
+            var x = InputText.Font.Store.MeasureString(substring).X;
 
-            Cursor.X = InputText.X + InputText.Width;
-            SelectedSprite.Width = Cursor.X;
+            Cursor.X = x + InputText.X;
+        }
+        private void UpdateSelectedSprite()
+        {
+            SelectedSprite.Visible = Selected;
+            var startSubstring = RawText.Substring(0, SelectedPart.start);
+            var selectedSubstring = RawText.Substring(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+            var x = InputText.Font.Store.MeasureString(startSubstring).X;
+            var width = InputText.Font.Store.MeasureString(selectedSubstring).X;
+
+            SelectedSprite.X = x + InputText.X;
+            SelectedSprite.Width = width;
+            Console.WriteLine($"X: {SelectedSprite.X}, Width: {SelectedSprite.Width}");
         }
 
         /// <summary>
@@ -439,6 +479,139 @@ namespace Wobble.Graphics.UI.Form
             FiredStoppedTypingActionHandlers = false;
         }
 
+        public void ReadjustCursor()
+        {
+            Cursor.Visible = true;
+            TimeSinceCursorVisibllityChanged = 0;
+        }
+
+        private void HandleArrowKeys()
+        {
+            if (!Focused)
+                return;
+
+            KeyboardManager.CurrentState.GetPressedKeys().ToList().ForEach(x => Console.WriteLine(x));
+
+            var shift = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftShift) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightShift);
+            var ctrl = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl);
+
+            var oldCursorPosition = CursorPosition;
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
+            {
+                if (ctrl)
+                {
+                    var upToCursor = RawText.Substring(0, CursorPosition);
+                    var nonWhitespacesInTheEnd = upToCursor.ToCharArray()
+                        .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                    CursorPosition = upToCursor.Length - nonWhitespacesInTheEnd;
+                }
+                else
+                {
+                    CursorPosition = Math.Max(0, CursorPosition - 1);
+                }
+
+                if (shift)
+                {
+                    if (!Selected)
+                    {
+                        Selected = true;
+                        SelectionBegin = oldCursorPosition;
+                    }
+                    var min = Math.Min(SelectionBegin, CursorPosition);
+                    var max = Math.Max(SelectionBegin, CursorPosition);
+                    SelectedPart = (min, max);
+                }
+
+                ReadjustCursor();
+                UpdateSelectedSprite();
+            }
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
+            {
+                if (ctrl)
+                {
+                    var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+                    var nonWhitespacesInTheStart = afterCursor.ToCharArray()
+                        .Select(c => c).TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                    CursorPosition = CursorPosition + nonWhitespacesInTheStart;
+                }
+                else
+                {
+                    CursorPosition = Math.Min(RawText.Length, CursorPosition + 1);
+                }
+
+                if (shift)
+                {
+                    if (!Selected)
+                    {
+                        Selected = true;
+                        SelectionBegin = oldCursorPosition;
+                    }
+                    var min = Math.Min(SelectionBegin, CursorPosition);
+                    var max = Math.Max(SelectionBegin, CursorPosition);
+                    SelectedPart = (min, max);
+                }
+
+                ReadjustCursor();
+                UpdateSelectedSprite();
+            }
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
+            {
+                var upToCursor = RawText.Substring(0, CursorPosition);
+                var nonNewlinesInTheEnd = upToCursor.ToCharArray()
+                    .Select(c => c).Reverse().TakeWhile(c => c != '\n').Count();
+                CursorPosition = upToCursor.Length - nonNewlinesInTheEnd;
+
+                if (shift)
+                {
+                    if (!Selected)
+                    {
+                        Selected = true;
+                        SelectionBegin = oldCursorPosition;
+                    }
+                    var min = Math.Min(SelectionBegin, CursorPosition);
+                    var max = Math.Max(SelectionBegin, CursorPosition);
+                    SelectedPart = (min, max);
+                }
+
+                ReadjustCursor();
+                UpdateSelectedSprite();
+            }
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Down))
+            {
+                var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+                var nonNewlinesInTheStart = afterCursor.ToCharArray()
+                    .Select(c => c).TakeWhile(c => c != '\n').Count();
+                CursorPosition = CursorPosition + nonNewlinesInTheStart;
+
+                if (shift)
+                {
+                    if (!Selected)
+                    {
+                        Selected = true;
+                        SelectionBegin = oldCursorPosition;
+                    }
+                    var min = Math.Min(SelectionBegin, CursorPosition);
+                    var max = Math.Max(SelectionBegin, CursorPosition);
+                    SelectedPart = (min, max);
+                }
+
+                ReadjustCursor();
+                UpdateSelectedSprite();
+            }
+
+            if (!shift)
+            {
+                if (KeyboardManager.IsUniqueKeyPress(Keys.Left)
+                || KeyboardManager.IsUniqueKeyPress(Keys.Right)
+                || KeyboardManager.IsUniqueKeyPress(Keys.Up)
+                || KeyboardManager.IsUniqueKeyPress(Keys.Down))
+                {
+                    Selected = false;
+                }
+            }
+        }
+
         /// <summary>
         ///     Handles control input for the textbox.
         /// </summary>
@@ -451,20 +624,28 @@ namespace Wobble.Graphics.UI.Form
 
             // CTRL+A, Select the text.
             if (KeyboardManager.IsUniqueKeyPress(Keys.A) && !string.IsNullOrEmpty(RawText))
+            {
                 Selected = true;
+                SelectionBegin = 0;
+                SelectedPart = (0, RawText.Length);
+                CursorPosition = RawText.Length;
+                UpdateSelectedSprite();
+            }
 
             // CTRL+C, Copy the text to the clipboard.
             if (KeyboardManager.IsUniqueKeyPress(Keys.C) && Selected)
-                Clipboard.SetText(RawText);
+                Clipboard.SetText(SelectedRawText);
 
             // CTRL+X, Cut the text to the clipboard.
             if (KeyboardManager.IsUniqueKeyPress(Keys.X) && Selected)
             {
-                Clipboard.SetText(RawText);
-                RawText = "";
+                Clipboard.SetText(SelectedRawText);
+                RawText = RawText.Remove(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+                CursorPosition = SelectedPart.start;
 
                 ReadjustTextbox();
                 Selected = false;
+                UpdateSelectedSprite();
             }
 
             // CTRL+V Paste text
@@ -476,24 +657,31 @@ namespace Wobble.Graphics.UI.Form
                 {
                     if (Selected)
                     {
-                        if (!AllowedCharacters.IsMatch(clipboardText))
-                            return;
-
-                        RawText = clipboardText;
-                    }
-                    else
-                    {
-                        var proposed = RawText + clipboardText;
+                        var proposed = RawText.Substring(0, SelectedPart.start) + clipboardText +
+                                       RawText.Substring(SelectedPart.end, RawText.Length - SelectedPart.end);
 
                         if (!AllowedCharacters.IsMatch(proposed))
                             return;
 
                         RawText = proposed;
+                        CursorPosition = SelectedPart.start + clipboardText.Length;
+                    }
+                    else
+                    {
+                        var proposed = RawText.Substring(0, CursorPosition) + clipboardText +
+                                       RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+
+                        if (!AllowedCharacters.IsMatch(proposed))
+                            return;
+
+                        RawText = proposed;
+                        CursorPosition += clipboardText.Length;
                     }
                 }
 
                 ReadjustTextbox();
                 Selected = false;
+                UpdateSelectedSprite();
             }
 
             // CTRL+W or CTRL+Backspace: kill word backwards.
@@ -502,31 +690,44 @@ namespace Wobble.Graphics.UI.Form
             {
                 if (Selected)
                 {
-                    // When everything is selected we act as a normal backspace and delete everything
-                    RawText = "";
+                    RawText = RawText.Remove(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+                    CursorPosition = SelectedPart.start;
                 }
-                else
-                {
-                    var withoutTrailingWhitespace = RawText.TrimEnd();
-                    var nonWhitespacesInTheEnd = withoutTrailingWhitespace.ToCharArray()
-                        .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
-                    RawText = withoutTrailingWhitespace.Substring(0,
-                        withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd);
-                }
+                var upToCursor = RawText.Substring(0, CursorPosition);
+                var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+
+                var withoutTrailingWhitespace = upToCursor.TrimEnd();
+                var nonWhitespacesInTheEnd = withoutTrailingWhitespace.ToCharArray()
+                    .Select(c => c).Reverse().TakeWhile(c => !char.IsWhiteSpace(c)).Count();
+                RawText = withoutTrailingWhitespace.Substring(0,
+                    withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd) + afterCursor;
+                    CursorPosition = withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd;
 
                 ReadjustTextbox();
                 Selected = false;
+                UpdateSelectedSprite();
             }
 
             // Ctrl+U: kill line backwards.
             // Delete from the cursor position to the start of the line.
             if (KeyboardManager.IsUniqueKeyPress(Keys.U))
             {
-                // Since we don't have a concept of a cursor, simply delete the whole text.
-                RawText = "";
+                if (Selected)
+                {
+                    RawText = RawText.Remove(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+                    CursorPosition = SelectedPart.start;
+                }
+                var upToCursor = RawText.Substring(0, CursorPosition);
+                var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+
+                var nonNewlinesInTheEnd = upToCursor.ToCharArray()
+                    .Select(c => c).Reverse().TakeWhile(c => c != '\n').Count();
+                RawText = upToCursor.Substring(0, upToCursor.Length - nonNewlinesInTheEnd) + afterCursor;
+                CursorPosition = upToCursor.Length - nonNewlinesInTheEnd;
 
                 ReadjustTextbox();
                 Selected = false;
+                UpdateSelectedSprite();
             }
         }
 
@@ -548,8 +749,10 @@ namespace Wobble.Graphics.UI.Form
 
                 // Clear text box.
                 RawText = "";
+                CursorPosition = 0;
                 Selected = false;
                 ReadjustTextbox();
+                UpdateSelectedSprite();
             }
         }
 
