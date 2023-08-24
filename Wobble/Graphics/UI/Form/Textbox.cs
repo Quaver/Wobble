@@ -513,14 +513,7 @@ namespace Wobble.Graphics.UI.Form
 
                 if (shift)
                 {
-                    if (!Selected)
-                    {
-                        Selected = true;
-                        SelectionBegin = oldCursorPosition;
-                    }
-                    var min = Math.Min(SelectionBegin, CursorPosition);
-                    var max = Math.Max(SelectionBegin, CursorPosition);
-                    SelectedPart = (min, max);
+                    SetSelectedPart(oldCursorPosition);
                 }
 
                 ReadjustCursor();
@@ -542,14 +535,7 @@ namespace Wobble.Graphics.UI.Form
 
                 if (shift)
                 {
-                    if (!Selected)
-                    {
-                        Selected = true;
-                        SelectionBegin = oldCursorPosition;
-                    }
-                    var min = Math.Min(SelectionBegin, CursorPosition);
-                    var max = Math.Max(SelectionBegin, CursorPosition);
-                    SelectedPart = (min, max);
+                    SetSelectedPart(oldCursorPosition);
                 }
 
                 ReadjustCursor();
@@ -564,14 +550,7 @@ namespace Wobble.Graphics.UI.Form
 
                 if (shift)
                 {
-                    if (!Selected)
-                    {
-                        Selected = true;
-                        SelectionBegin = oldCursorPosition;
-                    }
-                    var min = Math.Min(SelectionBegin, CursorPosition);
-                    var max = Math.Max(SelectionBegin, CursorPosition);
-                    SelectedPart = (min, max);
+                    SetSelectedPart(oldCursorPosition);
                 }
 
                 ReadjustCursor();
@@ -586,14 +565,7 @@ namespace Wobble.Graphics.UI.Form
 
                 if (shift)
                 {
-                    if (!Selected)
-                    {
-                        Selected = true;
-                        SelectionBegin = oldCursorPosition;
-                    }
-                    var min = Math.Min(SelectionBegin, CursorPosition);
-                    var max = Math.Max(SelectionBegin, CursorPosition);
-                    SelectedPart = (min, max);
+                    SetSelectedPart(oldCursorPosition);
                 }
 
                 ReadjustCursor();
@@ -610,6 +582,18 @@ namespace Wobble.Graphics.UI.Form
                     Selected = false;
                 }
             }
+        }
+
+        private void SetSelectedPart(int oldCursorPosition)
+        {
+            if (!Selected)
+            {
+                Selected = true;
+                SelectionBegin = oldCursorPosition;
+            }
+            var min = Math.Min(SelectionBegin, CursorPosition);
+            var max = Math.Max(SelectionBegin, CursorPosition);
+            SelectedPart = (min, max);
         }
 
         /// <summary>
