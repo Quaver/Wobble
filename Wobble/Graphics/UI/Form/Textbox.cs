@@ -390,16 +390,40 @@ namespace Wobble.Graphics.UI.Form
                         if (string.IsNullOrEmpty(upToCursor))
                             return;
 
-                        upToCursor = upToCursor.Remove(upToCursor.Length - 1);
+                        if (char.IsLowSurrogate(upToCursor[upToCursor.Length - 1]))
+                        {
+                            upToCursor = upToCursor.Remove(upToCursor.Length - 2);
+                        }
+                        else if (char.IsHighSurrogate(upToCursor[upToCursor.Length - 1]))
+                        {
+                            upToCursor = upToCursor.Remove(upToCursor.Length - 1);
+                            afterCursor = afterCursor.Remove(0, 1);
+                        }
+                        else
+                        {
+                            upToCursor = upToCursor.Remove(upToCursor.Length - 1);
+                        }
                         RawText = upToCursor + afterCursor;
-                        CursorPosition--;
+                        CursorPosition = upToCursor.Length;
                         PlayKeyClickSound();
                         break;
                     case Keys.Delete:
                         if (string.IsNullOrEmpty(afterCursor))
                             return;
 
-                        afterCursor = afterCursor.Remove(0, 1);
+                        if (char.IsLowSurrogate(afterCursor[0]))
+                        {
+                            afterCursor = afterCursor.Remove(0, 1);
+                            upToCursor = upToCursor.Remove(upToCursor.Length - 1);
+                        }
+                        else if (char.IsHighSurrogate(afterCursor[0]))
+                        {
+                            afterCursor = afterCursor.Remove(0, 2);
+                        }
+                        else
+                        {
+                            afterCursor = afterCursor.Remove(0, 1);
+                        }
                         RawText = upToCursor + afterCursor;
                         PlayKeyClickSound();
                         break;
@@ -508,6 +532,9 @@ namespace Wobble.Graphics.UI.Form
             var shift = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftShift) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightShift);
             var ctrl = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl);
 
+            var upToCursor = RawText.Substring(0, CursorPosition);
+            var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+
             var oldCursorPosition = CursorPosition;
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
@@ -515,7 +542,16 @@ namespace Wobble.Graphics.UI.Form
                 if (ctrl)
                     MoveCursorToPrevious(c => char.IsWhiteSpace(c));
                 else
-                    CursorPosition = Math.Max(0, CursorPosition - 1);
+                {
+                    if (char.IsLowSurrogate(upToCursor[upToCursor.Length - 1]))
+                    {
+                        CursorPosition = Math.Max(0, CursorPosition - 2);
+                    }
+                    else
+                    {
+                        CursorPosition = Math.Max(0, CursorPosition - 1);
+                    }
+                }
 
                 if (shift)
                     SetSelectedPart(oldCursorPosition);
@@ -528,7 +564,16 @@ namespace Wobble.Graphics.UI.Form
                 if (ctrl)
                     MoveCursorToNext(c => char.IsWhiteSpace(c));
                 else
-                    CursorPosition = Math.Min(RawText.Length, CursorPosition + 1);
+                {
+                    if (char.IsHighSurrogate(afterCursor[0]))
+                    {
+                        CursorPosition = Math.Min(RawText.Length, CursorPosition + 2);
+                    }
+                    else
+                    {
+                        CursorPosition = Math.Min(RawText.Length, CursorPosition + 1);
+                    }
+                }
 
                 if (shift)
                     SetSelectedPart(oldCursorPosition);
