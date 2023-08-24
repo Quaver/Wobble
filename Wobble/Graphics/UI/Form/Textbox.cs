@@ -123,8 +123,14 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         public bool AllowCursorMovement { get; set; } = true;
 
+        /// <summary>
+        ///    The time since the cursor has last moved.
+        /// </summary>
         private double lastCursorMove { get; set; } = 0;
 
+        /// <summary>
+        ///    The keys that are currently being held down, and for how long.
+        /// </summary>
         private Dictionary<Keys, double> keyHeldFor { get; set; } = new Dictionary<Keys, double>();
 
         /// <summary>
@@ -475,6 +481,10 @@ namespace Wobble.Graphics.UI.Form
 
             Cursor.X = x + InputText.X;
         }
+
+        /// <summary>
+        ///    Updates the selected sprite to match the selected text.
+        /// </summary>
         private void UpdateSelectedSprite()
         {
             SelectedSprite.Visible = Selected;
@@ -490,6 +500,11 @@ namespace Wobble.Graphics.UI.Form
             SelectedSprite.X = x + InputText.X;
             SelectedSprite.Width = width;
         }
+
+        /// <summary>
+        ///    Updates the keyHeldFor dictionary with the keys that are currently being held down.
+        /// </summary>
+        /// <param name="gameTime"></param>
         private void UpdateKeyHeldFor(GameTime gameTime)
         {
             if (!Focused)
@@ -545,12 +560,19 @@ namespace Wobble.Graphics.UI.Form
             FiredStoppedTypingActionHandlers = false;
         }
 
+        /// <summary>
+        ///    Makes sure the cursor is visible and resets its visiblity changing.
+        /// </summary>
         public void ReadjustCursor()
         {
             Cursor.Visible = true;
             TimeSinceCursorVisibllityChanged = 0;
         }
 
+        /// <summary>
+        ///    Handles the arrow keys for the textbox.
+        /// </summary>
+        /// <param name="gameTime"></param>
         private void HandleArrowKeys(GameTime gameTime)
         {
             if (!Focused)
@@ -625,6 +647,10 @@ namespace Wobble.Graphics.UI.Form
             }
         }
 
+        /// <summary>
+        ///    Sets the selected part of the text.
+        /// </summary>
+        /// <param name="oldCursorPosition"></param>
         private void SetSelectedPart(int oldCursorPosition)
         {
             if (!Selected)
@@ -637,6 +663,10 @@ namespace Wobble.Graphics.UI.Form
             SelectedPart = (min, max);
         }
 
+        /// <summary>
+        ///   Moves the cursor to the next character that matches the function.
+        /// </summary>
+        /// <param name="func"></param>
         private void MoveCursorToNext(Func<char, bool> func)
         {
             var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition).TrimStart();
@@ -652,6 +682,10 @@ namespace Wobble.Graphics.UI.Form
             CursorPosition = RawText.Length;
         }
 
+        /// <summary>
+        ///  Moves the cursor to the previous character that matches the function.
+        /// </summary>
+        /// <param name="func"></param>
         private void MoveCursorToPrevious(Func<char, bool> func)
         {
             var upToCursor = RawText.Substring(0, CursorPosition).TrimEnd();
