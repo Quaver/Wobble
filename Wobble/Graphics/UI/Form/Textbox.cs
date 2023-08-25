@@ -463,12 +463,37 @@ namespace Wobble.Graphics.UI.Form
 
         /// <summary>
         ///    If it's a single lined textbox, then we need to move the ContentContainer (Viewinew container),
-        ///     either to the left or two the right depending on how large the text is.
+        ///     either to the left or to the right depending on where the cursor is.
         /// </summary>
         private void CalculateContainerX()
         {
             ContentContainer.Width = InputText.Width;
-            ContentContainer.X = InputText.Width > Width ? Width - InputText.Width - Cursor.Width - 20 : 0;
+
+            if (!AllowCursorMovement)
+            {
+                ContentContainer.X = InputText.Width + 20 > Width ? Width - InputText.Width - Cursor.Width - 20 : 0;
+                return;
+            }
+
+            if (InputText.Width + 20 <= Width || string.IsNullOrEmpty(RawText))
+            {
+                ContentContainer.X = 0;
+                return;
+            }
+
+            var absOffsetFromLeft = Cursor.AbsolutePosition.X - AbsolutePosition.X;
+            var absOffsetFromRight = (Cursor.AbsolutePosition.X + Cursor.AbsoluteSize.X) - (AbsolutePosition.X + AbsoluteSize.X);
+            var offsetFromLeft = Cursor.X - X;
+            var offsetFromRight = (Cursor.X + Cursor.Width) - (X + Width);
+
+            if (absOffsetFromLeft < 20)
+            {
+                ContentContainer.X = Math.Min(0, -offsetFromLeft + 20);
+            }
+            else if (absOffsetFromRight > -20)
+            {
+                ContentContainer.X = -offsetFromRight - 20;
+            }
         }
 
         /// <summary>
@@ -476,6 +501,12 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void ChangeCursorLocation()
         {
+            if (!AllowCursorMovement)
+            {
+                Cursor.X = string.IsNullOrEmpty(RawText) ? InputText.X : InputText.X + InputText.Width;
+                return;
+            }
+
             var substring = RawText.Substring(0, CursorPosition);
             var x = InputText.Font.Store.MeasureString(substring).X;
 
@@ -596,7 +627,7 @@ namespace Wobble.Graphics.UI.Form
                 lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
-            if (!shift && 
+            if (!shift &&
                 (KeyboardManager.IsUniqueKeyPress(Keys.Left)
                 || KeyboardManager.IsUniqueKeyPress(Keys.Right)))
             {
