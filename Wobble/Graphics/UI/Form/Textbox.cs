@@ -518,6 +518,13 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void UpdateSelectedSprite()
         {
+            if (!AllowCursorMovement)
+            {
+                SelectedSprite.Visible = Selected;
+                SelectedSprite.Width = InputText.Width;
+                SelectedSprite.X = InputText.X;
+                return;
+            }
             SelectedSprite.Visible = Selected;
             if (!Selected)
             {
