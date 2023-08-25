@@ -581,18 +581,51 @@ namespace Wobble.Graphics.UI.Form
             var shift = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftShift) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightShift);
             var ctrl = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl);
 
-            var upToCursor = RawText.Substring(0, CursorPosition);
-            var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
-
-            var oldCursorPosition = CursorPosition;
-
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left)
             || (keyHeldFor.ContainsKey(Keys.Left) && keyHeldFor[Keys.Left] > 750
                 && gameTime.TotalGameTime.TotalMilliseconds - lastCursorMove > 75))
             {
-                if (ctrl)
+                MoveCursor(ctrl, true, shift);
+                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
+            }
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Right)
+            || (keyHeldFor.ContainsKey(Keys.Right) && keyHeldFor[Keys.Right] > 750
+                && gameTime.TotalGameTime.TotalMilliseconds - lastCursorMove > 75))
+            {
+                MoveCursor(ctrl, false, shift);
+                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
+            }
+
+            if (!shift && 
+                (KeyboardManager.IsUniqueKeyPress(Keys.Left)
+                || KeyboardManager.IsUniqueKeyPress(Keys.Right)))
+            {
+                Selected = false;
+            }
+
+        }
+
+        /// <summary>
+        ///     Moves the cursor to the next/previous character/word.
+        /// </summary>
+        /// <param name="wholeWord"></param>
+        /// <param name="left"></param>
+        private void MoveCursor(bool wholeWord, bool left, bool select = false)
+        {
+            var upToCursor = RawText.Substring(0, CursorPosition);
+            var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+            var oldCursorPosition = CursorPosition;
+
+            if (wholeWord)
+            {
+                if (left)
                     MoveCursorToPrevious(c => char.IsWhiteSpace(c));
                 else
+                    MoveCursorToNext(c => char.IsWhiteSpace(c));
+            }
+            else
+            {
+                if (left)
                 {
                     if (string.IsNullOrEmpty(upToCursor) || char.IsLowSurrogate(upToCursor[upToCursor.Length - 1]))
                     {
@@ -603,20 +636,6 @@ namespace Wobble.Graphics.UI.Form
                         CursorPosition = Math.Max(0, CursorPosition - 1);
                     }
                 }
-
-                if (shift)
-                    SetSelectedPart(oldCursorPosition);
-
-                ReadjustCursor();
-                UpdateSelectedSprite();
-                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
-            }
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Right)
-            || (keyHeldFor.ContainsKey(Keys.Right) && keyHeldFor[Keys.Right] > 750 
-                && gameTime.TotalGameTime.TotalMilliseconds - lastCursorMove > 75))
-            {
-                if (ctrl)
-                    MoveCursorToNext(c => char.IsWhiteSpace(c));
                 else
                 {
                     if (string.IsNullOrEmpty(afterCursor) || char.IsHighSurrogate(afterCursor[0]))
@@ -628,27 +647,17 @@ namespace Wobble.Graphics.UI.Form
                         CursorPosition = Math.Min(RawText.Length, CursorPosition + 1);
                     }
                 }
-
-                if (shift)
-                    SetSelectedPart(oldCursorPosition);
-
-                ReadjustCursor();
-                UpdateSelectedSprite();
-                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
-            if (!shift)
-            {
-                if (KeyboardManager.IsUniqueKeyPress(Keys.Left)
-                || KeyboardManager.IsUniqueKeyPress(Keys.Right))
-                {
-                    Selected = false;
-                }
-            }
+            if (select)
+                SetSelectedPart(oldCursorPosition);
+
+            ReadjustCursor();
+            UpdateSelectedSprite();
         }
 
         /// <summary>
-        ///    Sets the selected part of the text.
+        ///     Sets the selected part of the text.
         /// </summary>
         /// <param name="oldCursorPosition"></param>
         private void SetSelectedPart(int oldCursorPosition)
@@ -664,7 +673,7 @@ namespace Wobble.Graphics.UI.Form
         }
 
         /// <summary>
-        ///   Moves the cursor to the next character that matches the function.
+        ///     Moves the cursor to the next character that matches the function.
         /// </summary>
         /// <param name="func"></param>
         private void MoveCursorToNext(Func<char, bool> func)
@@ -683,7 +692,7 @@ namespace Wobble.Graphics.UI.Form
         }
 
         /// <summary>
-        ///  Moves the cursor to the previous character that matches the function.
+        ///     Moves the cursor to the previous character that matches the function.
         /// </summary>
         /// <param name="func"></param>
         private void MoveCursorToPrevious(Func<char, bool> func)
@@ -699,6 +708,16 @@ namespace Wobble.Graphics.UI.Form
             }
 
             CursorPosition = 0;
+        }
+
+        /// <summary>
+        ///     Deselects the text and readjusts the textbox.
+        /// </summary>
+        private void DeselectAndReadjust()
+        {
+            ReadjustTextbox();
+            Selected = false;
+            UpdateSelectedSprite();
         }
 
         /// <summary>
@@ -732,9 +751,7 @@ namespace Wobble.Graphics.UI.Form
                 RawText = RawText.Remove(SelectedPart.start, SelectedPart.end - SelectedPart.start);
                 CursorPosition = SelectedPart.start;
 
-                ReadjustTextbox();
-                Selected = false;
-                UpdateSelectedSprite();
+                DeselectAndReadjust();
             }
 
             // CTRL+V Paste text
@@ -768,9 +785,7 @@ namespace Wobble.Graphics.UI.Form
                     }
                 }
 
-                ReadjustTextbox();
-                Selected = false;
-                UpdateSelectedSprite();
+                DeselectAndReadjust();
             }
 
             // CTRL+W or CTRL+Backspace: kill word backwards.
@@ -792,9 +807,7 @@ namespace Wobble.Graphics.UI.Form
                     withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd) + afterCursor;
                 CursorPosition = withoutTrailingWhitespace.Length - nonWhitespacesInTheEnd;
 
-                ReadjustTextbox();
-                Selected = false;
-                UpdateSelectedSprite();
+                DeselectAndReadjust();
             }
 
             // CTRL+DELETE: kill word forwards.
@@ -814,9 +827,7 @@ namespace Wobble.Graphics.UI.Form
                     .Select(c => c).TakeWhile(c => !char.IsWhiteSpace(c)).Count();
                 RawText = upToCursor + withoutLeadingWhitespace.Substring(nonWhitespacesInTheStart);
 
-                ReadjustTextbox();
-                Selected = false;
-                UpdateSelectedSprite();
+                DeselectAndReadjust();
             }
 
             // Ctrl+U: kill line backwards.
@@ -836,9 +847,7 @@ namespace Wobble.Graphics.UI.Form
                 RawText = upToCursor.Substring(0, upToCursor.Length - nonNewlinesInTheEnd) + afterCursor;
                 CursorPosition = upToCursor.Length - nonNewlinesInTheEnd;
 
-                ReadjustTextbox();
-                Selected = false;
-                UpdateSelectedSprite();
+                DeselectAndReadjust();
             }
         }
 
@@ -861,9 +870,7 @@ namespace Wobble.Graphics.UI.Form
                 // Clear text box.
                 RawText = "";
                 CursorPosition = 0;
-                Selected = false;
-                ReadjustTextbox();
-                UpdateSelectedSprite();
+                DeselectAndReadjust();
             }
         }
 
