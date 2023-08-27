@@ -68,6 +68,8 @@ namespace Wobble.Graphics.UI.Form
                     InputText.Text = value;
                     InputText.Alpha = 1;
                 }
+
+                ChangeCursorLocation();
             }
         }
 
@@ -116,7 +118,16 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///    The position of the cursor in the textbox. In amount of characters from the start.
         /// </summary>
-        public int CursorPosition { get; private set; }
+        private int _cursorPosition = 0;
+        public int CursorPosition
+        {
+            get => _cursorPosition;
+            private set
+            {
+                _cursorPosition = value;
+                ChangeCursorLocation();
+            }
+        }
 
         /// <summary>
         ///    If true, it'll allow the cursor to move around using the arrow keys.
@@ -305,7 +316,6 @@ namespace Wobble.Graphics.UI.Form
             HandleCtrlInput();
             HandleEnter();
             CalculateContainerX();
-            ChangeCursorLocation();
 
             // Change the alpha of the selected sprite depending on if we're currently in a CTRL+A operation.
             SelectedSprite.Alpha = MathHelper.Lerp(SelectedSprite.Alpha, Selected ? 0.5f : 0,
@@ -501,13 +511,15 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         private void ChangeCursorLocation()
         {
-            if (!AllowCursorMovement)
+            if (Cursor == null || InputText == null)
+                return;
+            if (!AllowCursorMovement || string.IsNullOrEmpty(RawText))
             {
                 Cursor.X = string.IsNullOrEmpty(RawText) ? InputText.X : InputText.X + InputText.Width;
                 return;
             }
 
-            var substring = RawText.Substring(0, CursorPosition);
+            var substring = RawText.Substring(0, Math.Min(CursorPosition, RawText.Length));
             var x = InputText.Font.Store.MeasureString(substring).X;
 
             Cursor.X = x + InputText.X;
