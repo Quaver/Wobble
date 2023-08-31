@@ -69,6 +69,9 @@ namespace Wobble.Graphics.UI.Form
                     InputText.Alpha = 1;
                 }
 
+                if (!AllowCursorMovement)
+                    CursorPosition = RawText.Length;
+
                 ChangeCursorLocation();
             }
         }
