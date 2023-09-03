@@ -71,7 +71,9 @@ namespace Wobble.Graphics.UI.Form
 
                 if (!AllowCursorMovement)
                     CursorPosition = RawText.Length;
-
+                else
+                    CursorPosition = Math.Min(CursorPosition, RawText.Length);
+                    
                 ChangeCursorLocation();
             }
         }
@@ -522,7 +524,7 @@ namespace Wobble.Graphics.UI.Form
                 return;
             }
 
-            var substring = RawText.Substring(0, Math.Min(CursorPosition, RawText.Length));
+            var substring = RawText.Substring(0, CursorPosition);
             var x = InputText.Font.Store.MeasureString(substring).X;
 
             Cursor.X = x + InputText.X;
