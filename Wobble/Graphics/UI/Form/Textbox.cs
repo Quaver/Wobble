@@ -383,14 +383,18 @@ namespace Wobble.Graphics.UI.Form
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
                         {
-                            var proposedText = RawText.Substring(0, CursorPosition) + e.Character +
-                                               RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+                            var upToCursor = RawText.Substring(0, CursorPosition);
+                            var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+
+                            upToCursor += e.Character;
+
+                            var proposedText = upToCursor + afterCursor;
 
                             if (!AllowedCharacters.IsMatch(proposedText))
                                 return;
 
                             RawText = proposedText;
-                            CursorPosition++;
+                            CursorPosition = upToCursor.Length;
                         }
                         break;
                 }
@@ -458,14 +462,15 @@ namespace Wobble.Graphics.UI.Form
                     default:
                         if (RawText.Length + 1 <= MaxCharacters)
                         {
-                            var proposedText = RawText.Substring(0, CursorPosition) + e.Character +
-                                               RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+                            upToCursor += e.Character;
+
+                            var proposedText = upToCursor + afterCursor;
 
                             if (!AllowedCharacters.IsMatch(proposedText))
                                 return;
 
                             RawText = proposedText;
-                            CursorPosition++;
+                            CursorPosition = upToCursor.Length;
 
                             PlayKeyClickSound();
                         }
@@ -818,25 +823,33 @@ namespace Wobble.Graphics.UI.Form
                 {
                     if (Selected)
                     {
-                        var proposed = RawText.Substring(0, SelectedPart.start) + clipboardText +
-                                       RawText.Substring(SelectedPart.end, RawText.Length - SelectedPart.end);
+                        var upToCursor = RawText.Substring(0, SelectedPart.start);
+                        var afterCursor = RawText.Substring(SelectedPart.end, RawText.Length - SelectedPart.end);
+
+                        upToCursor += clipboardText;
+
+                        var proposed = upToCursor + afterCursor;
 
                         if (!AllowedCharacters.IsMatch(proposed))
                             return;
 
                         RawText = proposed;
-                        CursorPosition = SelectedPart.start + clipboardText.Length;
+                        CursorPosition = upToCursor.Length;
                     }
                     else
                     {
-                        var proposed = RawText.Substring(0, CursorPosition) + clipboardText +
-                                       RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+                        var upToCursor = RawText.Substring(0, CursorPosition);
+                        var afterCursor = RawText.Substring(CursorPosition, RawText.Length - CursorPosition);
+
+                        upToCursor += clipboardText;
+
+                        var proposed = upToCursor + afterCursor;
 
                         if (!AllowedCharacters.IsMatch(proposed))
                             return;
 
                         RawText = proposed;
-                        CursorPosition += clipboardText.Length;
+                        CursorPosition = upToCursor.Length;
                     }
                 }
 
