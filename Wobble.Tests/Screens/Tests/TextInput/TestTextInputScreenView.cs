@@ -65,6 +65,29 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 Focused = false,
                 AllowedCharacters = new Regex("^[0-9]*$")
             };
+
+            var smallTextbox = new Textbox(new ScalableVector2(40, 40), FontManager.GetWobbleFont("exo2-semibold"),
+                22, "", "smol")
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                Y = 200,
+                Tint = Color.Black,
+                Alpha = 0.75f,
+                Focused = false
+            };
+
+            var noCursorMoveTextbox = new Textbox(new ScalableVector2(500, 36), FontManager.GetWobbleFont("exo2-semibold"),
+                24, "", "This textbox doesn't allow cursor movement")
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                Y = 300,
+                Tint = Color.Black,
+                Alpha = 0.75f,
+                Focused = false,
+                AllowCursorMovement = false
+            };
         }
 
         /// <inheritdoc />
