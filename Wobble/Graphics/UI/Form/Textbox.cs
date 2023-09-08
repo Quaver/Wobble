@@ -73,8 +73,6 @@ namespace Wobble.Graphics.UI.Form
                     CursorPosition = RawText.Length;
                 else
                     CursorPosition = Math.Min(CursorPosition, RawText.Length);
-                    
-                ChangeCursorLocation();
             }
         }
 
@@ -506,13 +504,13 @@ namespace Wobble.Graphics.UI.Form
             var offsetFromLeft = Cursor.X - X;
             var offsetFromRight = (Cursor.X + Cursor.Width) - (X + Width);
 
-            if (absOffsetFromLeft < 20)
+            if (absOffsetFromLeft < 5)
             {
-                ContentContainer.X = Math.Min(0, -offsetFromLeft + 20);
+                ContentContainer.X = Math.Min(0, -offsetFromLeft + 5);
             }
-            else if (absOffsetFromRight > -20)
+            else if (absOffsetFromRight > -5)
             {
-                ContentContainer.X = -offsetFromRight - 20;
+                ContentContainer.X = -offsetFromRight - 5;
             }
         }
 
@@ -530,6 +528,7 @@ namespace Wobble.Graphics.UI.Form
             }
 
             var substring = RawText.Substring(0, CursorPosition);
+            InputText.Font.Store.Size = InputText.FontSize;
             var x = InputText.Font.Store.MeasureString(substring).X;
 
             Cursor.X = x + InputText.X;
@@ -554,6 +553,7 @@ namespace Wobble.Graphics.UI.Form
             }
             var startSubstring = RawText.Substring(0, SelectedPart.start);
             var selectedSubstring = RawText.Substring(SelectedPart.start, SelectedPart.end - SelectedPart.start);
+            InputText.Font.Store.Size = InputText.FontSize;
             var x = InputText.Font.Store.MeasureString(startSubstring).X;
             var width = InputText.Font.Store.MeasureString(selectedSubstring).X;
 
