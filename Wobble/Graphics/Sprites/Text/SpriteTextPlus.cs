@@ -170,7 +170,7 @@ namespace Wobble.Graphics.Sprites.Text
 
             float width = 0, height = 0;
 
-            var lines = Text.Split('\n').ToList();
+            var lines = Text?.Split('\n').ToList() ?? new List<string>();
             for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
             {
                 var line = lines[lineIndex];
