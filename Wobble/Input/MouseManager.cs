@@ -17,6 +17,26 @@ namespace Wobble.Input
         public static EnhancedMouseState PreviousState { get; private set; }
 
         /// <summary>
+        ///     Whether the mouse is being scrolled, in either direction
+        /// </summary>
+        public static bool IsScrolling => CurrentState.ScrollWheelValue != PreviousState.ScrollWheelValue;
+
+        /// <summary>
+        ///     Whether the mouse is logically taken to be scrolling up,
+        ///     taking inversion into account.
+        /// </summary>
+        public static bool IsScrollingUp(bool invert = false) => IsScrolling
+                                            && (CurrentState.ScrollWheelValue > PreviousState.ScrollWheelValue)
+                                            ^ invert;
+        /// <summary>
+        ///     Whether the mouse is logically taken to be scrolling down,
+        ///     taking inversion into account.
+        /// </summary>
+        public static bool IsScrollingDown(bool invert = false) => IsScrolling
+                                              && (CurrentState.ScrollWheelValue < PreviousState.ScrollWheelValue)
+                                              ^ invert;
+
+        /// <summary>
         ///     Updates the MouseManager and keeps track of the current and previous mouse states.
         /// </summary>
         internal static void Update()
