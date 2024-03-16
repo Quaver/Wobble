@@ -211,9 +211,9 @@ namespace Wobble.Graphics.Sprites
             // Scroll wheel scrolling
             if (InputEnabled && !IsScrollbarDragging && !IsMiddleMouseDragging)
             {
-                if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
+                if (MouseManager.IsScrollingUp(InvertedScrolling))
                     TargetY += ScrollSpeed;
-                else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
+                else if (MouseManager.IsScrollingDown(InvertedScrolling))
                     TargetY -= ScrollSpeed;
                 else if (KeyboardManager.IsUniqueKeyPress(Keys.PageUp))
                     TargetY += ScrollSpeed * 5;

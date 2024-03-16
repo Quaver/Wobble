@@ -156,9 +156,9 @@ namespace Wobble.Tests.Screens.Tests.Audio
                         song.Play();
                 }
 
-                if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
+                if (MouseManager.IsScrollingUp())
                     song.Volume += 9;
-                else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
+                else if (MouseManager.IsScrollingDown())
                     song.Volume -= 9;
             }
 
