@@ -116,9 +116,12 @@ namespace Wobble.Graphics.Sprites
         /// Local behavior: override if it's set; follows global if not set; false if global is null and local not set;
         /// </summary>
         public bool InvertedScrolling => InvertedScrollingOverride?.Value ?? GlobalInvertedScrolling?.Value ?? false;
-
+        
+        /// <summary>
+        /// The global bindable toggle for inverted scrolling
+        /// </summary>
         public static Bindable<bool> GlobalInvertedScrolling { get; set; }
-
+        
         /// <inheritdoc />
         /// <summary>
         /// </summary>
