@@ -107,6 +107,21 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public bool IsMinScrollYEnabled { get; set; } = false;
 
+        
+        public Bindable<bool> InvertedScrollingOverride { get; set; }
+
+        /// <summary>
+        /// Global: null, true or false
+        /// Override: null, true or false
+        /// Local behavior: override if it's set; follows global if not set; false if global is null and local not set;
+        /// </summary>
+        public bool InvertedScrolling => InvertedScrollingOverride?.Value ?? GlobalInvertedScrolling?.Value ?? false;
+        
+        /// <summary>
+        /// The global bindable toggle for inverted scrolling
+        /// </summary>
+        public static Bindable<bool> GlobalInvertedScrolling { get; set; }
+        
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -199,9 +214,9 @@ namespace Wobble.Graphics.Sprites
             // Scroll wheel scrolling
             if (InputEnabled && !IsScrollbarDragging && !IsMiddleMouseDragging)
             {
-                if (MouseManager.CurrentState.ScrollWheelValue > MouseManager.PreviousState.ScrollWheelValue)
+                if (MouseManager.IsScrollingUp(InvertedScrolling))
                     TargetY += ScrollSpeed;
-                else if (MouseManager.CurrentState.ScrollWheelValue < MouseManager.PreviousState.ScrollWheelValue)
+                else if (MouseManager.IsScrollingDown(InvertedScrolling))
                     TargetY -= ScrollSpeed;
                 else if (KeyboardManager.IsUniqueKeyPress(Keys.PageUp))
                     TargetY += ScrollSpeed * 5;
