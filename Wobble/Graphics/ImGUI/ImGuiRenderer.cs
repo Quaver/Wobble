@@ -86,13 +86,16 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         /// </summary>
         public ImFontPtr DefaultFontPtr { get; private set; }
+        
+        public float Scale { get; }
 
         /// <summary>
         /// </summary>
-        public ImGuiRenderer(bool destroyContext = true, ImGuiOptions options = null)
+        public ImGuiRenderer(bool destroyContext = true, ImGuiOptions options = null, float scale = 1.0f)
         {
             DestroyContext = destroyContext;
             Options = options;
+            Scale = scale;
 
             Context = ImGui.CreateContext();
             ImGui.SetCurrentContext(Context);
@@ -108,6 +111,8 @@ namespace Wobble.Graphics.ImGUI
                 ScissorTestEnable = true,
                 SlopeScaleDepthBias = 0
             };
+
+            ImGui.GetStyle().ScaleAllSizes(Scale);
 
             SetupInput();
         }
@@ -130,7 +135,7 @@ namespace Wobble.Graphics.ImGUI
                     DefaultFontPtr = io.Fonts.AddFontDefault();
 
                 foreach (var font in Options.Fonts)
-                    font.Context = io.Fonts.AddFontFromFileTTF(font.Path, font.Size);
+                    font.Context = io.Fonts.AddFontFromFileTTF(font.Path, font.Size * Scale);
             }
 
             io.Fonts.GetTexDataAsRGBA32(out var pixelData, out var width, out var height, out var bytesPerPixel);
