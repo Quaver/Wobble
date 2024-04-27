@@ -1,6 +1,10 @@
 [submodule "MonoGame"]
 	path = MonoGame
-	url = https://github.com/Quaver/MonoGame
+	url = https://github.com/QiuFeng54321/QuaverMonoGame
+	branch = upgrade-2
 [submodule "SpriteFontPlus"]
 	path = SpriteFontPlus
 	url = https://github.com/Quaver/SpriteFontPlus
+[submodule "MonoGame.Extended"]
+	path = MonoGame.Extended
+	url = https://github.com/QiuFeng54321/MonoGame.Extended.git

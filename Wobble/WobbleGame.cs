@@ -19,6 +19,7 @@ using Wobble.Platform;
 using Wobble.Platform.Linux;
 using Wobble.Screens;
 using Wobble.Window;
+using NativeLibrary = Wobble.Platform.Linux.NativeLibrary;
 
 namespace Wobble
 {
@@ -96,7 +97,7 @@ namespace Wobble
         /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
-        protected WobbleGame(bool preferWayland = false) : base(preferWayland)
+        protected WobbleGame(bool preferWayland = false) // TODO : base(preferWayland)
         {
             Directory.SetCurrentDirectory(WorkingDirectory);
             Environment.CurrentDirectory = WorkingDirectory;
