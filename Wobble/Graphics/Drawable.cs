@@ -661,7 +661,7 @@ namespace Wobble.Graphics
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Logger.Error(e, LogType.Runtime);
                     break;
                 }
             }

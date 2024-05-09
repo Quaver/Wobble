@@ -5,6 +5,7 @@ using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Buttons;
+using Wobble.Logging;
 using Wobble.Screens;
 using Wobble.Window;
 
@@ -61,7 +62,7 @@ namespace Wobble.Extended.HotReload.Screens.UI
             btn.Clicked += (o, e) =>
             {
                 ScreenView.ChangeScreen(Screens[name]);
-                Console.WriteLine($"Going to screen: {name}");
+                Logger.Important($"Going to screen: {name}", LogType.Runtime);
             };
 
             // ReSharper disable once ObjectCreationAsStatement

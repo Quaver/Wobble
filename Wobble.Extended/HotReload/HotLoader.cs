@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using Wobble.Logging;
 
 namespace Wobble.Extended.HotReload
 {
@@ -127,7 +128,7 @@ namespace Wobble.Extended.HotReload
         {
             Watcher.EnableRaisingEvents = false;
 
-            Console.WriteLine($"Initializing Compiliation for project: {ProjectName}");
+            Logger.Debug($"Initializing Compilation for project: {ProjectName}", LogType.Runtime);
 
             if (Compiler != null)
             {
@@ -166,7 +167,7 @@ namespace Wobble.Extended.HotReload
             if (p.ExitCode == 0)
             {
                 Compiler = null;
-                Console.WriteLine("Compilation Success!");
+                Logger.Debug("Compilation Success", LogType.Runtime);
                 CompilationFailed = false;
                 Watcher.EnableRaisingEvents = true;
 
@@ -177,7 +178,7 @@ namespace Wobble.Extended.HotReload
             CompilationFailed = true;
             Compiler = null;
             Watcher.EnableRaisingEvents = true;
-            Console.WriteLine(output);
+            Logger.Debug(output, LogType.Runtime);
         }
 
         /// <summary>

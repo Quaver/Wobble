@@ -6,6 +6,7 @@ using Wobble.Extended.HotReload.Screens.UI;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
 using Wobble.Input;
+using Wobble.Logging;
 using Wobble.Screens;
 
 namespace Wobble.Extended.HotReload.Screens
@@ -53,7 +54,7 @@ namespace Wobble.Extended.HotReload.Screens
             var game = (HotLoaderGame) GameBase.Game;
             HotLoader = game.HotLoader;
 
-            Console.WriteLine("Press the Tilde (~) key to open/close the test browser");
+            Logger.Debug("Press the Tilde (~) key to open/close the test browser", LogType.Runtime);
         }
 
         /// <inheritdoc />
