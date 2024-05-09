@@ -142,7 +142,7 @@ namespace Wobble.Graphics.Sprites
                 {
                     DrawToSpriteBatch();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     GameBase.DefaultSpriteBatchOptions.Begin();
                     GameBase.DefaultSpriteBatchInUse = true;

@@ -144,8 +144,9 @@ namespace Wobble.IO
                         if (result != null)
                             return result;
                     }
-                    catch
+                    catch (Exception)
                     {
+                        // ignored
                     }
                 }
 

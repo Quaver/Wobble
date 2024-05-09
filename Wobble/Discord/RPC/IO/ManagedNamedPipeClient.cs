@@ -230,7 +230,15 @@ namespace Wobble.Discord.RPC.IO
 			{
 				if (_stream != null)
 				{
-					try { _stream.Flush(); } catch (Exception) { }
+					try
+					{
+						_stream.Flush();
+					}
+					catch (Exception)
+					{
+						// ignored
+					}
+
 					_stream.Dispose();
 				}
 				else
