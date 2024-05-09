@@ -354,8 +354,7 @@ namespace Wobble.Graphics.UI.Form
 
             // On Linux some characters (like Backspace, plus or minus) get sent here even when CTRL is down, and we
             // don't handle that here.
-            if (KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
-                || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl))
+            if (KeyboardManager.IsCtrlDown())
                 return;
 
             // Enter is handled in Update() because TextInput only receives the regular Enter and not the NumPad Enter.
@@ -639,7 +638,7 @@ namespace Wobble.Graphics.UI.Form
                 return;
 
             var shift = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftShift) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightShift);
-            var ctrl = KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl) || KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl);
+            var ctrl = KeyboardManager.IsCtrlDown();
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left)
             || (keyHeldFor.ContainsKey(Keys.Left) && keyHeldFor[Keys.Left] > 750
@@ -786,8 +785,7 @@ namespace Wobble.Graphics.UI.Form
         private void HandleCtrlInput()
         {
             // Make sure the textbox is focused and that the control buttons are down before handling anything.
-            if (!Focused || (!KeyboardManager.CurrentState.IsKeyDown(Keys.LeftControl)
-                && !KeyboardManager.CurrentState.IsKeyDown(Keys.RightControl)))
+            if (!Focused || !KeyboardManager.IsCtrlDown())
                 return;
 
             // CTRL+A, Select the text.
