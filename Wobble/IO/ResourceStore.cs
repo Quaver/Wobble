@@ -110,17 +110,21 @@ namespace Wobble.IO
         /// <returns>The object.</returns>
         public virtual T Get(string name)
         {
+            if (name is null)
+                return default;
+
             var filenames = GetFilenames(name);
 
             // Cache miss - get the resource
             lock (stores)
                 foreach (var store in stores)
-                foreach (var f in filenames)
-                {
-                    var result = store.Get(f);
-                    if (result != null)
-                        return result;
-                }
+                    foreach (var f in filenames)
+                    {
+                        var result = store.Get(f);
+
+                        if (result != null)
+                            return result;
+                    }
 
             return default;
         }
