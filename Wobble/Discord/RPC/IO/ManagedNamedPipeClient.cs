@@ -109,27 +109,23 @@ namespace Wobble.Discord.RPC.IO
 
 			try
 			{
-				//Attempt to read the bytes, catching for IO exceptions or dispose exceptions
-				bytes = _stream.EndRead(callback);
+				if (_stream != null)
+					//Attempt to read the bytes, catching for IO exceptions or dispose exceptions
+					bytes = _stream.EndRead(callback);
 			}
 			catch (IOException)
 			{
 				Logger.Warning("Attempted to end reading from a closed pipe");
 				return;
 			}
-			catch(NullReferenceException)
-			{
-				Logger.Warning("Attempted to read from a null pipe");
-				return;
-			}
 			catch(ObjectDisposedException)
 			{
-				Logger.Warning("Attemped to end reading from a disposed pipe");
+				Logger.Warning("Attempted to end reading from a disposed pipe");
 				return;
 			}
 			catch(Exception e)
 			{
-				Logger.Error("A unkown error has occured while reading a pipe: " + e.Message);
+				Logger.Error("An unknown error has occured while reading a pipe: " + e.Message);
 				return;
 			}
 
@@ -223,18 +219,26 @@ namespace Wobble.Discord.RPC.IO
 			//We must have failed the try catch
 			return false;
 		}
-		
+
 		/// <summary>
 		/// Closes the pipe
 		/// </summary>
 		public void Close()
 		{
-			//flush and dispose			
+			//flush and dispose
 			try
 			{
 				if (_stream != null)
 				{
-					try { _stream.Flush(); } catch (Exception) { }
+					try
+					{
+						_stream.Flush();
+					}
+					catch (Exception)
+					{
+						// ignored
+					}
+
 					_stream.Dispose();
 				}
 				else
@@ -259,6 +263,6 @@ namespace Wobble.Discord.RPC.IO
 		{
 			//Close the stream (disposing of it too)
 			Close();
-		}		
+		}
 	}
 }

@@ -98,7 +98,7 @@ namespace Wobble.Scheduling
                     OnCompleted?.Invoke(typeof(TaskHandler<T, TResult>),
                         new TaskCompleteEventArgs<T, TResult>(input, result));
                 }
-                catch (OperationCanceledException e)
+                catch (OperationCanceledException)
                 {
                     OnSourceCancelled(input);
                 }

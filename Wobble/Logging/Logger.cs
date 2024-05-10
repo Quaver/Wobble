@@ -9,15 +9,27 @@ namespace Wobble.Logging
 {
     public static class Logger
     {
+        static Logger() =>
+            MinimumLogLevel = Enum.TryParse(Environment.GetEnvironmentVariable("QUAVER_LOGLEVEL"), out LogLevel level)
+                ? level
+                : LogLevel.Debug;
+
         /// <summary>
-        ///     Dictates whether or not to display log messages (if in debug)
+        ///     Dictates whether to display log messages (if in debug)
         /// </summary>
         public static bool DisplayMessages { get; set; } = true;
 
         /// <summary>
         ///     The folder which contains all the logs.
         /// </summary>
-        public static string LogsFolder => $"{AppDomain.CurrentDomain.BaseDirectory}/Logs";
+        public static string LogsFolder => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+
+        /// <summary>
+        ///     The minimum log level required to log messages.
+        /// </summary>
+        // Just to keep things convenient, we're exposing this setter in case it ever is needed.
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
+        public static LogLevel MinimumLogLevel { get; set; }
 
         /// <summary>
         ///     Gets the path of an individual LogType.
@@ -43,13 +55,12 @@ namespace Wobble.Logging
 
             foreach (LogType type in Enum.GetValues(typeof(LogType)))
             {
-                if (File.Exists(GetLogPath(type)))
-                    File.Delete(GetLogPath(type));
+                var path = GetLogPath(type);
 
-                using (var f = File.Create(GetLogPath(type)))
-                {
-                }
+                if (File.Exists(path))
+                    File.Delete(path);
 
+                File.Create(path).Dispose();
                 Debug($"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription}", type);
             }
         }
@@ -99,8 +110,12 @@ namespace Wobble.Logging
         /// </summary>
         public static void Log(string m, LogLevel level, LogType type, bool writeToFile = true)
         {
+            if ((int)level < (int)MinimumLogLevel)
+                return;
+
             // Get a stringified version of the log level, and also set the color.
             var logLevelStr = "";
+
             switch (level)
             {
                 case LogLevel.Debug:

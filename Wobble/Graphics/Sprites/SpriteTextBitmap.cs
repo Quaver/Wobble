@@ -144,15 +144,7 @@ namespace Wobble.Graphics.Sprites
             {
                 // If we actually have new SpriteBatchOptions to use,then
                 // we want to end the previous SpriteBatch.
-                try
-                {
-                    GameBase.Game.SpriteBatch.End();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-
+                _ = GameBase.Game.TryEndBatch();
                 GameBase.DefaultSpriteBatchInUse = false;
 
                 // Begin the new SpriteBatch
@@ -163,15 +155,7 @@ namespace Wobble.Graphics.Sprites
             // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
             else if (!GameBase.DefaultSpriteBatchInUse && !UsePreviousSpriteBatchOptions)
             {
-                try
-                {
-                    // End the previous SpriteBatch.
-                    GameBase.Game.SpriteBatch.End();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                _ = GameBase.Game.TryEndBatch();
 
                 // Begin the default spriteBatch
                 GameBase.DefaultSpriteBatchOptions.Begin();
@@ -186,7 +170,7 @@ namespace Wobble.Graphics.Sprites
                 {
                     DrawToSpriteBatch();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     GameBase.DefaultSpriteBatchOptions.Begin();
                     GameBase.DefaultSpriteBatchInUse = true;
@@ -286,19 +270,8 @@ namespace Wobble.Graphics.Sprites
                 GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
                 GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
 
-                try
-                {
-                    GameBase.Game.SpriteBatch.End();
-                }
-                catch (Exception e)
-                {
-                    // ignored
-
-                }
-                finally
-                {
-                    GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
-                }
+                _ = GameBase.Game.TryEndBatch();
+                GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
 
                 GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, new Vector2(0, 0), Color.White, Rotation,
                     Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),
