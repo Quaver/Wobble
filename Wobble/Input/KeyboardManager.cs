@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Bindables;
 
 namespace Wobble.Input
 {
@@ -46,7 +48,10 @@ namespace Wobble.Input
         ///     Returns if either the control keys are down
         /// </summary>
         /// <returns></returns>
-        public static bool IsCtrlDown() => CurrentState.IsKeyDown(Keys.LeftControl) || CurrentState.IsKeyDown(Keys.RightControl);
+        public static bool IsCtrlDown() =>
+            (CurrentState.IsKeyDown(Keys.LeftControl) || CurrentState.IsKeyDown(Keys.RightControl))
+            || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+                && (CurrentState.IsKeyDown(Keys.LeftWindows) || CurrentState.IsKeyDown(Keys.RightWindows)));
 
         /// <summary>
         ///     Returns if either Alt key is held down
