@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Emik;
 
 namespace Wobble.Logging
 {
@@ -52,6 +53,7 @@ namespace Wobble.Logging
 
                 Debug($"OS: {System.Runtime.InteropServices.RuntimeInformation.OSDescription}", type);
             }
+            Concurrent.OnLockFailure += () => Important($"Unable to obtain lock from following trace:\n{new StackTrace()}", LogType.Runtime);
         }
 
         /// <summary>
