@@ -42,20 +42,11 @@ namespace Wobble.Graphics
         public void Begin()
         {
             Matrix? matrix = WindowManager.Scale;
+
             if (DoNotScale)
                 matrix = null;
 
-            // ReSharper disable once ArrangeMethodOrOperatorBody
-            try
-            {
-                GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix);
-                return;
-            }
-            catch (Exception e)
-            {
-                GameBase.Game.SpriteBatch.End();
-            }
-
+            _ = GameBase.Game.TryEndBatch();
             GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix);
         }
     }

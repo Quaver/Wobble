@@ -198,15 +198,7 @@ namespace Wobble.Graphics.Sprites.Text
             if (IsDisposed)
                 return;
 
-            try
-            {
-                GameBase.Game.SpriteBatch.End();
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
+            _ = GameBase.Game.TryEndBatch();
             var (width, height) = _raw.AbsoluteSize;
             var pixelWidth = (int) Math.Ceiling(width);
             var pixelHeight = (int) Math.Ceiling(height);
@@ -228,7 +220,7 @@ namespace Wobble.Graphics.Sprites.Text
             GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
             GameBase.Game.GraphicsDevice.Clear(Color.TransparentBlack);
             _raw.Draw(gameTime);
-            GameBase.Game.SpriteBatch.End();
+            _ = GameBase.Game.TryEndBatch();
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(null);
 

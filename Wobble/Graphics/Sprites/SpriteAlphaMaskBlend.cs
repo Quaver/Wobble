@@ -23,14 +23,7 @@ namespace Wobble.Graphics.Sprites
             GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
 
             // Attempt to end the spritebatch
-            try
-            {
-                GameBase.Game.SpriteBatch.End();
-            }
-            catch (Exception e)
-            {
-                // ignored.
-            }
+            _ = GameBase.Game.TryEndBatch();
 
             GameBase.Game.SpriteBatch.Begin(blendState: blend);
             GameBase.Game.SpriteBatch.Draw(srcMask, srcTexture.Bounds, Color.White);

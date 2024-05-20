@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -29,6 +31,8 @@ namespace Wobble
     /// </summary>
     public abstract class WobbleGame : Game
     {
+        static readonly Predicate<SpriteBatch> _beginCalled;
+
         /// <summary>
         ///     The current working directory of the executable.
         /// </summary>
@@ -94,6 +98,22 @@ namespace Wobble
         private readonly Sprite alphaOneSprite;
 
         /// <summary>
+        ///     Initializes <see cref="_beginCalled"/>.
+        /// </summary>
+        static WobbleGame()
+        {
+            var field = typeof(SpriteBatch).GetField("_beginCalled", BindingFlags.Instance | BindingFlags.NonPublic);
+            var getter = new DynamicMethod(nameof(_beginCalled), typeof(bool), new[] { typeof(SpriteBatch) }, true);
+            var il = getter.GetILGenerator();
+
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, field);
+            il.Emit(OpCodes.Ret);
+
+            _beginCalled = (Predicate<SpriteBatch>)getter.CreateDelegate(typeof(Predicate<SpriteBatch>));
+        }
+
+        /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
         protected WobbleGame(bool preferWayland = false) : base(preferWayland)
@@ -130,6 +150,34 @@ namespace Wobble
                     }
                 }
             };
+        }
+
+        /// <summary>
+        ///     Attempts to initialize a new sprite, if <see cref="SpriteBatch.End"/> had been called.
+        /// </summary>
+        /// <returns>Whether <see cref="SpriteBatch.Begin"/> had been called.</returns>
+        public bool TryBeginBatch()
+        {
+            var ret = _beginCalled(SpriteBatch);
+
+            if (!ret)
+                SpriteBatch.Begin();
+
+            return ret;
+        }
+
+        /// <summary>
+        ///     Attempts to flush all batched draw calls, if <see cref="SpriteBatch.Begin"/> had been called.
+        /// </summary>
+        /// <returns>Whether <see cref="SpriteBatch.End"/> had been called.</returns>
+        public bool TryEndBatch()
+        {
+            var ret = _beginCalled(SpriteBatch);
+
+            if (ret)
+                SpriteBatch.End();
+
+            return ret;
         }
 
         /// <summary>
