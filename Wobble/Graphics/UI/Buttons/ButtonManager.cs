@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Emik;
 
 namespace Wobble.Graphics.UI.Buttons
 {
@@ -11,7 +13,7 @@ namespace Wobble.Graphics.UI.Buttons
         /// <summary>
         ///     The list of buttons that are currently drawn.
         /// </summary>
-        public static List<Button> Buttons { get; } = new List<Button>();
+        public static Concurrent.List<Button> Buttons { get; } = new Concurrent.List<Button>();
 
         /// <summary>
         ///     Adds a button to the manager.
@@ -19,8 +21,7 @@ namespace Wobble.Graphics.UI.Buttons
         /// <param name="btn"></param>
         public static void Add(Button btn)
         {
-            lock (Buttons)
-                Buttons.Add(btn);
+            Buttons.Add(btn);
         }
 
         /// <summary>
@@ -29,8 +30,7 @@ namespace Wobble.Graphics.UI.Buttons
         /// <param name="btn"></param>
         public static void Remove(Button btn)
         {
-            lock (Buttons)
-                Buttons.Remove(btn);
+            Buttons.Remove(btn);
         }
 
         public static void ResetDrawOrder()
