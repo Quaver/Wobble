@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Wobble.Resources\**\*" />
+    <EmbeddedResource Include="Wobble.Resources/**/*" />
   </ItemGroup>
 
 </Project>

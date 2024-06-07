@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Wobble.Extended\Wobble.Extended.csproj" />
-      <ProjectReference Include="..\Wobble.Tests\Wobble.Tests.csproj" />
+      <ProjectReference Include="../Wobble.Extended/Wobble.Extended.csproj" />
+      <ProjectReference Include="../Wobble.Tests/Wobble.Tests.csproj" />
     </ItemGroup>
 
 </Project>
