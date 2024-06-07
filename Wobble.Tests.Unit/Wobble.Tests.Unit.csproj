@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Wobble.Tests\Wobble.Tests.csproj" />
-      <ProjectReference Include="..\Wobble\Wobble.csproj" />
+      <ProjectReference Include="../Wobble.Tests/Wobble.Tests.csproj" />
+      <ProjectReference Include="../Wobble/Wobble.csproj" />
     </ItemGroup>
 
 </Project>

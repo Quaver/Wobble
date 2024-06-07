@@ -7,11 +7,11 @@
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
-    <ProjectReference Include="..\Wobble.Tests.Resources\Wobble.Tests.Resources.csproj" />
-    <ProjectReference Include="..\Wobble\Wobble.csproj" />
+    <ProjectReference Include="../MonoGame/MonoGame.Framework/MonoGame.Framework.DesktopGL.csproj" />
+    <ProjectReference Include="../Wobble.Tests.Resources/Wobble.Tests.Resources.csproj" />
+    <ProjectReference Include="../Wobble/Wobble.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\" />
+    <Folder Include="Content/" />
   </ItemGroup>
 </Project>

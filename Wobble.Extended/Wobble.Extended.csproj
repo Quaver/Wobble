@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
-      <ProjectReference Include="..\Wobble\Wobble.csproj" />
+      <ProjectReference Include="../MonoGame/MonoGame.Framework/MonoGame.Framework.DesktopGL.csproj" />
+      <ProjectReference Include="../Wobble/Wobble.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
