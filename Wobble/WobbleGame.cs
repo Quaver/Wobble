@@ -21,6 +21,7 @@ using Wobble.Platform;
 using Wobble.Platform.Linux;
 using Wobble.Screens;
 using Wobble.Window;
+using NativeLibrary = Wobble.Platform.Linux.NativeLibrary;
 
 namespace Wobble
 {
