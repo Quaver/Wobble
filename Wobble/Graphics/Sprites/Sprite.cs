@@ -50,10 +50,27 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public Vector2 Origin { get; private set; }
 
+
+        private RectangleF _renderRectangle;
+        /// <summary>
+        ///     The un-rounded rectangle used to render the sprite. (see <see cref="RoundedRenderRectangle"/> for rounded)
+        /// </summary>
+        public RectangleF RenderRectangle
+        {
+            get => _renderRectangle;
+            set
+            {
+                _renderRectangle = value;
+                RoundedRenderRectangle = new Rectangle((int)RenderRectangle.X, (int)RenderRectangle.Y,
+                    (int)Math.Ceiling(RenderRectangle.Width), (int)Math.Ceiling(RenderRectangle.Height));
+            }
+        }
+
         /// <summary>
         ///     The rectangle used to render the sprite.
+        ///     This is passively set upon any updates to <see cref="RenderRectangle"/> to minimize performance impacts.
         /// </summary>
-        public RectangleF RenderRectangle { get; set; }
+        public Rectangle RoundedRenderRectangle { get; private set; }
 
         /// <summary>
         ///     The tint this QuaverSprite will inherit.
@@ -162,7 +179,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle.ToRectangle(), null, _color, _rotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RoundedRenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
         }
 
         /// <inheritdoc />
