@@ -33,7 +33,7 @@
     <None Update="libopenal.1.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="libSDL2-2.0.0.dylib">
+    <None Update="libSDL2.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="x64/*">
