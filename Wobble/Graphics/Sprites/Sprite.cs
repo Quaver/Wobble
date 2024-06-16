@@ -25,7 +25,7 @@ namespace Wobble.Graphics.Sprites
 
                 _image = value;
 
-                Origin = new Vector2(Image.Width / 2f, Image.Height / 2f);
+                Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
                 RecalculateRectangles();
             }
         }
@@ -37,9 +37,8 @@ namespace Wobble.Graphics.Sprites
         public float Rotation
         {
             get => _rotation;
-            set => _rotation = MathHelper.ToRadians(value);
+            set => _rotation = value;
         }
-
         /// <summary>
         ///     The XNA SpriteEffects the sprite will have.
         /// </summary>
@@ -177,7 +176,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, Rotation, Origin, SpriteEffect, 0f);
         }
 
 
@@ -200,7 +199,7 @@ namespace Wobble.Graphics.Sprites
 
             // Update the render rectangle
             // Add Width / 2 and Height / 2 to X, Y because that's what Origin is set to (in the Image setter).
-            RenderRectangle = new RectangleF(ScreenRectangle.X + ScreenRectangle.Width / 2f, ScreenRectangle.Y + ScreenRectangle.Height / 2f,
+            RenderRectangle = new RectangleF(ScreenRectangle.X + ScreenRectangle.Width * Pivot.X, ScreenRectangle.Y + ScreenRectangle.Height * Pivot.Y,
                 ScreenRectangle.Width, ScreenRectangle.Height);
         }
 

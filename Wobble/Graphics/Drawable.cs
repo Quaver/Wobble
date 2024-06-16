@@ -208,6 +208,26 @@ namespace Wobble.Graphics
             }
         }
 
+        private Vector2 _pivot = new Vector2(0.5f, 0.5f);
+
+        public Vector2 Pivot
+        {
+            get => _pivot;
+            set
+            {
+                _pivot = value;
+                RelativeOrigin = new Vector2(Width * value.X, Height * value.Y);
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     The origin of this object used for rotation.
+        /// </summary>
+        public Vector2 RelativeOrigin { get; private set; }
+
+        public float AbsoluteRotation { get; private set; }
+
         /// <summary>
         ///     The alignment of the object.
         /// </summary>
