@@ -50,14 +50,7 @@ namespace Wobble.Graphics.Sprites
             });
 
             // Attempt to end the spritebatch
-            try
-            {
-                GameBase.Game.SpriteBatch.End();
-            }
-            catch (Exception e)
-            {
-                // ignored.
-            }
+            _ = GameBase.Game.TryEndBatch();
 
             // Reset the render target.
             GameBase.Game.GraphicsDevice.SetRenderTarget(null);
@@ -74,14 +67,7 @@ namespace Wobble.Graphics.Sprites
             Image = oldImage;
 
             // Attempt to end the spritebatch
-            try
-            {
-                GameBase.Game.SpriteBatch.End();
-            }
-            catch (Exception e)
-            {
-                // ignored.
-            }
+            _ = GameBase.Game.TryEndBatch();
         }
     }
 }

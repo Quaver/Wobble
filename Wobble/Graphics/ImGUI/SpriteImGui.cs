@@ -17,11 +17,11 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        protected SpriteImGui(bool destroyContext = true, ImGuiOptions options = null)
+        protected SpriteImGui(bool destroyContext = true, ImGuiOptions options = null, float scale = 1.0f)
         {
             Options = options;
 
-            Renderer = new ImGuiRenderer(destroyContext, options);
+            Renderer = new ImGuiRenderer(destroyContext, options, scale);
             Renderer.RebuildFontAtlas();
         }
 

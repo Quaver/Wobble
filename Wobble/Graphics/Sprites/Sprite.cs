@@ -105,14 +105,7 @@ namespace Wobble.Graphics.Sprites
             {
                 // If we actually have new SpriteBatchOptions to use,then
                 // we want to end the previous SpriteBatch.
-                try
-                {
-                    GameBase.Game.SpriteBatch.End();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                _ = GameBase.Game.TryEndBatch();
 
                 GameBase.DefaultSpriteBatchInUse = false;
 
@@ -124,15 +117,7 @@ namespace Wobble.Graphics.Sprites
             // If the default spritebatch isn't used, we'll want to use it here and draw the sprite.
             else if (!GameBase.DefaultSpriteBatchInUse && !UsePreviousSpriteBatchOptions)
             {
-                try
-                {
-                    // End the previous SpriteBatch.
-                    GameBase.Game.SpriteBatch.End();
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                _ = GameBase.Game.TryEndBatch();
 
                 // Begin the default spriteBatch
                 GameBase.DefaultSpriteBatchOptions.Begin();
@@ -147,7 +132,7 @@ namespace Wobble.Graphics.Sprites
                 {
                     DrawToSpriteBatch();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     GameBase.DefaultSpriteBatchOptions.Begin();
                     GameBase.DefaultSpriteBatchInUse = true;
@@ -169,7 +154,6 @@ namespace Wobble.Graphics.Sprites
 
             GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, AbsoluteRotation, Origin, SpriteEffect, 0f);
         }
-
 
         /// <inheritdoc />
         /// <summary>

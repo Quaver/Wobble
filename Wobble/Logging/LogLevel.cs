@@ -7,8 +7,8 @@ namespace Wobble.Logging
     public enum LogLevel
     {
         Debug,
-        Warning,
         Important,
-        Error
+        Warning,
+        Error,
     }
 }
