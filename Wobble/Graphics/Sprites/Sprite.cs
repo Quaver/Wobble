@@ -31,15 +31,6 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
-        ///     Angle of the sprite with it's origin in the centre. (TEMPORARILY NOT USED YET)
-        /// </summary>
-        private float _rotation;
-        public float Rotation
-        {
-            get => _rotation;
-            set => _rotation = value;
-        }
-        /// <summary>
         ///     The XNA SpriteEffects the sprite will have.
         /// </summary>
         public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
@@ -176,7 +167,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, Rotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, AbsoluteRotation, Origin, SpriteEffect, 0f);
         }
 
 
@@ -197,6 +188,7 @@ namespace Wobble.Graphics.Sprites
             if (Image == null)
                 return;
 
+            Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
             // Update the render rectangle
             // Add Width / 2 and Height / 2 to X, Y because that's what Origin is set to (in the Image setter).
             RenderRectangle = new RectangleF(ScreenRectangle.X + ScreenRectangle.Width * Pivot.X, ScreenRectangle.Y + ScreenRectangle.Height * Pivot.Y,

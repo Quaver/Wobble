@@ -82,6 +82,11 @@ namespace Wobble.Graphics
         public RectangleF RelativeRectangle { get; private set; }
 
         /// <summary>
+        ///     The rectangle relative to the drawable's parent.
+        /// </summary>
+        public RectangleF AlignedRelativeRectangle { get; private set; }
+
+        /// <summary>
         ///     The position of the drawable
         /// </summary>
         private ScalableVector2 _position = new ScalableVector2(0, 0);
@@ -108,6 +113,7 @@ namespace Wobble.Graphics
                 var height = MathHelper.Clamp(value.Y.Value, 0, int.MaxValue);
 
                 _size = new ScalableVector2(width, height, value.X.Scale, value.Y.Scale);
+                Pivot = Pivot;
                 RecalculateRectangles();
             }
         }
@@ -162,6 +168,7 @@ namespace Wobble.Graphics
                     return;
 
                 Size = new ScalableVector2(value, Size.Y.Value, Size.X.Scale, Size.Y.Scale);
+                Pivot = Pivot;
             }
         }
 
@@ -173,6 +180,12 @@ namespace Wobble.Graphics
             get => Size.X.Scale;
             set => Size = new ScalableVector2(Size.X.Value, Size.Y.Value, value, Size.Y.Scale);
         }
+
+        public float RelativeWidth =>
+            Size.X.Value + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * WidthScale;
+
+        public float RelativeHeight =>
+            Size.Y.Value + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * HeightScale;
 
         /// <summary>
         ///     The height of the object.
@@ -192,6 +205,7 @@ namespace Wobble.Graphics
                     return;
 
                 Size = new ScalableVector2(Size.X.Value, value, Size.X.Scale, Size.Y.Scale);
+                Pivot = Pivot;
             }
         }
 
@@ -216,7 +230,6 @@ namespace Wobble.Graphics
             set
             {
                 _pivot = value;
-                RelativeOrigin = new Vector2(Width * value.X, Height * value.Y);
                 RecalculateRectangles();
             }
         }
@@ -224,9 +237,59 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The origin of this object used for rotation.
         /// </summary>
-        public Vector2 RelativeOrigin { get; private set; }
+        public Vector2 RelativeOrigin => Pivot * new Vector2(RelativeWidth, RelativeHeight);
 
-        public float AbsoluteRotation { get; private set; }
+        /// <summary>
+        ///     Angle of the sprite with it's origin in the centre. (TEMPORARILY NOT USED YET)
+        /// </summary>
+        private float _rotation;
+        public float Rotation
+        {
+            get => _rotation;
+            set
+            {
+                _rotation = value;
+                // AbsoluteRotation = (Parent?.AbsoluteRotation ?? 0) + _rotation;
+                RecalculateRectangles();
+                // RecalculateTransformMatrix();
+                // foreach (var child in Children)
+                // {
+                    // child.Rotation = child.Rotation;
+                // }
+            }
+        }
+
+        public float AbsoluteRotation => (Parent?.AbsoluteRotation ?? 0) + Rotation;
+        
+        public Matrix SelfRelativeTransform { get; private set; } = Matrix.Identity;
+
+        public Matrix ChildPositionTransform => (Parent?.ChildPositionTransform ?? Matrix.Identity)
+                                                * Matrix.CreateTranslation(
+                                                    new Vector3(AlignedRelativeRectangle.Position, 0))
+                                                * ChildRelativeTransform;
+
+        public Matrix ChildRelativeTransform => Matrix.CreateTranslation(new Vector3(RelativeOrigin, 0))
+                                                * Matrix.CreateRotationZ(Rotation)
+                                                * Matrix.CreateTranslation(new Vector3(-RelativeOrigin, 0));
+
+        public void RecalculateTransformMatrix()
+        {
+            // var rotationOrigin = RelativeOrigin;
+            // ChildRelativeTransform = Matrix.CreateTranslation(new Vector3(rotationOrigin, 0))
+            //                         * Matrix.CreateRotationZ(Rotation)
+            //                         * Matrix.CreateTranslation(new Vector3(-rotationOrigin, 0));
+            // Given child's aligned relative position r with parent's ChildPositionTransform T,
+            // The child has absolute position p = T r
+            // r is first rotated so r' = SelfRelativeTransform * r
+            // Then it is translated by relative pos of parent, pp to give its coords relative to its parent's parent
+            // r'' = pp * r'
+            // This process repeats until parent is null
+            // so r'' = pp * SelfRelativeTransform * r
+            // ChildPositionTransform = parent.ChildPositionTransform * pp * SelfRelativeTransform
+            // ChildPositionTransform = (Parent?.ChildPositionTransform ?? Matrix.Identity)
+            //                          * Matrix.CreateTranslation(new Vector3(AlignedRelativeRectangle.Position, 0))
+            //                          * ChildRelativeTransform;
+        }
 
         /// <summary>
         ///     The alignment of the object.
@@ -483,27 +546,32 @@ namespace Wobble.Graphics
         /// </summary>
         protected void RecalculateRectangles()
         {
+            if (Parent?.GetType().Name.Contains("Lane") ?? false)
+                ;
             // Make it relative to the parent.
+            var width = RelativeWidth;
+            var height = RelativeHeight;
+            var x = Position.X.Value;
+            var y = Position.Y.Value;
+
+            RelativeRectangle = new RectangleF(x, y, width, height);
             if (Parent != null)
             {
-                var width = Size.X.Value + Parent.ScreenRectangle.Width * WidthScale;
-                var height = Size.Y.Value + Parent.ScreenRectangle.Height * HeightScale;
-                var x = Position.X.Value;
-                var y = Position.Y.Value;
-
-                RelativeRectangle = new RectangleF(x, y, width, height);
-                ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle);
+                // TODO Let AlignRect return aligned relative rect and transform
+                AlignedRelativeRectangle =
+                    GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle, true);
+                AlignedRelativeRectangle = GraphicsHelper.Transform(AlignedRelativeRectangle, Parent.ChildRelativeTransform);
+                ScreenRectangle = GraphicsHelper.Transform(AlignedRelativeRectangle, Parent.ChildPositionTransform);
+                RecalculateTransformMatrix();
             }
             // Make it relative to the screen size.
             else
             {
-                var width = Size.X.Value + WindowManager.VirtualScreen.X * WidthScale;
-                var height = Size.Y.Value + WindowManager.VirtualScreen.Y * HeightScale;
-                var x = Position.X.Value;
-                var y = Position.Y.Value;
 
                 RelativeRectangle = new RectangleF(x, y, width, height);
-                ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
+                ScreenRectangle = GraphicsHelper.Offset(AlignedRelativeRectangle, WindowManager.Rectangle);
+                AlignedRelativeRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle, true);
+                RecalculateTransformMatrix();
             }
 
             // Recalculate the border points.
@@ -644,6 +712,9 @@ namespace Wobble.Graphics
                                     case AnimationProperty.Height:
                                         a.Start = Height;
                                         break;
+                                    case AnimationProperty.Rotation:
+                                        a.Start = Rotation;
+                                        break;
                                     case AnimationProperty.Alpha:
                                         var type = GetType();
 
@@ -652,16 +723,6 @@ namespace Wobble.Graphics
                                             var sprite = (Sprite) this;
                                             a.Start = sprite.Alpha;
                                         }
-
-                                        break;
-                                    case AnimationProperty.Rotation:
-                                        if (this is Sprite)
-                                        {
-                                            var sprite = (Sprite) this;
-                                            a.Start = sprite.Rotation;
-                                        }
-                                        else
-                                            throw new NotImplementedException();
 
                                         break;
                                     case AnimationProperty.Color:

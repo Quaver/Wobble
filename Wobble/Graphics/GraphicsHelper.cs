@@ -14,10 +14,12 @@ namespace Wobble.Graphics
         /// <param name="boundaryX"></param>
         /// <param name="boundaryY"></param>
         /// <param name="offset"></param>
+        /// <param name="relative"></param>
         /// <returns></returns>
-        public static float Align(float scale, float objectSize, float boundaryX, float boundaryY, float offset = 0)
+        public static float Align(float scale, float objectSize, float boundaryX, float boundaryY, float offset = 0, bool relative = false)
         {
-            return Math.Min(boundaryX, boundaryY) + (Math.Abs(boundaryX - boundaryY) - objectSize) * scale + offset;
+            var res = (Math.Abs(boundaryX - boundaryY) - objectSize) * scale + offset;
+            return relative ? res : Math.Min(boundaryX, boundaryY) + res;
         }
 
         /// <summary>
@@ -26,8 +28,9 @@ namespace Wobble.Graphics
         /// <param name="objectAlignment">The alignment of the object.</param>
         /// <param name="objectRect">The size of the object.</param>
         /// <param name="boundary">The Rectangle of the boundary.</param>
+        /// <param name="relative"></param>
         /// <returns></returns>
-        public static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary)
+        public static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary, bool relative = false)
         {
             float alignX = 0;
             float alignY = 0;
@@ -67,10 +70,22 @@ namespace Wobble.Graphics
             }
 
             //Set X and Y Alignments
-            alignX = Align(alignX, objectRect.Width, boundary.X, boundary.X + boundary.Width, objectRect.X);
-            alignY = Align(alignY, objectRect.Height, boundary.Y, boundary.Y + boundary.Height, objectRect.Y);
+            alignX = Align(alignX, objectRect.Width, boundary.X, boundary.X + boundary.Width, objectRect.X, relative);
+            alignY = Align(alignY, objectRect.Height, boundary.Y, boundary.Y + boundary.Height, objectRect.Y, relative);
 
             return new RectangleF(alignX, alignY, objectRect.Width, objectRect.Height);
+        }
+
+        public static RectangleF Offset(RectangleF objectRect, RectangleF offset)
+        {
+            return new RectangleF(objectRect.X + offset.X, objectRect.Y + offset.Y,
+                objectRect.Width, objectRect.Height);
+        }
+
+        public static RectangleF Transform(RectangleF objectRect, Matrix matrix)
+        {
+            var resultPosition = Vector2.Transform(new Vector2(objectRect.X, objectRect.Y), matrix);
+            return new RectangleF(resultPosition.X, resultPosition.Y, objectRect.Width, objectRect.Height);
         }
 
         /// <summary>
