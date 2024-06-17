@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Emik;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Wobble.Graphics.Animations;
@@ -69,7 +70,7 @@ namespace Wobble.Graphics
         ///     The children of this drawable. All children objects depend on this object's position
         ///     and size.
         /// </summary>
-        public List<Drawable> Children { get; } = new List<Drawable>();
+        public Concurrent.List<Drawable> Children { get; } = new Concurrent.List<Drawable>();
 
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
