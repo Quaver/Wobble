@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
+using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
+using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
 using Wobble.IO;
 using Wobble.Managers;
@@ -18,6 +21,10 @@ namespace Wobble.Tests
     public class WobbleTestsGame : WobbleGame
     {
         protected override bool IsReadyToUpdate { get; set; }
+
+        private FpsCounter FpsCounter { get; set; }
+        
+        private SpriteText WaylandState { get; set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -83,6 +90,21 @@ namespace Wobble.Tests
 
             IsReadyToUpdate = true;
 
+            FpsCounter = new FpsCounter(FontManager.LoadBitmapFont("Content/gotham"), 18)
+            {
+                Parent = GlobalUserInterface,
+                Alignment = Alignment.BotRight,
+                Size = new ScalableVector2(70, 30),
+            };
+
+            WaylandState = new SpriteText("exo2-semibold", $"Wayland: {WaylandVsync}", 18)
+            {
+                Parent = GlobalUserInterface,
+                Alignment = Alignment.BotRight,
+                Position = new ScalableVector2(0, -30),
+                Visible = OperatingSystem.IsLinux()
+            };
+
             // Once the assets load, we'll start the main screen
             ScreenManager.ChangeScreen(new SelectionScreen());
         }
@@ -107,6 +129,12 @@ namespace Wobble.Tests
             // TODO: Your global update logic goes here.
             if (KeyboardManager.IsUniqueKeyPress(Keys.Escape))
                 ScreenManager.ChangeScreen(new SelectionScreen());
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.W) && OperatingSystem.IsLinux())
+            {
+                WaylandVsync = !WaylandVsync;
+                WaylandState.ScheduleUpdate(() => WaylandState.Text = $"Wayland: {WaylandVsync}");
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -115,6 +143,7 @@ namespace Wobble.Tests
                 return;
 
             base.Draw(gameTime);
+            GlobalUserInterface?.Draw(gameTime);
         }
     }
 }
