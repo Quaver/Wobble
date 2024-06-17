@@ -26,6 +26,10 @@ namespace Wobble.Tests
         
         private SpriteText WaylandState { get; set; }
 
+        public WobbleTestsGame() : base(true)
+        {
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
