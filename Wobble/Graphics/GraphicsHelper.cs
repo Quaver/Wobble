@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -87,6 +88,18 @@ namespace Wobble.Graphics
             var resultPosition = Vector2.Transform(new Vector2(objectRect.X, objectRect.Y), matrix);
             return new RectangleF(resultPosition.X, resultPosition.Y, objectRect.Width, objectRect.Height);
         }
+
+        public static RectangleF MinimumBoundingRectangle(RectangleF objectRect, float angleRadians)
+        {
+            var transform = Matrix.CreateRotationZ(angleRadians);
+            return RectangleF.CreateFrom(new []
+            {
+                Vector2.Zero, 
+                new Vector2(0, objectRect.Height),
+                new Vector2(objectRect.Width, objectRect.Height),
+                new Vector2(objectRect.Width, 0)
+            }.Select(v => (Point2)(Vector2.Transform(v, transform) + objectRect.TopLeft)).ToList());
+        } 
 
         /// <summary>
         ///     Converts a Vector2 to Point

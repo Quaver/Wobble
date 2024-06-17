@@ -77,6 +77,11 @@ namespace Wobble.Graphics
         public RectangleF ScreenRectangle { get; private set; } = new RectangleF();
 
         /// <summary>
+        ///     The bounding box of the drawable relative to the entire screen.
+        /// </summary>
+        public RectangleF ScreenMinimumBoundingRectangle { get; private set; } = new RectangleF();
+
+        /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
         public RectangleF RelativeRectangle { get; private set; }
@@ -464,7 +469,7 @@ namespace Wobble.Graphics
             if (!Visible)
                 return;
 
-            if (!RectangleF.Intersects(ScreenRectangle, new RectangleF(0, 0, WindowManager.Width, WindowManager.Height)) && !DrawIfOffScreen)
+            if (!RectangleF.Intersects(ScreenMinimumBoundingRectangle, new RectangleF(0, 0, WindowManager.Width, WindowManager.Height)) && !DrawIfOffScreen)
                 return;
 
             // Draw the children and set their order.
@@ -570,16 +575,20 @@ namespace Wobble.Graphics
                 RecalculateTransformMatrix();
             }
 
+            ScreenMinimumBoundingRectangle = GraphicsHelper.MinimumBoundingRectangle(ScreenRectangle, AbsoluteRotation);
+
             // Recalculate the border points.
             if (Border != null)
             {
+                var offsetX = ScreenMinimumBoundingRectangle.X - ScreenRectangle.X;
+                var offsetY = ScreenMinimumBoundingRectangle.Y - ScreenRectangle.Y;
                 Border.Points = new List<Vector2>()
                 {
-                    new Vector2(0, 0),
-                    new Vector2(Width, 0),
-                    new Vector2(Width, Height),
-                    new Vector2(0, Height),
-                    new Vector2(0, 0)
+                    new Vector2(offsetX, offsetY),
+                    new Vector2(offsetX + ScreenMinimumBoundingRectangle.Width, offsetY),
+                    new Vector2(offsetX + ScreenMinimumBoundingRectangle.Width, offsetY + ScreenMinimumBoundingRectangle.Height),
+                    new Vector2(offsetX, offsetY + ScreenMinimumBoundingRectangle.Height),
+                    new Vector2(offsetX, offsetY)
                 };
             }
 
