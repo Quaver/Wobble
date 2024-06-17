@@ -181,10 +181,16 @@ namespace Wobble.Graphics
             set => Size = new ScalableVector2(Size.X.Value, Size.Y.Value, value, Size.Y.Scale);
         }
 
-        public float RelativeWidth =>
+        /// <summary>
+        ///     The total width of the drawable, considering the width scale
+        /// </summary>
+        private float RelativeWidth =>
             Size.X.Value + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * WidthScale;
 
-        public float RelativeHeight =>
+        /// <summary>
+        ///     The total height of the drawable, considering the height scale
+        /// </summary>
+        private float RelativeHeight =>
             Size.Y.Value + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * HeightScale;
 
         /// <summary>
@@ -224,6 +230,10 @@ namespace Wobble.Graphics
 
         private Vector2 _pivot = new Vector2(0.5f, 0.5f);
 
+        /// <summary>
+        ///     The pivot about which the rotation will be performed.
+        ///     (0, 0) corresponds to the top-left corner, (1, 1) bottom right.
+        /// </summary>
         public Vector2 Pivot
         {
             get => _pivot;
@@ -235,11 +245,6 @@ namespace Wobble.Graphics
         }
 
         /// <summary>
-        ///     The origin of this object used for rotation.
-        /// </summary>
-        public Vector2 RelativeOrigin => Pivot * new Vector2(RelativeWidth, RelativeHeight);
-
-        /// <summary>
         ///     Angle of the sprite with it's origin in the centre. (TEMPORARILY NOT USED YET)
         /// </summary>
         private float _rotation;
@@ -249,46 +254,37 @@ namespace Wobble.Graphics
             set
             {
                 _rotation = value;
-                // AbsoluteRotation = (Parent?.AbsoluteRotation ?? 0) + _rotation;
                 RecalculateRectangles();
-                // RecalculateTransformMatrix();
-                // foreach (var child in Children)
-                // {
-                    // child.Rotation = child.Rotation;
-                // }
             }
         }
 
-        public float AbsoluteRotation => (Parent?.AbsoluteRotation ?? 0) + Rotation;
-        
-        public Matrix SelfRelativeTransform { get; private set; } = Matrix.Identity;
+        public float AbsoluteRotation => (Parent?.AbsoluteRotation ?? 0) + _rotation;
 
-        public Matrix ChildPositionTransform => (Parent?.ChildPositionTransform ?? Matrix.Identity)
-                                                * Matrix.CreateTranslation(
-                                                    new Vector3(AlignedRelativeRectangle.Position, 0))
-                                                * ChildRelativeTransform;
+        /// <summary>
+        ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
+        /// </summary>
+        private Matrix ChildPositionTransform { get; set; } = Matrix.Identity;
 
-        public Matrix ChildRelativeTransform => Matrix.CreateTranslation(new Vector3(RelativeOrigin, 0))
-                                                * Matrix.CreateRotationZ(Rotation)
-                                                * Matrix.CreateTranslation(new Vector3(-RelativeOrigin, 0));
+        /// <summary>
+        ///     A transform that rotates the relative coordinates about the pivot
+        ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the relative coordinate after rotation.
+        /// </summary>
+        private Matrix ChildRelativeTransform { get; set; } = Matrix.Identity;
 
         public void RecalculateTransformMatrix()
         {
-            // var rotationOrigin = RelativeOrigin;
-            // ChildRelativeTransform = Matrix.CreateTranslation(new Vector3(rotationOrigin, 0))
-            //                         * Matrix.CreateRotationZ(Rotation)
-            //                         * Matrix.CreateTranslation(new Vector3(-rotationOrigin, 0));
-            // Given child's aligned relative position r with parent's ChildPositionTransform T,
-            // The child has absolute position p = T r
-            // r is first rotated so r' = SelfRelativeTransform * r
-            // Then it is translated by relative pos of parent, pp to give its coords relative to its parent's parent
-            // r'' = pp * r'
-            // This process repeats until parent is null
-            // so r'' = pp * SelfRelativeTransform * r
-            // ChildPositionTransform = parent.ChildPositionTransform * pp * SelfRelativeTransform
-            // ChildPositionTransform = (Parent?.ChildPositionTransform ?? Matrix.Identity)
-            //                          * Matrix.CreateTranslation(new Vector3(AlignedRelativeRectangle.Position, 0))
-            //                          * ChildRelativeTransform;
+            var relativeOrigin = Pivot * new Vector2(RelativeWidth, RelativeHeight);
+
+            // Move so the origin is at RelativeOrigin, rotate, then move back
+            ChildRelativeTransform = Matrix.CreateTranslation(new Vector3(-relativeOrigin, 0))
+                                     * Matrix.CreateRotationZ(Rotation)
+                                     * Matrix.CreateTranslation(new Vector3(relativeOrigin, 0));
+
+            // Rotate relative coordinates first, then add our own relative position
+            // Finally, apply our parent's transformation
+            ChildPositionTransform = ChildRelativeTransform
+                                     * Matrix.CreateTranslation(new Vector3(AlignedRelativeRectangle.Position, 0))
+                                     * (Parent?.ChildPositionTransform ?? Matrix.Identity);
         }
 
         /// <summary>
@@ -546,8 +542,6 @@ namespace Wobble.Graphics
         /// </summary>
         protected void RecalculateRectangles()
         {
-            if (Parent?.GetType().Name.Contains("Lane") ?? false)
-                ;
             // Make it relative to the parent.
             var width = RelativeWidth;
             var height = RelativeHeight;
@@ -557,11 +551,13 @@ namespace Wobble.Graphics
             RelativeRectangle = new RectangleF(x, y, width, height);
             if (Parent != null)
             {
-                // TODO Let AlignRect return aligned relative rect and transform
                 AlignedRelativeRectangle =
                     GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle, true);
-                AlignedRelativeRectangle = GraphicsHelper.Transform(AlignedRelativeRectangle, Parent.ChildRelativeTransform);
                 ScreenRectangle = GraphicsHelper.Transform(AlignedRelativeRectangle, Parent.ChildPositionTransform);
+                // Update the matrix, now that we have AlignedRelativeRectangle calculated
+                // Note that this calculation of AlignedRelativeRectangle and ScreenRectangle relies on the parent's
+                // transform, and the parent's matrices are calculated before RecalculateRectangles() is called, had there
+                // been an update to the parent.
                 RecalculateTransformMatrix();
             }
             // Make it relative to the screen size.
