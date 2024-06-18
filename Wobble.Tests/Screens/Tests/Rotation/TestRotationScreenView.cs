@@ -28,6 +28,8 @@ namespace Wobble.Tests.Screens.Tests.Rotation
         public Sprite BlueBox { get; }
 
         public Sprite Shaft { get; }
+        
+        public Sprite CollisionBox { get; }
 
         /// <summary>
         ///     The background color for the scene.
@@ -79,9 +81,20 @@ namespace Wobble.Tests.Screens.Tests.Rotation
                 Pivot = Vector2.Zero
             };
 
+            CollisionBox = new Sprite
+            {
+                Parent = Container,
+                Tint = new Color(255,  255, 255, 100),
+                Alignment = Alignment.TopLeft,
+                Size = new ScalableVector2(564, 880),
+                Position = new ScalableVector2(32, -56),
+            };
+
             GreenBox.AddBorder(Color.White, 2);
 
             BlueBox.AddBorder(Color.Red, 2);
+            
+            CollisionBox.AddBorder(Color.Red, 2);
 
             #endregion
 
@@ -113,6 +126,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
             {
                 GreenBox.Rotation += _increment;
                 BlueBox.Rotation += _increment;
+                CollisionBox.Rotation += _increment;
             }
 
             DebugText.ScheduleUpdate(() => DebugText.Text = $"{GreenBox.Rotation:0.00} {_increment}/tick");

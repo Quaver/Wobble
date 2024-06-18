@@ -89,16 +89,20 @@ namespace Wobble.Graphics
             return new RectangleF(resultPosition.X, resultPosition.Y, objectRect.Width, objectRect.Height);
         }
 
-        public static RectangleF MinimumBoundingRectangle(RectangleF objectRect, float angleRadians)
+        public static RectangleF MinimumBoundingRectangle(RectangleF objectRect, float angleRadians, bool relative = false)
         {
-            var transform = Matrix.CreateRotationZ(angleRadians);
-            return RectangleF.CreateFrom(new []
-            {
-                Vector2.Zero, 
-                new Vector2(0, objectRect.Height),
-                new Vector2(objectRect.Width, objectRect.Height),
-                new Vector2(objectRect.Width, 0)
-            }.Select(v => (Point2)(Vector2.Transform(v, transform) + objectRect.TopLeft)).ToList());
+            var topLeft = Vector2.Zero;
+            var bottomLeft = new Vector2(0, objectRect.Height).Rotate(angleRadians);
+            var bottomRight = new Vector2(objectRect.Width, objectRect.Height).Rotate(angleRadians);
+            var topRight = new Vector2(objectRect.Width, 0).Rotate(angleRadians);
+            var minX = MathF.Min(MathF.Min(topLeft.X, bottomLeft.X), MathF.Min(bottomRight.X, topRight.X));
+            var minY = MathF.Min(MathF.Min(topLeft.Y, bottomLeft.Y), MathF.Min(bottomRight.Y, topRight.Y));
+            var maxX = MathF.Max(MathF.Max(topLeft.X, bottomLeft.X), MathF.Max(bottomRight.X, topRight.X));
+            var maxY = MathF.Max(MathF.Max(topLeft.Y, bottomLeft.Y), MathF.Max(bottomRight.Y, topRight.Y));
+            var minimumBoundingRectangle = new RectangleF(minX, minY, maxX - minX, maxY - minY);
+            if (!relative)
+                minimumBoundingRectangle.Offset(objectRect.Position);
+            return minimumBoundingRectangle;
         } 
 
         /// <summary>

@@ -559,38 +559,44 @@ namespace Wobble.Graphics
                 AlignedRelativeRectangle =
                     GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle, true);
                 ScreenRectangle = GraphicsHelper.Transform(AlignedRelativeRectangle, Parent.ChildPositionTransform);
-                // Update the matrix, now that we have AlignedRelativeRectangle calculated
-                // Note that this calculation of AlignedRelativeRectangle and ScreenRectangle relies on the parent's
-                // transform, and the parent's matrices are calculated before RecalculateRectangles() is called, had there
-                // been an update to the parent.
-                RecalculateTransformMatrix();
             }
             // Make it relative to the screen size.
             else
             {
-
-                RelativeRectangle = new RectangleF(x, y, width, height);
-                ScreenRectangle = GraphicsHelper.Offset(AlignedRelativeRectangle, WindowManager.Rectangle);
                 AlignedRelativeRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle, true);
-                RecalculateTransformMatrix();
+                ScreenRectangle = GraphicsHelper.Offset(AlignedRelativeRectangle, WindowManager.Rectangle);
             }
 
-            ScreenMinimumBoundingRectangle = GraphicsHelper.MinimumBoundingRectangle(ScreenRectangle, AbsoluteRotation);
+            // Update the matrix, now that we have AlignedRelativeRectangle calculated
+            // Note that this calculation of AlignedRelativeRectangle and ScreenRectangle relies on the parent's
+            // transform, and the parent's matrices are calculated before RecalculateRectangles() is called, had there
+            // been an update to the parent.
+            RecalculateTransformMatrix();
+
+            var relativeBoundingRectangle =
+                GraphicsHelper.MinimumBoundingRectangle(ScreenRectangle, AbsoluteRotation, true);
 
             // Recalculate the border points.
             if (Border != null)
             {
-                var offsetX = ScreenMinimumBoundingRectangle.X - ScreenRectangle.X;
-                var offsetY = ScreenMinimumBoundingRectangle.Y - ScreenRectangle.Y;
                 Border.Points = new List<Vector2>()
                 {
-                    new Vector2(offsetX, offsetY),
-                    new Vector2(offsetX + ScreenMinimumBoundingRectangle.Width, offsetY),
-                    new Vector2(offsetX + ScreenMinimumBoundingRectangle.Width, offsetY + ScreenMinimumBoundingRectangle.Height),
-                    new Vector2(offsetX, offsetY + ScreenMinimumBoundingRectangle.Height),
-                    new Vector2(offsetX, offsetY)
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Top),
+                    new Vector2(relativeBoundingRectangle.Right, relativeBoundingRectangle.Top),
+                    new Vector2(relativeBoundingRectangle.Right, relativeBoundingRectangle.Bottom),
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Bottom),
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Top)
                 };
             }
+
+            // (0, 0) * ChildPositionTransform + relativeBoundingRectangle.Position
+            // TopLeft absolute coordinate offset by the top left of relative bounding rect
+            // gives the screen bounding rect
+            ScreenMinimumBoundingRectangle =
+                new RectangleF(
+                    new Point2(ChildPositionTransform.M41 + relativeBoundingRectangle.X,
+                        ChildPositionTransform.M42 + relativeBoundingRectangle.Y),
+                    relativeBoundingRectangle.Size);
 
             for (var i = 0; i < Children.Count; i++)
                 Children[i].RecalculateRectangles();
