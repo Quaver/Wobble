@@ -86,6 +86,27 @@ namespace Wobble.Graphics.Sprites
             }
         }
 
+        private bool _independentRotation;
+
+        /// <summary>
+        ///     If true, the rotation of sprite shown on screen will be independent of its parent.
+        /// </summary>
+        public bool IndependentRotation
+        {
+            get => _independentRotation;
+            set
+            {
+                _independentRotation = value;
+                SpriteRotation = value ? Rotation : AbsoluteRotation;
+            }
+        }
+
+        /// <summary>
+        ///     Actual rotation of sprite shown on screen.
+        ///     It is decided by <see cref="IndependentRotation"/> and parent's <see cref="Drawable.AbsoluteRotation"/>
+        /// </summary>
+        public float SpriteRotation { get; private set; }
+
         /// <summary>
         ///     Dictates if we want to set the alpha of the children as well.
         /// </summary>
@@ -152,7 +173,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, AbsoluteRotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, SpriteRotation, Origin, SpriteEffect, 0f);
         }
 
         /// <inheritdoc />
@@ -180,6 +201,8 @@ namespace Wobble.Graphics.Sprites
             // Update the render rectangle
             RenderRectangle = new RectangleF(ScreenRectangle.X + rotatedScreenOrigin.X, ScreenRectangle.Y + rotatedScreenOrigin.Y,
                 ScreenRectangle.Width, ScreenRectangle.Height);
+
+            SpriteRotation = IndependentRotation ? Rotation : AbsoluteRotation;
         }
 
         /// <summary>
