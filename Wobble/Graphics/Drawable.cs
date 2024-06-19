@@ -263,7 +263,7 @@ namespace Wobble.Graphics
             }
         }
 
-        public float AbsoluteRotation => (Parent?.AbsoluteRotation ?? 0) + _rotation;
+        public float AbsoluteRotation { get; private set; }
 
         /// <summary>
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
@@ -547,6 +547,9 @@ namespace Wobble.Graphics
         /// </summary>
         protected void RecalculateRectangles()
         {
+            // Update AbsoluteRotation
+            AbsoluteRotation = (Parent?.AbsoluteRotation ?? 0) + Rotation;
+
             // Make it relative to the parent.
             var width = RelativeWidth;
             var height = RelativeHeight;
