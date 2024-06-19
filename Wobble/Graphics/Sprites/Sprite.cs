@@ -193,14 +193,13 @@ namespace Wobble.Graphics.Sprites
             if (Image == null)
                 return;
 
-            Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
+            Origin = Pivot * Image.Bounds.Size.ToVector2();
 
             // The render rectangle's position will rotate around the screen rectangle's position
             var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);
 
             // Update the render rectangle
-            RenderRectangle = new RectangleF(ScreenRectangle.X + rotatedScreenOrigin.X, ScreenRectangle.Y + rotatedScreenOrigin.Y,
-                ScreenRectangle.Width, ScreenRectangle.Height);
+            RenderRectangle = new RectangleF(ScreenRectangle.Position + rotatedScreenOrigin, ScreenRectangle.Size);
 
             SpriteRotation = IndependentRotation ? Rotation : AbsoluteRotation;
         }

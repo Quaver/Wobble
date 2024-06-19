@@ -83,10 +83,12 @@ namespace Wobble.Graphics
                 objectRect.Width, objectRect.Height);
         }
 
-        public static RectangleF Transform(RectangleF objectRect, Matrix matrix)
+        public static RectangleF Transform(RectangleF objectRect, Matrix2D matrix)
         {
-            var resultPosition = Vector2.Transform(new Vector2(objectRect.X, objectRect.Y), matrix);
-            return new RectangleF(resultPosition.X, resultPosition.Y, objectRect.Width, objectRect.Height);
+            var resultPosition = matrix.Transform(objectRect.Position);
+            var scale = matrix.Scale;
+            var resultSize = new Size2(objectRect.Width * scale.X, objectRect.Height * scale.Y);
+            return new RectangleF(resultPosition, resultSize);
         }
 
         public static RectangleF MinimumBoundingRectangle(RectangleF objectRect, float angleRadians, bool relative = false)
