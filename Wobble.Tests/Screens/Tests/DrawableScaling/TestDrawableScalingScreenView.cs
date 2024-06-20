@@ -21,6 +21,8 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
 
         public Sprite BottomRight { get; }
 
+        public SpriteText SpriteText { get; }
+
         /// <summary>
         ///     The background color for the scene.
         /// </summary>
@@ -89,6 +91,13 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
                 Tint = Color.Red,
                 Position = new ScalableVector2(0, 0),
                 Alignment = Alignment.MidCenter,
+            };
+
+            SpriteText = new SpriteText("exo2-bold", "AAA", 20)
+            {
+                Parent = BottomRight,
+                Size = new ScalableVector2(50, 50),
+                Alignment = Alignment.MidCenter
             };
 
             GreenBox.AddBorder(Color.White, 2);
