@@ -86,7 +86,7 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         /// </summary>
         public ImFontPtr DefaultFontPtr { get; private set; }
-        
+
         public float Scale { get; }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Wobble.Graphics.ImGUI
                     font.Context = io.Fonts.AddFontFromFileTTF(font.Path, font.Size * Scale);
             }
 
-            io.Fonts.GetTexDataAsRGBA32(out var pixelData, out var width, out var height, out var bytesPerPixel);
+            io.Fonts.GetTexDataAsRGBA32(out byte* pixelData, out var width, out var height, out var bytesPerPixel);
 
             // Copy the data to a managed array
             var pixels = new byte[width * height * bytesPerPixel];
