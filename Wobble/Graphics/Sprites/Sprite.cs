@@ -199,7 +199,9 @@ namespace Wobble.Graphics.Sprites
             var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);
 
             // Update the render rectangle
-            RenderRectangle = new RectangleF(ScreenRectangle.Position + rotatedScreenOrigin, ScreenRectangle.Size);
+            RenderRectangle = new RectangleF(
+                ScreenRectangle.Position + rotatedScreenOrigin,
+                ScreenRectangle.Size);
 
             SpriteRotation = IndependentRotation ? Rotation : AbsoluteRotation;
         }

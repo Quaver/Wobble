@@ -301,15 +301,15 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
         /// </summary>
-        private Matrix2D ChildPositionTransform { get; set; } = Matrix2D.Identity;
+        protected Matrix2D ChildPositionTransform { get; set; } = Matrix2D.Identity;
 
         /// <summary>
         ///     A transform that rotates the relative coordinates about the pivot
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the relative coordinate after rotation.
         /// </summary>
-        private Matrix2D ChildRelativeTransform { get; set; } = Matrix2D.Identity;
+        protected Matrix2D ChildRelativeTransform { get; set; } = Matrix2D.Identity;
 
-        public void RecalculateTransformMatrix()
+        protected virtual void RecalculateTransformMatrix()
         {
             var relativeOrigin = Pivot * new Vector2(RelativeWidth, RelativeHeight);
 

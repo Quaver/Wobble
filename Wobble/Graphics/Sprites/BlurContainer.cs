@@ -36,7 +36,7 @@ namespace Wobble.Graphics.Sprites
         public BlurContainer(BlurType blurType, float strength)
         {
             // ReSharper disable once ArrangeConstructorOrDestructorBody
-            SpriteBatchOptions = new SpriteBatchOptions()
+            RenderSprite.SpriteBatchOptions = new SpriteBatchOptions()
             {
                 SortMode = SpriteSortMode.Deferred,
                 BlendState = BlendState.NonPremultiplied,
@@ -56,7 +56,7 @@ namespace Wobble.Graphics.Sprites
             BlurType = blurType;
             Strength = strength;
 
-            SpriteBatchOptions.Shader = new Shader(BlurEffects[BlurType], new Dictionary<string, object>
+            RenderSprite.SpriteBatchOptions.Shader = new Shader(BlurEffects[BlurType], new Dictionary<string, object>
             {
                 {"p_blurValues", new Vector3(Width, Height, Strength)}
             });
@@ -69,10 +69,10 @@ namespace Wobble.Graphics.Sprites
         public override void Draw(GameTime gameTime)
         {
             // Set to the correct blur type.
-            SpriteBatchOptions.Shader.ShaderEffect = BlurEffects[BlurType];
+            RenderSprite.SpriteBatchOptions.Shader.ShaderEffect = BlurEffects[BlurType];
 
             // Set dictionary parameters with updated properties.
-            SpriteBatchOptions.Shader.SetParameter("p_blurValues", new Vector3(Width, Height, Strength), true);
+            RenderSprite.SpriteBatchOptions.Shader.SetParameter("p_blurValues", new Vector3(Width, Height, Strength), true);
 
             base.Draw(gameTime);
         }

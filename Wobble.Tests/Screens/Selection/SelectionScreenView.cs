@@ -21,6 +21,7 @@ using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Primitives;
+using Wobble.Tests.Screens.Tests.RenderTarget;
 using Wobble.Tests.Screens.Tests.Rotation;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
@@ -128,6 +129,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.BlurContainer:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBlurContainerScreen());
+                        break;
+                    case ScreenType.RenderTarget:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestRenderTargetScreen());
                         break;
                     case ScreenType.BlurredBackgroundImage:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBlurredBackgroundImageScreen());
