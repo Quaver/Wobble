@@ -1,20 +1,31 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Wobble.Assets;
 using Wobble.Graphics.Animations;
-using Wobble.Graphics.Shaders;
-using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
     public class Sprite : Drawable
     {
-         /// <summary>
-        ///     the image texture of the sprite.
+        /// <summary>
+        ///     the image texture of the sprite which is drawn on screen
         /// </summary>
         private Texture2D _image;
+
+        /// <summary>
+        ///     the source texture of the sprite. If there are passes to the shaders, _image will be changed
+        ///     but this won't
+        /// </summary>
+        private Texture2D _originalTexture;
+
+        /// <summary>
+        ///     If <see cref="AdditionalPasses"/> is not empty, this is used for applying shaders in them
+        /// </summary>
+        private RenderTarget2D _intermediateImage;
+
         public Texture2D Image
         {
             get => _image;
@@ -23,12 +34,20 @@ namespace Wobble.Graphics.Sprites
                 if (value == null)
                     return;
 
-                _image = value;
+                _image = _originalTexture = value;
 
                 Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
+
+                _intermediateImage = new RenderTarget2D(GameBase.Game.GraphicsDevice, _image.Width, _image.Height, false,
+                    GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+
+                if (AdditionalPasses != null && AdditionalPasses.Count > 0) 
+                    GameBase.Game.ScheduledRenderTargetDraws.Add(PerformAdditionalPasses);
+
                 RecalculateRectangles();
             }
         }
+        public List<SpriteBatchOptions> AdditionalPasses { get; set; }
 
         /// <summary>
         ///     The XNA SpriteEffects the sprite will have.
@@ -112,6 +131,14 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public bool SetChildrenAlpha { get; set; }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (_originalTexture is RenderTarget2D && AdditionalPasses != null && AdditionalPasses.Count > 0) 
+                GameBase.Game.ScheduledRenderTargetDraws.Add(PerformAdditionalPasses);
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     Draws the sprite to the screen.
@@ -163,6 +190,32 @@ namespace Wobble.Graphics.Sprites
             }
 
             base.Draw(gameTime);
+        }
+
+        /// <summary>
+        ///     Transforms the <see cref="_originalTexture"/> from <see cref="AdditionalPasses"/>
+        ///     Due to the nature of the MonoGame's drawing order,
+        ///     Changes to <see cref="Image"/> will be delayed by one frame
+        /// </summary>
+        private void PerformAdditionalPasses()
+        {
+            _ = GameBase.Game.TryEndBatch();
+            GameBase.Game.GraphicsDevice.SetRenderTarget(_intermediateImage);
+            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
+
+            for (var index = 0; index < AdditionalPasses.Count; index++)
+            {
+                var pass = AdditionalPasses[index];
+                pass.Begin();
+
+                var target = index == 0 ? _originalTexture : _intermediateImage;
+
+                GameBase.Game.SpriteBatch.Draw(target, new RectangleF(Point2.Zero, new Size2(target.Width, target.Height)), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0f);
+            }
+
+            _ = GameBase.Game.TryEndBatch();
+            GameBase.Game.GraphicsDevice.SetRenderTarget(null);
+            _image = _intermediateImage;
         }
 
         /// <inheritdoc />
