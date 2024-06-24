@@ -197,7 +197,7 @@ namespace Wobble.Graphics.Sprites
         ///     Due to the nature of the MonoGame's drawing order,
         ///     Changes to <see cref="Image"/> will be delayed by one frame
         /// </summary>
-        private void PerformAdditionalPasses()
+        private void PerformAdditionalPasses(GameTime gameTime)
         {
             _ = GameBase.Game.TryEndBatch();
             GameBase.Game.GraphicsDevice.SetRenderTarget(_intermediateImage);
