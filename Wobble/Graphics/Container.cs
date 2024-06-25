@@ -46,7 +46,7 @@ namespace Wobble.Graphics
 
         protected override void RecalculateTransformMatrix()
         {
-            if (RenderTarget == null)
+            if (RenderTarget.Value == null)
             {
                 base.RecalculateTransformMatrix();
             }
@@ -134,7 +134,7 @@ namespace Wobble.Graphics
 
         private void DrawToRenderTarget(GameTime gameTime)
         {
-            if (RenderTarget == null)
+            if (RenderTarget.Value == null)
                 return;
 
             GameBase.Game.TryEndBatch();
