@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Input;
 using Wobble.Screens;
 
 namespace Wobble.Tests.Screens.Tests.RenderTarget
@@ -41,23 +43,24 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
             {
                 Parent = Container,
                 Size = new ScalableVector2(250, 500),
-                Alignment = Alignment.MidCenter
+                Position = new ScalableVector2(100, 100)
             };
             new Sprite()
             {
                 Parent = Container,
                 Size = new ScalableVector2(250, 500),
-                Alignment = Alignment.MidCenter,
+                Position = new ScalableVector2(100, 100),
                 Tint = new Color(0, 255, 0, 50)
             };
 
             MainComponentSprite = new Sprite()
             {
                 Parent = RenderTargetContainer,
-                Alignment = Alignment.MidCenter,
+                Alignment = Alignment.TopRight,
                 Tint = Color.Red,
-                Size = new ScalableVector2(250, 500),
-                Pivot = new Vector2(0.5f, 0.5f)
+                Position = new ScalableVector2(0, 250),
+                Size = new ScalableVector2(125, 250),
+                Pivot = new Vector2(0, 0)
             };
 
             CustomProjectionSprite = new Sprite()
@@ -67,7 +70,7 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
                 Size = new ScalableVector2(125, 250),
                 Position = new ScalableVector2(-100, 0)
             };
-
+            
             CustomProjectionSprite.BindProjectionContainer(RenderTargetContainer);
 
             RotationText = new SpriteText("exo2-bold", $"Rotation: 0", 18)
@@ -93,6 +96,13 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
             Rotation = ((float)gameTime.TotalGameTime.TotalSeconds * 0.5f) % (2 * MathF.PI);
             Scale = Vector2.One * MathF.Pow(MathF.Sin((float)gameTime.TotalGameTime.TotalSeconds), 2);
 
+            if (KeyboardManager.IsUniqueKeyPress(Keys.C))
+            {
+                if (RenderTargetContainer.RenderTarget.Value == null)
+                    RenderTargetContainer.CastToRenderTarget();
+                else
+                    RenderTargetContainer.StopCasting();
+            }
             Container?.Update(gameTime);
             UpdateText(gameTime);
         }

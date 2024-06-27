@@ -96,12 +96,21 @@ namespace Wobble.Graphics
             }
         }
 
+        public void StopCasting()
+        {
+            DefaultProjectionSprite?.Destroy();
+            RenderTarget.Value?.Dispose();
+            RenderTarget.Value = null;
+            DefaultProjectionSprite = null;
+            RecalculateRectangles();
+        }
+
         private void ResetRenderTarget()
         {
             RenderTarget.Value = new RenderTarget2D(GameBase.Game.GraphicsDevice,
                 (int)RelativeRectangle.Width, (int)RelativeRectangle.Height, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
-            RecalculateTransformMatrix();
+            RecalculateRectangles();
         }
 
         protected override void OnRectangleRecalculated()
