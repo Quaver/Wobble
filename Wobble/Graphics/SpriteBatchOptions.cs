@@ -39,9 +39,9 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Begins the spritebatch with the specified settings.
         /// </summary>
-        public void Begin(bool scaleToWindow = true)
+        public void Begin()
         {
-            Matrix? matrix = scaleToWindow ? WindowManager.Scale : Matrix.Identity;
+            Matrix? matrix = WindowManager.Scale;
 
             if (DoNotScale)
                 matrix = null;

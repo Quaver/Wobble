@@ -20,6 +20,8 @@ namespace Wobble.Graphics
         /// </summary>
         public Bindable<RenderTarget2D> RenderTarget { get; } = new Bindable<RenderTarget2D>(null);
 
+        private Point _renderTargetSize;
+
         /// <summary>
         ///     A projection sprite that has the same dimension, position, rotation and parent as the container.
         ///     It shows <see cref="RenderTarget"/>, which the container can render its entire content to
@@ -52,8 +54,11 @@ namespace Wobble.Graphics
             }
             else
             {
-                ChildPositionTransform = Matrix2D.Identity;
-                ChildRelativeTransform = Matrix2D.Identity;
+                // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
+                // scaled, so we should scale them back.
+                ChildRelativeTransform = Matrix2D.CreateScale(
+                    new Vector2(1 / WindowManager.ScreenScale.X, 1 / WindowManager.ScreenScale.Y));
+                ChildPositionTransform = ChildRelativeTransform;
             }
         }
 
@@ -108,7 +113,7 @@ namespace Wobble.Graphics
         private void ResetRenderTarget()
         {
             RenderTarget.Value = new RenderTarget2D(GameBase.Game.GraphicsDevice,
-                (int)RelativeRectangle.Width, (int)RelativeRectangle.Height, false,
+                _renderTargetSize.X, _renderTargetSize.Y, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
             RecalculateRectangles();
         }
@@ -127,7 +132,8 @@ namespace Wobble.Graphics
                 DefaultProjectionSprite.Alignment = Alignment;
             }
 
-            if (RenderTarget.Value != null && RenderTarget.Value.Bounds.Size != RelativeRectangle.Size)
+            _renderTargetSize = new Point((int)RelativeRectangle.Width, (int)RelativeRectangle.Height);
+            if (RenderTarget.Value != null && RenderTarget.Value.Bounds.Size != _renderTargetSize)
             {
                 ResetRenderTarget();
             }
