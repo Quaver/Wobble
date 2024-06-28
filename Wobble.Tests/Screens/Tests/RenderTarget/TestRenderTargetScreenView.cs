@@ -13,24 +13,44 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
         public Container RenderTargetContainer { get; }
 
         public Sprite MainComponentSprite { get; }
-        public Sprite CustomProjectionSprite { get; }
+        public Sprite SupposedMainCaptureRegion { get; }
+        public RenderProjectionSprite CustomProjectionSprite { get; }
 
         public SpriteText RotationText { get; }
 
         public SpriteText ScaleText { get; }
 
         private TimeSpan _textUpdateTimer = TimeSpan.Zero;
+        private readonly Padding _overflowRenderPadding = new(75, 75, 75, 75);
 
         public float Rotation
         {
             get => MainComponentSprite.Rotation;
-            set => MainComponentSprite.Rotation = value;
+            set
+            {
+                MainComponentSprite.Rotation = value;
+                CustomProjectionSprite.Rotation = value;
+                if (RenderTargetContainer.DefaultProjectionSprite != null)
+                {
+                    SupposedMainCaptureRegion.Rotation = value;
+                    RenderTargetContainer.DefaultProjectionSprite.Rotation = value;
+                }
+            }
         }
 
         public Vector2 Scale
         {
             get => MainComponentSprite.Scale;
-            set => MainComponentSprite.Scale = value;
+            set
+            {
+                MainComponentSprite.Scale = value;
+                CustomProjectionSprite.Scale = value;
+                if (RenderTargetContainer.DefaultProjectionSprite != null)
+                {
+                    SupposedMainCaptureRegion.Scale = value;
+                    RenderTargetContainer.DefaultProjectionSprite.Scale = value;
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -45,7 +65,8 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
                 Size = new ScalableVector2(250, 500),
                 Position = new ScalableVector2(100, 100)
             };
-            new Sprite()
+
+            SupposedMainCaptureRegion = new Sprite()
             {
                 Parent = Container,
                 Size = new ScalableVector2(250, 500),
@@ -63,14 +84,16 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
                 Pivot = new Vector2(0, 0)
             };
 
-            CustomProjectionSprite = new Sprite()
+            CustomProjectionSprite = new RenderProjectionSprite()
             {
                 Parent = Container,
                 Alignment = Alignment.MidRight,
                 Size = new ScalableVector2(125, 250),
                 Position = new ScalableVector2(-100, 0)
             };
-            
+
+            RenderTargetContainer.RenderTargetOptions.BackgroundColor = new Color(0, 0, 255, 50);
+            RenderTargetContainer.RenderTargetOptions.OverflowRenderPadding = _overflowRenderPadding;
             CustomProjectionSprite.BindProjectionContainer(RenderTargetContainer);
 
             RotationText = new SpriteText("exo2-bold", $"Rotation: 0", 18)
@@ -98,11 +121,12 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.C))
             {
-                if (RenderTargetContainer.RenderTarget.Value == null)
+                if (RenderTargetContainer.RenderTargetOptions.RenderTarget.Value == null)
                     RenderTargetContainer.CastToRenderTarget();
                 else
                     RenderTargetContainer.StopCasting();
             }
+
             Container?.Update(gameTime);
             UpdateText(gameTime);
         }
@@ -110,7 +134,7 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
         private void UpdateText(GameTime gameTime)
         {
             _textUpdateTimer += gameTime.ElapsedGameTime;
-            
+
             if (_textUpdateTimer >= TimeSpan.FromMilliseconds(16))
             {
                 RotationText.ScheduleUpdate(() => RotationText.Text = $"Rotation: {Rotation:0.000}");

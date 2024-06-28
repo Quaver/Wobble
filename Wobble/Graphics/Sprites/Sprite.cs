@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Wobble.Assets;
-using Wobble.Bindables;
 using Wobble.Graphics.Animations;
 
 namespace Wobble.Graphics.Sprites
@@ -26,8 +25,6 @@ namespace Wobble.Graphics.Sprites
         ///     If <see cref="AdditionalPasses"/> is not empty, this is used for applying shaders in them
         /// </summary>
         private RenderTarget2D _intermediateImage;
-
-        private Container _boundProjectionContainerSource;
 
         public Texture2D Image
         {
@@ -60,7 +57,7 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     The origin of this object used for rotation.
         /// </summary>
-        public Vector2 Origin { get; private set; }
+        public Vector2 Origin { get; protected set; }
 
         /// <summary>
         ///     The rectangle used to render the sprite.
@@ -127,7 +124,7 @@ namespace Wobble.Graphics.Sprites
         ///     Actual rotation of sprite shown on screen.
         ///     It is decided by <see cref="IndependentRotation"/> and parent's <see cref="Drawable.AbsoluteRotation"/>
         /// </summary>
-        public float SpriteRotation { get; private set; }
+        public float SpriteRotation { get; protected set; }
 
         /// <summary>
         ///     Dictates if we want to set the alpha of the children as well.
@@ -238,8 +235,6 @@ namespace Wobble.Graphics.Sprites
         public override void Destroy()
         {
             SpriteBatchOptions?.Shader?.Dispose();
-            if (_boundProjectionContainerSource != null)
-                _boundProjectionContainerSource.RenderTarget.ValueChanged -= OnRenderTargetChange;
             base.Destroy();
         }
 
@@ -262,30 +257,6 @@ namespace Wobble.Graphics.Sprites
                 ScreenRectangle.Size);
 
             SpriteRotation = IndependentRotation ? Rotation : AbsoluteRotation;
-        }
-
-        /// <summary>
-        ///     When called, the sprite will show the image of the container instead.
-        ///     If the container is not drawing to render target, it will automatically do so
-        /// </summary>
-        /// <param name="container">The container to project its drawing from</param>
-        public void BindProjectionContainer(Container container)
-        {
-            if (_boundProjectionContainerSource != null)
-                _boundProjectionContainerSource.RenderTarget.ValueChanged -= OnRenderTargetChange;
-
-            _boundProjectionContainerSource = container;
-
-            if (_boundProjectionContainerSource.RenderTarget?.Value == null)
-                _boundProjectionContainerSource.CastToRenderTarget();
-
-            Image = container.RenderTarget.Value;
-            container.RenderTarget.ValueChanged += OnRenderTargetChange;
-        }
-
-        private void OnRenderTargetChange(object sender, BindableValueChangedEventArgs<RenderTarget2D> target2D)
-        {
-            Image = target2D.Value;
         }
 
         /// <summary>

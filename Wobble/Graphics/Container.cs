@@ -18,15 +18,13 @@ namespace Wobble.Graphics
         /// <summary>
         ///     The main render target to render to.
         /// </summary>
-        public Bindable<RenderTarget2D> RenderTarget { get; } = new Bindable<RenderTarget2D>(null);
-
-        private Point _renderTargetSize;
+        public RenderTargetOptions RenderTargetOptions { get; } = new RenderTargetOptions();
 
         /// <summary>
         ///     A projection sprite that has the same dimension, position, rotation and parent as the container.
         ///     It shows <see cref="RenderTarget"/>, which the container can render its entire content to
         /// </summary>
-        public Sprite DefaultProjectionSprite { get; private set; }
+        public RenderProjectionSprite DefaultProjectionSprite { get; private set; }
 
         public Container()
         {
@@ -48,7 +46,7 @@ namespace Wobble.Graphics
 
         protected override void RecalculateTransformMatrix()
         {
-            if (RenderTarget.Value == null)
+            if (RenderTargetOptions.RenderTarget.Value == null)
             {
                 base.RecalculateTransformMatrix();
             }
@@ -56,15 +54,14 @@ namespace Wobble.Graphics
             {
                 // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
                 // scaled, so we should scale them back.
-                ChildRelativeTransform = Matrix2D.CreateScale(
-                    new Vector2(1 / WindowManager.ScreenScale.X, 1 / WindowManager.ScreenScale.Y));
+                ChildRelativeTransform = RenderTargetOptions.TransformMatrix;
                 ChildPositionTransform = ChildRelativeTransform;
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            if (RenderTarget.Value != null)
+            if (RenderTargetOptions.RenderTarget.Value != null)
                 GameBase.Game.ScheduledRenderTargetDraws.Add(DrawToRenderTarget);
             else
                 base.Draw(gameTime);
@@ -82,18 +79,20 @@ namespace Wobble.Graphics
         /// <param name="projectDefault">Whether a sprite will be spawned to show the container as normal</param>
         public void CastToRenderTarget(bool projectDefault = true)
         {
-            ResetRenderTarget();
+            RenderTargetOptions.ContainerRectangleSize =
+                new Point((int)RelativeRectangle.Size.Width, (int)RelativeRectangle.Size.Height);
+            RenderTargetOptions.Enabled = true;
+            RecalculateRectangles();
 
             DefaultProjectionSprite?.Destroy();
 
             if (projectDefault)
             {
-                DefaultProjectionSprite = new Sprite
+                DefaultProjectionSprite = new RenderProjectionSprite
                 {
                     Size = Size,
                     Position = Position,
                     Rotation = Rotation,
-                    Image = RenderTarget.Value,
                     Alignment = Alignment,
                     Parent = Parent
                 };
@@ -104,17 +103,8 @@ namespace Wobble.Graphics
         public void StopCasting()
         {
             DefaultProjectionSprite?.Destroy();
-            RenderTarget.Value?.Dispose();
-            RenderTarget.Value = null;
+            RenderTargetOptions.Enabled = false;
             DefaultProjectionSprite = null;
-            RecalculateRectangles();
-        }
-
-        private void ResetRenderTarget()
-        {
-            RenderTarget.Value = new RenderTarget2D(GameBase.Game.GraphicsDevice,
-                _renderTargetSize.X, _renderTargetSize.Y, false,
-                GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
             RecalculateRectangles();
         }
 
@@ -132,11 +122,8 @@ namespace Wobble.Graphics
                 DefaultProjectionSprite.Alignment = Alignment;
             }
 
-            _renderTargetSize = new Point((int)RelativeRectangle.Width, (int)RelativeRectangle.Height);
-            if (RenderTarget.Value != null && RenderTarget.Value.Bounds.Size != _renderTargetSize)
-            {
-                ResetRenderTarget();
-            }
+            RenderTargetOptions.ContainerRectangleSize = new Point((int)RelativeRectangle.Width, (int)RelativeRectangle.Height);
+            RenderTargetOptions.ResetRenderTarget();
         }
 
         /// <inheritdoc />
@@ -149,12 +136,12 @@ namespace Wobble.Graphics
 
         private void DrawToRenderTarget(GameTime gameTime)
         {
-            if (RenderTarget.Value == null)
+            if (RenderTargetOptions.RenderTarget.Value == null)
                 return;
 
             GameBase.Game.TryEndBatch();
-            GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget.Value);
-            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
+            GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTargetOptions.RenderTarget.Value);
+            GameBase.Game.GraphicsDevice.Clear(RenderTargetOptions.BackgroundColor);
 
             // Draw all of the children
             Children.ForEach(x =>
