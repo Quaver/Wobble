@@ -63,5 +63,11 @@ namespace Wobble.Tests.Screens.Tests.Imgui
                 Button.IsGloballyClickable = !ImGui.IsAnyItemHovered();
             }
         }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            Button.IsGloballyClickable = true;
+        }
     }
 }
