@@ -39,16 +39,13 @@ namespace Wobble.Tests.Screens.Tests.Imgui
 
             // Make a button
             // ReSharper disable once ObjectCreationAsStatement
-            for (var i = 0; i < 5000; i++)
+            Boxes.Add(new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Logger.Important("CLICKED", LogType.Runtime, false))
             {
-                Boxes.Add(new ImageButton(WobbleAssets.WhiteBox, (sender, args) => Logger.Important("CLICKED", LogType.Runtime, false))
-                {
-                    Parent = Container,
-                    Alignment = Alignment.MidCenter,
-                    Size = new ScalableVector2(100, 100),
-                    Tint = Color.Crimson,
-                });
-            }
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                Size = new ScalableVector2(100, 100),
+                Tint = Color.Crimson,
+            });
 
             // ReSharper disable once ObjectCreationAsStatement
             var box2 = new Sprite()
