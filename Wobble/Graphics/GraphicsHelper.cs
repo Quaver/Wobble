@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -14,10 +15,12 @@ namespace Wobble.Graphics
         /// <param name="boundaryX"></param>
         /// <param name="boundaryY"></param>
         /// <param name="offset"></param>
+        /// <param name="relative"></param>
         /// <returns></returns>
-        public static float Align(float scale, float objectSize, float boundaryX, float boundaryY, float offset = 0)
+        public static float Align(float scale, float objectSize, float boundaryX, float boundaryY, float offset = 0, bool relative = false)
         {
-            return Math.Min(boundaryX, boundaryY) + (Math.Abs(boundaryX - boundaryY) - objectSize) * scale + offset;
+            var res = (Math.Abs(boundaryX - boundaryY) - objectSize) * scale + offset;
+            return relative ? res : Math.Min(boundaryX, boundaryY) + res;
         }
 
         /// <summary>
@@ -26,8 +29,9 @@ namespace Wobble.Graphics
         /// <param name="objectAlignment">The alignment of the object.</param>
         /// <param name="objectRect">The size of the object.</param>
         /// <param name="boundary">The Rectangle of the boundary.</param>
+        /// <param name="relative"></param>
         /// <returns></returns>
-        public static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary)
+        public static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary, bool relative = false)
         {
             float alignX = 0;
             float alignY = 0;
@@ -67,11 +71,41 @@ namespace Wobble.Graphics
             }
 
             //Set X and Y Alignments
-            alignX = Align(alignX, objectRect.Width, boundary.X, boundary.X + boundary.Width, objectRect.X);
-            alignY = Align(alignY, objectRect.Height, boundary.Y, boundary.Y + boundary.Height, objectRect.Y);
+            alignX = Align(alignX, objectRect.Width, boundary.X, boundary.X + boundary.Width, objectRect.X, relative);
+            alignY = Align(alignY, objectRect.Height, boundary.Y, boundary.Y + boundary.Height, objectRect.Y, relative);
 
             return new RectangleF(alignX, alignY, objectRect.Width, objectRect.Height);
         }
+
+        public static RectangleF Offset(RectangleF objectRect, RectangleF offset)
+        {
+            return new RectangleF(objectRect.X + offset.X, objectRect.Y + offset.Y,
+                objectRect.Width, objectRect.Height);
+        }
+
+        public static RectangleF Transform(RectangleF objectRect, Matrix2D matrix)
+        {
+            var resultPosition = matrix.Transform(objectRect.Position);
+            var scale = matrix.Scale;
+            var resultSize = new Size2(objectRect.Width * scale.X, objectRect.Height * scale.Y);
+            return new RectangleF(resultPosition, resultSize);
+        }
+
+        public static RectangleF MinimumBoundingRectangle(RectangleF objectRect, float angleRadians, bool relative = false)
+        {
+            var topLeft = Vector2.Zero;
+            var bottomLeft = new Vector2(0, objectRect.Height).Rotate(angleRadians);
+            var bottomRight = new Vector2(objectRect.Width, objectRect.Height).Rotate(angleRadians);
+            var topRight = new Vector2(objectRect.Width, 0).Rotate(angleRadians);
+            var minX = MathF.Min(MathF.Min(topLeft.X, bottomLeft.X), MathF.Min(bottomRight.X, topRight.X));
+            var minY = MathF.Min(MathF.Min(topLeft.Y, bottomLeft.Y), MathF.Min(bottomRight.Y, topRight.Y));
+            var maxX = MathF.Max(MathF.Max(topLeft.X, bottomLeft.X), MathF.Max(bottomRight.X, topRight.X));
+            var maxY = MathF.Max(MathF.Max(topLeft.Y, bottomLeft.Y), MathF.Max(bottomRight.Y, topRight.Y));
+            var minimumBoundingRectangle = new RectangleF(minX, minY, maxX - minX, maxY - minY);
+            if (!relative)
+                minimumBoundingRectangle.Offset(objectRect.Position);
+            return minimumBoundingRectangle;
+        } 
 
         /// <summary>
         ///     Converts a Vector2 to Point

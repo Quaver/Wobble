@@ -247,7 +247,7 @@ namespace Wobble.Graphics.Sprites
             if (pixelWidth == 0 || pixelHeight == 0 || string.IsNullOrEmpty(Text))
                 return;
 
-            GameBase.Game.ScheduledRenderTargetDraws.Add(() =>
+            GameBase.Game.ScheduledRenderTargetDraws.Add(gameTime =>
             {
                 if (pixelWidth < 1)
                     pixelWidth = 1;
@@ -281,7 +281,6 @@ namespace Wobble.Graphics.Sprites
 
                 Image = RenderTarget;
 
-                GameBase.Game.GraphicsDevice.SetRenderTarget(null);
                 CachedTexture = true;
             });
         }

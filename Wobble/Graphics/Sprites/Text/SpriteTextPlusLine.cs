@@ -146,7 +146,7 @@ namespace Wobble.Graphics.Sprites.Text
             if (_dirty)
             {
                 _dirty = false;
-                GameBase.Game.ScheduledRenderTargetDraws.Add(() => Cache(gameTime));
+                GameBase.Game.ScheduledRenderTargetDraws.Add(_ => Cache(gameTime));
             }
 
             base.Update(gameTime);
@@ -221,8 +221,6 @@ namespace Wobble.Graphics.Sprites.Text
             GameBase.Game.GraphicsDevice.Clear(Color.TransparentBlack);
             _raw.Draw(gameTime);
             _ = GameBase.Game.TryEndBatch();
-
-            GameBase.Game.GraphicsDevice.SetRenderTarget(null);
 
             Image = RenderTarget;
         }
