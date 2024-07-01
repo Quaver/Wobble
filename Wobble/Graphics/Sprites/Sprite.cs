@@ -38,11 +38,13 @@ namespace Wobble.Graphics.Sprites
 
                 Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
 
-                _intermediateImage = new RenderTarget2D(GameBase.Game.GraphicsDevice, _image.Width, _image.Height, false,
-                    GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
-
-                if (AdditionalPasses != null && AdditionalPasses.Count > 0) 
+                if (AdditionalPasses != null && AdditionalPasses.Count > 0)
+                {
+                    _intermediateImage?.Dispose();
+                    _intermediateImage = new RenderTarget2D(GameBase.Game.GraphicsDevice, _image.Width, _image.Height, false,
+                        GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
                     GameBase.Game.ScheduledRenderTargetDraws.Add(PerformAdditionalPasses);
+                }
 
                 RecalculateRectangles();
             }
