@@ -77,6 +77,19 @@ namespace Wobble.Graphics
         public RectangleF ScreenRectangle { get; private set; } = new RectangleF();
 
         /// <summary>
+        ///     If outside this region, this will not be drawed.
+        /// </summary>
+        private RectangleF DrawRectangleMask { get; set; } =
+            new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+
+        /// <summary>
+        ///     Clipping region for children. Useful to RenderTargets
+        /// </summary>
+        protected virtual RectangleF ChildDrawRectangleMask =>
+            Parent?.ChildDrawRectangleMask
+            ?? new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+
+        /// <summary>
         ///     The bounding box of the drawable relative to the entire screen.
         /// </summary>
         public RectangleF ScreenMinimumBoundingRectangle { get; private set; } = new RectangleF();
@@ -503,7 +516,7 @@ namespace Wobble.Graphics
             if (!Visible)
                 return;
 
-            if (!RectangleF.Intersects(ScreenMinimumBoundingRectangle, new RectangleF(0, 0, WindowManager.Width, WindowManager.Height)) && !DrawIfOffScreen)
+            if (!RectangleF.Intersects(ScreenMinimumBoundingRectangle, DrawRectangleMask) && !DrawIfOffScreen)
                 return;
 
             // Draw the children and set their order.
@@ -584,6 +597,8 @@ namespace Wobble.Graphics
             // Update AbsoluteRotation
             AbsoluteRotation = (Parent?.AbsoluteRotation ?? 0) + Rotation;
             AbsoluteScale = (Parent?.AbsoluteScale ?? Vector2.One) * Scale;
+            DrawRectangleMask = Parent?.ChildDrawRectangleMask
+                                ?? new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
 
             // Make it relative to the parent.
             var width = RelativeWidth;

@@ -20,6 +20,10 @@ namespace Wobble.Graphics
         /// </summary>
         public RenderTargetOptions RenderTargetOptions { get; } = new RenderTargetOptions();
 
+        protected override RectangleF ChildDrawRectangleMask =>
+            RenderTargetOptions.RenderTarget.Value?.Bounds 
+            ?? base.ChildDrawRectangleMask;
+
         /// <summary>
         ///     A projection sprite that has the same dimension, position, rotation and parent as the container.
         ///     It shows <see cref="RenderTarget"/>, which the container can render its entire content to
