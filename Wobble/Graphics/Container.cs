@@ -65,6 +65,8 @@ namespace Wobble.Graphics
 
         public override void Draw(GameTime gameTime)
         {
+            if (Parent == null)
+                DefaultProjectionSprite?.Draw(gameTime);
             if (RenderTargetOptions.RenderTarget.Value != null)
                 GameBase.Game.ScheduledRenderTargetDraws.Add(DrawToRenderTarget);
             else
