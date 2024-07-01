@@ -54,13 +54,28 @@ namespace Wobble.Graphics.Sprites
             if (_boundProjectionContainerSource.RenderTargetOptions.RenderTarget?.Value == null)
                 _boundProjectionContainerSource.CastToRenderTarget();
 
-            Image = container.RenderTargetOptions.RenderTarget.Value;
+            SetRenderTarget(_boundProjectionContainerSource.RenderTargetOptions.RenderTarget?.Value);
             container.RenderTargetOptions.RenderTarget.ValueChanged += OnRenderTargetChange;
         }
 
         private void OnRenderTargetChange(object sender, BindableValueChangedEventArgs<RenderTarget2D> target2D)
         {
-            Image = target2D.Value;
+            SetRenderTarget(target2D.Value);
+        }
+
+        private void SetRenderTarget(RenderTarget2D renderTarget2D)
+        {
+            Image = renderTarget2D;
+            UpdateShaderSizeParameter();
+        }
+
+        public void UpdateShaderSizeParameter()
+        {
+            var size = (Image?.Bounds.Size ?? new Point(1, 1)).ToVector2();
+            SpriteBatchOptions?.Shader?.TrySetParameter("p_rendertarget_uvtosize", size, true);
+            size.X = 1 / size.X;
+            size.Y = 1 / size.Y;
+            SpriteBatchOptions?.Shader?.TrySetParameter("p_rendertarget_sizetouv", size, true);
         }
     }
 }
