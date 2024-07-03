@@ -12,15 +12,15 @@ namespace Wobble.Graphics
         /// </summary>
         /// <param name="scale">The value (percentage) which the object will be aligned to (0=min, 0.5 =mid, 1.0 = max)</param>
         /// <param name="objectSize">The size of the object</param>
-        /// <param name="boundaryX"></param>
-        /// <param name="boundaryY"></param>
+        /// <param name="boundaryLeft"></param>
+        /// <param name="boundaryRight"></param>
         /// <param name="offset"></param>
         /// <param name="relative"></param>
         /// <returns></returns>
-        public static float Align(float scale, float objectSize, float boundaryX, float boundaryY, float offset = 0, bool relative = false)
+        public static float Align(float scale, float objectSize, float boundaryLeft, float boundaryRight, float offset = 0, bool relative = false)
         {
-            var res = (Math.Abs(boundaryX - boundaryY) - objectSize) * scale + offset;
-            return relative ? res : Math.Min(boundaryX, boundaryY) + res;
+            var res = (boundaryRight - boundaryLeft - objectSize) * scale + offset;
+            return relative ? res : boundaryLeft + res;
         }
 
         /// <summary>
@@ -83,10 +83,9 @@ namespace Wobble.Graphics
                 objectRect.Width, objectRect.Height);
         }
 
-        public static RectangleF Transform(RectangleF objectRect, Matrix2D matrix)
+        public static RectangleF Transform(RectangleF objectRect, Matrix2D matrix, Vector2 scale)
         {
             var resultPosition = matrix.Transform(objectRect.Position);
-            var scale = matrix.Scale;
             var resultSize = new Size2(objectRect.Width * scale.X, objectRect.Height * scale.Y);
             return new RectangleF(resultPosition, resultSize);
         }

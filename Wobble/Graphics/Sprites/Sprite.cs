@@ -53,8 +53,21 @@ namespace Wobble.Graphics.Sprites
 
         /// <summary>
         ///     The XNA SpriteEffects the sprite will have.
+        ///     When the sprite is negatively scaled on some axis, it will be flipped over that axis too.
         /// </summary>
-        public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
+        public SpriteEffects SpriteEffect
+        {
+            get
+            {
+                var spriteEffects = _spriteEffect;
+                if (ScreenRectangle.Width < 0)
+                    spriteEffects ^= SpriteEffects.FlipHorizontally;
+                if (ScreenRectangle.Height < 0)
+                    spriteEffects ^= SpriteEffects.FlipVertically;
+                return spriteEffects;
+            }
+            set => _spriteEffect = value;
+        }
 
         /// <summary>
         ///     The origin of this object used for rotation.
@@ -108,6 +121,7 @@ namespace Wobble.Graphics.Sprites
         }
 
         private bool _independentRotation;
+        private SpriteEffects _spriteEffect = SpriteEffects.None;
 
         /// <summary>
         ///     If true, the rotation of sprite shown on screen will be independent of its parent.
@@ -248,7 +262,25 @@ namespace Wobble.Graphics.Sprites
             if (Image == null)
                 return;
 
-            Origin = Pivot * Image.Bounds.Size.ToVector2();
+            var pivot = Pivot;
+            var screenRectangleSize = ScreenRectangle.Size;
+
+            // It seems like it's impossible to render textures with one of the axis flipped,
+            // so we need manual adjustments: flip the image back so its size is always positive,
+            // and flip the pivot correspondingly
+            if (screenRectangleSize.Width < 0)
+            {
+                pivot.X = 1 - pivot.X;
+                screenRectangleSize.Width = -screenRectangleSize.Width;
+            }
+
+            if (screenRectangleSize.Height < 0)
+            {
+                pivot.Y = 1 - pivot.Y;
+                screenRectangleSize.Height = -screenRectangleSize.Height;
+            }
+
+            Origin = pivot * Image.Bounds.Size.ToVector2();
 
             // The render rectangle's position will rotate around the screen rectangle's position
             var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);
@@ -256,7 +288,7 @@ namespace Wobble.Graphics.Sprites
             // Update the render rectangle
             RenderRectangle = new RectangleF(
                 ScreenRectangle.Position + rotatedScreenOrigin,
-                ScreenRectangle.Size);
+                screenRectangleSize);
 
             SpriteRotation = IndependentRotation ? Rotation : AbsoluteRotation;
         }

@@ -14,7 +14,25 @@ namespace Wobble.Graphics.Sprites
             if (Image == null || _boundProjectionContainerSource == null)
                 return;
 
-            Origin = Pivot * _boundProjectionContainerSource.RenderTargetOptions.ContainerRectangleSize.ToVector2()
+            var pivot = Pivot;
+            var screenRectangleSize = ScreenRectangle.Size;
+
+            // It seems like it's impossible to render textures with one of the axis flipped,
+            // so we need manual adjustments: flip the image back so its size is always positive,
+            // and flip the pivot correspondingly
+            if (screenRectangleSize.Width < 0)
+            {
+                pivot.X = 1 - pivot.X;
+                screenRectangleSize.Width = -screenRectangleSize.Width;
+            }
+
+            if (screenRectangleSize.Height < 0)
+            {
+                pivot.Y = 1 - pivot.Y;
+                screenRectangleSize.Height = -screenRectangleSize.Height;
+            }
+
+            Origin = pivot * _boundProjectionContainerSource.RenderTargetOptions.ContainerRectangleSize.ToVector2()
                      + _boundProjectionContainerSource.RenderTargetOptions.RenderOffset;
 
             // The render rectangle's position will rotate around the screen rectangle's position
@@ -25,7 +43,7 @@ namespace Wobble.Graphics.Sprites
             // Update the render rectangle
             RenderRectangle = new RectangleF(
                 ScreenRectangle.Position + rotatedScreenOrigin,
-                ScreenRectangle.Size *
+                screenRectangleSize *
                 _boundProjectionContainerSource.RenderTargetOptions.RenderRectangle.Size.ToVector2() /
                 _boundProjectionContainerSource.RenderTargetOptions.ContainerRectangleSize.ToVector2());
 

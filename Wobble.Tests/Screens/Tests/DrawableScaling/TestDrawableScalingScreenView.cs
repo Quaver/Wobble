@@ -40,8 +40,8 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
             {
                 _scale = value;
                 GreenBox.Scale = value;
-                Mid.Scale = value;
-                BottomRight.Scale = value;
+                // Mid.Scale = value;
+                // BottomRight.Scale = value;
                 DebugText.ScheduleUpdate(() => DebugText.Text = $"Scale: {value}");
             }
         }
@@ -93,7 +93,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
                 Alignment = Alignment.MidCenter,
             };
 
-            SpriteText = new SpriteText("exo2-bold", "AAA", 20)
+            SpriteText = new SpriteText("exo2-bold", "ABC", 20)
             {
                 Parent = BottomRight,
                 Size = new ScalableVector2(50, 50),
@@ -125,14 +125,26 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
         {
             Container?.Update(gameTime);
 
-            if (KeyboardManager.IsUniqueKeyPress(Keys.OemCloseBrackets))
-                Scale *= 2;
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Up))
+                Scale += new Vector2(0, 0.25f);
 
-            if (KeyboardManager.IsUniqueKeyPress(Keys.OemOpenBrackets))
-                Scale /= 2;
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
+                Scale += new Vector2(0.25f, 0);
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Down))
+                Scale -= new Vector2(0, 0.25f);
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.Left))
+                Scale -= new Vector2(0.25f, 0);
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.R))
                 _rotating = !_rotating;
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.OemCloseBrackets))
+                GreenBox.Rotation += MathF.PI / 2;
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.OemOpenBrackets))
+                GreenBox.Rotation -= MathF.PI / 2;
 
             if (_rotating)
                 GreenBox.Rotation += 0.0001f;

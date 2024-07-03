@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
 using Wobble.Logging;
 using Wobble.Window;
@@ -328,13 +326,13 @@ namespace Wobble.Graphics
 
             // Move so the origin is at RelativeOrigin, rotate, then move back
             ChildRelativeTransform = Matrix2D.CreateTranslation(-relativeOrigin)
+                                     * Matrix2D.CreateScale(Scale)
                                      * Matrix2D.CreateRotationZ(Rotation)
-                                     * Matrix2D.CreateTranslation(relativeOrigin);
+                                     * Matrix2D.CreateTranslation(relativeOrigin * Scale);
 
             // Rotate relative coordinates first, then add our own relative position
             // Finally, apply our parent's transformation
             ChildPositionTransform = ChildRelativeTransform
-                                     * Matrix2D.CreateScale(Scale)
                                      * Matrix2D.CreateTranslation(_scaledAlignedRelativeRectangle.Position)
                                      * (Parent?.ChildPositionTransform ?? Matrix2D.Identity);
         }
@@ -611,7 +609,7 @@ namespace Wobble.Graphics
             {
                 AlignedRelativeRectangle =
                     GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.RelativeRectangle, true);
-                ScreenRectangle = GraphicsHelper.Transform(_scaledAlignedRelativeRectangle, Parent.ChildPositionTransform);
+                ScreenRectangle = GraphicsHelper.Transform(_scaledAlignedRelativeRectangle, Parent.ChildPositionTransform, Parent.AbsoluteScale);
             }
             // Make it relative to the screen size.
             else
