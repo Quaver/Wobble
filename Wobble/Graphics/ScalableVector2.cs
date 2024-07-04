@@ -1,4 +1,6 @@
-﻿namespace Wobble.Graphics
+﻿using Wobble.Graphics.Animations;
+
+namespace Wobble.Graphics
 {
     /// <summary>
     ///     2 Dimensional ScalableVector
@@ -32,5 +34,14 @@
 
         public static ScalableVector2 operator /(ScalableVector2 lhs, float rhs)
             => new ScalableVector2(lhs.X.Value / rhs, lhs.Y.Value / rhs, lhs.X.Scale, lhs.Y.Scale);
+
+        public static ScalableVector2 Lerp(ScalableVector2 from, ScalableVector2 to, float progress)
+        {
+            var x = EasingFunctions.Linear(from.X.Value, to.X.Value, progress);
+            var y = EasingFunctions.Linear(from.Y.Value, to.Y.Value, progress);
+            var xScale = EasingFunctions.Linear(from.X.Scale, to.X.Scale, progress);
+            var yScale = EasingFunctions.Linear(from.Y.Scale, to.Y.Scale, progress);
+            return new ScalableVector2(x, y, xScale, yScale);
+        }
     }
 }
