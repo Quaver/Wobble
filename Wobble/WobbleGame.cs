@@ -78,6 +78,8 @@ namespace Wobble
         /// </summary>
         public GlobalUserInterface GlobalUserInterface { get; }
 
+        public LayerManager MainLayerManager { get; }
+
         /// <summary>
         ///     Dictates if the game is ready to set up.
         /// </summary>
@@ -127,8 +129,11 @@ namespace Wobble
                 PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8,
             };
 
+            MainLayerManager = new LayerManager();
+            MainLayerManager.Initialize();
+
             GameBase.Game = this;
-            GlobalUserInterface = new GlobalUserInterface();
+            GlobalUserInterface = new GlobalUserInterface {Layer = MainLayerManager.GlobalUILayer};
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -278,8 +283,12 @@ namespace Wobble
 
             base.Draw(gameTime);
 
+            ScreenManager.Clear();
+            MainLayerManager.DrawBackground(gameTime);
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
+            MainLayerManager.DrawDefault(gameTime);
+            MainLayerManager.DrawForeground(gameTime);
         }
 
         /// <summary>

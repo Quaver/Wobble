@@ -16,7 +16,11 @@ namespace Wobble
     {
         public Cursor Cursor { get; }
 
-        public GlobalUserInterface() => Cursor = new Cursor(WobbleAssets.WhiteBox, 40) { Parent = this };
+        public GlobalUserInterface() => Cursor = new Cursor(WobbleAssets.WhiteBox, 40)
+        {
+            Parent = this,
+            Layer = GameBase.Game.MainLayerManager.CursorLayer
+        };
 
         /// <inheritdoc />
         /// <summary>

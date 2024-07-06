@@ -20,6 +20,7 @@ using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
+using Wobble.Tests.Screens.Tests.Layering;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.RenderTarget;
 using Wobble.Tests.Screens.Tests.Rotation;
@@ -40,6 +41,7 @@ namespace Wobble.Tests.Screens.Selection
     {
         private static readonly ScalableVector2 ButtonSize = new ScalableVector2(150, 50);
         private static readonly float ButtonGap = 5;
+        public override Color ClearColor { get; } = Color.OliveDrab;
 
         /// <inheritdoc />
         /// <summary>
@@ -59,7 +61,6 @@ namespace Wobble.Tests.Screens.Selection
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            GameBase.Game.GraphicsDevice.Clear(Color.OliveDrab);
             Container?.Draw(gameTime);
 
             try
@@ -114,6 +115,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.EasingAnimations:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestEasingAnimationsScreen());
+                        break;
+                    case ScreenType.Layering:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestLayerScreen());
                         break;
                     case ScreenType.Audio:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestAudioScreen());

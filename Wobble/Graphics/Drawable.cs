@@ -39,11 +39,17 @@ namespace Wobble.Graphics
                 // of children.
                 _parent?.Children.Remove(this);
 
+                _parent = value;
+
                 // If we do end up having a non-null value for the new parent, we'll want to
                 // add this drawable to their list of children.
                 if (value != null)
                 {
                     value.Children.Add(this);
+
+                    // Derive layer from our parent
+                    if (value.SetChildrenLayer)
+                        Layer = value.Layer;
                 }
                 else if (DestroyIfParentIsNull)
                 {
@@ -51,10 +57,47 @@ namespace Wobble.Graphics
                     // destroy and dispose of the object.
                     for (var i = Children.Count - 1; i >= 0 ; i--)
                         Children[i].Destroy();
+
+                    Children.Clear();
                 }
 
-                _parent = value;
+                // When both are null, we implicitly add this to the Default layer
+                if (value == null && (Layer == null || IsDisposed))
+                    Layer = null;
+
                 RecalculateRectangles();
+            }
+        }
+
+        private Layer _layer;
+
+        /// <summary>
+        ///     Whether to set children's layer too when <see cref="Layer"/> changes
+        /// </summary>
+        public bool SetChildrenLayer { get; set; } = false;
+
+        /// <summary>
+        ///     Layer of this drawable. If null, it will be drawn over the Default layer.
+        /// </summary>
+        public Layer Layer
+        {
+            get => _layer;
+            set
+            {
+                if (_layer == value && _layer != null)
+                    return;
+
+                _layer?.RemoveDrawable(this);
+                value?.AddDrawable(this);
+                _layer = value;
+
+                if (!SetChildrenLayer)
+                    return;
+
+                foreach (var child in Children)
+                {
+                    child.Layer = value;
+                }
             }
         }
 
@@ -528,6 +571,10 @@ namespace Wobble.Graphics
                 for (var i = 0; i < Children.Count; i++)
                 {
                     var drawable = Children[i];
+
+                    if (drawable.Layer != null)
+                        continue;
+
                     drawable.Draw(gameTime);
 
                     TotalDrawn++;

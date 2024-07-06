@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Wobble.Graphics.UI.Buttons;
 
 namespace Wobble.Screens
 {
@@ -20,6 +15,8 @@ namespace Wobble.Screens
         /// </summary>
         private static Screen QueuedScreen { get; set; }
 
+        public static EventHandler<Screen> ScreenChanged;
+
         private static object LockObject { get; } = new object();
 
         /// <summary>
@@ -28,17 +25,19 @@ namespace Wobble.Screens
         /// <param name="screen"></param>
         /// <param name="switchImmediately"></param>
         public static void ChangeScreen(Screen screen, bool switchImmediately = false)
-        {;
+        {
             lock (LockObject)
             {
                 if (switchImmediately)
                 {
                     CurrentScreen?.Destroy();
+                    ScreenChanged?.Invoke(null, screen);
                     CurrentScreen = screen;
                     QueuedScreen = null;
                     return;
                 }
 
+                QueuedScreen?.Destroy();
                 QueuedScreen = screen;
             }
         }
@@ -55,10 +54,17 @@ namespace Wobble.Screens
                 return;
 
             // Switch to queued screen after last update.
-            CurrentScreen?.Destroy();
-            CurrentScreen = QueuedScreen;
-            QueuedScreen = null;
+            lock (LockObject)
+            {
+                ScreenChanged?.Invoke(null, QueuedScreen);
+
+                CurrentScreen?.Destroy();
+                CurrentScreen = QueuedScreen;
+                QueuedScreen = null;
+            }
         }
+
+        public static void Clear() => CurrentScreen?.Clear();
 
         /// <summary>
         ///     Draws the current screen.
