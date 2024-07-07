@@ -38,7 +38,7 @@ namespace Wobble.Screens
             if (View?.ClearColor == null)
                 return;
 
-            GameBase.Game.GraphicsDevice.Clear(View.ClearColor);
+            GameBase.Game.GraphicsDevice.Clear(View.ClearColor.Value);
         }
 
         /// <inheritdoc />

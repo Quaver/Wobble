@@ -22,7 +22,7 @@ namespace Wobble.Screens
         /// <summary>
         ///     The color to clear
         /// </summary>
-        public virtual Color ClearColor { get; } = Color.Black;
+        public virtual Color? ClearColor { get; } = null;
 
         /// <summary>
         ///     Ctor

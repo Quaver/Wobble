@@ -41,7 +41,7 @@ namespace Wobble.Tests.Screens.Selection
     {
         private static readonly ScalableVector2 ButtonSize = new ScalableVector2(150, 50);
         private static readonly float ButtonGap = 5;
-        public override Color ClearColor { get; } = Color.OliveDrab;
+        public override Color? ClearColor { get; } = Color.OliveDrab;
 
         /// <inheritdoc />
         /// <summary>

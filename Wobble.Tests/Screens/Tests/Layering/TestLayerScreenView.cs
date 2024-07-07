@@ -27,7 +27,7 @@ namespace Wobble.Tests.Screens.Tests.Layering
         /// <summary>
         ///     The background color for the scene.
         /// </summary>
-        public override Color ClearColor { get; } = Color.CornflowerBlue;
+        public override Color? ClearColor { get; } = Color.CornflowerBlue;
 
 
         /// <inheritdoc />
