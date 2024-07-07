@@ -78,7 +78,7 @@ namespace Wobble
         /// </summary>
         public GlobalUserInterface GlobalUserInterface { get; }
 
-        public LayerManager MainLayerManager { get; }
+        public GlobalLayerManager MainLayerManager { get; }
 
         /// <summary>
         ///     Dictates if the game is ready to set up.
@@ -129,7 +129,7 @@ namespace Wobble
                 PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8,
             };
 
-            MainLayerManager = new LayerManager();
+            MainLayerManager = new GlobalLayerManager();
             MainLayerManager.Initialize();
 
             GameBase.Game = this;

@@ -15,8 +15,6 @@ namespace Wobble.Screens
         /// </summary>
         private static Screen QueuedScreen { get; set; }
 
-        public static EventHandler<Screen> ScreenChanged;
-
         private static object LockObject { get; } = new object();
 
         /// <summary>
@@ -31,7 +29,6 @@ namespace Wobble.Screens
                 if (switchImmediately)
                 {
                     CurrentScreen?.Destroy();
-                    ScreenChanged?.Invoke(null, screen);
                     CurrentScreen = screen;
                     QueuedScreen = null;
                     return;
@@ -56,8 +53,6 @@ namespace Wobble.Screens
             // Switch to queued screen after last update.
             lock (LockObject)
             {
-                ScreenChanged?.Invoke(null, QueuedScreen);
-
                 CurrentScreen?.Destroy();
                 CurrentScreen = QueuedScreen;
                 QueuedScreen = null;

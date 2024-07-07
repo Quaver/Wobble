@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Wobble.Logging;
-using Wobble.Screens;
 
 namespace Wobble.Graphics
 {
@@ -14,12 +13,6 @@ namespace Wobble.Graphics
         ///     Unique identifier of the layer
         /// </summary>
         public string Name { get; }
-
-        /// <summary>
-        ///     The condition at which the layer should persist upon screen changes.
-        ///     If the predicate returns false, the layer will be removed.
-        /// </summary>
-        public Predicate<Screen> ShouldPersistIn { get; set; }
 
         public LayerFlags LayerFlags { get; set; } = LayerFlags.None;
 
@@ -36,10 +29,9 @@ namespace Wobble.Graphics
         private readonly List<Drawable> _drawables = new List<Drawable>();
         private readonly LayerManager _layerManager;
 
-        internal Layer(string name, LayerManager layerManager, Predicate<Screen> shouldPersistIn)
+        internal Layer(string name, LayerManager layerManager)
         {
             _layerManager = layerManager;
-            ShouldPersistIn = shouldPersistIn;
             Name = name;
         }
 

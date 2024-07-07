@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Logging;
 using Wobble.Screens;
@@ -14,34 +15,9 @@ namespace Wobble.Graphics
         public Layer TopLayer { get; private set; }
 
         /// <summary>
-        ///     Layer to draw the cursor
-        /// </summary>
-        public Layer CursorLayer { get; private set; }
-
-        /// <summary>
-        ///     Global UI layer
-        /// </summary>
-        public Layer GlobalUILayer { get; private set; }
-
-        /// <summary>
-        ///     Layer to draw dialogs
-        /// </summary>
-        public Layer DialogLayer { get; private set; }
-
-        /// <summary>
-        ///     UI layer of the current screen
-        /// </summary>
-        public Layer UILayer { get; private set; }
-
-        /// <summary>
         ///     Default layer 
         /// </summary>
         public Layer DefaultLayer { get; private set; }
-
-        /// <summary>
-        ///     Layer to draw background images
-        /// </summary>
-        public Layer BackgroundLayer { get; private set; }
 
         /// <summary>
         ///     Bottom-most layer that should contain NO children
@@ -59,19 +35,18 @@ namespace Wobble.Graphics
 
         private int _defaultLayerIndex;
 
+        protected virtual void InitializeLayers()
+        {
+        }
+
         /// <summary>
         ///     Sets up basic layers, including topmost and bottom-most layer.
         /// </summary>
         public void Initialize()
         {
-            DefaultLayer = NewGlobalLayer("Default");
             TopLayer = NewGlobalLayer("Top");
-            GlobalUILayer = NewGlobalLayer("GlobalUI");
-            DialogLayer = NewGlobalLayer("Dialog");
-            UILayer = NewGlobalLayer("UI");
-            CursorLayer = NewGlobalLayer("Cursor");
-            BackgroundLayer = NewGlobalLayer("Background");
             BottomLayer = NewGlobalLayer("Bottom");
+            DefaultLayer = NewGlobalLayer("Default");
 
             TopLayer.LayerFlags = LayerFlags.Top | LayerFlags.NoChildren;
             BottomLayer.LayerFlags = LayerFlags.Bottom | LayerFlags.NoChildren;
@@ -79,18 +54,13 @@ namespace Wobble.Graphics
             RequireOrder(new[]
             {
                 TopLayer,
-                CursorLayer,
-                GlobalUILayer,
-                DialogLayer,
-                UILayer,
                 DefaultLayer,
-                BackgroundLayer,
                 BottomLayer
             });
 
-            RecalculateZValues();
+            InitializeLayers();
 
-            ScreenManager.ScreenChanged += ScreenChanged;
+            RecalculateZValues();
         }
 
         /// <summary>
@@ -102,7 +72,7 @@ namespace Wobble.Graphics
         {
             if (_layers.TryGetValue(name, out var layer))
                 return layer;
-            layer = new Layer(name, this, _ => true);
+            layer = new Layer(name, this);
             _layers.TryAdd(name, layer);
             return layer;
         }
@@ -117,7 +87,7 @@ namespace Wobble.Graphics
         {
             if (_layers.TryGetValue(name, out var layer))
                 return layer;
-            layer = new Layer(name, this, s => s == screen);
+            layer = new Layer(name, this);
             _layers.TryAdd(name, layer);
             return layer;
         }
@@ -149,21 +119,6 @@ namespace Wobble.Graphics
             for (var i = 0; i < layersTopToBottom.Count - 1; i++)
             {
                 layersTopToBottom[i].RequireAbove(layersTopToBottom[i + 1]);
-            }
-        }
-
-        private void ScreenChanged(object sender, Screen screen)
-        {
-            var layersToRemove = new HashSet<Layer>();
-            foreach (var layer in _layers.Values)
-            {
-                if (!layer.ShouldPersistIn(screen))
-                    layersToRemove.Add(layer);
-            }
-
-            foreach (var layer in layersToRemove)
-            {
-                RemoveLayer(layer);
             }
         }
 
@@ -260,9 +215,22 @@ namespace Wobble.Graphics
             }
         }
 
+        public void Destroy()
+        {
+            _defaultLayerIndex = -1;
+            var layersToDestroy = _layers.Values.ToList();
+            foreach (var layer in layersToDestroy)
+            {
+                layer.Destroy();
+            }
+
+            _sortedLayers.Clear();
+            _layers.Clear();
+        }
+
         ~LayerManager()
         {
-            ScreenManager.ScreenChanged -= ScreenChanged;
+            Destroy();
         }
     }
 }
