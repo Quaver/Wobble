@@ -289,6 +289,7 @@ namespace Wobble
             ScreenManager.Draw(gameTime);
             MainLayerManager.DrawDefault(gameTime);
             MainLayerManager.DrawForeground(gameTime);
+            TryEndBatch();
         }
 
         /// <summary>
