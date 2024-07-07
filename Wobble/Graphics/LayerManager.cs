@@ -24,6 +24,11 @@ namespace Wobble.Graphics
         public Layer GlobalUILayer { get; private set; }
 
         /// <summary>
+        ///     Layer to draw dialogs
+        /// </summary>
+        public Layer DialogLayer { get; private set; }
+
+        /// <summary>
         ///     UI layer of the current screen
         /// </summary>
         public Layer UILayer { get; private set; }
@@ -62,6 +67,7 @@ namespace Wobble.Graphics
             DefaultLayer = NewGlobalLayer("Default");
             TopLayer = NewGlobalLayer("Top");
             GlobalUILayer = NewGlobalLayer("GlobalUI");
+            DialogLayer = NewGlobalLayer("Dialog");
             UILayer = NewGlobalLayer("UI");
             CursorLayer = NewGlobalLayer("Cursor");
             BackgroundLayer = NewGlobalLayer("Background");
@@ -75,6 +81,7 @@ namespace Wobble.Graphics
                 TopLayer,
                 CursorLayer,
                 GlobalUILayer,
+                DialogLayer,
                 UILayer,
                 DefaultLayer,
                 BackgroundLayer,
