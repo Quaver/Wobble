@@ -31,11 +31,11 @@ namespace Wobble.Graphics
 
         protected override void InitializeLayers()
         {
-            GlobalUILayer = NewGlobalLayer("GlobalUI");
-            DialogLayer = NewGlobalLayer("Dialog");
-            UILayer = NewGlobalLayer("UI");
-            CursorLayer = NewGlobalLayer("Cursor");
-            BackgroundLayer = NewGlobalLayer("Background");
+            GlobalUILayer = NewLayer("GlobalUI");
+            DialogLayer = NewLayer("Dialog");
+            UILayer = NewLayer("UI");
+            CursorLayer = NewLayer("Cursor");
+            BackgroundLayer = NewLayer("Background");
 
             TopLayer.LayerFlags = LayerFlags.Top | LayerFlags.NoChildren;
             BottomLayer.LayerFlags = LayerFlags.Bottom | LayerFlags.NoChildren;

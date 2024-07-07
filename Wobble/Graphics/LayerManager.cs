@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Logging;
-using Wobble.Screens;
 
 namespace Wobble.Graphics
 {
@@ -44,9 +43,9 @@ namespace Wobble.Graphics
         /// </summary>
         public void Initialize()
         {
-            TopLayer = NewGlobalLayer("Top");
-            BottomLayer = NewGlobalLayer("Bottom");
-            DefaultLayer = NewGlobalLayer("Default");
+            TopLayer = NewLayer("Top");
+            BottomLayer = NewLayer("Bottom");
+            DefaultLayer = NewLayer("Default");
 
             TopLayer.LayerFlags = LayerFlags.Top | LayerFlags.NoChildren;
             BottomLayer.LayerFlags = LayerFlags.Bottom | LayerFlags.NoChildren;
@@ -64,26 +63,11 @@ namespace Wobble.Graphics
         }
 
         /// <summary>
-        ///     Creates a layer that persists among screens
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public Layer NewGlobalLayer(string name)
-        {
-            if (_layers.TryGetValue(name, out var layer))
-                return layer;
-            layer = new Layer(name, this);
-            _layers.TryAdd(name, layer);
-            return layer;
-        }
-
-        /// <summary>
         ///     Creates a layers that persists in one screen only
         /// </summary>
         /// <param name="name"></param>
-        /// <param name="screen"></param>
         /// <returns></returns>
-        public Layer NewLayer(string name, Screen screen)
+        public Layer NewLayer(string name)
         {
             if (_layers.TryGetValue(name, out var layer))
                 return layer;
