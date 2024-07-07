@@ -21,5 +21,10 @@ namespace Wobble.Graphics
         ///     No children can be attached to this layer
         /// </summary>
         NoChildren = 1 << 2,
+
+        /// <summary>
+        ///     Allows scripts to do changes to the layers, or attach drawables to it.
+        /// </summary>
+        AllowScriptManipulation = 1 << 3
     }
 }

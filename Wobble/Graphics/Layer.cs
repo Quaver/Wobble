@@ -21,7 +21,7 @@ namespace Wobble.Graphics
         /// </summary>
         public Predicate<Screen> ShouldPersistIn { get; set; }
 
-        internal LayerFlags LayerFlags { get; set; } = LayerFlags.None;
+        public LayerFlags LayerFlags { get; set; } = LayerFlags.None;
 
         /// <summary>
         ///     The layers that need to be drawn above this layer
@@ -214,9 +214,15 @@ namespace Wobble.Graphics
                 LogType.Runtime);
         }
 
-        ~Layer()
+        public void Destroy()
         {
             _drawables.Clear();
+            _layerManager?.RemoveLayer(this);
+        }
+
+        ~Layer()
+        {
+            Destroy();
         }
 
         internal struct TarjanData
