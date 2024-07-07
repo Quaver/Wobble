@@ -193,6 +193,7 @@ namespace Wobble.Graphics
                     layer.StrongConnect(ref currentIndex, ref order, stack, stronglyConnectedComponents);
             }
 
+            _defaultLayerIndex = -1;
             _sortedLayers.Clear();
             foreach (var stronglyConnectedComponent in stronglyConnectedComponents)
             {
