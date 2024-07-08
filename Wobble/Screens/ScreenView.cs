@@ -20,11 +20,6 @@ namespace Wobble.Screens
         public Container Container { get; } = new Container();
 
         /// <summary>
-        ///     The color to clear
-        /// </summary>
-        public virtual Color? ClearColor { get; } = null;
-
-        /// <summary>
         ///     Ctor
         /// </summary>
         /// <param name="screen"></param>

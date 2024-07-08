@@ -30,17 +30,6 @@ namespace Wobble.Screens
         /// <param name="gameTime"></param>
         public virtual void Draw(GameTime gameTime) => View.Draw(gameTime);
 
-        /// <summary>
-        ///     Clears the screen
-        /// </summary>
-        public void Clear()
-        {
-            if (View?.ClearColor == null)
-                return;
-
-            GameBase.Game.GraphicsDevice.Clear(View.ClearColor.Value);
-        }
-
         /// <inheritdoc />
         /// <summary>
         /// </summary>

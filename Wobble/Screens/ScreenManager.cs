@@ -59,8 +59,6 @@ namespace Wobble.Screens
             }
         }
 
-        public static void Clear() => CurrentScreen?.Clear();
-
         /// <summary>
         ///     Draws the current screen.
         /// </summary>

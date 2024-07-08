@@ -28,13 +28,13 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
             get => MainComponentSprite.Rotation;
             set
             {
-                MainComponentSprite.Rotation = value;
+                MainComponentSprite.Rotation = -value;
                 CustomProjectionSprite.Rotation = value;
-                if (RenderTargetContainer.DefaultProjectionSprite != null)
-                {
-                    SupposedMainCaptureRegion.Rotation = value;
-                    RenderTargetContainer.DefaultProjectionSprite.Rotation = value;
-                }
+                // if (RenderTargetContainer.DefaultProjectionSprite != null)
+                // {
+                //     SupposedMainCaptureRegion.Rotation = value;
+                //     RenderTargetContainer.DefaultProjectionSprite.Rotation = value;
+                // }
             }
         }
 
@@ -44,12 +44,12 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
             set
             {
                 MainComponentSprite.Scale = value;
-                CustomProjectionSprite.Scale = value;
-                if (RenderTargetContainer.DefaultProjectionSprite != null)
-                {
-                    SupposedMainCaptureRegion.Scale = value;
-                    RenderTargetContainer.DefaultProjectionSprite.Scale = value;
-                }
+                // CustomProjectionSprite.Scale = value;
+                // if (RenderTargetContainer.DefaultProjectionSprite != null)
+                // {
+                //     SupposedMainCaptureRegion.Scale = value;
+                //     RenderTargetContainer.DefaultProjectionSprite.Scale = value;
+                // }
             }
         }
 
@@ -117,7 +117,7 @@ namespace Wobble.Tests.Screens.Tests.RenderTarget
         public override void Update(GameTime gameTime)
         {
             Rotation = ((float)gameTime.TotalGameTime.TotalSeconds * 0.5f) % (2 * MathF.PI);
-            Scale = Vector2.One * MathF.Pow(MathF.Sin((float)gameTime.TotalGameTime.TotalSeconds), 2);
+            Scale = Vector2.One * MathF.Pow(MathF.Sin((float)gameTime.TotalGameTime.TotalSeconds), 1);
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.C))
             {

@@ -59,13 +59,18 @@ namespace Wobble.Graphics.UI.Dialogs
                 DialogsToBeAdded.ForEach(x =>
                 {
                     Dialogs.Add(x);
-                    x.Layer = GameBase.Game.MainLayerManager.DialogLayer;
                     x.Update(gameTime);
                 });
 
                 DialogsToBeAdded = new List<DialogScreen>();
             }
         }
+
+        /// <summary>
+        ///     Draws the current dialogScreen.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public static void Draw(GameTime gameTime) => Dialogs.ForEach(x => x.Draw(gameTime));
 
         /// <summary>
         ///     Shows a dialogScreen on the screen.

@@ -41,7 +41,6 @@ namespace Wobble.Tests.Screens.Selection
     {
         private static readonly ScalableVector2 ButtonSize = new ScalableVector2(150, 50);
         private static readonly float ButtonGap = 5;
-        public override Color? ClearColor { get; } = Color.OliveDrab;
 
         /// <inheritdoc />
         /// <summary>
@@ -61,6 +60,7 @@ namespace Wobble.Tests.Screens.Selection
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
+            GameBase.Game.GraphicsDevice.Clear(Color.OliveDrab);
             Container?.Draw(gameTime);
 
             try

@@ -18,17 +18,11 @@ namespace Wobble.Tests.Screens.Tests.Layering
 
         private readonly List<Sprite> _sprites = new();
 
-        private Sprite GlobalUISprite { get; set; }
+        private readonly LayeredContainer _layeredContainer;
 
         private Sprite DefaultLayerSprite { get; set; }
 
         private Sprite NullLayerSprite { get; set; }
-
-        /// <summary>
-        ///     The background color for the scene.
-        /// </summary>
-        public override Color? ClearColor { get; } = Color.CornflowerBlue;
-
 
         /// <inheritdoc />
         /// <summary>
@@ -36,15 +30,15 @@ namespace Wobble.Tests.Screens.Tests.Layering
         /// <param name="screen"></param>
         public TestLayerScreenView(Screen screen) : base(screen)
         {
-            var layerManager = GameBase.Game.MainLayerManager;
+            _layeredContainer = new LayeredContainer { Parent = Container };
             for (var i = 0; i < 5; i++)
             {
-                _layers.Add(layerManager.NewLayer($"Layer {i}", screen));
+                _layers.Add(_layeredContainer.LayerManager.NewLayer($"Layer {i}"));
             }
 
-            // desired layer order: default -> 0 -> 1 -> 2 -> 3 -> 4 -> UI
-            _layers[4].RequireBelow(layerManager.UILayer);
-            _layers[0].RequireAbove(layerManager.DefaultLayer);
+            // desired layer order: default -> 0 -> 1 -> 2 -> 3 -> 4 -> Top
+            _layers[4].RequireBelow(_layeredContainer.LayerManager.TopLayer);
+            _layers[0].RequireAbove(_layeredContainer.LayerManager.DefaultLayer);
 
             _layers[3].RequireAbove(_layers[2]);
             _layers[2].RequireAbove(_layers[0]);
@@ -63,7 +57,7 @@ namespace Wobble.Tests.Screens.Tests.Layering
                 var sprite = new Sprite
                 {
                     Size = new ScalableVector2(size, size),
-                    Parent = Container,
+                    Parent = _layeredContainer,
                     Tint = new Color(tint, tint, tint, 1),
                     Layer = _layers[i]
                 };
@@ -76,22 +70,13 @@ namespace Wobble.Tests.Screens.Tests.Layering
                 };
             }
 
-            GlobalUISprite = new Sprite
-            {
-                Parent = Container,
-                Size = new ScalableVector2(0, 50, 1, 0),
-                Alignment = Alignment.TopCenter,
-                Tint = Color.Gray,
-                Layer = layerManager.UILayer
-            };
-
             DefaultLayerSprite = new Sprite
             {
-                Parent = Container,
+                Parent = _layeredContainer,
                 Size = new ScalableVector2(200, 200),
                 Position = new ScalableVector2(450, 450),
                 Tint = Color.Green,
-                Layer = layerManager.DefaultLayer
+                Layer = _layeredContainer.LayerManager.DefaultLayer
             };
 
             NullLayerSprite = new Sprite
@@ -99,7 +84,7 @@ namespace Wobble.Tests.Screens.Tests.Layering
                 Parent = Container,
                 Size = new ScalableVector2(100, 100),
                 Position = new ScalableVector2(450, 400),
-                Tint = Color.Yellow
+                Tint = new Color(128, 128, 0, 128)
             };
         }
 
@@ -110,6 +95,8 @@ namespace Wobble.Tests.Screens.Tests.Layering
         public override void Update(GameTime gameTime)
         {
             Container?.Update(gameTime);
+            if (KeyboardManager.IsUniqueKeyPress(Keys.D))
+                _layeredContainer.LayerManager.Dump();
         }
 
         /// <inheritdoc />
@@ -118,6 +105,7 @@ namespace Wobble.Tests.Screens.Tests.Layering
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
+            GameBase.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
             Container?.Draw(gameTime);
         }
 
