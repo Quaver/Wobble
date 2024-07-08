@@ -120,8 +120,22 @@ namespace Wobble.Graphics.Sprites
             }
         }
 
+        /// <summary>
+        ///     Additional rotation applied to this sprite only, and not to its children
+        /// </summary>
+        public float SpriteRotation
+        {
+            get => _spriteRotation;
+            set
+            {
+                _spriteRotation = value;
+                SpriteOverallRotation = _spriteRotation + (IndependentRotation ? Rotation : AbsoluteRotation);
+            }
+        }
+
         private bool _independentRotation;
         private SpriteEffects _spriteEffect = SpriteEffects.None;
+        private float _spriteRotation;
 
         /// <summary>
         ///     If true, the rotation of sprite shown on screen will be independent of its parent.
@@ -132,7 +146,7 @@ namespace Wobble.Graphics.Sprites
             set
             {
                 _independentRotation = value;
-                SpriteRotation = value ? Rotation : AbsoluteRotation;
+                SpriteRotation = SpriteRotation;
             }
         }
 
@@ -140,7 +154,7 @@ namespace Wobble.Graphics.Sprites
         ///     Actual rotation of sprite shown on screen.
         ///     It is decided by <see cref="IndependentRotation"/> and parent's <see cref="Drawable.AbsoluteRotation"/>
         /// </summary>
-        public float SpriteRotation { get; protected set; }
+        public float SpriteOverallRotation { get; protected set; }
 
         /// <summary>
         ///     Dictates if we want to set the alpha of the children as well.
@@ -242,7 +256,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, SpriteRotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, SpriteOverallRotation, Origin, SpriteEffect, 0f);
         }
 
         /// <inheritdoc />
@@ -290,7 +304,7 @@ namespace Wobble.Graphics.Sprites
                 ScreenRectangle.Position + rotatedScreenOrigin,
                 screenRectangleSize);
 
-            SpriteRotation = IndependentRotation ? Rotation : AbsoluteRotation;
+            SpriteRotation = SpriteRotation;
         }
 
         /// <summary>

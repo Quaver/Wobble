@@ -47,7 +47,7 @@ namespace Wobble.Graphics.Sprites
                 _boundProjectionContainerSource.RenderTargetOptions.RenderRectangle.Size.ToVector2() /
                 _boundProjectionContainerSource.RenderTargetOptions.ContainerRectangleSize.ToVector2());
 
-            SpriteRotation = IndependentRotation ? Rotation : AbsoluteRotation;
+            SpriteRotation = SpriteRotation;
         }
 
         public override void Destroy()
