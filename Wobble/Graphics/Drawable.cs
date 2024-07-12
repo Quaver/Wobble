@@ -38,6 +38,11 @@ namespace Wobble.Graphics
         public int DrawOrder { get; set; }
 
         /// <summary>
+        ///     A faster way of null checking render target options
+        /// </summary>
+        private bool _isCasting;
+
+        /// <summary>
         ///     The parent of this drawable in which it depends on for its position and size.
         /// </summary>
         private Drawable _parent;
@@ -377,7 +382,7 @@ namespace Wobble.Graphics
 
         protected virtual void RecalculateTransformMatrix()
         {
-            if (RenderTargetOptions.RenderTarget.Value != null)
+            if (_isCasting)
             {
                 // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
                 // scaled, so we should scale them back.
@@ -616,12 +621,15 @@ namespace Wobble.Graphics
 
         public void WrappedDraw(GameTime gameTime)
         {
+            if (!_isCasting)
+            {
+                Draw(gameTime);
+                return;
+            }
+
             if (Parent == null)
                 DefaultProjectionSprite?.Draw(gameTime);
-            if (RenderTargetOptions.RenderTarget.Value != null)
-                GameBase.Game.ScheduledRenderTargetDraws.Add(DrawToRenderTarget);
-            else
-                Draw(gameTime);
+            GameBase.Game.ScheduledRenderTargetDraws.Add(DrawToRenderTarget);
         }
 
 
@@ -637,6 +645,7 @@ namespace Wobble.Graphics
         /// <param name="projectDefault">Whether a sprite will be spawned to show the container as normal</param>
         public void CastToRenderTarget(bool projectDefault = true)
         {
+            _isCasting = true;
             RenderTargetOptions.ContainerRectangleSize =
                 new Point((int)RelativeRectangle.Size.Width, (int)RelativeRectangle.Size.Height);
             RenderTargetOptions.Enabled = true;
@@ -660,6 +669,7 @@ namespace Wobble.Graphics
 
         public void StopCasting()
         {
+            _isCasting = false;
             DefaultProjectionSprite?.Destroy();
             RenderTargetOptions.Enabled = false;
             DefaultProjectionSprite = null;
@@ -712,7 +722,7 @@ namespace Wobble.Graphics
         /// </summary>
         protected void RecalculateRectangles()
         {
-            if (RenderTargetOptions.RenderTarget.Value != null)
+            if (_isCasting)
             {
                 AbsoluteRotation = 0;
                 AbsoluteScale = RenderTargetOptions.Scale;
@@ -819,7 +829,7 @@ namespace Wobble.Graphics
 
         private void DrawToRenderTarget(GameTime gameTime)
         {
-            if (RenderTargetOptions.RenderTarget.Value == null)
+            if (!_isCasting)
                 return;
 
             GameBase.Game.TryEndBatch();
