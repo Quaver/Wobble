@@ -7,7 +7,7 @@ namespace Wobble.Graphics.Sprites
 {
     public class RenderProjectionSprite : Sprite
     {
-        private Container _boundProjectionContainerSource;
+        private Drawable _boundProjectionContainerSource;
 
         protected override void OnRectangleRecalculated()
         {
@@ -62,7 +62,7 @@ namespace Wobble.Graphics.Sprites
         ///     If the container is not drawing to render target, it will automatically do so
         /// </summary>
         /// <param name="container">The container to project its drawing from</param>
-        public void BindProjectionContainer(Container container)
+        public void BindProjectionContainer(Drawable container)
         {
             if (_boundProjectionContainerSource != null)
                 _boundProjectionContainerSource.RenderTargetOptions.RenderTarget.ValueChanged -= OnRenderTargetChange;

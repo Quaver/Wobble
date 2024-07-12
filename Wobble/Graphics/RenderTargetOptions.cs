@@ -97,14 +97,17 @@ namespace Wobble.Graphics
         /// </summary>
         public Color BackgroundColor { get; set; } = Color.Transparent;
 
+        // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
+        // scaled, so we should scale them back.
+        public Vector2 Scale { get; private set; }
+
         public void RecalculateTransformMatrix()
         {
+            Scale = new Vector2(1 / WindowManager.ScreenScale.X, 1 / WindowManager.ScreenScale.Y);
             RenderOffset = -_renderRectangle.Location.ToVector2();
-            // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
-            // scaled, so we should scale them back.
             TransformMatrix =
                 Matrix2D.CreateTranslation(RenderOffset)
-                * Matrix2D.CreateScale(new Vector2(1 / WindowManager.ScreenScale.X, 1 / WindowManager.ScreenScale.Y));
+                * Matrix2D.CreateScale(Scale);
         }
 
         /// <summary>
