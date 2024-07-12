@@ -195,6 +195,7 @@ namespace Wobble.Graphics
             }
         }
 
+        public event EventHandler<ScalableVector2> SizeChanged;
         /// <summary>
         ///     The size of the drawable.
         /// </summary>
@@ -209,6 +210,7 @@ namespace Wobble.Graphics
 
                 _size = new ScalableVector2(width, height, value.X.Scale, value.Y.Scale);
                 Pivot = Pivot;
+                SizeChanged?.Invoke(this, value);
                 RecalculateRectangles();
             }
         }

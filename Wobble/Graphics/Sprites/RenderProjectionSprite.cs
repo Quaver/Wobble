@@ -54,7 +54,10 @@ namespace Wobble.Graphics.Sprites
         {
             base.Destroy();
             if (_boundProjectionContainerSource != null)
+            {
                 _boundProjectionContainerSource.RenderTargetOptions.RenderTarget.ValueChanged -= OnRenderTargetChange;
+                _boundProjectionContainerSource.SizeChanged -= ContainerSizeChanged;
+            }
         }
 
         /// <summary>
@@ -74,6 +77,12 @@ namespace Wobble.Graphics.Sprites
 
             SetRenderTarget(_boundProjectionContainerSource.RenderTargetOptions.RenderTarget?.Value);
             container.RenderTargetOptions.RenderTarget.ValueChanged += OnRenderTargetChange;
+            container.SizeChanged += ContainerSizeChanged;
+        }
+
+        private void ContainerSizeChanged(object sender, ScalableVector2 e)
+        {
+            UpdateShaderSizeParameter();
         }
 
         private void OnRenderTargetChange(object sender, BindableValueChangedEventArgs<RenderTarget2D> target2D)
@@ -90,10 +99,10 @@ namespace Wobble.Graphics.Sprites
         public void UpdateShaderSizeParameter()
         {
             var size = (Image?.Bounds.Size ?? new Point(1, 1)).ToVector2();
-            SpriteBatchOptions?.Shader?.TrySetParameter("p_rendertarget_uvtosize", size, true);
+            SpriteBatchOptions?.Shader?.TrySetParameter("UVToSize", size, true);
             size.X = 1 / size.X;
             size.Y = 1 / size.Y;
-            SpriteBatchOptions?.Shader?.TrySetParameter("p_rendertarget_sizetouv", size, true);
+            SpriteBatchOptions?.Shader?.TrySetParameter("SizeToUV", size, true);
         }
     }
 }
