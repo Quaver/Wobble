@@ -142,10 +142,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Clipping region for children. Useful to RenderTargets
         /// </summary>
-        protected virtual RectangleF ChildDrawRectangleMask =>
-            RenderTargetOptions.RenderTarget.Value?.Bounds
-            ?? Parent?.ChildDrawRectangleMask
-            ?? new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+        protected virtual RectangleF ChildDrawRectangleMask { get; set; }
 
         /// <summary>
         ///     The bounding box of the drawable relative to the entire screen.
@@ -713,6 +710,13 @@ namespace Wobble.Graphics
             };
         }
 
+        public void RecalculateDrawMask()
+        {
+            DrawRectangleMask = Parent?.ChildDrawRectangleMask
+                                ?? new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+            ChildDrawRectangleMask = _isCasting ? RenderTargetOptions.RenderTarget.Value.Bounds : DrawRectangleMask;
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -736,8 +740,7 @@ namespace Wobble.Graphics
                 AbsoluteScale = (Parent?.AbsoluteScale ?? Vector2.One) * Scale;
             }
 
-            DrawRectangleMask = Parent?.ChildDrawRectangleMask
-                                ?? new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+            RecalculateDrawMask();
 
             // Make it relative to the parent.
             var width = RelativeWidth;
