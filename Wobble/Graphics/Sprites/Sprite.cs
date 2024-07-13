@@ -294,7 +294,7 @@ namespace Wobble.Graphics.Sprites
                 screenRectangleSize.Height = -screenRectangleSize.Height;
             }
 
-            Origin = pivot * Image.Bounds.Size.ToVector2();
+            Origin = new Vector2(pivot.X * Image.Width, pivot.Y * Image.Height);
 
             // The render rectangle's position will rotate around the screen rectangle's position
             var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);

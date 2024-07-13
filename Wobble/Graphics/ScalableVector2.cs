@@ -10,12 +10,12 @@ namespace Wobble.Graphics
         /// <summary>
         ///    The X value
         /// </summary>
-        public ScalableVector X { get; }
+        public ScalableVector X;
 
         /// <summary>
         ///     The y value.
         /// </summary>
-        public ScalableVector Y { get; }
+        public ScalableVector Y;
 
         /// <summary>
         ///     Constructor

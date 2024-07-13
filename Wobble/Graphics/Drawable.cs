@@ -165,11 +165,21 @@ namespace Wobble.Graphics
             private set
             {
                 _alignedRelativeRectangle = value;
+                var size = new Vector2(value.Width, value.Height);
+                var position = new Vector2(value.X, value.Y);
+                var offsetFactor = Vector2.One - _scale;
+
+                // scaledPos = value.Position + Pivot * (Vector2.One - Scale) * value.Size,
+                // scaledSize = value.Size * Scale
+                Vector2.Multiply(ref _pivot, ref offsetFactor, out var intermediate);
+                Vector2.Multiply(ref intermediate, ref size, out var intermediate2);
+                Vector2.Add(ref position, ref intermediate2, out var scaledPos);
+                Vector2.Multiply(ref size, ref _scale, out var scaledSize);
+                
                 // Update _scaledAlignedRelativeRectangle
                 // So that the rectangle is scaled with its position adjusted according to the pivot and scale
-                _scaledAlignedRelativeRectangle = new RectangleF(
-                    value.Position + Pivot * (Vector2.One - Scale) * value.Size,
-                    value.Size * Scale);
+                _scaledAlignedRelativeRectangle = new RectangleF(scaledPos.X, scaledPos.Y,
+                    scaledSize.X, scaledSize.Y);
             }
         }
 
@@ -279,13 +289,13 @@ namespace Wobble.Graphics
         ///     The total width of the drawable, considering the width scale
         /// </summary>
         private float RelativeWidth =>
-            Size.X.Value + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * WidthScale;
+            _size.X.Value + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * _size.X.Scale;
 
         /// <summary>
         ///     The total height of the drawable, considering the height scale
         /// </summary>
         private float RelativeHeight =>
-            Size.Y.Value + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * HeightScale;
+            _size.Y.Value + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * _size.Y.Scale;
 
         private Vector2 _scale = Vector2.One;
 
@@ -371,13 +381,13 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
         /// </summary>
-        protected Matrix2D ChildPositionTransform { get; set; } = Matrix2D.Identity;
+        private Matrix2D _childPositionTransform = Matrix2D.Identity;
 
         /// <summary>
         ///     A transform that rotates the relative coordinates about the pivot
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the relative coordinate after rotation.
         /// </summary>
-        protected Matrix2D ChildRelativeTransform { get; set; } = Matrix2D.Identity;
+        private Matrix2D _childRelativeTransform = Matrix2D.Identity;
 
         protected virtual void RecalculateTransformMatrix()
         {
@@ -385,24 +395,27 @@ namespace Wobble.Graphics
             {
                 // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
                 // scaled, so we should scale them back.
-                ChildRelativeTransform = RenderTargetOptions.TransformMatrix;
-                ChildPositionTransform = ChildRelativeTransform;
+                _childRelativeTransform = RenderTargetOptions.TransformMatrix;
+                _childPositionTransform = _childRelativeTransform;
                 return;
             }
 
             var relativeOrigin = Pivot * new Vector2(RelativeWidth, RelativeHeight);
 
             // Move so the origin is at RelativeOrigin, rotate, then move back
-            ChildRelativeTransform = Matrix2D.CreateTranslation(-relativeOrigin)
-                                     * Matrix2D.CreateScale(Scale)
-                                     * Matrix2D.CreateRotationZ(Rotation)
-                                     * Matrix2D.CreateTranslation(relativeOrigin * Scale);
+            var shiftToOrigin = Matrix2D.CreateTranslation(-relativeOrigin);
+            var scalingMatrix = Matrix2D.CreateScale(Scale);
+            var rotationMatrix = Matrix2D.CreateRotationZ(Rotation);
+            var originBack = Matrix2D.CreateTranslation(relativeOrigin * Scale);
+            var thisTranslation = Matrix2D.CreateTranslation(_scaledAlignedRelativeRectangle.Position);
+            var parentTransform = Parent?._childPositionTransform ?? Matrix2D.Identity;
+            Matrix2D.Multiply(ref shiftToOrigin, ref scalingMatrix, out var intermediate1);
+            Matrix2D.Multiply(ref rotationMatrix, ref originBack, out var intermediate2);
+            Matrix2D.Multiply(ref thisTranslation, ref parentTransform, out var outerTransform);
 
-            // Rotate relative coordinates first, then add our own relative position
+            Matrix2D.Multiply(ref intermediate1, ref intermediate2, out _childRelativeTransform);
             // Finally, apply our parent's transformation
-            ChildPositionTransform = ChildRelativeTransform
-                                     * Matrix2D.CreateTranslation(_scaledAlignedRelativeRectangle.Position)
-                                     * (Parent?.ChildPositionTransform ?? Matrix2D.Identity);
+            Matrix2D.Multiply(ref _childRelativeTransform, ref outerTransform, out _childPositionTransform);
         }
 
         /// <summary>
@@ -754,7 +767,7 @@ namespace Wobble.Graphics
                 AlignedRelativeRectangle =
                     GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.RelativeRectangle, true);
                 ScreenRectangle = GraphicsHelper.Transform(_scaledAlignedRelativeRectangle,
-                    Parent.ChildPositionTransform, Parent.AbsoluteScale);
+                    Parent._childPositionTransform, Parent.AbsoluteScale);
             }
             // Make it relative to the screen size.
             else
@@ -791,7 +804,7 @@ namespace Wobble.Graphics
             // gives the screen bounding rect
             ScreenMinimumBoundingRectangle =
                 new RectangleF(
-                    ChildPositionTransform.Translation + relativeBoundingRectangle.Position,
+                    _childPositionTransform.Translation + relativeBoundingRectangle.Position,
                     relativeBoundingRectangle.Size);
 
             for (var i = 0; i < Children.Count; i++)

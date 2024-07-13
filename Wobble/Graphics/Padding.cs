@@ -64,5 +64,37 @@ namespace Wobble.Graphics
         /// <returns></returns>
         public Rectangle PadInwards(Rectangle sourceRectangle) =>
             new Rectangle(sourceRectangle.Location + Offset, sourceRectangle.Size - SizeIncrement);
+
+        public bool Equals(Padding other)
+        {
+            return Left == other.Left && Right == other.Right && Up == other.Up && Down == other.Down;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Padding other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Left;
+                hashCode = (hashCode * 397) ^ Right;
+                hashCode = (hashCode * 397) ^ Up;
+                hashCode = (hashCode * 397) ^ Down;
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Padding left, Padding right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Padding left, Padding right)
+        {
+            return !left.Equals(right);
+        }
     }
 }
