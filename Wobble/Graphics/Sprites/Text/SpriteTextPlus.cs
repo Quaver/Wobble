@@ -256,7 +256,6 @@ namespace Wobble.Graphics.Sprites.Text
                 lineSprite.Y = height;
                 lineSprite.UsePreviousSpriteBatchOptions = true;
                 lineSprite.Tint = Tint;
-                lineSprite.Alpha = Alpha;
 
                 width = Math.Max(width, lineSprite.Width);
 
@@ -310,7 +309,7 @@ namespace Wobble.Graphics.Sprites.Text
                 return;
 
             SetSize();
-            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _tint * Alpha);
+            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _color);
         }
 
         private void SetSize()

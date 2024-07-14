@@ -493,6 +493,60 @@ namespace Wobble.Graphics
         }
 
         /// <summary>
+        ///     The tint this QuaverSprite will inherit.
+        /// </summary>
+        private Color _tint = Color.White;
+        public Color _color = Color.White;
+        public Color Tint
+        {
+            get => _tint;
+            set
+            {
+                _tint = value;
+                _color = _tint * AbsoluteAlpha;
+            }
+        }
+
+        private float _localAlpha = 1f;
+
+        /// <summary>
+        ///     The transparency of this QuaverSprite.
+        /// </summary>
+        public float AbsoluteAlpha { get; private set; } = 1f;
+
+        public float Alpha {
+            get => _localAlpha;
+            set
+            {
+                _localAlpha = value;
+                if (_parent != null)
+                {
+                    AbsoluteAlpha = (_parent.SetChildrenAlpha ? _parent.AbsoluteAlpha : 1f) * _localAlpha;
+                }
+                else
+                {
+                    AbsoluteAlpha = _localAlpha;
+                }
+                _color = _tint * AbsoluteAlpha;
+
+                if (!SetChildrenAlpha)
+                    return;
+
+                for (var i = 0; i < Children.Count; i++)
+                {
+                    var x = Children[i];
+
+                    x.Alpha = x.Alpha;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Dictates if we want to set the alpha of the children as well.
+        /// </summary>
+        public bool SetChildrenAlpha { get; set; }
+
+        /// <summary>
         /// </summary>
         public float AnimationWaitTime { get; private set; }
 

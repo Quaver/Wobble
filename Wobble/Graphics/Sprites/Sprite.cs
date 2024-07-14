@@ -80,47 +80,6 @@ namespace Wobble.Graphics.Sprites
         public RectangleF RenderRectangle { get; set; }
 
         /// <summary>
-        ///     The tint this QuaverSprite will inherit.
-        /// </summary>
-        private Color _tint = Color.White;
-        public Color _color = Color.White;
-        public Color Tint
-        {
-            get => _tint;
-            set
-            {
-                _tint = value;
-                _color = _tint * _alpha;
-            }
-        }
-
-        /// <summary>
-        ///     The transparency of this QuaverSprite.
-        /// </summary>
-        private float _alpha = 1f;
-        public float Alpha {
-            get => _alpha;
-            set
-            {
-                _alpha = value;
-                _color = _tint * _alpha;
-
-                if (!SetChildrenAlpha)
-                    return;
-
-                for (var i = 0; i < Children.Count; i++)
-                {
-                    var x = Children[i];
-
-                    if (x is Sprite sprite)
-                    {
-                        sprite.Alpha = value;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         ///     Additional rotation applied to this sprite only, and not to its children
         /// </summary>
         public float SpriteRotation
@@ -155,11 +114,6 @@ namespace Wobble.Graphics.Sprites
         ///     It is decided by <see cref="IndependentRotation"/> and parent's <see cref="Drawable.AbsoluteRotation"/>
         /// </summary>
         public float SpriteOverallRotation { get; protected set; }
-
-        /// <summary>
-        ///     Dictates if we want to set the alpha of the children as well.
-        /// </summary>
-        public bool SetChildrenAlpha { get; set; }
 
         public override void Update(GameTime gameTime)
         {
