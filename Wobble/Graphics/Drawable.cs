@@ -529,9 +529,6 @@ namespace Wobble.Graphics
                 }
                 _color = _tint * AbsoluteAlpha;
 
-                if (!SetChildrenAlpha)
-                    return;
-
                 for (var i = 0; i < Children.Count; i++)
                 {
                     var x = Children[i];
@@ -956,14 +953,7 @@ namespace Wobble.Graphics
                             Height = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Alpha:
-                            var type = GetType();
-
-                            if (this is Sprite)
-                            {
-                                var sprite = (Sprite)this;
-                                sprite.Alpha = animation.PerformInterpolation(gameTime);
-                            }
-
+                            Alpha = animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Rotation:
                             if (this is Sprite)
@@ -976,12 +966,7 @@ namespace Wobble.Graphics
 
                             break;
                         case AnimationProperty.Color:
-                            if (this is Sprite)
-                            {
-                                var sprite = (Sprite)this;
-                                sprite.Tint = animation.PerformColorInterpolation(gameTime);
-                            }
-
+                            Tint = animation.PerformColorInterpolation(gameTime);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -1019,22 +1004,10 @@ namespace Wobble.Graphics
                                         a.Start = Rotation;
                                         break;
                                     case AnimationProperty.Alpha:
-                                        var type = GetType();
-
-                                        if (this is Sprite)
-                                        {
-                                            var sprite = (Sprite)this;
-                                            a.Start = sprite.Alpha;
-                                        }
-
+                                        a.Start = Alpha;
                                         break;
                                     case AnimationProperty.Color:
-                                        if (this is Sprite)
-                                        {
-                                            var sprite = (Sprite)this;
-                                            a.StartColor = sprite.Tint;
-                                        }
-
+                                        a.StartColor = Tint;
                                         break;
                                     default:
                                         break;

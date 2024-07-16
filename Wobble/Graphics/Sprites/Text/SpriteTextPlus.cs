@@ -68,17 +68,14 @@ namespace Wobble.Graphics.Sprites.Text
         private Color _tint = Color.White;
         public Color Tint
         {
-            get => _tint;
+            get => base.Tint;
             set
             {
-                _tint = value;
+                base.Tint = value;
 
                 Children.ForEach(x =>
                 {
-                    if (x is Sprite sprite)
-                    {
-                        sprite.Tint = value;
-                    }
+                    x.Tint = value;
                 });
             }
         }
