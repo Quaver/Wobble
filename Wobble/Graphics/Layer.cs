@@ -14,6 +14,10 @@ namespace Wobble.Graphics
         /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        ///     The special attributes of this layer, to indicate whether this is a top/bottom layer,
+        ///     whether this layer should have children, etc.
+        /// </summary>
         public LayerFlags LayerFlags { get; set; } = LayerFlags.None;
 
         /// <summary>
@@ -36,7 +40,15 @@ namespace Wobble.Graphics
         /// </summary>
         internal TarjanData LayerTarjanData;
 
+        /// <summary>
+        ///     The list of all drawables that is drawn on this layer
+        /// </summary>
         private readonly List<Drawable> drawables = new List<Drawable>();
+
+        /// <summary>
+        ///     The <see cref="LayerManager"/> this layer belongs to.
+        ///     For any operations changing constraints, the layers involved must have the same <see cref="layerManager"/>
+        /// </summary>
         private readonly LayerManager layerManager;
 
         internal Layer(string name, LayerManager layerManager)
@@ -222,6 +234,20 @@ namespace Wobble.Graphics
             return true;
         }
 
+        /// <summary>
+        ///     Clears <see cref="requiredLowerLayers"/> and <see cref="requiredUpperLayers"/>.
+        ///     This does not recalculate Z values.
+        /// </summary>
+        internal void ClearAllConstraints()
+        {
+            requiredLowerLayers.Clear();
+            requiredUpperLayers.Clear();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="drawable"></param>
+        /// <exception cref="InvalidOperationException">Layer is marked <see cref="LayerFlags.NoChildren"/></exception>
         internal void AddDrawable(Drawable drawable)
         {
             if (LayerFlags.HasFlag(LayerFlags.NoChildren))
@@ -230,6 +256,9 @@ namespace Wobble.Graphics
             drawables.Add(drawable);
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="drawable"></param>
         internal void RemoveDrawable(Drawable drawable) => drawables.Remove(drawable);
 
         public void Draw(GameTime gameTime)
@@ -297,6 +326,14 @@ namespace Wobble.Graphics
             var drawablesDump =
                 drawables.Count <= 10 ? string.Join(", ", drawables.Select(d => d.GetType().Name)) : "";
             Logger.Debug($"Layer '{Name}' ({LayerTarjanData.Order}): {drawables.Count} drawables {drawablesDump}",
+                LogType.Runtime);
+        }
+
+        public void DumpConstraints()
+        {
+            var lowerLayers = string.Join(", ", requiredLowerLayers.Select(l => l.Name));
+            var upperLayers = string.Join(", ", requiredUpperLayers.Select(l => l.Name));
+            Logger.Debug($"Layer '{Name}' ({LayerTarjanData.Order}): [{lowerLayers}] < {Name} < [{upperLayers}]",
                 LogType.Runtime);
         }
 

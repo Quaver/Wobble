@@ -16,6 +16,8 @@ namespace Wobble.Tests.Screens.Tests.Layering
         /// </summary>
         private readonly List<Layer> _layers = new();
 
+        private readonly Layer _layer3Upper;
+
         private readonly List<Sprite> _sprites = new();
 
         private readonly LayeredContainer _layeredContainer;
@@ -52,7 +54,7 @@ namespace Wobble.Tests.Screens.Tests.Layering
 
             _layers[2].Isolate();
 
-            var (layer3Lower, layer3Upper) = _layers[3].Wrap();
+            (_, _layer3Upper) = _layers[3].Wrap();
 
             for (var i = 4; i >= 0; i--)
             {
@@ -77,7 +79,7 @@ namespace Wobble.Tests.Screens.Tests.Layering
             {
                 Size = new ScalableVector2(150, 150),
                 Tint = new Color(0.9f, 0.9f, 0.9f, 1),
-                Layer = layer3Upper,
+                Layer = _layer3Upper,
                 Parent = _layeredContainer
             };
 
@@ -108,6 +110,19 @@ namespace Wobble.Tests.Screens.Tests.Layering
             Container?.Update(gameTime);
             if (KeyboardManager.IsUniqueKeyPress(Keys.D))
                 _layeredContainer.LayerManager.Dump();
+            if (KeyboardManager.IsUniqueKeyPress(Keys.C))
+                _layeredContainer.LayerManager.DumpConstraints();
+            if (KeyboardManager.IsUniqueKeyPress(Keys.R))
+            {
+                _layeredContainer.LayerManager.ResetOrder();
+                LayerManager.RequireOrder(new []
+                {
+                    _layeredContainer.LayerManager.TopLayer,
+                    _layers[3],
+                    _layers[0],
+                    _layeredContainer.LayerManager.BottomLayer
+                });
+            }
         }
 
         /// <inheritdoc />

@@ -55,16 +55,21 @@ namespace Wobble.Graphics
             TopLayer.LayerFlags = LayerFlags.Top | LayerFlags.NoChildren;
             BottomLayer.LayerFlags = LayerFlags.Bottom | LayerFlags.NoChildren;
 
+            SetupDefaultOrder();
+
+            InitializeLayers();
+
+            RecalculateZValues();
+        }
+
+        private void SetupDefaultOrder()
+        {
             RequireOrder(new[]
             {
                 TopLayer,
                 DefaultLayer,
                 BottomLayer
             });
-
-            InitializeLayers();
-
-            RecalculateZValues();
         }
 
         /// <summary>
@@ -109,6 +114,19 @@ namespace Wobble.Graphics
             {
                 layersTopToBottom[i].RequireAbove(layersTopToBottom[i + 1]);
             }
+        }
+
+        /// <summary>
+        ///     Removes all constraints applied to any layer, except the default constraint (bottom to default to top)
+        /// </summary>
+        public void ResetOrder()
+        {
+            foreach (var (_, layer) in _layers)
+            {
+                layer.ClearAllConstraints();
+            }
+
+            SetupDefaultOrder();
         }
 
         /// <summary>
@@ -201,6 +219,15 @@ namespace Wobble.Graphics
             foreach (var layer in _sortedLayers)
             {
                 layer.Dump();
+            }
+        }
+
+        public void DumpConstraints()
+        {
+            Logger.Debug($"{_layers.Count} Layers:", LogType.Runtime);
+            foreach (var layer in _sortedLayers)
+            {
+                layer.DumpConstraints();
             }
         }
 
