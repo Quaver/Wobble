@@ -17,6 +17,11 @@ namespace Wobble.Graphics
         public LayerFlags LayerFlags { get; set; } = LayerFlags.None;
 
         /// <summary>
+        ///     Indicates whether the layer will be drawn.
+        /// </summary>
+        public bool Visible { get; set; } = true;
+
+        /// <summary>
         ///     The layers that need to be drawn above this layer
         /// </summary>
         private readonly HashSet<Layer> requiredUpperLayers = new HashSet<Layer>();
@@ -229,6 +234,9 @@ namespace Wobble.Graphics
 
         public void Draw(GameTime gameTime)
         {
+            if (!Visible)
+                return;
+
             foreach (var drawable in drawables)
             {
                 drawable.Draw(gameTime);
