@@ -23,14 +23,19 @@ namespace Wobble.Graphics
         /// </summary>
         public Layer BottomLayer { get; private set; }
 
+        private readonly Dictionary<string, Layer> _layers = new Dictionary<string, Layer>();
+
         /// <summary>
         ///     Readonly view of the layers
         /// </summary>
         public IReadOnlyDictionary<string, Layer> Layers => new ReadOnlyDictionary<string, Layer>(_layers);
 
-        private readonly Dictionary<string, Layer> _layers = new Dictionary<string, Layer>();
-
         private readonly List<Layer> _sortedLayers = new List<Layer>();
+
+        /// <summary>
+        ///     The list of layers ordered by draw order (0 is topmost). Layers are drawn from bottom to top.
+        /// </summary>
+        public IReadOnlyList<Layer> SortedLayers => new ReadOnlyCollection<Layer>(_sortedLayers);
 
         private int _defaultLayerIndex;
 
