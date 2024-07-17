@@ -85,7 +85,7 @@ namespace Wobble.Graphics
             _layers.Remove(layerToRemove.Name);
             foreach (var (_, layer) in _layers)
             {
-                layer.RequiredLayersAbove.Remove(layerToRemove);
+                layer.RemoveRequiredUpperLayer(layerToRemove);
             }
 
             RecalculateZValues();

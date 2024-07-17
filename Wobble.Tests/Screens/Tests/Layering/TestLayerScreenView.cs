@@ -50,6 +50,10 @@ namespace Wobble.Tests.Screens.Tests.Layering
             // Cycle would be ignored
             _layers[4].RequireBelow(_layers[0]);
 
+            _layers[2].Isolate();
+
+            var (layer3Lower, layer3Upper) = _layers[3].Wrap();
+
             for (var i = 4; i >= 0; i--)
             {
                 var size = (5 - i) * 100;
@@ -69,6 +73,13 @@ namespace Wobble.Tests.Screens.Tests.Layering
                     Tint = Color.Red
                 };
             }
+            new Sprite
+            {
+                Size = new ScalableVector2(150, 150),
+                Tint = new Color(0.9f, 0.9f, 0.9f, 1),
+                Layer = layer3Upper,
+                Parent = _layeredContainer
+            };
 
             DefaultLayerSprite = new Sprite
             {
