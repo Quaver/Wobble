@@ -23,14 +23,19 @@ namespace Wobble.Graphics
         /// </summary>
         public Layer BottomLayer { get; private set; }
 
+        private readonly Dictionary<string, Layer> _layers = new Dictionary<string, Layer>();
+
         /// <summary>
         ///     Readonly view of the layers
         /// </summary>
         public IReadOnlyDictionary<string, Layer> Layers => new ReadOnlyDictionary<string, Layer>(_layers);
 
-        private readonly Dictionary<string, Layer> _layers = new Dictionary<string, Layer>();
-
         private readonly List<Layer> _sortedLayers = new List<Layer>();
+
+        /// <summary>
+        ///     The list of layers ordered by draw order (0 is topmost). Layers are drawn from bottom to top.
+        /// </summary>
+        public IReadOnlyList<Layer> SortedLayers => new ReadOnlyCollection<Layer>(_sortedLayers);
 
         private int _defaultLayerIndex;
 
@@ -50,16 +55,21 @@ namespace Wobble.Graphics
             TopLayer.LayerFlags = LayerFlags.Top | LayerFlags.NoChildren;
             BottomLayer.LayerFlags = LayerFlags.Bottom | LayerFlags.NoChildren;
 
+            SetupDefaultOrder();
+
+            InitializeLayers();
+
+            RecalculateZValues();
+        }
+
+        private void SetupDefaultOrder()
+        {
             RequireOrder(new[]
             {
                 TopLayer,
                 DefaultLayer,
                 BottomLayer
             });
-
-            InitializeLayers();
-
-            RecalculateZValues();
         }
 
         /// <summary>
@@ -85,7 +95,7 @@ namespace Wobble.Graphics
             _layers.Remove(layerToRemove.Name);
             foreach (var (_, layer) in _layers)
             {
-                layer.RequiredLayersAbove.Remove(layerToRemove);
+                layer.RemoveRequiredUpperLayer(layerToRemove);
             }
 
             RecalculateZValues();
@@ -104,6 +114,19 @@ namespace Wobble.Graphics
             {
                 layersTopToBottom[i].RequireAbove(layersTopToBottom[i + 1]);
             }
+        }
+
+        /// <summary>
+        ///     Removes all constraints applied to any layer, except the default constraint (bottom to default to top)
+        /// </summary>
+        public void ResetOrder()
+        {
+            foreach (var (_, layer) in _layers)
+            {
+                layer.ClearAllConstraints();
+            }
+
+            SetupDefaultOrder();
         }
 
         /// <summary>
@@ -196,6 +219,15 @@ namespace Wobble.Graphics
             foreach (var layer in _sortedLayers)
             {
                 layer.Dump();
+            }
+        }
+
+        public void DumpConstraints()
+        {
+            Logger.Debug($"{_layers.Count} Layers:", LogType.Runtime);
+            foreach (var layer in _sortedLayers)
+            {
+                layer.DumpConstraints();
             }
         }
 

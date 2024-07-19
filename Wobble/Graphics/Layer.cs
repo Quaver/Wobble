@@ -14,25 +14,59 @@ namespace Wobble.Graphics
         /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        ///     The special attributes of this layer, to indicate whether this is a top/bottom layer,
+        ///     whether this layer should have children, etc.
+        /// </summary>
         public LayerFlags LayerFlags { get; set; } = LayerFlags.None;
+
+        /// <summary>
+        ///     Indicates whether the layer will be drawn.
+        /// </summary>
+        public bool Visible { get; set; } = true;
 
         /// <summary>
         ///     The layers that need to be drawn above this layer
         /// </summary>
-        internal readonly HashSet<Layer> RequiredLayersAbove = new HashSet<Layer>();
+        private readonly HashSet<Layer> requiredUpperLayers = new HashSet<Layer>();
+
+        /// <summary>
+        ///     The layers that need to be drawn below this layer
+        /// </summary>
+        private readonly HashSet<Layer> requiredLowerLayers = new HashSet<Layer>();
 
         /// <summary>
         ///     Stores the data required to run Tarjan's strongly connected components algorithm
         /// </summary>
         internal TarjanData LayerTarjanData;
 
-        private readonly List<Drawable> _drawables = new List<Drawable>();
-        private readonly LayerManager _layerManager;
+        /// <summary>
+        ///     The list of all drawables that is drawn on this layer
+        /// </summary>
+        private readonly List<Drawable> drawables = new List<Drawable>();
+
+        /// <summary>
+        ///     The <see cref="LayerManager"/> this layer belongs to.
+        ///     For any operations changing constraints, the layers involved must have the same <see cref="layerManager"/>
+        /// </summary>
+        private readonly LayerManager layerManager;
 
         internal Layer(string name, LayerManager layerManager)
         {
-            _layerManager = layerManager;
+            this.layerManager = layerManager;
             Name = name;
+        }
+
+        private void AddRequiredUpperLayer(Layer upperLayer)
+        {
+            requiredUpperLayers.Add(upperLayer);
+            upperLayer.requiredLowerLayers.Add(this);
+        }
+
+        internal bool RemoveRequiredUpperLayer(Layer upperLayer)
+        {
+            upperLayer.requiredLowerLayers.Remove(this);
+            return requiredUpperLayers.Remove(upperLayer);
         }
 
         /// <summary>
@@ -43,15 +77,15 @@ namespace Wobble.Graphics
         public bool RequireBelow(Layer upperLayer)
         {
             // Don't allow different layer managers
-            if (upperLayer._layerManager != _layerManager)
+            if (upperLayer.layerManager != layerManager)
                 return false;
 
             // Don't allow adding layers above the Top layer, or adding layers below the Bottom layer
             if (LayerFlags.HasFlag(LayerFlags.Top) || upperLayer.LayerFlags.HasFlag(LayerFlags.Bottom))
                 return false;
 
-            RequiredLayersAbove.Add(upperLayer);
-            var cycles = _layerManager.RecalculateZValues();
+            AddRequiredUpperLayer(upperLayer);
+            var cycles = layerManager.RecalculateZValues();
             if (cycles.Count <= 0)
                 return true;
 
@@ -75,8 +109,8 @@ namespace Wobble.Graphics
                 LogType.Runtime);
 
             // Revert the changes
-            RequiredLayersAbove.Remove(upperLayer);
-            _layerManager.RecalculateZValues();
+            RemoveRequiredUpperLayer(upperLayer);
+            layerManager.RecalculateZValues();
             return false;
         }
 
@@ -96,9 +130,9 @@ namespace Wobble.Graphics
         /// <returns>Whether this constraint was present before calling</returns>
         public bool StopRequireBelow(Layer upperLayer)
         {
-            if (!RequiredLayersAbove.Remove(upperLayer))
+            if (!RemoveRequiredUpperLayer(upperLayer))
                 return false;
-            _layerManager.RecalculateZValues();
+            layerManager.RecalculateZValues();
             return true;
         }
 
@@ -131,19 +165,108 @@ namespace Wobble.Graphics
             return true;
         }
 
+
+        /// <summary>
+        ///     Wraps the layer between two layers, {<see cref="Name"/>}.Lower and {<see cref="Name"/>}.Upper
+        ///     Any constraint applied to it will be moved to the new lower and upper layer.
+        ///     This is useful if you want to put something immediately above or below the layer.
+        /// </summary>
+        /// <returns></returns>
+        public (Layer LowerLayer, Layer UpperLayer) Wrap()
+        {
+            var lowerLayer = layerManager.NewLayer($"{Name}.Lower");
+            var upperLayer = layerManager.NewLayer($"{Name}.Upper");
+
+            foreach (var requiredLowerLayer in requiredLowerLayers)
+            {
+                requiredLowerLayer.requiredUpperLayers.Remove(this);
+                requiredLowerLayer.requiredUpperLayers.Add(lowerLayer);
+                lowerLayer.requiredLowerLayers.Add(lowerLayer);
+            }
+
+            requiredLowerLayers.Clear();
+            requiredLowerLayers.Add(lowerLayer);
+
+            foreach (var requiredUpperLayer in requiredUpperLayers)
+            {
+                requiredUpperLayer.requiredLowerLayers.Remove(this);
+                requiredUpperLayer.requiredLowerLayers.Add(upperLayer);
+                upperLayer.requiredUpperLayers.Add(requiredUpperLayer);
+            }
+
+            requiredUpperLayers.Clear();
+            requiredUpperLayers.Add(upperLayer);
+
+            lowerLayer.requiredUpperLayers.Add(this);
+            upperLayer.requiredLowerLayers.Add(this);
+
+            layerManager.RecalculateZValues();
+            return (lowerLayer, upperLayer);
+        }
+
+        /// <summary>
+        ///     Removes every relation to this layer. The layer's constraints are applied to its upper and lower layers
+        ///     to preserve order.
+        /// </summary>
+        /// <returns></returns>
+        public bool Isolate()
+        {
+            if (LayerFlags.HasFlag(LayerFlags.Top) || LayerFlags.HasFlag(LayerFlags.Bottom))
+                return false;
+
+            foreach (var requiredLowerLayer in requiredLowerLayers)
+            {
+                requiredLowerLayer.requiredUpperLayers.Remove(this);
+                requiredLowerLayer.requiredUpperLayers.UnionWith(requiredUpperLayers);
+            }
+
+
+            foreach (var requiredUpperLayer in requiredUpperLayers)
+            {
+                requiredUpperLayer.requiredLowerLayers.Remove(this);
+                requiredUpperLayer.requiredLowerLayers.UnionWith(requiredLowerLayers);
+            }
+
+            requiredLowerLayers.Clear();
+            requiredUpperLayers.Clear();
+
+            layerManager.RecalculateZValues();
+            return true;
+        }
+
+        /// <summary>
+        ///     Clears <see cref="requiredLowerLayers"/> and <see cref="requiredUpperLayers"/>.
+        ///     This does not recalculate Z values.
+        /// </summary>
+        internal void ClearAllConstraints()
+        {
+            requiredLowerLayers.Clear();
+            requiredUpperLayers.Clear();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="drawable"></param>
+        /// <exception cref="InvalidOperationException">Layer is marked <see cref="LayerFlags.NoChildren"/></exception>
         internal void AddDrawable(Drawable drawable)
         {
             if (LayerFlags.HasFlag(LayerFlags.NoChildren))
                 throw new InvalidOperationException(
                     $"Cannot add drawable to layer '{Name}' since it's flagged NoChildren");
-            _drawables.Add(drawable);
+            drawables.Add(drawable);
         }
 
-        internal void RemoveDrawable(Drawable drawable) => _drawables.Remove(drawable);
+        /// <summary>
+        /// </summary>
+        /// <param name="drawable"></param>
+        internal void RemoveDrawable(Drawable drawable) => drawables.Remove(drawable);
 
         public void Draw(GameTime gameTime)
         {
-            foreach (var drawable in _drawables)
+            if (!Visible)
+                return;
+
+            foreach (var drawable in drawables)
             {
                 drawable.Draw(gameTime);
             }
@@ -168,7 +291,7 @@ namespace Wobble.Graphics
             stack.Push(this);
             LayerTarjanData.InStack = true;
 
-            foreach (var layer in RequiredLayersAbove)
+            foreach (var layer in requiredUpperLayers)
             {
                 if (layer.LayerTarjanData.Index == -1)
                 {
@@ -201,15 +324,23 @@ namespace Wobble.Graphics
         public void Dump()
         {
             var drawablesDump =
-                _drawables.Count <= 10 ? string.Join(", ", _drawables.Select(d => d.GetType().Name)) : "";
-            Logger.Debug($"Layer '{Name}' ({LayerTarjanData.Order}): {_drawables.Count} drawables {drawablesDump}",
+                drawables.Count <= 10 ? string.Join(", ", drawables.Select(d => d.GetType().Name)) : "";
+            Logger.Debug($"Layer '{Name}' ({LayerTarjanData.Order}): {drawables.Count} drawables {drawablesDump}",
+                LogType.Runtime);
+        }
+
+        public void DumpConstraints()
+        {
+            var lowerLayers = string.Join(", ", requiredLowerLayers.Select(l => l.Name));
+            var upperLayers = string.Join(", ", requiredUpperLayers.Select(l => l.Name));
+            Logger.Debug($"Layer '{Name}' ({LayerTarjanData.Order}): [{lowerLayers}] < {Name} < [{upperLayers}]",
                 LogType.Runtime);
         }
 
         public void Destroy()
         {
-            _drawables.Clear();
-            _layerManager?.RemoveLayer(this);
+            drawables.Clear();
+            layerManager?.RemoveLayer(this);
         }
 
         ~Layer()
