@@ -57,7 +57,7 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        private Dictionary<IntPtr, Texture2D> LoadedTextures { get; set; }
+        private Dictionary<IntPtr, Texture2D> LoadedTextures { get; }
 
         /// <summary>
         /// </summary>
@@ -70,10 +70,6 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         /// </summary>
         private int ScrollWheelValue { get; set; }
-
-        /// <summary>
-        /// </summary>
-        private List<int> Keys { get; } = new List<int>();
 
         /// <summary>
         /// </summary>
@@ -109,7 +105,7 @@ namespace Wobble.Graphics.ImGUI
                 FillMode = FillMode.Solid,
                 MultiSampleAntiAlias = false,
                 ScissorTestEnable = true,
-                SlopeScaleDepthBias = 0
+                SlopeScaleDepthBias = 0,
             };
 
             ImGui.GetStyle().ScaleAllSizes(Scale);
@@ -117,7 +113,7 @@ namespace Wobble.Graphics.ImGUI
             SetupInput();
         }
 
-        #region ImGuiRenderer
+#region ImGuiRenderer
 
         /// <summary>
         ///     Creates a texture and loads the font data from ImGui.
@@ -199,36 +195,16 @@ namespace Wobble.Graphics.ImGUI
             RenderDrawData(ImGui.GetDrawData());
         }
 
-        #endregion ImGuiRenderer
+#endregion ImGuiRenderer
 
-        #region Setup & Update
+#region Setup & Update
 
         /// <summary>
         ///     Maps ImGui keys to XNA keys. We use this later on to tell ImGui what keys were pressed
         /// </summary>
-        private void SetupInput()
+        private static void SetupInput()
         {
             var io = ImGui.GetIO();
-
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Tab] = (int)Microsoft.Xna.Framework.Input.Keys.Tab);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Left);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.RightArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Right);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.UpArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Up);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.DownArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Down);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.PageUp] = (int)Microsoft.Xna.Framework.Input.Keys.PageUp);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.PageDown] = (int)Microsoft.Xna.Framework.Input.Keys.PageDown);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Home] = (int)Microsoft.Xna.Framework.Input.Keys.Home);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.End] = (int)Microsoft.Xna.Framework.Input.Keys.End);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Delete] = (int)Microsoft.Xna.Framework.Input.Keys.Delete);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Backspace] = (int)Microsoft.Xna.Framework.Input.Keys.Back);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Enter] = (int)Microsoft.Xna.Framework.Input.Keys.Enter);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Escape] = (int)Microsoft.Xna.Framework.Input.Keys.Escape);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.A] = (int)Microsoft.Xna.Framework.Input.Keys.A);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.C] = (int)Microsoft.Xna.Framework.Input.Keys.C);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.V] = (int)Microsoft.Xna.Framework.Input.Keys.V);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.X] = (int)Microsoft.Xna.Framework.Input.Keys.X);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Microsoft.Xna.Framework.Input.Keys.Y);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Microsoft.Xna.Framework.Input.Keys.Z);
 
             // MonoGame-specific //////////////////////
             Game.Window.TextInput += (s, a) =>
@@ -270,13 +246,19 @@ namespace Wobble.Graphics.ImGUI
          */
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void d_set_clipboard_text_fn(IntPtr userData, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+        private delegate void d_set_clipboard_text_fn(
+            IntPtr userData,
+            [MarshalAs(UnmanagedType.LPUTF8Str)] string text
+        );
+
         private static readonly d_set_clipboard_text_fn SetClipboardTextFnDelegate = SetClipboardTextFn;
 
-        private static void SetClipboardTextFn(IntPtr userData, string text) => Platform.Clipboard.NativeClipboard.SetText(text);
+        private static void SetClipboardTextFn(IntPtr userData, string text) =>
+            Platform.Clipboard.NativeClipboard.SetText(text);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate IntPtr d_get_clipboard_text_fn(IntPtr userData);
+
         private static readonly d_get_clipboard_text_fn GetClipboardTextFnDelegate = GetClipboardTextFn;
 
         private static IntPtr GetClipboardTextFn(IntPtr userData)
@@ -320,15 +302,36 @@ namespace Wobble.Graphics.ImGUI
             var mouse = Mouse.GetState();
             var keyboard = Keyboard.GetState();
 
-            foreach (var t in Keys)
-                io.KeysDown[t] = keyboard.IsKeyDown((Keys)t);
+            io.AddKeyEvent(ImGuiKey.Tab, keyboard.IsKeyDown(Keys.Tab));
+            io.AddKeyEvent(ImGuiKey.LeftArrow, keyboard.IsKeyDown(Keys.Left));
+            io.AddKeyEvent(ImGuiKey.RightArrow, keyboard.IsKeyDown(Keys.Right));
+            io.AddKeyEvent(ImGuiKey.UpArrow, keyboard.IsKeyDown(Keys.Up));
+            io.AddKeyEvent(ImGuiKey.DownArrow, keyboard.IsKeyDown(Keys.Down));
+            io.AddKeyEvent(ImGuiKey.PageUp, keyboard.IsKeyDown(Keys.PageUp));
+            io.AddKeyEvent(ImGuiKey.PageDown, keyboard.IsKeyDown(Keys.PageDown));
+            io.AddKeyEvent(ImGuiKey.Home, keyboard.IsKeyDown(Keys.Home));
+            io.AddKeyEvent(ImGuiKey.End, keyboard.IsKeyDown(Keys.End));
+            io.AddKeyEvent(ImGuiKey.Delete, keyboard.IsKeyDown(Keys.Delete));
+            io.AddKeyEvent(ImGuiKey.Backspace, keyboard.IsKeyDown(Keys.Back));
+            io.AddKeyEvent(ImGuiKey.Enter, keyboard.IsKeyDown(Keys.Enter));
+            io.AddKeyEvent(ImGuiKey.Escape, keyboard.IsKeyDown(Keys.Escape));
+            io.AddKeyEvent(ImGuiKey.A, keyboard.IsKeyDown(Keys.A));
+            io.AddKeyEvent(ImGuiKey.C, keyboard.IsKeyDown(Keys.C));
+            io.AddKeyEvent(ImGuiKey.V, keyboard.IsKeyDown(Keys.V));
+            io.AddKeyEvent(ImGuiKey.X, keyboard.IsKeyDown(Keys.X));
+            io.AddKeyEvent(ImGuiKey.Y, keyboard.IsKeyDown(Keys.Y));
+            io.AddKeyEvent(ImGuiKey.Z, keyboard.IsKeyDown(Keys.Z));
 
-            io.KeyShift = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift);
-            io.KeyCtrl = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl);
-            io.KeyAlt = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftAlt) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightAlt);
-            io.KeySuper = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftWindows) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightWindows);
+            io.KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
+            io.KeyCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
+            io.KeyAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
+            io.KeySuper = keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows);
 
-            io.DisplaySize = new System.Numerics.Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+            io.DisplaySize = new System.Numerics.Vector2(
+                GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight
+            );
+
             io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
             io.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
@@ -338,13 +341,16 @@ namespace Wobble.Graphics.ImGUI
             io.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
 
             var scrollDelta = mouse.ScrollWheelValue - ScrollWheelValue;
-            io.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
+
+            io.MouseWheel = scrollDelta > 0 ? 1 :
+                scrollDelta < 0 ? -1 : 0;
+
             ScrollWheelValue = mouse.ScrollWheelValue;
         }
 
-        #endregion Setup & Update
+#endregion Setup & Update
 
-        #region Internals
+#region Internals
 
         /// <summary>
         ///     Gets the geometry as set up by ImGui and sends it to the graphics device
@@ -368,7 +374,12 @@ namespace Wobble.Graphics.ImGUI
             drawData.ScaleClipRects(ImGui.GetIO().DisplayFramebufferScale);
 
             // Setup projection
-            GraphicsDevice.Viewport = new Viewport(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+            GraphicsDevice.Viewport = new Viewport(
+                0,
+                0,
+                GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight
+            );
 
             UpdateBuffers(drawData);
 
@@ -389,9 +400,7 @@ namespace Wobble.Graphics.ImGUI
         private unsafe void UpdateBuffers(ImDrawDataPtr drawData)
         {
             if (drawData.TotalVtxCount == 0)
-            {
                 return;
-            }
 
             // Expand buffers if we need more room
             if (drawData.TotalVtxCount > VertexBufferSize)
@@ -399,7 +408,14 @@ namespace Wobble.Graphics.ImGUI
                 VertexBuffer?.Dispose();
 
                 VertexBufferSize = (int)(drawData.TotalVtxCount * 1.5f);
-                VertexBuffer = new VertexBuffer(GraphicsDevice, DrawVertDeclaration.Declaration, VertexBufferSize, BufferUsage.None);
+
+                VertexBuffer = new VertexBuffer(
+                    GraphicsDevice,
+                    DrawVertDeclaration.Declaration,
+                    VertexBufferSize,
+                    BufferUsage.None
+                );
+
                 VertexData = new byte[VertexBufferSize * DrawVertDeclaration.Size];
             }
 
@@ -408,7 +424,14 @@ namespace Wobble.Graphics.ImGUI
                 IndexBuffer?.Dispose();
 
                 IndexBufferSize = (int)(drawData.TotalIdxCount * 1.5f);
-                IndexBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, IndexBufferSize, BufferUsage.None);
+
+                IndexBuffer = new IndexBuffer(
+                    GraphicsDevice,
+                    IndexElementSize.SixteenBits,
+                    IndexBufferSize,
+                    BufferUsage.None
+                );
+
                 IndexData = new byte[IndexBufferSize * sizeof(ushort)];
             }
 
@@ -418,13 +441,24 @@ namespace Wobble.Graphics.ImGUI
 
             for (var n = 0; n < drawData.CmdListsCount; n++)
             {
-                var cmdList = drawData.CmdListsRange[n];
+                var cmdList = drawData.CmdLists[n];
 
                 fixed (void* vtxDstPtr = &VertexData[vtxOffset * DrawVertDeclaration.Size])
                 fixed (void* idxDstPtr = &IndexData[idxOffset * sizeof(ushort)])
                 {
-                    Buffer.MemoryCopy((void*)cmdList.VtxBuffer.Data, vtxDstPtr, VertexData.Length, cmdList.VtxBuffer.Size * DrawVertDeclaration.Size);
-                    Buffer.MemoryCopy((void*)cmdList.IdxBuffer.Data, idxDstPtr, IndexData.Length, cmdList.IdxBuffer.Size * sizeof(ushort));
+                    Buffer.MemoryCopy(
+                        (void*)cmdList.VtxBuffer.Data,
+                        vtxDstPtr,
+                        VertexData.Length,
+                        cmdList.VtxBuffer.Size * DrawVertDeclaration.Size
+                    );
+
+                    Buffer.MemoryCopy(
+                        (void*)cmdList.IdxBuffer.Data,
+                        idxDstPtr,
+                        IndexData.Length,
+                        cmdList.IdxBuffer.Size * sizeof(ushort)
+                    );
                 }
 
                 vtxOffset += cmdList.VtxBuffer.Size;
@@ -453,16 +487,16 @@ namespace Wobble.Graphics.ImGUI
 
             for (var n = 0; n < drawData.CmdListsCount; n++)
             {
-                var cmdList = drawData.CmdListsRange[n];
+                var cmdList = drawData.CmdLists[n];
 
                 for (var cmdi = 0; cmdi < cmdList.CmdBuffer.Size; cmdi++)
                 {
                     var drawCmd = cmdList.CmdBuffer[cmdi];
 
                     if (!LoadedTextures.ContainsKey(drawCmd.TextureId))
-                    {
-                        throw new InvalidOperationException($"Could not find a texture with id '{drawCmd.TextureId}', please check your bindings");
-                    }
+                        throw new InvalidOperationException(
+                            $"Could not find a texture with id '{drawCmd.TextureId}', please check your bindings"
+                        );
 
                     GraphicsDevice.ScissorRectangle = new Rectangle(
                         (int)drawCmd.ClipRect.X,
@@ -500,7 +534,7 @@ namespace Wobble.Graphics.ImGUI
             GraphicsDevice.ScissorRectangle = lastScissorRectangle;
         }
 
-        #endregion Internals
+#endregion Internals
 
         /// <inheritdoc />
         /// <summary>
