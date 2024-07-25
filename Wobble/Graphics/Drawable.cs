@@ -405,12 +405,6 @@ namespace Wobble.Graphics
                     drawable.DrawOrder = TotalDrawn;
                 }
             }
-            // In the case of modifying a drawable collection, an InvalidOperationException might occur
-            catch (InvalidOperationException e)
-            {
-                if (!e.Message.Contains("Collection was modified; enumeration operation may not execute."))
-                    throw;
-            }
             catch (Exception e)
             {
                 Logger.Error(e, LogType.Runtime);
