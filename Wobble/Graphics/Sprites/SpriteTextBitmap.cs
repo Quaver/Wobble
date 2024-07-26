@@ -128,7 +128,7 @@ namespace Wobble.Graphics.Sprites
             }
             else
             {
-                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, AbsolutePosition, _color, Rotation,
+                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, AbsolutePosition, AbsoluteColor, Rotation,
                     Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),
                     Effects, 0, null);
             }

@@ -10,6 +10,7 @@ namespace Wobble.Graphics.Animations
         Width,
         Height,
         Alpha,
+        UIAlpha,
         Rotation,
         Color,
         Wait

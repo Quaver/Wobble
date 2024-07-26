@@ -379,6 +379,87 @@ namespace Wobble.Graphics
         public float AbsoluteRotation { get; private set; }
 
         /// <summary>
+        ///     The final color to be drawn on screen when calling <see cref="Microsoft.Xna.Framework.Graphics.SpriteBatch"/> draws.
+        ///     This color is affected by <see cref="Sprite.RelativeColor"/>.
+        /// </summary>
+        protected Color AbsoluteColor { get; private set; } = Color.White;
+
+        /// <summary>
+        ///     The base color of its children. This excludes the effect from <see cref="Sprite.RelativeColor"/>.
+        /// </summary>
+        private Vector4 ChildrenColor { get; set; } = Vector4.One;
+
+        private float _uiAlpha = 1;
+
+        /// <summary>
+        ///     Sets the alpha for itself, while multiplying the alpha to all of its children and consequently descendents
+        /// </summary>
+        public float UIAlpha
+        {
+            get => _uiAlpha;
+            set
+            {
+                _uiAlpha = value;
+                RecalculateColor();
+            }
+        }
+
+        private Color _uiTint = Color.White;
+
+        /// <summary>
+        ///     Sets the tint for itself, while multiplying the tint to all of its children and consequently descendents
+        /// </summary>
+        public Color UITint
+        {
+            get => _uiTint;
+            set
+            {
+                _uiTint = value;
+                RecalculateColor();
+            }
+        }
+
+        /// <summary>
+        ///     Additional color applied to the drawable, overridable.
+        ///     This is overridden in <see cref="Sprite"/> for compatibility.
+        /// </summary>
+        protected virtual Color RelativeColor => Color.White;
+
+        /// <summary>
+        ///     Updates the <see cref="ChildrenColor"/> and <see cref="AbsoluteColor"/> of itself only
+        /// </summary>
+        protected void RecalculateSelfColor()
+        {
+            var parentChildrenColor = Parent?.ChildrenColor ?? Vector4.One;
+            ChildrenColor = (_uiTint * _uiAlpha).ToVector4() * parentChildrenColor;
+
+            // RelativeColor affects the final color but not the children's color
+            AbsoluteColor = new Color(ChildrenColor * RelativeColor.ToVector4());
+        }
+
+        /// <summary>
+        ///     Updates the <see cref="ChildrenColor"/> and <see cref="AbsoluteColor"/> of itself and all of its children,
+        ///     recursively.
+        /// </summary>
+        /// <seealso cref="RecalculateSelfColor"/>
+        protected void RecalculateColor()
+        {
+            RecalculateSelfColor();
+
+            try
+            {
+                foreach (var child in Children)
+                {
+                    child.RecalculateColor();
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Logger.Error(e, LogType.Runtime);
+            }
+        }
+
+        /// <summary>
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
         /// </summary>
         private Matrix2D _childPositionTransform = Matrix2D.Identity;
@@ -491,57 +572,6 @@ namespace Wobble.Graphics
                 }
             }
         }
-
-        /// <summary>
-        ///     The tint this QuaverSprite will inherit.
-        /// </summary>
-        private Color _tint = Color.White;
-        public Color _color = Color.White;
-        public Color Tint
-        {
-            get => _tint;
-            set
-            {
-                _tint = value;
-                _color = _tint * AbsoluteAlpha;
-            }
-        }
-
-        private float _localAlpha = 1f;
-
-        /// <summary>
-        ///     The transparency of this QuaverSprite.
-        /// </summary>
-        public float AbsoluteAlpha { get; private set; } = 1f;
-
-        public float Alpha {
-            get => _localAlpha;
-            set
-            {
-                _localAlpha = value;
-                if (_parent != null)
-                {
-                    AbsoluteAlpha = (_parent.SetChildrenAlpha ? _parent.AbsoluteAlpha : 1f) * _localAlpha;
-                }
-                else
-                {
-                    AbsoluteAlpha = _localAlpha;
-                }
-                _color = _tint * AbsoluteAlpha;
-
-                for (var i = 0; i < Children.Count; i++)
-                {
-                    var x = Children[i];
-
-                    x.Alpha = x.Alpha;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Dictates if we want to set the alpha of the children as well.
-        /// </summary>
-        public bool SetChildrenAlpha { get; set; }
 
         /// <summary>
         /// </summary>
@@ -805,6 +835,7 @@ namespace Wobble.Graphics
             }
 
             RecalculateDrawMask();
+            RecalculateSelfColor();
 
             // Make it relative to the parent.
             var width = RelativeWidth;
@@ -952,8 +983,18 @@ namespace Wobble.Graphics
                         case AnimationProperty.Height:
                             Height = (int)animation.PerformInterpolation(gameTime);
                             break;
+                        case AnimationProperty.UIAlpha:
+                            UIAlpha = animation.PerformInterpolation(gameTime);
+                            break;
                         case AnimationProperty.Alpha:
-                            Alpha = animation.PerformInterpolation(gameTime);
+                            var type = GetType();
+
+                            if (this is Sprite)
+                            {
+                                var sprite = (Sprite)this;
+                                sprite.Alpha = animation.PerformInterpolation(gameTime);
+                            }
+
                             break;
                         case AnimationProperty.Rotation:
                             if (this is Sprite)
@@ -966,7 +1007,12 @@ namespace Wobble.Graphics
 
                             break;
                         case AnimationProperty.Color:
-                            Tint = animation.PerformColorInterpolation(gameTime);
+                            if (this is Sprite)
+                            {
+                                var sprite = (Sprite)this;
+                                sprite.Tint = animation.PerformColorInterpolation(gameTime);
+                            }
+
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -1003,11 +1049,26 @@ namespace Wobble.Graphics
                                     case AnimationProperty.Rotation:
                                         a.Start = Rotation;
                                         break;
+                                    case AnimationProperty.UIAlpha:
+                                        a.Start = UIAlpha;
+                                        break;
                                     case AnimationProperty.Alpha:
-                                        a.Start = Alpha;
+                                        var type = GetType();
+
+                                        if (this is Sprite)
+                                        {
+                                            var sprite = (Sprite)this;
+                                            a.Start = sprite.Alpha;
+                                        }
+
                                         break;
                                     case AnimationProperty.Color:
-                                        a.StartColor = Tint;
+                                        if (this is Sprite)
+                                        {
+                                            var sprite = (Sprite)this;
+                                            a.StartColor = sprite.Tint;
+                                        }
+
                                         break;
                                     default:
                                         break;
@@ -1173,6 +1234,20 @@ namespace Wobble.Graphics
                 Animations.Add(new Animation(AnimationProperty.Width, easingType, Width, size.X, time));
                 Animations.Add(new Animation(AnimationProperty.Height, easingType, Height, size.Y, time));
             }
+
+            return this;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="alpha"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public Drawable UIFadeTo(float alpha, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.UIAlpha, easingType, UIAlpha, alpha, time));
 
             return this;
         }

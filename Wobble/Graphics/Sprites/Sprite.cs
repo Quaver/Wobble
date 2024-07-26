@@ -80,6 +80,57 @@ namespace Wobble.Graphics.Sprites
         public RectangleF RenderRectangle { get; set; }
 
         /// <summary>
+        ///     The tint this QuaverSprite will inherit.
+        /// </summary>
+        private Color _tint = Color.White;
+
+        protected override Color RelativeColor
+        {
+            get
+            {
+                var baseColor = base.RelativeColor;
+                var spriteColor = _tint * _alpha;
+                return new Color(baseColor.ToVector4() * spriteColor.ToVector4());
+            }
+        }
+
+        public Color Tint
+        {
+            get => _tint;
+            set
+            {
+                _tint = value;
+                RecalculateSelfColor();
+            }
+        }
+
+        /// <summary>
+        ///     The transparency of this QuaverSprite.
+        /// </summary>
+        private float _alpha = 1f;
+        public float Alpha {
+            get => _alpha;
+            set
+            {
+                _alpha = value;
+                RecalculateSelfColor();
+
+                if (!SetChildrenAlpha)
+                    return;
+
+                for (var i = 0; i < Children.Count; i++)
+                {
+                    var x = Children[i];
+
+                    if (x is Sprite sprite)
+                    {
+                        sprite.Alpha = value;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         ///     Additional rotation applied to this sprite only, and not to its children
         /// </summary>
         public float SpriteRotation
@@ -114,6 +165,11 @@ namespace Wobble.Graphics.Sprites
         ///     It is decided by <see cref="IndependentRotation"/> and parent's <see cref="Drawable.AbsoluteRotation"/>
         /// </summary>
         public float SpriteOverallRotation { get; protected set; }
+
+        /// <summary>
+        ///     Dictates if we want to set the alpha of the children as well.
+        /// </summary>
+        public bool SetChildrenAlpha { get; set; }
 
         public override void Update(GameTime gameTime)
         {
@@ -210,7 +266,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, SpriteOverallRotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, AbsoluteColor, SpriteOverallRotation, Origin, SpriteEffect, 0f);
         }
 
         /// <inheritdoc />
