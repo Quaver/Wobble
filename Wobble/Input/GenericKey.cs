@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Helpers;
@@ -13,6 +12,7 @@ namespace Wobble.Input
     public class GenericKey
     {
         private Keys? keyboardKey;
+
         public Keys? KeyboardKey
         {
             get => keyboardKey;
@@ -21,10 +21,13 @@ namespace Wobble.Input
                 Debug.Assert(value != null);
                 joystickKey = null;
                 keyboardKey = value;
+                mouseButton = null;
+                scrollDirection = null;
             }
         }
 
         private int? joystickKey;
+
         public int? JoystickKey
         {
             get => joystickKey;
@@ -37,6 +40,35 @@ namespace Wobble.Input
             }
         }
 
+        private MouseButton? mouseButton;
+        private MouseScrollDirection? scrollDirection;
+
+        public MouseButton? MouseButton
+        {
+            get => mouseButton;
+            set
+            {
+                Debug.Assert(value != null);
+                scrollDirection = null;
+                mouseButton = value;
+                joystickKey = null;
+                keyboardKey = null;
+            }
+        }
+
+        public MouseScrollDirection? ScrollDirection
+        {
+            get => scrollDirection;
+            set
+            {
+                Debug.Assert(value != null);
+                mouseButton = null;
+                scrollDirection = value;
+                joystickKey = null;
+                keyboardKey = null;
+            }
+        }
+
         public string GetName()
         {
             if (KeyboardKey != null)
@@ -45,11 +77,20 @@ namespace Wobble.Input
             if (JoystickKey != null)
                 return $"GP_{JoystickKey}";
 
+            if (MouseButton != null)
+                return $"M_{MouseButton}";
+
+            if (ScrollDirection != null)
+                return $"M_{ScrollDirection}";
+
             Logger.Error("Both keyboard and joystick key is null in GenericKey", LogType.Runtime);
             return "INVALID";
         }
 
-        protected bool Equals(GenericKey other) => keyboardKey == other.keyboardKey && joystickKey == other.joystickKey;
+        protected bool Equals(GenericKey other) => keyboardKey == other.keyboardKey
+                                                   && joystickKey == other.joystickKey
+                                                   && mouseButton == other.mouseButton
+                                                   && scrollDirection == other.scrollDirection;
 
         public override bool Equals(object obj)
         {
@@ -59,7 +100,7 @@ namespace Wobble.Input
             return Equals((GenericKey)obj);
         }
 
-        public override int GetHashCode() => HashCode.Combine(keyboardKey, joystickKey);
+        public override int GetHashCode() => HashCode.Combine(keyboardKey, joystickKey, mouseButton, scrollDirection);
 
         public override string ToString()
         {
@@ -68,6 +109,12 @@ namespace Wobble.Input
 
             if (JoystickKey != null)
                 return $"GP_{JoystickKey}";
+
+            if (MouseButton != null)
+                return $"M_{MouseButton}";
+
+            if (ScrollDirection != null)
+                return $"M_{ScrollDirection}";
 
             Logger.Error("Both keyboard and joystick key is null in GenericKey", LogType.Runtime);
             return "INVALID";
@@ -81,22 +128,46 @@ namespace Wobble.Input
 
             if (value.StartsWith("GP_"))
             {
-                int button;
-                if (int.TryParse(value.Substring(3), out button) && button >= 0)
+                if (int.TryParse(value.Substring(3), out var button) && button >= 0)
                 {
                     result = new GenericKey { JoystickKey = button };
                     return true;
                 }
             }
 
-            Keys key;
-            if (Keys.TryParse(value, out key))
+            if (value.StartsWith("M_"))
+            {
+                if (Enum.TryParse<MouseButton>(value.Substring(2), out var mouseButton))
+                {
+                    result = new GenericKey { MouseButton = mouseButton };
+                    return true;
+                }
+
+                if (Enum.TryParse<MouseScrollDirection>(value.Substring(2), out var scrollDirection))
+                {
+                    result = new GenericKey { ScrollDirection = scrollDirection };
+                    return true;
+                }
+            }
+
+            if (Enum.TryParse(value, out Keys key))
             {
                 result = new GenericKey { KeyboardKey = key };
                 return true;
             }
 
             return false;
+        }
+
+        public GenericKey Clone()
+        {
+            return new GenericKey
+            {
+                joystickKey = joystickKey,
+                keyboardKey = keyboardKey,
+                mouseButton = mouseButton,
+                scrollDirection = scrollDirection
+            };
         }
     }
 }
