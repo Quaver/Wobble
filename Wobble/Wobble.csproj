@@ -8,7 +8,6 @@
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TextCopy" Version="6.2.1" />
     <PackageReference Include="ImGui.NET" Version="1.67.0" />
     <PackageReference Include="IniFileParserStandard" Version="1.0.1" />
     <PackageReference Include="ManagedBass" Version="2.0.4" />
