@@ -17,12 +17,16 @@ namespace Wobble.Tests.Screens.Selection
         public Dictionary<ScreenType, string> TestCasesScreens { get; } = new Dictionary<ScreenType, string>
         {
             {ScreenType.DrawingSprites, "Drawing Sprites"},
+            {ScreenType.Rotation, "Rotation"},
+            {ScreenType.DrawableScaling, "Drawable Scaling"},
             {ScreenType.EasingAnimations, "Easing Animations"},
+            {ScreenType.Layering, "Layering"},
             {ScreenType.Audio, "Audio"},
             {ScreenType.Discord, "Discord Rich Pr."},
             {ScreenType.Background, "Background Sprite"},
             {ScreenType.Scrolling, "Scroll Container"},
             {ScreenType.BlurContainer, "Blur Container"},
+            {ScreenType.RenderTarget, "Render Target"},
             {ScreenType.BlurredBackgroundImage, "Blurred BG Image"},
             {ScreenType.TextInput, "Text Input"},
             {ScreenType.SpriteMaskContainer, "Sprite Masking"},
@@ -48,11 +52,15 @@ namespace Wobble.Tests.Screens.Selection
     public enum ScreenType
     {
         DrawingSprites,
+        Rotation,
+        DrawableScaling,
         EasingAnimations,
+        Layering,
         Audio,
         Discord,
         Background,
         Scrolling,
+        RenderTarget,
         BlurContainer,
         BlurredBackgroundImage,
         TextInput,

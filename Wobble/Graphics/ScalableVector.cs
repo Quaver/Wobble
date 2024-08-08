@@ -5,12 +5,12 @@
         /// <summary>
         ///     The value of the vector.
         /// </summary>
-        public float Value { get; set; }
+        public float Value;
 
         /// <summary>
         ///     The scale of the vector.
         /// </summary>
-        public float Scale { get; set; }
+        public float Scale;
 
         public ScalableVector(float value = 0, float scale = 0)
         {

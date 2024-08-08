@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
 using Wobble.Logging;
 using Wobble.Window;
@@ -19,6 +17,17 @@ namespace Wobble.Graphics
     public abstract class Drawable : IDrawable, IDisposable
     {
         /// <summary>
+        ///     The main render target to render to.
+        /// </summary>
+        public RenderTargetOptions RenderTargetOptions { get; } = new RenderTargetOptions();
+
+        /// <summary>
+        ///     A projection sprite that has the same dimension, position, rotation and parent as the container.
+        ///     It shows <see cref="RenderTarget"/>, which the container can render its entire content to
+        /// </summary>
+        public RenderProjectionSprite DefaultProjectionSprite { get; private set; }
+
+        /// <summary>
         ///     The total amount of drawables that are drawn on-screen.
         /// </summary>
         public static int TotalDrawn { get; private set; }
@@ -27,6 +36,11 @@ namespace Wobble.Graphics
         ///     The order of which this object was drawn. Higher means the object was drawn later.
         /// </summary>
         public int DrawOrder { get; set; }
+
+        /// <summary>
+        ///     A faster way of null checking render target options
+        /// </summary>
+        private bool _isCasting;
 
         /// <summary>
         ///     The parent of this drawable in which it depends on for its position and size.
@@ -41,22 +55,65 @@ namespace Wobble.Graphics
                 // of children.
                 _parent?.Children.Remove(this);
 
+                _parent = value;
+
                 // If we do end up having a non-null value for the new parent, we'll want to
                 // add this drawable to their list of children.
                 if (value != null)
                 {
                     value.Children.Add(this);
+
+                    // Derive layer from our parent
+                    if (value.SetChildrenLayer)
+                        Layer = value.Layer;
                 }
                 else if (DestroyIfParentIsNull)
                 {
                     // If we've received null for the parent however, that must mean we want to FULLY
                     // destroy and dispose of the object.
-                    for (var i = Children.Count - 1; i >= 0 ; i--)
+                    for (var i = Children.Count - 1; i >= 0; i--)
                         Children[i].Destroy();
+
+                    Children.Clear();
                 }
 
-                _parent = value;
+                // When both are null, we implicitly add this to the Default layer
+                if (value == null && (Layer == null || IsDisposed))
+                    Layer = null;
+
                 RecalculateRectangles();
+            }
+        }
+
+        private Layer _layer;
+
+        /// <summary>
+        ///     Whether to set children's layer too when <see cref="Layer"/> changes
+        /// </summary>
+        public bool SetChildrenLayer { get; set; } = false;
+
+        /// <summary>
+        ///     Layer of this drawable. If null, it will be drawn over the Default layer.
+        /// </summary>
+        public Layer Layer
+        {
+            get => _layer;
+            set
+            {
+                if (_layer == value && _layer != null)
+                    return;
+
+                _layer?.RemoveDrawable(this);
+                value?.AddDrawable(this);
+                _layer = value;
+
+                if (!SetChildrenLayer)
+                    return;
+
+                foreach (var child in Children)
+                {
+                    child.Layer = value;
+                }
             }
         }
 
@@ -77,9 +134,59 @@ namespace Wobble.Graphics
         public RectangleF ScreenRectangle { get; private set; } = new RectangleF();
 
         /// <summary>
+        ///     If outside this region, this will not be drawed.
+        /// </summary>
+        private RectangleF DrawRectangleMask { get; set; } =
+            new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+
+        /// <summary>
+        ///     Clipping region for children. Useful to RenderTargets
+        /// </summary>
+        protected virtual RectangleF ChildDrawRectangleMask { get; set; }
+
+        /// <summary>
+        ///     The bounding box of the drawable relative to the entire screen.
+        /// </summary>
+        public RectangleF ScreenMinimumBoundingRectangle { get; private set; } = new RectangleF();
+
+        /// <summary>
         ///     The rectangle relative to the drawable's parent.
         /// </summary>
         public RectangleF RelativeRectangle { get; private set; }
+
+        private RectangleF _alignedRelativeRectangle;
+
+        /// <summary>
+        ///     The rectangle relative to the drawable's parent.
+        /// </summary>
+        public RectangleF AlignedRelativeRectangle
+        {
+            get => _alignedRelativeRectangle;
+            private set
+            {
+                _alignedRelativeRectangle = value;
+                var size = new Vector2(value.Width, value.Height);
+                var position = new Vector2(value.X, value.Y);
+                var offsetFactor = Vector2.One - _scale;
+
+                // scaledPos = value.Position + Pivot * (Vector2.One - Scale) * value.Size,
+                // scaledSize = value.Size * Scale
+                Vector2.Multiply(ref _pivot, ref offsetFactor, out var intermediate);
+                Vector2.Multiply(ref intermediate, ref size, out var intermediate2);
+                Vector2.Add(ref position, ref intermediate2, out var scaledPos);
+                Vector2.Multiply(ref size, ref _scale, out var scaledSize);
+                
+                // Update _scaledAlignedRelativeRectangle
+                // So that the rectangle is scaled with its position adjusted according to the pivot and scale
+                _scaledAlignedRelativeRectangle = new RectangleF(scaledPos.X, scaledPos.Y,
+                    scaledSize.X, scaledSize.Y);
+            }
+        }
+
+        /// <summary>
+        ///     The rectangle relative to the drawable's parent.
+        /// </summary>
+        private RectangleF _scaledAlignedRelativeRectangle;
 
         /// <summary>
         ///     The position of the drawable
@@ -95,6 +202,7 @@ namespace Wobble.Graphics
             }
         }
 
+        public event EventHandler<ScalableVector2> SizeChanged;
         /// <summary>
         ///     The size of the drawable.
         /// </summary>
@@ -108,6 +216,8 @@ namespace Wobble.Graphics
                 var height = MathHelper.Clamp(value.Y.Value, 0, int.MaxValue);
 
                 _size = new ScalableVector2(width, height, value.X.Scale, value.Y.Scale);
+                Pivot = Pivot;
+                SizeChanged?.Invoke(this, value);
                 RecalculateRectangles();
             }
         }
@@ -162,6 +272,7 @@ namespace Wobble.Graphics
                     return;
 
                 Size = new ScalableVector2(value, Size.Y.Value, Size.X.Scale, Size.Y.Scale);
+                Pivot = Pivot;
             }
         }
 
@@ -173,6 +284,32 @@ namespace Wobble.Graphics
             get => Size.X.Scale;
             set => Size = new ScalableVector2(Size.X.Value, Size.Y.Value, value, Size.Y.Scale);
         }
+
+        /// <summary>
+        ///     The total width of the drawable, considering the width scale
+        /// </summary>
+        private float RelativeWidth =>
+            _size.X.Value + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * _size.X.Scale;
+
+        /// <summary>
+        ///     The total height of the drawable, considering the height scale
+        /// </summary>
+        private float RelativeHeight =>
+            _size.Y.Value + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * _size.Y.Scale;
+
+        private Vector2 _scale = Vector2.One;
+
+        public Vector2 Scale
+        {
+            get => _scale;
+            set
+            {
+                _scale = value;
+                RecalculateRectangles();
+            }
+        }
+
+        public Vector2 AbsoluteScale { get; private set; }
 
         /// <summary>
         ///     The height of the object.
@@ -192,6 +329,7 @@ namespace Wobble.Graphics
                     return;
 
                 Size = new ScalableVector2(Size.X.Value, value, Size.X.Scale, Size.Y.Scale);
+                Pivot = Pivot;
             }
         }
 
@@ -206,6 +344,159 @@ namespace Wobble.Graphics
                 Size = new ScalableVector2(Size.X.Value, Size.Y.Value, Size.X.Scale, value);
                 RecalculateRectangles();
             }
+        }
+
+        private Vector2 _pivot = new Vector2(0.5f, 0.5f);
+
+        /// <summary>
+        ///     The pivot about which the rotation will be performed.
+        ///     (0, 0) corresponds to the top-left corner, (1, 1) bottom right.
+        /// </summary>
+        public Vector2 Pivot
+        {
+            get => _pivot;
+            set
+            {
+                _pivot = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     Angle of the sprite with it's origin in the centre. (TEMPORARILY NOT USED YET)
+        /// </summary>
+        private float _rotation;
+        public float Rotation
+        {
+            get => _rotation;
+            set
+            {
+                _rotation = value;
+                RecalculateRectangles();
+            }
+        }
+
+        public float AbsoluteRotation { get; private set; }
+
+        /// <summary>
+        ///     The final color to be drawn on screen when calling <see cref="Microsoft.Xna.Framework.Graphics.SpriteBatch"/> draws.
+        ///     This color is affected by <see cref="Sprite.RelativeColor"/>.
+        /// </summary>
+        protected Color AbsoluteColor { get; private set; } = Color.White;
+
+        /// <summary>
+        ///     The base color of its children. This excludes the effect from <see cref="Sprite.RelativeColor"/>.
+        /// </summary>
+        private Vector4 ChildrenColor { get; set; } = Vector4.One;
+
+        private float _uiAlpha = 1;
+
+        /// <summary>
+        ///     Sets the alpha for itself, while multiplying the alpha to all of its children and consequently descendents
+        /// </summary>
+        public float UIAlpha
+        {
+            get => _uiAlpha;
+            set
+            {
+                _uiAlpha = value;
+                RecalculateColor();
+            }
+        }
+
+        private Color _uiTint = Color.White;
+
+        /// <summary>
+        ///     Sets the tint for itself, while multiplying the tint to all of its children and consequently descendents
+        /// </summary>
+        public Color UITint
+        {
+            get => _uiTint;
+            set
+            {
+                _uiTint = value;
+                RecalculateColor();
+            }
+        }
+
+        /// <summary>
+        ///     Additional color applied to the drawable, overridable.
+        ///     This is overridden in <see cref="Sprite"/> for compatibility.
+        /// </summary>
+        protected virtual Color RelativeColor => Color.White;
+
+        /// <summary>
+        ///     Updates the <see cref="ChildrenColor"/> and <see cref="AbsoluteColor"/> of itself only
+        /// </summary>
+        protected void RecalculateSelfColor()
+        {
+            var parentChildrenColor = Parent?.ChildrenColor ?? Vector4.One;
+            ChildrenColor = (_uiTint * _uiAlpha).ToVector4() * parentChildrenColor;
+
+            // RelativeColor affects the final color but not the children's color
+            AbsoluteColor = new Color(ChildrenColor * RelativeColor.ToVector4());
+        }
+
+        /// <summary>
+        ///     Updates the <see cref="ChildrenColor"/> and <see cref="AbsoluteColor"/> of itself and all of its children,
+        ///     recursively.
+        /// </summary>
+        /// <seealso cref="RecalculateSelfColor"/>
+        protected void RecalculateColor()
+        {
+            RecalculateSelfColor();
+
+            try
+            {
+                foreach (var child in Children)
+                {
+                    child.RecalculateColor();
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Logger.Error(e, LogType.Runtime);
+            }
+        }
+
+        /// <summary>
+        ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
+        /// </summary>
+        private Matrix2D _childPositionTransform = Matrix2D.Identity;
+
+        /// <summary>
+        ///     A transform that rotates the relative coordinates about the pivot
+        ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the relative coordinate after rotation.
+        /// </summary>
+        private Matrix2D _childRelativeTransform = Matrix2D.Identity;
+
+        protected virtual void RecalculateTransformMatrix()
+        {
+            if (_isCasting)
+            {
+                // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
+                // scaled, so we should scale them back.
+                _childRelativeTransform = RenderTargetOptions.TransformMatrix;
+                _childPositionTransform = _childRelativeTransform;
+                return;
+            }
+
+            var relativeOrigin = Pivot * new Vector2(RelativeWidth, RelativeHeight);
+
+            // Move so the origin is at RelativeOrigin, rotate, then move back
+            var shiftToOrigin = Matrix2D.CreateTranslation(-relativeOrigin);
+            var scalingMatrix = Matrix2D.CreateScale(Scale);
+            var rotationMatrix = Matrix2D.CreateRotationZ(Rotation);
+            var originBack = Matrix2D.CreateTranslation(relativeOrigin * Scale);
+            var thisTranslation = Matrix2D.CreateTranslation(_scaledAlignedRelativeRectangle.Position);
+            var parentTransform = Parent?._childPositionTransform ?? Matrix2D.Identity;
+            Matrix2D.Multiply(ref shiftToOrigin, ref scalingMatrix, out var intermediate1);
+            Matrix2D.Multiply(ref rotationMatrix, ref originBack, out var intermediate2);
+            Matrix2D.Multiply(ref thisTranslation, ref parentTransform, out var outerTransform);
+
+            Matrix2D.Multiply(ref intermediate1, ref intermediate2, out _childRelativeTransform);
+            // Finally, apply our parent's transformation
+            Matrix2D.Multiply(ref _childRelativeTransform, ref outerTransform, out _childPositionTransform);
         }
 
         /// <summary>
@@ -385,7 +676,7 @@ namespace Wobble.Graphics
             if (!Visible)
                 return;
 
-            if (!RectangleF.Intersects(ScreenRectangle, new RectangleF(0, 0, WindowManager.Width, WindowManager.Height)) && !DrawIfOffScreen)
+            if (!RectangleF.Intersects(ScreenMinimumBoundingRectangle, DrawRectangleMask) && !DrawIfOffScreen)
                 return;
 
             // Draw the children and set their order.
@@ -399,7 +690,11 @@ namespace Wobble.Graphics
                 for (var i = 0; i < Children.Count; i++)
                 {
                     var drawable = Children[i];
-                    drawable.Draw(gameTime);
+
+                    if (drawable.Layer != null)
+                        continue;
+
+                    drawable.WrappedDraw(gameTime);
 
                     TotalDrawn++;
                     drawable.DrawOrder = TotalDrawn;
@@ -415,6 +710,63 @@ namespace Wobble.Graphics
             {
                 Logger.Error(e, LogType.Runtime);
             }
+        }
+
+        public void WrappedDraw(GameTime gameTime)
+        {
+            if (!_isCasting)
+            {
+                Draw(gameTime);
+                return;
+            }
+
+            if (Parent == null)
+                DefaultProjectionSprite?.Draw(gameTime);
+            GameBase.Game.ScheduledRenderTargetDraws.Add(DrawToRenderTarget);
+        }
+
+
+        /// <summary>
+        ///     Draw this container to a render target so its view can be duplicated and shown in
+        ///     a different way.
+        ///     **THIS CAN CAUSE PERFORMANCE DEGREDATION**
+        /// </summary>
+        /// <remarks>
+        ///     The render target is bounded by the size of the container, so
+        ///     anything outside this container will be clipped
+        /// </remarks>
+        /// <param name="projectDefault">Whether a sprite will be spawned to show the container as normal</param>
+        public void CastToRenderTarget(bool projectDefault = true)
+        {
+            _isCasting = true;
+            RenderTargetOptions.ContainerRectangleSize =
+                new Point((int)RelativeRectangle.Size.Width, (int)RelativeRectangle.Size.Height);
+            RenderTargetOptions.Enabled = true;
+            RecalculateRectangles();
+
+            DefaultProjectionSprite?.Destroy();
+
+            if (projectDefault)
+            {
+                DefaultProjectionSprite = new RenderProjectionSprite
+                {
+                    Size = Size,
+                    Position = Position,
+                    Rotation = Rotation,
+                    Alignment = Alignment,
+                    Parent = Parent
+                };
+                DefaultProjectionSprite.BindProjectionContainer(this);
+            }
+        }
+
+        public void StopCasting()
+        {
+            _isCasting = false;
+            DefaultProjectionSprite?.Destroy();
+            RenderTargetOptions.Enabled = false;
+            DefaultProjectionSprite = null;
+            RecalculateRectangles();
         }
 
         /// <summary>
@@ -452,6 +804,13 @@ namespace Wobble.Graphics
             };
         }
 
+        public void RecalculateDrawMask()
+        {
+            DrawRectangleMask = Parent?.ChildDrawRectangleMask
+                                ?? new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+            ChildDrawRectangleMask = _isCasting ? RenderTargetOptions.RenderTarget.Value.Bounds : DrawRectangleMask;
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -463,44 +822,89 @@ namespace Wobble.Graphics
         /// </summary>
         protected void RecalculateRectangles()
         {
+            if (_isCasting)
+            {
+                AbsoluteRotation = 0;
+                AbsoluteScale = RenderTargetOptions.Scale;
+            }
+            else
+            {
+                // Update AbsoluteRotation
+                AbsoluteRotation = (Parent?.AbsoluteRotation ?? 0) + Rotation;
+                AbsoluteScale = (Parent?.AbsoluteScale ?? Vector2.One) * Scale;
+            }
+
+            RecalculateDrawMask();
+            RecalculateSelfColor();
+
             // Make it relative to the parent.
+            var width = RelativeWidth;
+            var height = RelativeHeight;
+            var x = Position.X.Value;
+            var y = Position.Y.Value;
+
+            RelativeRectangle = new RectangleF(x, y, width, height);
             if (Parent != null)
             {
-                var width = Size.X.Value + Parent.ScreenRectangle.Width * WidthScale;
-                var height = Size.Y.Value + Parent.ScreenRectangle.Height * HeightScale;
-                var x = Position.X.Value;
-                var y = Position.Y.Value;
-
-                RelativeRectangle = new RectangleF(x, y, width, height);
-                ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle);
+                AlignedRelativeRectangle =
+                    GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.RelativeRectangle, true);
+                ScreenRectangle = GraphicsHelper.Transform(_scaledAlignedRelativeRectangle,
+                    Parent._childPositionTransform, Parent.AbsoluteScale);
             }
             // Make it relative to the screen size.
             else
             {
-                var width = Size.X.Value + WindowManager.VirtualScreen.X * WidthScale;
-                var height = Size.Y.Value + WindowManager.VirtualScreen.Y * HeightScale;
-                var x = Position.X.Value;
-                var y = Position.Y.Value;
-
-                RelativeRectangle = new RectangleF(x, y, width, height);
-                ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
+                AlignedRelativeRectangle =
+                    GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle, true);
+                ScreenRectangle = GraphicsHelper.Offset(_scaledAlignedRelativeRectangle, WindowManager.Rectangle);
             }
+
+            // Update the matrix, now that we have AlignedRelativeRectangle calculated
+            // Note that this calculation of AlignedRelativeRectangle and ScreenRectangle relies on the parent's
+            // transform, and the parent's matrices are calculated before RecalculateRectangles() is called, had there
+            // been an update to the parent.
+            RecalculateTransformMatrix();
+
+            var relativeBoundingRectangle =
+                GraphicsHelper.MinimumBoundingRectangle(ScreenRectangle, AbsoluteRotation, true);
 
             // Recalculate the border points.
             if (Border != null)
             {
                 Border.Points = new List<Vector2>()
                 {
-                    new Vector2(0, 0),
-                    new Vector2(Width, 0),
-                    new Vector2(Width, Height),
-                    new Vector2(0, Height),
-                    new Vector2(0, 0)
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Top),
+                    new Vector2(relativeBoundingRectangle.Right, relativeBoundingRectangle.Top),
+                    new Vector2(relativeBoundingRectangle.Right, relativeBoundingRectangle.Bottom),
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Bottom),
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Top)
                 };
             }
 
+            // (0, 0) * ChildPositionTransform + relativeBoundingRectangle.Position
+            // TopLeft absolute coordinate offset by the top left of relative bounding rect
+            // gives the screen bounding rect
+            ScreenMinimumBoundingRectangle =
+                new RectangleF(
+                    _childPositionTransform.Translation + relativeBoundingRectangle.Position,
+                    relativeBoundingRectangle.Size);
+
             for (var i = 0; i < Children.Count; i++)
                 Children[i].RecalculateRectangles();
+
+            if (DefaultProjectionSprite != null)
+            {
+                DefaultProjectionSprite.Parent = Parent;
+                DefaultProjectionSprite.Size = Size;
+                DefaultProjectionSprite.Scale = Scale;
+                DefaultProjectionSprite.Rotation = Rotation;
+                DefaultProjectionSprite.Position = Position;
+                DefaultProjectionSprite.Alignment = Alignment;
+            }
+
+            RenderTargetOptions.ContainerRectangleSize =
+                new Point((int)RelativeRectangle.Width, (int)RelativeRectangle.Height);
+            RenderTargetOptions.ResetRenderTarget();
 
             // Raise recalculated event.
             OnRectangleRecalculated();
@@ -522,6 +926,21 @@ namespace Wobble.Graphics
         ///     This is usually performed once every initial draw call.
         /// </summary>
         internal static void ResetTotalDrawnCount() => TotalDrawn = 0;
+
+        private void DrawToRenderTarget(GameTime gameTime)
+        {
+            if (!_isCasting)
+                return;
+
+            GameBase.Game.TryEndBatch();
+            GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTargetOptions.RenderTarget.Value);
+            GameBase.Game.GraphicsDevice.Clear(RenderTargetOptions.BackgroundColor);
+
+            Draw(gameTime);
+
+            // Attempt to end the spritebatch
+            _ = GameBase.Game.TryEndBatch();
+        }
 
         /// <summary>
         ///     Performs all of the Animations in the queue.
@@ -553,23 +972,26 @@ namespace Wobble.Graphics
                             AnimationWaitTime = animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.X:
-                            X = (int) animation.PerformInterpolation(gameTime);
+                            X = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Y:
-                            Y = (int) animation.PerformInterpolation(gameTime);
+                            Y = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Width:
-                            Width = (int) animation.PerformInterpolation(gameTime);
+                            Width = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Height:
-                            Height = (int) animation.PerformInterpolation(gameTime);
+                            Height = (int)animation.PerformInterpolation(gameTime);
+                            break;
+                        case AnimationProperty.UIAlpha:
+                            UIAlpha = animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Alpha:
                             var type = GetType();
 
                             if (this is Sprite)
                             {
-                                var sprite = (Sprite) this;
+                                var sprite = (Sprite)this;
                                 sprite.Alpha = animation.PerformInterpolation(gameTime);
                             }
 
@@ -577,7 +999,7 @@ namespace Wobble.Graphics
                         case AnimationProperty.Rotation:
                             if (this is Sprite)
                             {
-                                var sprite = (Sprite) this;
+                                var sprite = (Sprite)this;
                                 sprite.Rotation = animation.PerformInterpolation(gameTime);
                             }
                             else
@@ -587,7 +1009,7 @@ namespace Wobble.Graphics
                         case AnimationProperty.Color:
                             if (this is Sprite)
                             {
-                                var sprite = (Sprite) this;
+                                var sprite = (Sprite)this;
                                 sprite.Tint = animation.PerformColorInterpolation(gameTime);
                             }
 
@@ -624,30 +1046,26 @@ namespace Wobble.Graphics
                                     case AnimationProperty.Height:
                                         a.Start = Height;
                                         break;
+                                    case AnimationProperty.Rotation:
+                                        a.Start = Rotation;
+                                        break;
+                                    case AnimationProperty.UIAlpha:
+                                        a.Start = UIAlpha;
+                                        break;
                                     case AnimationProperty.Alpha:
                                         var type = GetType();
 
                                         if (this is Sprite)
                                         {
-                                            var sprite = (Sprite) this;
+                                            var sprite = (Sprite)this;
                                             a.Start = sprite.Alpha;
                                         }
-
-                                        break;
-                                    case AnimationProperty.Rotation:
-                                        if (this is Sprite)
-                                        {
-                                            var sprite = (Sprite) this;
-                                            a.Start = sprite.Rotation;
-                                        }
-                                        else
-                                            throw new NotImplementedException();
 
                                         break;
                                     case AnimationProperty.Color:
                                         if (this is Sprite)
                                         {
-                                            var sprite = (Sprite) this;
+                                            var sprite = (Sprite)this;
                                             a.StartColor = sprite.Tint;
                                         }
 
@@ -680,7 +1098,8 @@ namespace Wobble.Graphics
         ///     Returns if the Drawable is currently hovered
         /// </summary>
         /// <returns></returns>
-        public bool IsHovered() => GraphicsHelper.RectangleContains(ScreenRectangle, MouseManager.CurrentState.Position);
+        public bool IsHovered() =>
+            GraphicsHelper.RectangleContains(ScreenRectangle, MouseManager.CurrentState.Position);
 
         /// <summary>
         ///     Removes all previously scheduled updates, and schedules a new one to run in the next frame
@@ -815,6 +1234,20 @@ namespace Wobble.Graphics
                 Animations.Add(new Animation(AnimationProperty.Width, easingType, Width, size.X, time));
                 Animations.Add(new Animation(AnimationProperty.Height, easingType, Height, size.Y, time));
             }
+
+            return this;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="alpha"></param>
+        /// <param name="easingType"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public Drawable UIFadeTo(float alpha, Easing easingType, int time)
+        {
+            lock (Animations)
+                Animations.Add(new Animation(AnimationProperty.UIAlpha, easingType, UIAlpha, alpha, time));
 
             return this;
         }

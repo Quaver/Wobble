@@ -36,7 +36,7 @@ namespace Wobble.Graphics.Primitives
                 return;
 
             Primitives2D.DrawPoints(GameBase.Game.SpriteBatch,
-                new Vector2(RenderRectangle.X, RenderRectangle.Y), Points, Tint * Alpha, Thickness);
+                new Vector2(RenderRectangle.X, RenderRectangle.Y), Points, AbsoluteColor, Thickness);
         }
     }
 }

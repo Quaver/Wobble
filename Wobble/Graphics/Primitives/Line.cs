@@ -44,7 +44,7 @@ namespace Wobble.Graphics.Primitives
                 return;
 
             GameBase.Game.SpriteBatch.DrawLine(new Vector2(RenderRectangle.X, RenderRectangle.Y),
-                EndPosition, Tint * Alpha, Thickness);
+                EndPosition, AbsoluteColor, Thickness);
         }
     }
 }
