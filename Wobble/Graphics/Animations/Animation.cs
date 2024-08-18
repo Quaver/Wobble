@@ -95,7 +95,7 @@ namespace Wobble.Graphics.Animations
             var val = EasingFunctions.Perform(EasingType, Start, End, (float)(CurrentAnimationTime / Time));
 
             if (Properties == AnimationProperty.Wait)
-                val = (float) CurrentAnimationTime;
+                val = (float)CurrentAnimationTime;
 
             if (Math.Abs(val - End) < 0.01)
                 Done = true;
@@ -115,14 +115,14 @@ namespace Wobble.Graphics.Animations
             if (CurrentAnimationTime > Time)
                 CurrentAnimationTime = Time;
 
-            var r = EasingFunctions.Perform(EasingType, StartColor.R, EndColor.R, (float) (CurrentAnimationTime / Time));
-            var g = EasingFunctions.Perform(EasingType, StartColor.G, EndColor.G, (float) (CurrentAnimationTime / Time));
-            var b = EasingFunctions.Perform(EasingType, StartColor.B, EndColor.B, (float) (CurrentAnimationTime / Time));
+            var r = EasingFunctions.Perform(EasingType, StartColor.R, EndColor.R, (float)(CurrentAnimationTime / Time));
+            var g = EasingFunctions.Perform(EasingType, StartColor.G, EndColor.G, (float)(CurrentAnimationTime / Time));
+            var b = EasingFunctions.Perform(EasingType, StartColor.B, EndColor.B, (float)(CurrentAnimationTime / Time));
 
             if (Math.Abs(r - EndColor.R) < 0.01 && Math.Abs(g - EndColor.G) < 0.01 && Math.Abs(b - EndColor.B) < 0.01)
                 Done = true;
 
-            return new Color((int) r, (int) g, (int) b);
+            return new Color((int)r, (int)g, (int)b);
         }
     }
 }

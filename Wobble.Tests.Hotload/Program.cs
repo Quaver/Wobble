@@ -17,7 +17,7 @@ namespace Wobble.Tests.Hotload
             // Change the working directory to where the executable is.
             Directory.SetCurrentDirectory(WorkingDirectory);
             Environment.CurrentDirectory = WorkingDirectory;
-            
+
             using (var game = new WobbleTestsGameHotload(new HotLoader("../../../../Wobble.Tests/")))
                 game.Run();
         }

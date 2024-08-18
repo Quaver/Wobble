@@ -49,9 +49,9 @@ namespace Wobble.Extended.HotReload.Screens
                 Alignment = Alignment.MidCenter
             };
 
-            Browser = new HotLoadingBrowser(this, testScreens) {Parent = Container};
+            Browser = new HotLoadingBrowser(this, testScreens) { Parent = Container };
 
-            var game = (HotLoaderGame) GameBase.Game;
+            var game = (HotLoaderGame)GameBase.Game;
             HotLoader = game.HotLoader;
 
             Logger.Debug("Press the Tilde (~) key to open/close the test browser", LogType.Runtime);
@@ -103,7 +103,7 @@ namespace Wobble.Extended.HotReload.Screens
             var targetAlpha = HotLoader.IsCompiling || HotLoader.CompilationFailed ? 1 : 0;
 
             CompilingNotification.Alpha = MathHelper.Lerp(CompilingNotification.Alpha, targetAlpha,
-                (float) Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
+                (float)Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
 
             if (!HotLoader.IsCompiling && HotLoader.CompilationFailed && CompilingNotification.Text.Text.Contains("re-compiled"))
                 CompilingNotification.SetCompilationFailedText();

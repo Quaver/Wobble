@@ -18,7 +18,7 @@ namespace Wobble.Screens
         /// </summary>
         public abstract ScreenView View { get; protected set; }
 
-         /// <inheritdoc />
+        /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>

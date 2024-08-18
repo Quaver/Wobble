@@ -14,7 +14,7 @@
 		/// <summary>
 		/// Called when the Discord Client wishes to enter a game to spectate
 		/// </summary>
-		Spectate = 0x1, 
+		Spectate = 0x1,
 
 		/// <summary>
 		/// Called when the Discord Client wishes to enter a game to play.

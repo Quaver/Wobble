@@ -43,6 +43,6 @@ namespace Wobble.Graphics
         ///     Converts to normal rect.
         /// </summary>
         /// <returns></returns>
-        public Rectangle ToRectangle() => new Rectangle((int) X, (int) Y, (int) Width, (int) Height);
+        public Rectangle ToRectangle() => new Rectangle((int)X, (int)Y, (int)Width, (int)Height);
     }
 }

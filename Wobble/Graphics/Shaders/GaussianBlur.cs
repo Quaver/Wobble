@@ -232,7 +232,7 @@ namespace Wobble.Graphics.Shaders
             var renderTarget1 = new RenderTarget2D(GameBase.Game.GraphicsDevice, renderTargetWidth, renderTargetHeight, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
-            var renderTarget2 = new RenderTarget2D(GameBase.Game.GraphicsDevice,renderTargetWidth, renderTargetHeight, false,
+            var renderTarget2 = new RenderTarget2D(GameBase.Game.GraphicsDevice, renderTargetWidth, renderTargetHeight, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
                 DepthFormat.None);
 

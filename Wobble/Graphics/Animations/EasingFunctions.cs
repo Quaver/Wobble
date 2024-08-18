@@ -93,7 +93,7 @@ namespace Wobble.Graphics.Animations
         public static float Spring(float start, float end, float value)
         {
             value = MathHelper.Clamp(value, 0, 1);
-            value = (float) ((Math.Sin(value * Math.PI * (0.2f + 2.5f * value * value * value)) * Math.Pow(1f - value, 2.2f) + value) * (1f + (1.2f * (1f - value))));
+            value = (float)((Math.Sin(value * Math.PI * (0.2f + 2.5f * value * value * value)) * Math.Pow(1f - value, 2.2f) + value) * (1f + (1.2f * (1f - value))));
             return start + (end - start) * value;
         }
 
@@ -187,53 +187,53 @@ namespace Wobble.Graphics.Animations
         public static float EaseInSine(float start, float end, float value)
         {
             end -= start;
-            return (float) (-end * Math.Cos(value * (Math.PI * 0.5f)) + end + start);
+            return (float)(-end * Math.Cos(value * (Math.PI * 0.5f)) + end + start);
         }
 
         public static float EaseOutSine(float start, float end, float value)
         {
             end -= start;
-            return (float) (end * Math.Sin(value * (Math.PI * 0.5f)) + start);
+            return (float)(end * Math.Sin(value * (Math.PI * 0.5f)) + start);
         }
 
         public static float EaseInOutSine(float start, float end, float value)
         {
             end -= start;
-            return (float) (-end * 0.5f * (Math.Cos(Math.PI * value) - 1) + start);
+            return (float)(-end * 0.5f * (Math.Cos(Math.PI * value) - 1) + start);
         }
 
         public static float EaseInExpo(float start, float end, float value)
         {
             end -= start;
-            return (float) (end * Math.Pow(2, 10 * (value - 1)) + start);
+            return (float)(end * Math.Pow(2, 10 * (value - 1)) + start);
         }
 
         public static float EaseOutExpo(float start, float end, float value)
         {
             end -= start;
-            return (float) (end * (-Math.Pow(2, -10 * value) + 1) + start);
+            return (float)(end * (-Math.Pow(2, -10 * value) + 1) + start);
         }
 
         public static float EaseInOutExpo(float start, float end, float value)
         {
             value /= .5f;
             end -= start;
-            if (value < 1) return (float) (end * 0.5f * Math.Pow(2, 10 * (value - 1)) + start);
+            if (value < 1) return (float)(end * 0.5f * Math.Pow(2, 10 * (value - 1)) + start);
             value--;
-            return (float) (end * 0.5f * (-Math.Pow(2, -10 * value) + 2) + start);
+            return (float)(end * 0.5f * (-Math.Pow(2, -10 * value) + 2) + start);
         }
 
         public static float EaseInCirc(float start, float end, float value)
         {
             end -= start;
-            return (float) (-end * (Math.Sqrt(1 - value * value) - 1) + start);
+            return (float)(-end * (Math.Sqrt(1 - value * value) - 1) + start);
         }
 
         public static float EaseOutCirc(float start, float end, float value)
         {
             value--;
             end -= start;
-            return (float) (end * Math.Sqrt(1 - value * value) + start);
+            return (float)(end * Math.Sqrt(1 - value * value) + start);
         }
 
         public static float EaseInOutCirc(float start, float end, float value)
@@ -241,10 +241,10 @@ namespace Wobble.Graphics.Animations
             value /= .5f;
             end -= start;
             if (value < 1)
-                return (float) (-end * 0.5f * (Math.Sqrt(1 - value * value) - 1) + start);
+                return (float)(-end * 0.5f * (Math.Sqrt(1 - value * value) - 1) + start);
 
             value -= 2;
-            return (float) (end * 0.5f * (Math.Sqrt(1 - value * value) + 1) + start);
+            return (float)(end * 0.5f * (Math.Sqrt(1 - value * value) + 1) + start);
         }
 
         public static float EaseInBounce(float start, float end, float value)
@@ -338,10 +338,10 @@ namespace Wobble.Graphics.Animations
             }
             else
             {
-                s = (float) (p / (2 * Math.PI) * Math.Asin(end / a));
+                s = (float)(p / (2 * Math.PI) * Math.Asin(end / a));
             }
 
-            return (float) (-(a * Math.Pow(2, 10 * (value -= 1)) * Math.Sin((value * d - s) * (2 * Math.PI) / p)) + start);
+            return (float)(-(a * Math.Pow(2, 10 * (value -= 1)) * Math.Sin((value * d - s) * (2 * Math.PI) / p)) + start);
         }
 
         public static float EaseOutElastic(float start, float end, float value)
@@ -364,10 +364,10 @@ namespace Wobble.Graphics.Animations
             }
             else
             {
-                s = (float) (p / (2 * Math.PI) * Math.Asin(end / a));
+                s = (float)(p / (2 * Math.PI) * Math.Asin(end / a));
             }
 
-            return (float) (a * Math.Pow(2, -10 * value) * Math.Sin((value * d - s) * (2 * Math.PI) / p) + end + start);
+            return (float)(a * Math.Pow(2, -10 * value) * Math.Sin((value * d - s) * (2 * Math.PI) / p) + end + start);
         }
 
         public static float EaseInOutElastic(float start, float end, float value)
@@ -390,13 +390,13 @@ namespace Wobble.Graphics.Animations
             }
             else
             {
-                s = (float) (p / (2 * Math.PI) * Math.Asin(end / a));
+                s = (float)(p / (2 * Math.PI) * Math.Asin(end / a));
             }
 
             if (value < 1)
-                return (float) (-0.5f * (a * Math.Pow(2, 10 * (value -= 1)) * Math.Sin((value * d - s) * (2 * Math.PI) / p)) + start);
+                return (float)(-0.5f * (a * Math.Pow(2, 10 * (value -= 1)) * Math.Sin((value * d - s) * (2 * Math.PI) / p)) + start);
 
-            return (float) (a * Math.Pow(2, -10 * (value -= 1)) * Math.Sin((value * d - s) * (2 * Math.PI) / p) * 0.5f + end + start);
+            return (float)(a * Math.Pow(2, -10 * (value -= 1)) * Math.Sin((value * d - s) * (2 * Math.PI) / p) * 0.5f + end + start);
         }
 
         //
@@ -505,25 +505,25 @@ namespace Wobble.Graphics.Animations
             return (5f / 2f) * end * value * value * value * value;
         }
 
-        public static float EaseInSineD(float start, float end, float value) => (float) ((end - start) * 0.5f * Math.PI * Math.Sin(0.5f * Math.PI * value));
+        public static float EaseInSineD(float start, float end, float value) => (float)((end - start) * 0.5f * Math.PI * Math.Sin(0.5f * Math.PI * value));
 
         public static float EaseOutSineD(float start, float end, float value)
         {
             end -= start;
-            return (float) ((Math.PI * 0.5f) * end * Math.Cos(value * (Math.PI * 0.5f)));
+            return (float)((Math.PI * 0.5f) * end * Math.Cos(value * (Math.PI * 0.5f)));
         }
 
         public static float EaseInOutSineD(float start, float end, float value)
         {
             end -= start;
-            return (float) (end * 0.5f * Math.PI * Math.Cos(Math.PI * value));
+            return (float)(end * 0.5f * Math.PI * Math.Cos(Math.PI * value));
         }
-        public static float EaseInExpoD(float start, float end, float value) => (float) (10f * NATURAL_LOG_OF_2 * (end - start) * Math.Pow(2f, 10f * (value - 1)));
+        public static float EaseInExpoD(float start, float end, float value) => (float)(10f * NATURAL_LOG_OF_2 * (end - start) * Math.Pow(2f, 10f * (value - 1)));
 
         public static float EaseOutExpoD(float start, float end, float value)
         {
             end -= start;
-            return (float) (5f * NATURAL_LOG_OF_2 * end * Math.Pow(2f, 1f - 10f * value));
+            return (float)(5f * NATURAL_LOG_OF_2 * end * Math.Pow(2f, 1f - 10f * value));
         }
 
         public static float EaseInOutExpoD(float start, float end, float value)
@@ -533,21 +533,21 @@ namespace Wobble.Graphics.Animations
 
             if (value < 1)
             {
-                return (float) (5f * NATURAL_LOG_OF_2 * end * Math.Pow(2f, 10f * (value - 1)));
+                return (float)(5f * NATURAL_LOG_OF_2 * end * Math.Pow(2f, 10f * (value - 1)));
             }
 
             value--;
 
-            return (float) ((5f * NATURAL_LOG_OF_2 * end) / (Math.Pow(2f, 10f * value)));
+            return (float)((5f * NATURAL_LOG_OF_2 * end) / (Math.Pow(2f, 10f * value)));
         }
 
-        public static float EaseInCircD(float start, float end, float value) => (float) (((end - start) * value) / Math.Sqrt(1f - value * value));
+        public static float EaseInCircD(float start, float end, float value) => (float)(((end - start) * value) / Math.Sqrt(1f - value * value));
 
         public static float EaseOutCircD(float start, float end, float value)
         {
             value--;
             end -= start;
-            return (float) ((-end * value) / Math.Sqrt(1f - value * value));
+            return (float)((-end * value) / Math.Sqrt(1f - value * value));
         }
 
         public static float EaseInOutCircD(float start, float end, float value)
@@ -557,12 +557,12 @@ namespace Wobble.Graphics.Animations
 
             if (value < 1)
             {
-                return (float) ((end * value) / (2f * Math.Sqrt(1f - value * value)));
+                return (float)((end * value) / (2f * Math.Sqrt(1f - value * value)));
             }
 
             value -= 2;
 
-            return (float) ((-end * value) / (2f * Math.Sqrt(1f - value * value)));
+            return (float)((-end * value) / (2f * Math.Sqrt(1f - value * value)));
         }
 
         public static float EaseInBounceD(float start, float end, float value)
@@ -658,18 +658,18 @@ namespace Wobble.Graphics.Animations
 
             if (a == 0f || a < Math.Abs(end))
             {
-                a = (int) end;
+                a = (int)end;
                 s = p / 4;
             }
             else
             {
-                s = (float) (p / (2 * Math.PI) * Math.Asin(end / a));
+                s = (float)(p / (2 * Math.PI) * Math.Asin(end / a));
             }
 
             var c = 2 * Math.PI;
 
             // From an online derivative calculator, kinda hoping it is right.
-            return (float) (((-a) * d * c * Math.Cos((c * (d * (value - 1f) - s)) / p)) / p -
+            return (float)(((-a) * d * c * Math.Cos((c * (d * (value - 1f) - s)) / p)) / p -
                             5f * NATURAL_LOG_OF_2 * a * Math.Sin((c * (d * (value - 1f) - s)) / p) *
                             Math.Pow(2f, 10f * (value - 1f) + 1f));
         }
@@ -690,10 +690,10 @@ namespace Wobble.Graphics.Animations
             }
             else
             {
-                s = (float) (p / (2 * Math.PI) * Math.Asin(end / a));
+                s = (float)(p / (2 * Math.PI) * Math.Asin(end / a));
             }
 
-            return (float) ((a * Math.PI * d * Math.Pow(2f, 1f - 10f * value) *
+            return (float)((a * Math.PI * d * Math.Pow(2f, 1f - 10f * value) *
                              Math.Cos((2f * Math.PI * (d * value - s)) / p)) / p - 5f * NATURAL_LOG_OF_2 * a *
                             Math.Pow(2f, 1f - 10f * value) * Math.Sin((2f * Math.PI * (d * value - s)) / p));
         }
@@ -714,20 +714,20 @@ namespace Wobble.Graphics.Animations
             }
             else
             {
-                s = (float) (p / (2 * Math.PI) * Math.Asin(end / a));
+                s = (float)(p / (2 * Math.PI) * Math.Asin(end / a));
             }
 
             if (value < 1)
             {
                 value -= 1;
 
-                return (float) (-5f * NATURAL_LOG_OF_2 * a * Math.Pow(2f, 10f * value) * Math.Sin(2 * Math.PI * (d * value - 2f) / p) -
+                return (float)(-5f * NATURAL_LOG_OF_2 * a * Math.Pow(2f, 10f * value) * Math.Sin(2 * Math.PI * (d * value - 2f) / p) -
                                 a * Math.PI * d * Math.Pow(2f, 10f * value) * Math.Cos(2 * Math.PI * (d * value - s) / p) / p);
             }
 
             value -= 1;
 
-            return (float) (a * Math.PI * d * Math.Cos(2f * Math.PI * (d * value - s) / p) / (p * Math.Pow(2f, 10f * value)) -
+            return (float)(a * Math.PI * d * Math.Cos(2f * Math.PI * (d * value - s) / p) / (p * Math.Pow(2f, 10f * value)) -
                             5f * NATURAL_LOG_OF_2 * a * Math.Sin(2f * Math.PI * (d * value - s) / p) / (Math.Pow(2f, 10f * value)));
         }
 
@@ -737,7 +737,7 @@ namespace Wobble.Graphics.Animations
             end -= start;
 
             // Damn... Thanks http://www.derivative-calculator.net/
-            return (float) (end * (6f * (1f - value) / 5f + 1f) * (-2.2f * Math.Pow(1f - value, 1.2f) *
+            return (float)(end * (6f * (1f - value) / 5f + 1f) * (-2.2f * Math.Pow(1f - value, 1.2f) *
                                                                    Math.Sin(Math.PI * value * (2.5f * value * value * value + 0.2f)) + Math.Pow(1f - value, 2.2f) *
                                                                    (Math.PI * (2.5f * value * value * value + 0.2f) + 7.5f * Math.PI * value * value * value) *
                                                                    Math.Cos(Math.PI * value * (2.5f * value * value * value + 0.2f)) + 1f) -

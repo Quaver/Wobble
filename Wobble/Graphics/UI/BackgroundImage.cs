@@ -66,7 +66,7 @@ namespace Wobble.Graphics.UI
             }
         }
 
-    /// <inheritdoc />
+        /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="image">The background image to use.</param>
@@ -135,7 +135,7 @@ namespace Wobble.Graphics.UI
             Size = new ScalableVector2(width, height);
 
             // "crop off" the excess
-            Offset = new Vector2(-(width  - WindowManager.VirtualScreen.X) / 2.0f,
+            Offset = new Vector2(-(width - WindowManager.VirtualScreen.X) / 2.0f,
                                  -(height - WindowManager.VirtualScreen.Y) / 2.0f);
 
             X = Offset.X;

@@ -53,10 +53,10 @@ namespace Wobble.Logging
             for (var i = 0; i < Container.Children.Count; i++)
             {
                 Container.Children[i].Y = MathHelper.Lerp(Container.Children[i].Y, GetLogY(i),
-                    (float) Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 10, 1));
+                    (float)Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 10, 1));
             }
 
-           Container?.Update(gameTime);
+            Container?.Update(gameTime);
         }
 
         /// <summary>
