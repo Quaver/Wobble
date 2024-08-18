@@ -89,7 +89,7 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         /// </summary>
         public ImFontPtr DefaultFontPtr { get; private set; }
-        
+
         public float Scale { get; }
 
         /// <summary>

@@ -79,8 +79,8 @@ namespace Wobble.Tests.Screens.Selection
         /// </summary>
         private void CreateSelectionButtons()
         {
-            var screen = (SelectionScreen) Screen;
-            var buttonsInColumn = (int) ((WindowManager.VirtualScreen.Y - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
+            var screen = (SelectionScreen)Screen;
+            var buttonsInColumn = (int)((WindowManager.VirtualScreen.Y - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
 
             var i = 0;
             foreach (var testScreens in screen.TestCasesScreens)

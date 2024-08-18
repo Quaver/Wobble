@@ -71,7 +71,7 @@ namespace Wobble
         /// <summary>
         ///     The amount of time the game has been running.
         /// </summary>
-        public long TimeRunning => (long) TimeRunningPrecise;
+        public long TimeRunning => (long)TimeRunningPrecise;
 
         /// <summary>
         ///     For any sprites that are being displayed globally, this is the container that it should

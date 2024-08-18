@@ -68,7 +68,7 @@ namespace Wobble.Graphics.UI
             if (MouseManager.CurrentState.LeftButton == ButtonState.Pressed)
             {
                 // Calculate the new size that the cursor will be when pressed.
-                var newSize = MathHelper.Lerp(Width, OriginalSize * ExpandScale, (float) Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
+                var newSize = MathHelper.Lerp(Width, OriginalSize * ExpandScale, (float)Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
                 Size = new ScalableVector2(newSize, newSize);
             }
             else
@@ -119,7 +119,7 @@ namespace Wobble.Graphics.UI
             CurrentAnimationTime += gameTime.ElapsedGameTime.TotalMilliseconds;
             var lerpTime = CurrentAnimationTime / AnimationCompletionTime;
 
-            Alpha = MathHelper.Lerp(Alpha, IsShown ? 1 : 0, (float) lerpTime);
+            Alpha = MathHelper.Lerp(Alpha, IsShown ? 1 : 0, (float)lerpTime);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Wobble.Audio
             if (!Bass.Init(device.Value))
             {
                 var error = Bass.LastError;
-                throw new AudioEngineException($"BASS has failed to initialize (error code: {(int) error}, name: \"{error}\")! Are your platform-specific dlls present?");
+                throw new AudioEngineException($"BASS has failed to initialize (error code: {(int)error}, name: \"{error}\")! Are your platform-specific dlls present?");
             }
 
             Logger.Debug($"BASS version: {Bass.Version}", LogType.Runtime);

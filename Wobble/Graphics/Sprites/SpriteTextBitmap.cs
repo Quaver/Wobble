@@ -203,9 +203,9 @@ namespace Wobble.Graphics.Sprites
             if (Font == null)
                 return null;
 
-            if (Font.MeasureString(text).Width * ((float) FontSize / Font.LineHeight) < MaxWidth)
+            if (Font.MeasureString(text).Width * ((float)FontSize / Font.LineHeight) < MaxWidth)
             {
-                Width = Font.MeasureString(text).Width * ((float) FontSize / Font.LineHeight);
+                Width = Font.MeasureString(text).Width * ((float)FontSize / Font.LineHeight);
                 Height = Font.MeasureString(text).Height * ((float)FontSize / Font.LineHeight);
 
                 return text;

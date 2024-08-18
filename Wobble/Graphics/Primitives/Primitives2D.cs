@@ -32,15 +32,15 @@ namespace Wobble.Graphics.Primitives
 	/// </summary>
 	public static class Primitives2D
 	{
-	    /// <summary>
-	    /// </summary>
-		private static readonly Dictionary<string, List<Vector2>> circleCache  = new Dictionary<string, List<Vector2>>();
+		/// <summary>
+		/// </summary>
+		private static readonly Dictionary<string, List<Vector2>> circleCache = new Dictionary<string, List<Vector2>>();
 
-	    /// <summary>
-	    /// </summary>
-	    private static Texture2D pixel { get; set; }
+		/// <summary>
+		/// </summary>
+		private static Texture2D pixel { get; set; }
 
-	    /// <summary>
+		/// <summary>
 		/// Draws a filled rectangle
 		/// </summary>
 		/// <param name="spriteBatch">The destination drawing surface</param>
@@ -85,8 +85,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color to draw the rectangle in</param>
 		public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    FillRectangle(spriteBatch, location, size, color, 0.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			FillRectangle(spriteBatch, location, size, color, 0.0f);
 		}
 
 
@@ -107,14 +107,14 @@ namespace Wobble.Graphics.Primitives
 
 			// stretch the pixel between the two vectors
 			spriteBatch.Draw(pixel,
-			                 location,
-			                 null,
-			                 color,
-			                 angle,
-			                 Vector2.Zero,
-			                 size,
-			                 SpriteEffects.None,
-			                 0);
+							 location,
+							 null,
+							 color,
+							 angle,
+							 Vector2.Zero,
+							 size,
+							 SpriteEffects.None,
+							 0);
 		}
 
 
@@ -129,8 +129,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color to draw the rectangle in</param>
 		public static void FillRectangle(this SpriteBatch spriteBatch, float x, float y, float w, float h, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, 0.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, 0.0f);
 		}
 
 
@@ -146,8 +146,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="angle">The angle of the rectangle in radians</param>
 		public static void FillRectangle(this SpriteBatch spriteBatch, float x, float y, float w, float h, Color color, float angle)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, angle);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			FillRectangle(spriteBatch, new Vector2(x, y), new Vector2(w, h), color, angle);
 		}
 
 		/// <summary>
@@ -158,8 +158,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color to draw the rectangle in</param>
 		public static void DrawRectangle(this SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawRectangle(spriteBatch, rect, color, 1.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawRectangle(spriteBatch, rect, color, 1.0f);
 		}
 
 
@@ -192,8 +192,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color to draw the rectangle in</param>
 		public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color, 1.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color, 1.0f);
 		}
 
 
@@ -207,8 +207,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="thickness">The thickness of the line</param>
 		public static void DrawRectangle(this SpriteBatch spriteBatch, Vector2 location, Vector2 size, Color color, float thickness)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color, thickness);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawRectangle(spriteBatch, new Rectangle((int)location.X, (int)location.Y, (int)size.X, (int)size.Y), color, thickness);
 		}
 
 		/// <summary>
@@ -222,8 +222,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color to use</param>
 		public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, 1.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, 1.0f);
 		}
 
 
@@ -239,8 +239,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="thickness">The thickness of the line</param>
 		public static void DrawLine(this SpriteBatch spriteBatch, float x1, float y1, float x2, float y2, Color color, float thickness)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, thickness);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, thickness);
 		}
 
 
@@ -253,8 +253,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color to use</param>
 		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point1, Vector2 point2, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawLine(spriteBatch, point1, point2, color, 1.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawLine(spriteBatch, point1, point2, color, 1.0f);
 		}
 
 
@@ -288,8 +288,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color to use</param>
 		public static void DrawLine(this SpriteBatch spriteBatch, Vector2 point, float length, float angle, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawLine(spriteBatch, point, length, angle, color, 1.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawLine(spriteBatch, point, length, angle, color, 1.0f);
 		}
 
 
@@ -311,20 +311,20 @@ namespace Wobble.Graphics.Primitives
 
 			// stretch the pixel between the two vectors
 			spriteBatch.Draw(pixel,
-			                 point,
-			                 null,
-			                 color,
-			                 angle,
-			                 Vector2.Zero,
-			                 new Vector2(length, thickness),
-			                 SpriteEffects.None,
-			                 0);
+							 point,
+							 null,
+							 color,
+							 angle,
+							 Vector2.Zero,
+							 new Vector2(length, thickness),
+							 SpriteEffects.None,
+							 0);
 		}
 
 		public static void PutPixel(this SpriteBatch spriteBatch, float x, float y, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    PutPixel(spriteBatch, new Vector2(x, y), color);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			PutPixel(spriteBatch, new Vector2(x, y), color);
 		}
 
 
@@ -348,8 +348,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color of the circle</param>
 		public static void DrawCircle(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, 1.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawPoints(spriteBatch, center, CreateCircle(radius, sides), color, 1.0f);
 		}
 
 
@@ -410,8 +410,8 @@ namespace Wobble.Graphics.Primitives
 		/// <param name="color">The color of the arc</param>
 		public static void DrawArc(this SpriteBatch spriteBatch, Vector2 center, float radius, int sides, float startingAngle, float radians, Color color)
 		{
-		    // ReSharper disable once ArrangeMethodOrOperatorBody
-		    DrawArc(spriteBatch, center, radius, sides, startingAngle, radians, color, 1.0f);
+			// ReSharper disable once ArrangeMethodOrOperatorBody
+			DrawArc(spriteBatch, center, radius, sides, startingAngle, radians, color, 1.0f);
 		}
 
 
@@ -433,13 +433,13 @@ namespace Wobble.Graphics.Primitives
 			DrawPoints(spriteBatch, center, arc, color, thickness);
 		}
 
-	    /// <summary>
-	    /// </summary>
-	    /// <param name="spriteBatch"></param>
+		/// <summary>
+		/// </summary>
+		/// <param name="spriteBatch"></param>
 		private static void CreateThePixel(SpriteBatch spriteBatch)
 		{
 			pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-			pixel.SetData(new[]{ Color.White });
+			pixel.SetData(new[] { Color.White });
 		}
 
 

@@ -40,7 +40,7 @@ namespace Wobble.Discord.RPC
 		/// </summary>
 		public bool Disposed => _disposed;
 
-	    private bool _disposed = false;
+		private bool _disposed = false;
 
 		/// <summary>
 		/// The logger used this client and its associated components. <see cref="ILogger"/> are not called safely and can come from any thread. It is upto the <see cref="ILogger"/> to account for this and apply appropriate thread safe methods.
@@ -48,7 +48,7 @@ namespace Wobble.Discord.RPC
 		public ILogger Logger
 		{
 			get => _logger;
-		    set
+			set
 			{
 				this._logger = value;
 				if (connection != null) connection.Logger = value;
@@ -63,7 +63,7 @@ namespace Wobble.Discord.RPC
 		/// </summary>
 		public int TargetPipe => _pipe;
 
-	    private int _pipe = -1;
+		private int _pipe = -1;
 		private RpcConnection connection;
 
 		/// <summary>
@@ -71,42 +71,45 @@ namespace Wobble.Discord.RPC
 		/// </summary>
 		public RichPresence CurrentPresence => _presence;
 
-	    private RichPresence _presence;
+		private RichPresence _presence;
 
 		/// <summary>
 		/// Current subscription to events. Gets set with <see cref="Subscribe(EventType)"/>, <see cref="UnsubscribeMessage"/> and updated on <see cref="OnSubscribe"/>, <see cref="OnUnsubscribe"/>.
 		/// </summary>
 		public EventType Subscription => _subscription;
 
-	    private EventType _subscription;
+		private EventType _subscription;
 
 		/// <summary>
 		/// The current discord user. This is updated with the ready event and will be null until the event is fired from the connection.
 		/// </summary>
 		public User CurrentUser => _user;
 
-	    private User _user;
+		private User _user;
 
 		/// <summary>
 		/// The current configuration the connection is using. Only becomes available after a ready event.
 		/// </summary>
 		public Configuration Configuration => _configuration;
 
-	    private Configuration _configuration;
+		private Configuration _configuration;
 
 		/// <summary>
 		/// Represents if the client has been <see cref="Initialize"/>
 		/// </summary>
 		public bool IsInitialized => _initialized;
 
-	    private bool _initialized;
+		private bool _initialized;
 
 		/// <summary>
 		/// Forces the connection to shutdown gracefully instead of just aborting the connection.
 		/// <para>This option helps prevents ghosting in applications where the Process ID is a host and the game is executed within the host (ie: the Unity3D editor). This will tell Discord that we have no presence and we are closing the connection manually, instead of waiting for the process to terminate.</para>
 		/// </summary>
-		public bool ShutdownOnly { get => _shutdownOnly;
-		    set { _shutdownOnly = value; if (connection != null) connection.ShutdownOnly = value; } }
+		public bool ShutdownOnly
+		{
+			get => _shutdownOnly;
+			set { _shutdownOnly = value; if (connection != null) connection.ShutdownOnly = value; }
+		}
 		private bool _shutdownOnly = true;
 
 		#region Events

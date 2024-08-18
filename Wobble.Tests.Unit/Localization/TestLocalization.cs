@@ -84,7 +84,7 @@ namespace Wobble.Tests.Unit.Localization
         public void TestInterpolation()
         {
             Setup();
-            
+
             LocalizationManager.SetCurrentLanguage($"{FolderPath}/en.txt");
             Assert.True(LocalizationManager.Get(LocalizationStrings.Results_Found, 3) == "3 Results Found");
         }

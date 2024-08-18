@@ -51,7 +51,7 @@ namespace Wobble.Graphics
                 {
                     // If we've received null for the parent however, that must mean we want to FULLY
                     // destroy and dispose of the object.
-                    for (var i = Children.Count - 1; i >= 0 ; i--)
+                    for (var i = Children.Count - 1; i >= 0; i--)
                         Children[i].Destroy();
                 }
 
@@ -547,23 +547,23 @@ namespace Wobble.Graphics
                             AnimationWaitTime = animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.X:
-                            X = (int) animation.PerformInterpolation(gameTime);
+                            X = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Y:
-                            Y = (int) animation.PerformInterpolation(gameTime);
+                            Y = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Width:
-                            Width = (int) animation.PerformInterpolation(gameTime);
+                            Width = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Height:
-                            Height = (int) animation.PerformInterpolation(gameTime);
+                            Height = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Alpha:
                             var type = GetType();
 
                             if (this is Sprite)
                             {
-                                var sprite = (Sprite) this;
+                                var sprite = (Sprite)this;
                                 sprite.Alpha = animation.PerformInterpolation(gameTime);
                             }
 
@@ -571,7 +571,7 @@ namespace Wobble.Graphics
                         case AnimationProperty.Rotation:
                             if (this is Sprite)
                             {
-                                var sprite = (Sprite) this;
+                                var sprite = (Sprite)this;
                                 sprite.Rotation = animation.PerformInterpolation(gameTime);
                             }
                             else
@@ -581,7 +581,7 @@ namespace Wobble.Graphics
                         case AnimationProperty.Color:
                             if (this is Sprite)
                             {
-                                var sprite = (Sprite) this;
+                                var sprite = (Sprite)this;
                                 sprite.Tint = animation.PerformColorInterpolation(gameTime);
                             }
 
@@ -623,7 +623,7 @@ namespace Wobble.Graphics
 
                                         if (this is Sprite)
                                         {
-                                            var sprite = (Sprite) this;
+                                            var sprite = (Sprite)this;
                                             a.Start = sprite.Alpha;
                                         }
 
@@ -631,7 +631,7 @@ namespace Wobble.Graphics
                                     case AnimationProperty.Rotation:
                                         if (this is Sprite)
                                         {
-                                            var sprite = (Sprite) this;
+                                            var sprite = (Sprite)this;
                                             a.Start = sprite.Rotation;
                                         }
                                         else
@@ -641,7 +641,7 @@ namespace Wobble.Graphics
                                     case AnimationProperty.Color:
                                         if (this is Sprite)
                                         {
-                                            var sprite = (Sprite) this;
+                                            var sprite = (Sprite)this;
                                             a.StartColor = sprite.Tint;
                                         }
 
