@@ -43,7 +43,7 @@ namespace Wobble.Audio.Samples
         public static double GlobalVolume
         {
             get => Bass.GlobalSampleVolume / 100f;
-            set => Bass.GlobalSampleVolume = (int) (value * 100);
+            set => Bass.GlobalSampleVolume = (int)(value * 100);
         }
 
         /// <summary>

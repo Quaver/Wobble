@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Wobble.IO
 {
-   public class ResourceStore<T> : IResourceStore<T>
+    public class ResourceStore<T> : IResourceStore<T>
     {
         private readonly Dictionary<string, Action> actionList = new Dictionary<string, Action>();
 
@@ -93,12 +93,12 @@ namespace Wobble.IO
 
             // Cache miss - get the resource
             foreach (var store in localStores)
-            foreach (var f in filenames)
-            {
-                var result = await store.GetAsync(f);
-                if (result != null)
-                    return result;
-            }
+                foreach (var f in filenames)
+                {
+                    var result = await store.GetAsync(f);
+                    if (result != null)
+                        return result;
+                }
 
             return default;
         }
@@ -136,19 +136,19 @@ namespace Wobble.IO
             // Cache miss - get the resource
             lock (stores)
                 foreach (var store in stores)
-                foreach (var f in filenames)
-                {
-                    try
+                    foreach (var f in filenames)
                     {
-                        var result = store.GetStream(f);
-                        if (result != null)
-                            return result;
+                        try
+                        {
+                            var result = store.GetStream(f);
+                            if (result != null)
+                                return result;
+                        }
+                        catch (Exception)
+                        {
+                            // ignored
+                        }
                     }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
-                }
 
             return null;
         }

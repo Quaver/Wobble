@@ -168,7 +168,7 @@ namespace Wobble.Assets
             var obj = rm.GetObject(file);
 
             if (obj != null)
-                return (byte[]) obj;
+                return (byte[])obj;
 
             Logger.Error($"Resource: {file} was not found. Defaulting to White Box.", LogType.Runtime);
             return GameBase.Game.Resources.Get("Wobble.Resources/UI/Basics/white_box.png");

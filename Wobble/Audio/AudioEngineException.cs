@@ -13,7 +13,7 @@ namespace Wobble.Audio
     /// </summary>
     public class AudioEngineException : Exception
     {
-        public AudioEngineException() {}
-        public AudioEngineException(string message) : base(message) {}
+        public AudioEngineException() { }
+        public AudioEngineException(string message) : base(message) { }
     }
 }
