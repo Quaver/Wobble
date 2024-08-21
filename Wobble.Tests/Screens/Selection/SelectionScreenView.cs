@@ -19,6 +19,7 @@ using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
+using Wobble.Tests.Screens.Tests.MatrixDrawing;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
@@ -102,6 +103,9 @@ namespace Wobble.Tests.Screens.Selection
                 {
                     case ScreenType.DrawingSprites:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestDrawingSpritesScreen());
+                        break;
+                    case ScreenType.MatrixDrawing:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestMatrixDrawingScreen());
                         break;
                     case ScreenType.EasingAnimations:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestEasingAnimationsScreen());
