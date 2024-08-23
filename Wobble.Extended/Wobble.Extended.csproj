@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="../MonoGame/MonoGame.Framework/MonoGame.Framework.DesktopGL.csproj" />
       <ProjectReference Include="../Wobble/Wobble.csproj" />
     </ItemGroup>
 
@@ -15,6 +14,12 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="MonoGame.Framework">
+        <HintPath>..\MonoGame.Framework.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
