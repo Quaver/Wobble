@@ -83,6 +83,9 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         private ImGuiOptions Options { get; }
 
+        // ReSharper disable once InconsistentNaming
+        private ImGuiIOPtr IO { get; set; }
+
         /// <summary>
         /// </summary>
         public ImFontPtr DefaultFontPtr { get; private set; }
@@ -99,6 +102,7 @@ namespace Wobble.Graphics.ImGUI
 
             Context = ImGui.CreateContext();
             ImGui.SetCurrentContext(Context);
+            IO = ImGui.GetIO();
 
             LoadedTextures = new Dictionary<IntPtr, Texture2D>();
 
@@ -126,19 +130,16 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public unsafe void RebuildFontAtlas()
         {
-            // Get font texture from ImGui
-            var io = ImGui.GetIO();
-
             if (Options != null)
             {
                 if (Options.LoadDefaultFont)
-                    DefaultFontPtr = io.Fonts.AddFontDefault();
+                    DefaultFontPtr = IO.Fonts.AddFontDefault();
 
                 foreach (var font in Options.Fonts)
-                    font.Context = io.Fonts.AddFontFromFileTTF(font.Path, font.Size * Scale);
+                    font.Context = IO.Fonts.AddFontFromFileTTF(font.Path, font.Size * Scale);
             }
 
-            io.Fonts.GetTexDataAsRGBA32(out var pixelData, out var width, out var height, out var bytesPerPixel);
+            IO.Fonts.GetTexDataAsRGBA32(out var pixelData, out var width, out var height, out var bytesPerPixel);
 
             // Copy the data to a managed array
             var pixels = new byte[width * height * bytesPerPixel];
@@ -156,8 +157,8 @@ namespace Wobble.Graphics.ImGUI
             FontTextureId = BindTexture(tex2D);
 
             // Let ImGui know where to find the texture
-            io.Fonts.SetTexID(FontTextureId.Value);
-            io.Fonts.ClearTexData(); // Clears CPU side texture data
+            IO.Fonts.SetTexID(FontTextureId.Value);
+            IO.Fonts.ClearTexData(); // Clears CPU side texture data
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void BeforeLayout(GameTime gameTime)
         {
-            ImGui.GetIO().DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            IO.DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             UpdateInput();
 
@@ -208,35 +209,28 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         private void SetupInput()
         {
-            var io = ImGui.GetIO();
-
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Tab] = (int)Microsoft.Xna.Framework.Input.Keys.Tab);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Left);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.RightArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Right);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.UpArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Up);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.DownArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Down);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.PageUp] = (int)Microsoft.Xna.Framework.Input.Keys.PageUp);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.PageDown] = (int)Microsoft.Xna.Framework.Input.Keys.PageDown);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Home] = (int)Microsoft.Xna.Framework.Input.Keys.Home);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.End] = (int)Microsoft.Xna.Framework.Input.Keys.End);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Delete] = (int)Microsoft.Xna.Framework.Input.Keys.Delete);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Backspace] = (int)Microsoft.Xna.Framework.Input.Keys.Back);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Enter] = (int)Microsoft.Xna.Framework.Input.Keys.Enter);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Escape] = (int)Microsoft.Xna.Framework.Input.Keys.Escape);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.A] = (int)Microsoft.Xna.Framework.Input.Keys.A);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.C] = (int)Microsoft.Xna.Framework.Input.Keys.C);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.V] = (int)Microsoft.Xna.Framework.Input.Keys.V);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.X] = (int)Microsoft.Xna.Framework.Input.Keys.X);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Microsoft.Xna.Framework.Input.Keys.Y);
-            Keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Microsoft.Xna.Framework.Input.Keys.Z);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Tab] = (int)Microsoft.Xna.Framework.Input.Keys.Tab);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Left);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.RightArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Right);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.UpArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Up);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.DownArrow] = (int)Microsoft.Xna.Framework.Input.Keys.Down);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.PageUp] = (int)Microsoft.Xna.Framework.Input.Keys.PageUp);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.PageDown] = (int)Microsoft.Xna.Framework.Input.Keys.PageDown);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Home] = (int)Microsoft.Xna.Framework.Input.Keys.Home);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.End] = (int)Microsoft.Xna.Framework.Input.Keys.End);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Delete] = (int)Microsoft.Xna.Framework.Input.Keys.Delete);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Backspace] = (int)Microsoft.Xna.Framework.Input.Keys.Back);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Enter] = (int)Microsoft.Xna.Framework.Input.Keys.Enter);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Escape] = (int)Microsoft.Xna.Framework.Input.Keys.Escape);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.A] = (int)Microsoft.Xna.Framework.Input.Keys.A);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.C] = (int)Microsoft.Xna.Framework.Input.Keys.C);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.V] = (int)Microsoft.Xna.Framework.Input.Keys.V);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.X] = (int)Microsoft.Xna.Framework.Input.Keys.X);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Y] = (int)Microsoft.Xna.Framework.Input.Keys.Y);
+            Keys.Add(IO.KeyMap[(int)ImGuiKey.Z] = (int)Microsoft.Xna.Framework.Input.Keys.Z);
 
             // MonoGame-specific //////////////////////
-            Game.Window.TextInput += (s, a) =>
-            {
-                if (a.Character == '\t') return;
-
-                io.AddInputCharacter(a.Character);
-            };
+            Game.Window.TextInput += OnWindowOnTextInput;
             ///////////////////////////////////////////
 
             // FNA-specific ///////////////////////////
@@ -248,11 +242,18 @@ namespace Wobble.Graphics.ImGUI
             //};
             ///////////////////////////////////////////
 
-            ImGui.GetIO().Fonts.AddFontDefault();
+            IO.Fonts.AddFontDefault();
 
             // ImGUI provides out-of-the-box clipboard only on Windows. For other platforms, we need to set up the function pointers.
-            io.SetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(SetClipboardTextFnDelegate);
-            io.GetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(GetClipboardTextFnDelegate);
+            IO.SetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(SetClipboardTextFnDelegate);
+            IO.GetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(GetClipboardTextFnDelegate);
+        }
+
+        private void OnWindowOnTextInput(object s, TextInputEventArgs a)
+        {
+            if (a.Character == '\t') return;
+
+            IO.AddInputCharacter(a.Character);
         }
 
         /*
@@ -298,11 +299,9 @@ namespace Wobble.Graphics.ImGUI
         {
             Effect = Effect ?? new BasicEffect(GraphicsDevice);
 
-            var io = ImGui.GetIO();
-
             Effect.World = Matrix.Identity;
             Effect.View = Matrix.Identity;
-            Effect.Projection = Matrix.CreateOrthographicOffCenter(0, io.DisplaySize.X, io.DisplaySize.Y, 0, -1f, 1f);
+            Effect.Projection = Matrix.CreateOrthographicOffCenter(0, IO.DisplaySize.X, IO.DisplaySize.Y, 0, -1f, 1f);
             Effect.TextureEnabled = true;
             Effect.Texture = texture;
             Effect.VertexColorEnabled = true;
@@ -315,30 +314,28 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         private void UpdateInput()
         {
-            var io = ImGui.GetIO();
-
             var mouse = Mouse.GetState();
             var keyboard = Keyboard.GetState();
 
             foreach (var t in Keys)
-                io.KeysDown[t] = keyboard.IsKeyDown((Keys)t);
+                IO.KeysDown[t] = keyboard.IsKeyDown((Keys)t);
 
-            io.KeyShift = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift);
-            io.KeyCtrl = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl);
-            io.KeyAlt = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftAlt) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightAlt);
-            io.KeySuper = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftWindows) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightWindows);
+            IO.KeyShift = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift);
+            IO.KeyCtrl = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl);
+            IO.KeyAlt = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftAlt) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightAlt);
+            IO.KeySuper = keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftWindows) || keyboard.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightWindows);
 
-            io.DisplaySize = new System.Numerics.Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
-            io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
+            IO.DisplaySize = new System.Numerics.Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+            IO.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
-            io.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
+            IO.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
 
-            io.MouseDown[0] = mouse.LeftButton == ButtonState.Pressed;
-            io.MouseDown[1] = mouse.RightButton == ButtonState.Pressed;
-            io.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
+            IO.MouseDown[0] = mouse.LeftButton == ButtonState.Pressed;
+            IO.MouseDown[1] = mouse.RightButton == ButtonState.Pressed;
+            IO.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
 
             var scrollDelta = mouse.ScrollWheelValue - ScrollWheelValue;
-            io.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
+            IO.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
             ScrollWheelValue = mouse.ScrollWheelValue;
         }
 
@@ -365,7 +362,7 @@ namespace Wobble.Graphics.ImGUI
             GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
 
             // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
-            drawData.ScaleClipRects(ImGui.GetIO().DisplayFramebufferScale);
+            drawData.ScaleClipRects(IO.DisplayFramebufferScale);
 
             // Setup projection
             GraphicsDevice.Viewport = new Viewport(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
@@ -514,6 +511,7 @@ namespace Wobble.Graphics.ImGUI
             RasterizerState?.Dispose();
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
+            Game.Window.TextInput -= OnWindowOnTextInput;
         }
     }
 }
