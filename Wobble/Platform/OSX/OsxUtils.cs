@@ -8,7 +8,7 @@ namespace Wobble.Platform.OSX
         {
             var info = new ProcessStartInfo("open")
             {
-                ArgumentList = {"-R", path}
+                ArgumentList = { "-R", path }
             };
             Process.Start(info);
         }
@@ -17,7 +17,7 @@ namespace Wobble.Platform.OSX
         {
             var info = new ProcessStartInfo("open")
             {
-                ArgumentList = {"-R", path}
+                ArgumentList = { "-R", path }
             };
             Process.Start(info);
         }

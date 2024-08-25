@@ -175,7 +175,7 @@ namespace Wobble.Graphics
                 Vector2.Multiply(ref intermediate, ref size, out var intermediate2);
                 Vector2.Add(ref position, ref intermediate2, out var scaledPos);
                 Vector2.Multiply(ref size, ref _scale, out var scaledSize);
-                
+
                 // Update _scaledAlignedRelativeRectangle
                 // So that the rectangle is scaled with its position adjusted according to the pivot and scale
                 _scaledAlignedRelativeRectangle = new RectangleF(scaledPos.X, scaledPos.Y,
@@ -700,12 +700,6 @@ namespace Wobble.Graphics
                     drawable.DrawOrder = TotalDrawn;
                 }
             }
-            // In the case of modifying a drawable collection, an InvalidOperationException might occur
-            catch (InvalidOperationException e)
-            {
-                if (!e.Message.Contains("Collection was modified; enumeration operation may not execute."))
-                    throw;
-            }
             catch (Exception e)
             {
                 Logger.Error(e, LogType.Runtime);
@@ -981,7 +975,7 @@ namespace Wobble.Graphics
                             Width = (int)animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.Height:
-                            Height = (int)animation.PerformInterpolation(gameTime);
+                            Height = (int) animation.PerformInterpolation(gameTime);
                             break;
                         case AnimationProperty.UIAlpha:
                             UIAlpha = animation.PerformInterpolation(gameTime);

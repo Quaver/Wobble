@@ -146,7 +146,7 @@ namespace Wobble.Graphics.Sprites
             if (scale == 0)
                 scale = 1;
 
-            Image = BitmapFontFactory.Create(Font, Text, FontSize * scale, Color.White, TextAlignment, (int) (MaxWidth * scale));
+            Image = BitmapFontFactory.Create(Font, Text, FontSize * scale, Color.White, TextAlignment, (int)(MaxWidth * scale));
             Size = new ScalableVector2(Image.Width / scale, Image.Height / scale);
 
             AmountOfTextUpdatesInSecond++;
@@ -176,9 +176,9 @@ namespace Wobble.Graphics.Sprites
         /// <param name="scale"></param>
         public override void FadeToColor(Color color, double dt, float scale)
         {
-            var r = MathHelper.Lerp(Tint.R, color.R, (float) Math.Min(dt / scale, 1));
-            var g = MathHelper.Lerp(Tint.G, color.G, (float) Math.Min(dt / scale, 1));
-            var b = MathHelper.Lerp(Tint.B, color.B, (float) Math.Min(dt / scale, 1));
+            var r = MathHelper.Lerp(Tint.R, color.R, (float)Math.Min(dt / scale, 1));
+            var g = MathHelper.Lerp(Tint.G, color.G, (float)Math.Min(dt / scale, 1));
+            var b = MathHelper.Lerp(Tint.B, color.B, (float)Math.Min(dt / scale, 1));
 
             Tint = new Color((int)r, (int)g, (int)b);
         }

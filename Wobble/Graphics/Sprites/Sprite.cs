@@ -11,7 +11,7 @@ namespace Wobble.Graphics.Sprites
     public class Sprite : Drawable
     {
         /// <summary>
-        ///     the image texture of the sprite which is drawn on screen
+        ///     the image texture of the sprite.
         /// </summary>
         private Texture2D _image;
 
@@ -108,7 +108,8 @@ namespace Wobble.Graphics.Sprites
         ///     The transparency of this QuaverSprite.
         /// </summary>
         private float _alpha = 1f;
-        public float Alpha {
+        public float Alpha
+        {
             get => _alpha;
             set
             {
@@ -175,7 +176,7 @@ namespace Wobble.Graphics.Sprites
         {
             base.Update(gameTime);
 
-            if (_originalTexture is RenderTarget2D && AdditionalPasses != null && AdditionalPasses.Count > 0) 
+            if (_originalTexture is RenderTarget2D && AdditionalPasses != null && AdditionalPasses.Count > 0)
                 GameBase.Game.ScheduledRenderTargetDraws.Add(PerformAdditionalPasses);
         }
 
@@ -325,9 +326,9 @@ namespace Wobble.Graphics.Sprites
         /// <param name="scale"></param>
         public virtual void FadeToColor(Color color, double dt, float scale)
         {
-            var r = MathHelper.Lerp(Tint.R, color.R, (float) Math.Min(dt / scale, 1));
-            var g = MathHelper.Lerp(Tint.G, color.G, (float) Math.Min(dt / scale, 1));
-            var b = MathHelper.Lerp(Tint.B, color.B, (float) Math.Min(dt / scale, 1));
+            var r = MathHelper.Lerp(Tint.R, color.R, (float)Math.Min(dt / scale, 1));
+            var g = MathHelper.Lerp(Tint.G, color.G, (float)Math.Min(dt / scale, 1));
+            var b = MathHelper.Lerp(Tint.B, color.B, (float)Math.Min(dt / scale, 1));
 
             Tint = new Color((int)r, (int)g, (int)b);
         }

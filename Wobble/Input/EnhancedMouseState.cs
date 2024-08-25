@@ -14,27 +14,27 @@ namespace Wobble.Input
         ///     The state of the left mouse button
         /// </summary>
         public ButtonState LeftButton { get; }
-        
+
         /// <summary>
         ///     The state of the right mouse button
         /// </summary>
         public ButtonState RightButton { get; }
-        
+
         /// <summary>
         ///     The state of the middle mouse button
         /// </summary>
         public ButtonState MiddleButton { get; }
-        
+
         /// <summary>
         ///     The state of the 1st thumb mouse button.
         /// </summary>
         public ButtonState XButton1 { get; }
-        
+
         /// <summary>
         ///     The state of the 2nd thumb mouse button
         /// </summary>
         public ButtonState XButton2 { get; }
-        
+
         /// <summary>
         ///     The cumulative scroll wheel value since the game has started
         /// </summary>

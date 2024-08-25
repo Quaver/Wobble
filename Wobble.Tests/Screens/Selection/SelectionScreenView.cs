@@ -21,6 +21,7 @@ using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Layering;
+using Wobble.Tests.Screens.Tests.MatrixDrawing;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.RenderTarget;
 using Wobble.Tests.Screens.Tests.Rotation;
@@ -83,8 +84,8 @@ namespace Wobble.Tests.Screens.Selection
         /// </summary>
         private void CreateSelectionButtons()
         {
-            var screen = (SelectionScreen) Screen;
-            var buttonsInColumn = (int) ((WindowManager.VirtualScreen.Y - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
+            var screen = (SelectionScreen)Screen;
+            var buttonsInColumn = (int)((WindowManager.VirtualScreen.Y - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
 
             var i = 0;
             foreach (var testScreens in screen.TestCasesScreens)
@@ -112,6 +113,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.DrawableScaling:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestDrawableScalingScreen());
+                        break;
+                    case ScreenType.MatrixDrawing:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestMatrixDrawingScreen());
                         break;
                     case ScreenType.EasingAnimations:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestEasingAnimationsScreen());

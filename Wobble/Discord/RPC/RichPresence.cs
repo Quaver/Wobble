@@ -37,14 +37,14 @@ namespace Wobble.Discord.RPC
 		public string Details
 		{
 			get { return _details; }
-			set 
+			set
 			{
 				if (!ValidateString(value, out _details, 128, Encoding.UTF8))
 					throw new StringOutOfRangeException("Details", 128);
 			}
 		}
 		private string _details;
-		
+
 		/// <summary>
 		/// The time elapsed / remaining time data.
 		/// </summary>
@@ -56,13 +56,13 @@ namespace Wobble.Discord.RPC
 		/// </summary>
 		[JsonProperty("assets", NullValueHandling = NullValueHandling.Ignore)]
 		public Assets Assets { get; set; }
-		
+
 		/// <summary>
 		/// The party the player is currently in. The <see cref="Party.ID"/> must be set for this to be included in the RichPresence update.
 		/// </summary>
 		[JsonProperty("party", NullValueHandling = NullValueHandling.Ignore)]
 		public Party Party { get; set; }
-		
+
 		/// <summary>
 		/// The secrets used for Join / Spectate. Secrets are obfuscated data of your choosing. They could be match ids, player ids, lobby ids, etc. Make this object null if you do not wish too / unable too implement the Join / Request feature.
 		/// <para>To keep security on the up and up, Discord requires that you properly hash/encode/encrypt/put-a-padlock-on-and-swallow-the-key-but-wait-then-how-would-you-open-it your secrets.</para>
@@ -70,7 +70,7 @@ namespace Wobble.Discord.RPC
 		/// </summary>
 		[JsonProperty("secrets", NullValueHandling = NullValueHandling.Ignore)]
 		public Secrets Secrets { get; set; }
-		
+
 		/// <summary>
 		/// Marks the <see cref="Secrets.MatchSecret"/> as a game session with a specific beginning and end. It was going to be used as a form of notification, but was replaced with the join feature. It may potentially have use in the future, but it currently has no use.
 		/// <para>
@@ -80,7 +80,7 @@ namespace Wobble.Discord.RPC
 		[JsonProperty("instance", NullValueHandling = NullValueHandling.Ignore)]
 		[Obsolete("This was going to be used, but was replaced by JoinSecret instead")]
 		private bool Instance { get; set; }
-		
+
 		/// <summary>
 		/// Clones the presence into a new instance. Used for thread safe writing and reading. This function will ignore properties if they are in a invalid state.
 		/// </summary>
@@ -107,7 +107,7 @@ namespace Wobble.Discord.RPC
 
 				Assets = !HasAssets() ? null : new Assets
 				{
-					LargeImageKey = this.Assets.LargeImageKey != null ? this.Assets.LargeImageKey.Clone() as string  : null,
+					LargeImageKey = this.Assets.LargeImageKey != null ? this.Assets.LargeImageKey.Clone() as string : null,
 					LargeImageText = this.Assets.LargeImageText != null ? this.Assets.LargeImageText.Clone() as string : null,
 					SmallImageKey = this.Assets.SmallImageKey != null ? this.Assets.SmallImageKey.Clone() as string : null,
 					SmallImageText = this.Assets.SmallImageText != null ? this.Assets.SmallImageText.Clone() as string : null
@@ -153,7 +153,7 @@ namespace Wobble.Discord.RPC
 			{
 				//They dont have assets, so we will just set ours to null
 				this.Assets = null;
-			}	
+			}
 		}
 
 		/// <summary>
@@ -191,7 +191,7 @@ namespace Wobble.Discord.RPC
 		{
 			return Secrets != null && (Secrets.JoinSecret != null || Secrets.SpectateSecret != null);
 		}
-		
+
 		/// <summary>
 		/// Attempts to call <see cref="NullEmpty(string)"/> on the string and return the result, if its within a valid length.
 		/// </summary>
@@ -227,7 +227,7 @@ namespace Wobble.Discord.RPC
 			return presesnce != null;
 		}
 	}
-	
+
 	/// <summary>
 	/// The secrets used for Join / Spectate. Secrets are obfuscated data of your choosing. They could be match ids, player ids, lobby ids, etc.
 	/// <para>To keep security on the up and up, Discord requires that you properly hash/encode/encrypt/put-a-padlock-on-and-swallow-the-key-but-wait-then-how-would-you-open-it your secrets.</para>
@@ -295,7 +295,7 @@ namespace Wobble.Discord.RPC
 		private string _spectateSecret;
 
 		#region Statics
-				
+
 		/// <summary>
 		/// The encoding the secret generator is using
 		/// </summary>
@@ -321,7 +321,7 @@ namespace Wobble.Discord.RPC
 			//Return the encoding. Probably should remove invalid characters but cannot be fucked.
 			return Encoding.GetString(bytes);
 		}
-		
+
 
 		/// <summary>
 		/// Creates a secret word using more readable friendly characters. Useful for debugging purposes. This is not a cryptographic function and should NOT be used for sensitive information.
@@ -519,7 +519,7 @@ namespace Wobble.Discord.RPC
 				End = value.HasValue ? FromUnixTime(value.Value) : (DateTime?)null;
 			}
 		}
-		
+
 		/// <summary>
 		/// Converts a Unix Epoch time into a <see cref="DateTime"/>.
 		/// </summary>
@@ -596,7 +596,7 @@ namespace Wobble.Discord.RPC
 		}
 	}
 
-	
+
 	/// <summary>
 	/// A rich presence that has been parsed from the pipe as a response.
 	/// </summary>

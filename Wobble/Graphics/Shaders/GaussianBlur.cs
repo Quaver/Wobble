@@ -232,7 +232,7 @@ namespace Wobble.Graphics.Shaders
             var renderTarget1 = new RenderTarget2D(GameBase.Game.GraphicsDevice, renderTargetWidth, renderTargetHeight, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
-            var renderTarget2 = new RenderTarget2D(GameBase.Game.GraphicsDevice,renderTargetWidth, renderTargetHeight, false,
+            var renderTarget2 = new RenderTarget2D(GameBase.Game.GraphicsDevice, renderTargetWidth, renderTargetHeight, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat,
                 DepthFormat.None);
 
@@ -252,6 +252,7 @@ namespace Wobble.Graphics.Shaders
             effect.Parameters["colorMapTexture"].SetValue(srcTexture);
             effect.Parameters["offsets"].SetValue(offsetsHoriz);
 
+            GameBase.Game.TryEndBatch();
             GameBase.Game.SpriteBatch.Begin(0, BlendState.Opaque, null, null, null, effect);
             GameBase.Game.SpriteBatch.Draw(srcTexture, destRect1, Color.White);
             GameBase.Game.SpriteBatch.End();

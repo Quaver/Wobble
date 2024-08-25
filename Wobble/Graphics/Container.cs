@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Wobble.Window;
 
 namespace Wobble.Graphics
@@ -31,8 +32,6 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Simply a container. There's no need to draw it to spritebatch.
         /// </summary>
-        public override void DrawToSpriteBatch()
-        {
-        }
+        public override void DrawToSpriteBatch() { }
     }
 }

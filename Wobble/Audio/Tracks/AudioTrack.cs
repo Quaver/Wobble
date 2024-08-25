@@ -174,7 +174,7 @@ namespace Wobble.Audio.Tracks
         public static double GlobalVolume
         {
             get => Bass.GlobalStreamVolume / 100f;
-            set => Bass.GlobalStreamVolume = (int) (value * 100);
+            set => Bass.GlobalStreamVolume = (int)(value * 100);
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace Wobble.Audio.Tracks
             lock (AudioManager.Tracks)
                 AudioManager.Tracks.Add(this);
 
-            Length = Bass.ChannelBytes2Seconds(Stream,Bass.ChannelGetLength(Stream)) * 1000;
+            Length = Bass.ChannelBytes2Seconds(Stream, Bass.ChannelGetLength(Stream)) * 1000;
             Frequency = Bass.ChannelGetInfo(Stream).Frequency;
 
             if (!IsPreview)

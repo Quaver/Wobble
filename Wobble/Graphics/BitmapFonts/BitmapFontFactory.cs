@@ -107,7 +107,7 @@ namespace Wobble.Graphics.BitmapFonts
             textSize.Height = Math.Max(1, textSize.Height);
 
             // Create the actual bitmap using the size of the text.
-            using (var bmp = new Bitmap((int) (textSize.Width + 0.5), (int) (textSize.Height + 0.5), PixelFormat.Format32bppArgb))
+            using (var bmp = new Bitmap((int)(textSize.Width + 0.5), (int)(textSize.Height + 0.5), PixelFormat.Format32bppArgb))
             using (var g = System.Drawing.Graphics.FromImage(bmp))
             using (var brush = new SolidBrush(System.Drawing.Color.White))
             using (var format = new StringFormat())
@@ -136,7 +136,7 @@ namespace Wobble.Graphics.BitmapFonts
                 // On Linux the alpha is premultipled.
                 // This is regardless of the Bitmap PixelFormat.
 
-               // bmp.RawFormat = ImageFormat.Png;
+                // bmp.RawFormat = ImageFormat.Png;
                 return AssetLoader.LoadTexture2D(ImageToByte2(bmp));
             }
         }

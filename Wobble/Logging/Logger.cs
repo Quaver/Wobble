@@ -11,7 +11,7 @@ namespace Wobble.Logging
     public static class Logger
     {
         static Logger() =>
-            MinimumLogLevel = Enum.TryParse(Environment.GetEnvironmentVariable("QUAVER_LOGLEVEL"), out LogLevel level)
+            MinimumLogLevel = Enum.TryParse(Environment.GetEnvironmentVariable("QUAVER_LOGLEVEL"), true, out LogLevel level)
                 ? level
                 : LogLevel.Debug;
 
