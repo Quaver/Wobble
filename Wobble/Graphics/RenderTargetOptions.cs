@@ -15,7 +15,7 @@ namespace Wobble.Graphics
         private bool _enabled;
         private Point _containerRectangleSize;
         private Padding _overflowRenderPadding;
-        private Matrix2D _transformMatrix;
+        private Matrix2 _transformMatrix;
 
         /// <summary>
         ///     Whether the render target should be and is being used.
@@ -95,7 +95,7 @@ namespace Wobble.Graphics
         ///     This includes translation by <see cref="RenderOffset"/>
         ///     followed by inverse scaling of <see cref="WindowManager.ScreenScale"/>.
         /// </summary>
-        public Matrix2D TransformMatrix => _transformMatrix;
+        public Matrix2 TransformMatrix => _transformMatrix;
 
         /// <summary>
         ///     When rendering to <see cref="RenderTarget"/>, the background color to give.
@@ -110,9 +110,9 @@ namespace Wobble.Graphics
         {
             Scale = new Vector2(1 / WindowManager.ScreenScale.X, 1 / WindowManager.ScreenScale.Y);
             RenderOffset = new Vector2(-_renderRectangle.X, -_renderRectangle.Y);
-            var offsetTranslation = Matrix2D.CreateTranslation(RenderOffset);
-            var scalingMatrix = Matrix2D.CreateScale(Scale);
-            Matrix2D.Multiply(ref offsetTranslation, ref scalingMatrix, out _transformMatrix);
+            var offsetTranslation = Matrix2.CreateTranslation(RenderOffset);
+            var scalingMatrix = Matrix2.CreateScale(Scale);
+            Matrix2.Multiply(ref offsetTranslation, ref scalingMatrix, out _transformMatrix);
         }
 
         /// <summary>
