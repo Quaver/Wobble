@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Timers;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
@@ -28,7 +29,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
         public Sprite BlueBox { get; }
 
         public Sprite Shaft { get; }
-        
+
         public Sprite CollisionBox { get; }
 
         /// <summary>
@@ -41,6 +42,8 @@ namespace Wobble.Tests.Screens.Tests.Rotation
         private SpriteText DebugText { get; }
 
         private float _increment = 0.0005f;
+
+        private readonly ContinuousClock _clock = new(TimeSpan.FromMilliseconds(60));
 
         /// <inheritdoc />
         /// <summary>
@@ -84,7 +87,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
             CollisionBox = new Sprite
             {
                 Parent = Container,
-                Tint = new Color(255,  255, 255, 100),
+                Tint = new Color(255, 255, 255, 100),
                 Alignment = Alignment.TopLeft,
                 Size = new ScalableVector2(564, 880),
                 Position = new ScalableVector2(32, -56),
@@ -93,16 +96,18 @@ namespace Wobble.Tests.Screens.Tests.Rotation
             GreenBox.AddBorder(Color.White, 2);
 
             BlueBox.AddBorder(Color.Red, 2);
-            
+
             CollisionBox.AddBorder(Color.Red, 2);
 
             #endregion
 
             DebugText = new SpriteText("exo2-bold", "Hello, World!", 18)
             {
-                Parent = Container,
-                Alignment = Alignment.TopRight
+                Parent = Container, Alignment = Alignment.TopRight
             };
+            _clock.Tick += (sender, args) =>
+                DebugText.ScheduleUpdate(() => DebugText.Text = $"{GreenBox.Rotation:0.00} {_increment}/tick");
+            _clock.Start();
         }
 
         /// <inheritdoc />
@@ -111,6 +116,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            _clock.Update(gameTime);
             Container?.Update(gameTime);
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.R))
@@ -128,8 +134,6 @@ namespace Wobble.Tests.Screens.Tests.Rotation
                 BlueBox.Rotation += _increment;
                 CollisionBox.Rotation += _increment;
             }
-
-            DebugText.ScheduleUpdate(() => DebugText.Text = $"{GreenBox.Rotation:0.00} {_increment}/tick");
         }
 
         /// <inheritdoc />
