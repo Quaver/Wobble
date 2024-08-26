@@ -218,7 +218,7 @@ namespace Wobble.Graphics.Sprites.Text
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
-            GameBase.Game.GraphicsDevice.Clear(Color.Black);
+            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
             _raw.Draw(gameTime);
             _ = GameBase.Game.TryEndBatch();
 
