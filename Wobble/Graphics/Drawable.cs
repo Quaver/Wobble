@@ -17,6 +17,11 @@ namespace Wobble.Graphics
     public abstract class Drawable : IDrawable, IDisposable
     {
         /// <summary>
+        ///     Represents the rotation, position, scale, and origin of the quad we're drawing
+        /// </summary>
+        public QuadTransform Transform { get; } = new QuadTransform();
+
+        /// <summary>
         ///     The main render target to render to.
         /// </summary>
         public RenderTargetOptions RenderTargetOptions { get; } = new RenderTargetOptions();
@@ -51,6 +56,7 @@ namespace Wobble.Graphics
             get => _parent;
             set
             {
+                Transform.Parent = value?.Transform;
                 // If this drawable previously had a parent, remove it from the old parent's list
                 // of children.
                 _parent?.Children.Remove(this);
@@ -154,40 +160,6 @@ namespace Wobble.Graphics
         /// </summary>
         public RectangleF RelativeRectangle { get; private set; }
 
-        private RectangleF _alignedRelativeRectangle;
-
-        /// <summary>
-        ///     The rectangle relative to the drawable's parent.
-        /// </summary>
-        public RectangleF AlignedRelativeRectangle
-        {
-            get => _alignedRelativeRectangle;
-            private set
-            {
-                _alignedRelativeRectangle = value;
-                var size = new Vector2(value.Width, value.Height);
-                var position = new Vector2(value.X, value.Y);
-                var offsetFactor = Vector2.One - _scale;
-
-                // scaledPos = value.Position + Pivot * (Vector2.One - Scale) * value.Size,
-                // scaledSize = value.Size * Scale
-                Vector2.Multiply(ref _pivot, ref offsetFactor, out var intermediate);
-                Vector2.Multiply(ref intermediate, ref size, out var intermediate2);
-                Vector2.Add(ref position, ref intermediate2, out var scaledPos);
-                Vector2.Multiply(ref size, ref _scale, out var scaledSize);
-
-                // Update _scaledAlignedRelativeRectangle
-                // So that the rectangle is scaled with its position adjusted according to the pivot and scale
-                _scaledAlignedRelativeRectangle = new RectangleF(scaledPos.X, scaledPos.Y,
-                    scaledSize.X, scaledSize.Y);
-            }
-        }
-
-        /// <summary>
-        ///     The rectangle relative to the drawable's parent.
-        /// </summary>
-        private RectangleF _scaledAlignedRelativeRectangle;
-
         /// <summary>
         ///     The position of the drawable
         /// </summary>
@@ -216,7 +188,6 @@ namespace Wobble.Graphics
                 var height = MathHelper.Clamp(value.Y.Value, 0, int.MaxValue);
 
                 _size = new ScalableVector2(width, height, value.X.Scale, value.Y.Scale);
-                Pivot = Pivot;
                 SizeChanged?.Invoke(this, value);
                 RecalculateRectangles();
             }
@@ -255,6 +226,15 @@ namespace Wobble.Graphics
         }
 
         /// <summary>
+        ///     The relative Z position of the object
+        /// </summary>
+        public float Z
+        {
+            get => Transform.Position.Z;
+            set => Transform.Position = new Vector3(Transform.Position.X, Transform.Position.Y, value);
+        }
+
+        /// <summary>
         ///     The width of the object.
         /// </summary>
         public float Width
@@ -272,7 +252,6 @@ namespace Wobble.Graphics
                     return;
 
                 Size = new ScalableVector2(value, Size.Y.Value, Size.X.Scale, Size.Y.Scale);
-                Pivot = Pivot;
             }
         }
 
@@ -305,7 +284,7 @@ namespace Wobble.Graphics
             set
             {
                 _scale = value;
-                RecalculateRectangles();
+                Transform.Scale = new Vector3(value, 1);
             }
         }
 
@@ -329,7 +308,6 @@ namespace Wobble.Graphics
                     return;
 
                 Size = new ScalableVector2(Size.X.Value, value, Size.X.Scale, Size.Y.Scale);
-                Pivot = Pivot;
             }
         }
 
@@ -358,7 +336,8 @@ namespace Wobble.Graphics
             set
             {
                 _pivot = value;
-                RecalculateRectangles();
+                var origin = _pivot * RelativeRectangle.Size;
+                Transform.Origin = new Vector3(origin, 0);
             }
         }
 
@@ -372,8 +351,34 @@ namespace Wobble.Graphics
             set
             {
                 _rotation = value;
-                RecalculateRectangles();
+                Transform.Rotation = Quaternion.CreateFromAxisAngle(RotationAxis, value);
             }
+        }
+
+        /// <summary>
+        ///     The axis of rotation
+        /// </summary>
+        private Vector3 _rotationAxis = Vector3.UnitZ;
+
+        public Vector3 RotationAxis
+        {
+            get => _rotationAxis;
+            set
+            {
+                _rotationAxis = value;
+                Transform.Rotation = Quaternion.CreateFromAxisAngle(value, Rotation);
+            }
+        }
+
+        /// <summary>
+        ///     The underlying quaternion that represents the rotation.
+        ///     Changing this will not change <see cref="RotationAxis"/> and <see cref="Rotation"/>,
+        ///     so be careful.
+        /// </summary>
+        private Quaternion RotationQuaternion
+        {
+            get => Transform.Rotation;
+            set => Transform.Rotation = value;
         }
 
         public float AbsoluteRotation { get; private set; }
@@ -469,35 +474,6 @@ namespace Wobble.Graphics
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the relative coordinate after rotation.
         /// </summary>
         private Matrix2 _childRelativeTransform = Matrix2.Identity;
-
-        protected virtual void RecalculateTransformMatrix()
-        {
-            if (_isCasting)
-            {
-                // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
-                // scaled, so we should scale them back.
-                _childRelativeTransform = RenderTargetOptions.TransformMatrix;
-                _childPositionTransform = _childRelativeTransform;
-                return;
-            }
-
-            var relativeOrigin = Pivot * new Vector2(RelativeWidth, RelativeHeight);
-
-            // Move so the origin is at RelativeOrigin, rotate, then move back
-            var shiftToOrigin = Matrix2.CreateTranslation(-relativeOrigin);
-            var scalingMatrix = Matrix2.CreateScale(Scale);
-            var rotationMatrix = Matrix2.CreateRotationZ(Rotation);
-            var originBack = Matrix2.CreateTranslation(relativeOrigin * Scale);
-            var thisTranslation = Matrix2.CreateTranslation(_scaledAlignedRelativeRectangle.Position);
-            var parentTransform = Parent?._childPositionTransform ?? Matrix2.Identity;
-            Matrix2.Multiply(ref shiftToOrigin, ref scalingMatrix, out var intermediate1);
-            Matrix2.Multiply(ref rotationMatrix, ref originBack, out var intermediate2);
-            Matrix2.Multiply(ref thisTranslation, ref parentTransform, out var outerTransform);
-
-            Matrix2.Multiply(ref intermediate1, ref intermediate2, out _childRelativeTransform);
-            // Finally, apply our parent's transformation
-            Matrix2.Multiply(ref _childRelativeTransform, ref outerTransform, out _childPositionTransform);
-        }
 
         /// <summary>
         ///     The alignment of the object.
@@ -840,24 +816,29 @@ namespace Wobble.Graphics
             RelativeRectangle = new RectangleF(x, y, width, height);
             if (Parent != null)
             {
-                AlignedRelativeRectangle =
+                RelativeRectangle =
                     GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.RelativeRectangle, true);
-                ScreenRectangle = GraphicsHelper.Transform(_scaledAlignedRelativeRectangle,
-                    Parent._childPositionTransform, Parent.AbsoluteScale);
             }
             // Make it relative to the screen size.
             else
             {
-                AlignedRelativeRectangle =
+                RelativeRectangle =
                     GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle, true);
-                ScreenRectangle = GraphicsHelper.Offset(_scaledAlignedRelativeRectangle, WindowManager.Rectangle);
             }
+
+            Pivot = Pivot;
+            Transform.Scale = new Vector3(Scale, 1);
+            Transform.Position = new Vector3(RelativeRectangle.Position, Z);
+
+            var worldPos = Transform.WorldPosition;
+            var worldScale = Transform.WorldScale;
+            var worldSize = new Vector2(RelativeRectangle.Width * worldScale.X, RelativeRectangle.Height * worldScale.Y);
+            ScreenRectangle = new RectangleF(worldPos.X, worldPos.Y, worldSize.X, worldSize.Y);
 
             // Update the matrix, now that we have AlignedRelativeRectangle calculated
             // Note that this calculation of AlignedRelativeRectangle and ScreenRectangle relies on the parent's
             // transform, and the parent's matrices are calculated before RecalculateRectangles() is called, had there
             // been an update to the parent.
-            RecalculateTransformMatrix();
 
             var relativeBoundingRectangle =
                 GraphicsHelper.MinimumBoundingRectangle(ScreenRectangle, AbsoluteRotation, true);
@@ -880,7 +861,7 @@ namespace Wobble.Graphics
             // gives the screen bounding rect
             ScreenMinimumBoundingRectangle =
                 new RectangleF(
-                    _childPositionTransform.Translation + relativeBoundingRectangle.Position,
+                    new Vector2(worldPos.X, worldPos.Y) + relativeBoundingRectangle.Position,
                     relativeBoundingRectangle.Size);
 
             for (var i = 0; i < Children.Count; i++)

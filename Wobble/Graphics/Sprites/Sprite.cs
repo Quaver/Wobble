@@ -267,7 +267,8 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, AbsoluteColor, SpriteOverallRotation, Origin, SpriteEffect, 0f);
+            var matrix = Transform.WorldMatrix;
+            GameBase.Game.SpriteBatch.Draw(Image, RelativeRectangle.Size, ref matrix, null, AbsoluteColor, SpriteEffect);
         }
 
         /// <inheritdoc />

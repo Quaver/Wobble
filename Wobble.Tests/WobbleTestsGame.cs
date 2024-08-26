@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
@@ -10,6 +11,7 @@ using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
 using Wobble.IO;
+using Wobble.Logging;
 using Wobble.Managers;
 using Wobble.Screens;
 using Wobble.Tests.Screens.Selection;
@@ -138,6 +140,16 @@ namespace Wobble.Tests
             {
                 WaylandVsync = !WaylandVsync;
                 WaylandState.ScheduleUpdate(() => WaylandState.Text = $"Wayland: {WaylandVsync}");
+            }
+
+            if (KeyboardManager.IsAltDown() && KeyboardManager.IsUniqueKeyPress(Keys.P))
+            {
+                GameBase.DefaultSpriteBatchOptions.Fov = MathF.PI / 3 * 2;
+                GameBase.DefaultSpriteBatchOptions.ProjectionType =
+                    GameBase.DefaultSpriteBatchOptions.ProjectionType == ProjectionType.Orthographic
+                        ? ProjectionType.Perspective
+                        : ProjectionType.Orthographic;
+                Logger.Important($"Current projection type: {GameBase.DefaultSpriteBatchOptions.ProjectionType}", LogType.Runtime);
             }
         }
 

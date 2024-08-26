@@ -1,21 +1,12 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Timers;
 using Wobble.Assets;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
-using Wobble.Graphics.Primitives;
-using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Sprites.Text;
-using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
-using Wobble.Logging;
 using Wobble.Screens;
-using Wobble.Tests.Assets;
 
 namespace Wobble.Tests.Screens.Tests.Rotation
 {
@@ -43,7 +34,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
 
         private float _increment = 0.0005f;
 
-        private readonly ContinuousClock _clock = new(TimeSpan.FromMilliseconds(60));
+        private readonly ContinuousClock _clock = new(TimeSpan.FromMilliseconds(16));
 
         /// <inheritdoc />
         /// <summary>
@@ -53,13 +44,16 @@ namespace Wobble.Tests.Screens.Tests.Rotation
         {
             #region GREEN_BOX
 
-            GreenBox = new Sprite()
+            GreenBox = new Sprite
             {
+                Image = WobbleAssets.Wallpaper,
                 Parent = Container,
                 Size = new ScalableVector2(50, 100),
                 Tint = Color.Green,
-                Position = new ScalableVector2(0, 0),
+                Position = new ScalableVector2(200, 200),
                 Alignment = Alignment.MidCenter,
+                RotationAxis = Vector3.Normalize(new Vector3(0, 1, 1)),
+                Z = 200
                 // Pivot = Vector2.Zero
             };
 

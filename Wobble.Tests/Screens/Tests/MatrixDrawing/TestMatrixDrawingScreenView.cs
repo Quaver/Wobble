@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using MonoGame.Extended.Timers;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Shaders;
@@ -22,6 +23,7 @@ namespace Wobble.Tests.Screens.Tests.MatrixDrawing
         private Matrix transform3d;
         private float rotation;
         private SpriteText spriteText;
+        private ContinuousClock clock = new (TimeSpan.FromMilliseconds(16));
 
         /// <inheritdoc />
         /// <summary>
@@ -29,9 +31,12 @@ namespace Wobble.Tests.Screens.Tests.MatrixDrawing
         /// <param name="screen"></param>
         public TestMatrixDrawingScreenView(Screen screen) : base(screen)
         {
-
             texture = WobbleAssets.Wallpaper;
             spriteText = new SpriteText("exo2-regular", "", 15) { Parent = Container };
+            
+            clock.Tick += (sender, args) =>
+                spriteText.ScheduleUpdate(() => spriteText.Text = $"Rot: {rotation:0.0000}");
+            clock.Start();
         }
 
         /// <inheritdoc />
@@ -40,6 +45,7 @@ namespace Wobble.Tests.Screens.Tests.MatrixDrawing
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            clock.Update(gameTime);
             rotation += (float)gameTime.ElapsedGameTime.TotalSeconds * 0.5f;
             var axis = Vector3.Up + Vector3.Left;
             axis.Normalize();
@@ -56,7 +62,6 @@ namespace Wobble.Tests.Screens.Tests.MatrixDrawing
                                           new Matrix2(1, 0, 0.1f, 1, 0, 0) *
                                           Matrix2.CreateTranslation(WindowManager.VirtualScreen / 2);
             Container?.Update(gameTime);
-            spriteText.ScheduleUpdate(() => spriteText.Text = $"Rot: {rotation:0.0000}");
         }
 
         /// <inheritdoc />
