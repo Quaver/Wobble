@@ -21,6 +21,7 @@ using Wobble.Platform;
 using Wobble.Platform.Linux;
 using Wobble.Screens;
 using Wobble.Window;
+using NativeLibrary = Wobble.Platform.Linux.NativeLibrary;
 
 namespace Wobble
 {
@@ -90,7 +91,7 @@ namespace Wobble
 
         /// <summary>
         /// </summary>
-        public List<Action> ScheduledRenderTargetDraws { get; } = new List<Action>();
+        public List<Action<GameTime>> ScheduledRenderTargetDraws { get; } = new List<Action<GameTime>>();
 
         /// <summary>
         ///     The sprite used for clearing the alpha channel. Its alpha must be 1 (fully opaque) and its color does not matter.
@@ -265,11 +266,16 @@ namespace Wobble
             if (!IsReadyToUpdate)
                 return;
 
+            var hasScheduledRenderTargetDraws = ScheduledRenderTargetDraws.Count > 0;
+
             for (var i = ScheduledRenderTargetDraws.Count - 1; i >= 0; i--)
             {
-                ScheduledRenderTargetDraws[i]?.Invoke();
+                ScheduledRenderTargetDraws[i]?.Invoke(gameTime);
                 ScheduledRenderTargetDraws.Remove(ScheduledRenderTargetDraws[i]);
             }
+
+            if (hasScheduledRenderTargetDraws)
+                GraphicsDevice.SetRenderTarget(null);
 
             base.Draw(gameTime);
 

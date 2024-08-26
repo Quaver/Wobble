@@ -15,11 +15,16 @@ using Wobble.Tests.Screens.Tests.BitmapFont;
 using Wobble.Tests.Screens.Tests.BlurContainer;
 using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
+using Wobble.Tests.Screens.Tests.DrawableScaling;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
+using Wobble.Tests.Screens.Tests.Layering;
+using Wobble.Tests.Screens.Tests.MatrixDrawing;
 using Wobble.Tests.Screens.Tests.Primitives;
+using Wobble.Tests.Screens.Tests.RenderTarget;
+using Wobble.Tests.Screens.Tests.Rotation;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
 using Wobble.Tests.Screens.Tests.Scrolling;
@@ -103,8 +108,20 @@ namespace Wobble.Tests.Screens.Selection
                     case ScreenType.DrawingSprites:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestDrawingSpritesScreen());
                         break;
+                    case ScreenType.Rotation:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestRotationScreen());
+                        break;
+                    case ScreenType.DrawableScaling:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestDrawableScalingScreen());
+                        break;
+                    case ScreenType.MatrixDrawing:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestMatrixDrawingScreen());
+                        break;
                     case ScreenType.EasingAnimations:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestEasingAnimationsScreen());
+                        break;
+                    case ScreenType.Layering:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestLayerScreen());
                         break;
                     case ScreenType.Audio:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestAudioScreen());
@@ -120,6 +137,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.BlurContainer:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBlurContainerScreen());
+                        break;
+                    case ScreenType.RenderTarget:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestRenderTargetScreen());
                         break;
                     case ScreenType.BlurredBackgroundImage:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBlurredBackgroundImageScreen());

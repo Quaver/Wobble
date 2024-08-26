@@ -1,17 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../MonoGame/MonoGame.Framework/MonoGame.Framework.DesktopGL.csproj" />
     <ProjectReference Include="../Wobble.Tests.Resources/Wobble.Tests.Resources.csproj" />
     <ProjectReference Include="../Wobble/Wobble.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content/" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Content\gotham.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\gotham_0.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\MonoGame.Framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

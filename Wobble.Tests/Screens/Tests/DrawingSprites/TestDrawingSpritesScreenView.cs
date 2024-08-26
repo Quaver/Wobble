@@ -54,6 +54,11 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
         private Sprite SpriteWithShader { get; }
 
         /// <summary>
+        ///     Sprite with multiple shader batch passes
+        /// </summary>
+        private AnimatableSprite SpriteMultiPass { get; }
+
+        /// <summary>
         ///     Dictates if the sprite with shader's width is decreasing in the shader animation
         /// </summary>
         private bool SpriteWithShaderWidthDecreasing { get; set; } = true;
@@ -160,7 +165,53 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
                     })
                 }
             };
-#endregion
+
+            #endregion
+            #region SPRITE_MULTI_PASS
+
+            SpriteMultiPass = new AnimatableSprite(Textures.TestSpriteSheet)
+            {
+                Size = new ScalableVector2(200, 200),
+                Alignment = Alignment.BotCenter,
+                Parent = Container,
+                Y = -50,
+                X = 150,
+                AdditionalPasses = new List<SpriteBatchOptions>
+                {
+                    new ()
+                    {
+                        SortMode = SpriteSortMode.Deferred,
+                        BlendState = BlendState.NonPremultiplied,
+                        SamplerState = SamplerState.PointClamp,
+                        DepthStencilState = DepthStencilState.None,
+                        RasterizerState = RasterizerState.CullNone,
+                        // The shader attached is lerping the colors of the sprite towards greyscale.
+                        // p_strength = 0.3f means 30% grey and 70% colorful
+                        Shader = new Shader(
+                            GameBase.Game.Resources.Get("Wobble.Tests.Resources/Shaders/grey.mgfxo"),
+                            new Dictionary<string, object>
+                            {
+                                { "p_strength", 0.0f}
+                            })
+                    }
+                },
+                SpriteBatchOptions = new SpriteBatchOptions { BlendState = BlendState.Additive }
+            };
+            SpriteMultiPass.StartLoop(Direction.Forward, 60);
+
+            // As a comparison, the original animatable sprite
+            new AnimatableSprite(Textures.TestSpriteSheet)
+            {
+                Size = new ScalableVector2(200, 200),
+                Alignment = Alignment.BotCenter,
+                Parent = Container,
+                Y = -50,
+                X = -150,
+                SpriteBatchOptions = new SpriteBatchOptions { BlendState = BlendState.Additive }
+            }.StartLoop(Direction.Forward, 60);
+
+            #endregion
+
         }
 
         /// <inheritdoc />
@@ -182,13 +233,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
             GameBase.Game.GraphicsDevice.Clear(BackgroundColor);
             Container?.Draw(gameTime);
 
-            try
-            {
-                GameBase.Game.SpriteBatch.End();
-            }
-            catch (Exception)
-            {
-            }
+            GameBase.Game.TryEndBatch();
         }
 
         /// <inheritdoc />
@@ -209,6 +254,8 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 
             // The current transparent rectangle for the sprite.
             var currentTransparentRect = (Vector2) SpriteWithShader.SpriteBatchOptions.Shader.Parameters["p_rectangle"];
+            // We vary the strength of grey scale shader too
+            var currentGreyStrength = (float) SpriteMultiPass.AdditionalPasses[0].Shader.Parameters["p_strength"];
 
             // When the width of the box is fully shown, we want to set it to be decreasing here.
             if (SpriteWithShaderWidthDecreasing && currentTransparentRect.X >= SpriteWithShader.Width - 0.01)
@@ -231,12 +278,15 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
             // otherwise, we'll want to lerp it back to 0.
             var targetWidth = SpriteWithShaderWidthDecreasing ? SpriteWithShader.Width : 0;
             var targetHeight = SpriteWithShaderHeightDecreasing ? SpriteWithShader.Height : 0;
+            var targetStrength = SpriteWithShaderHeightDecreasing ? 1f : 0f;
 
             var newWidth = MathHelper.Lerp(currentTransparentRect.X, targetWidth, animTime);
             var newHeight = MathHelper.Lerp(currentTransparentRect.Y, targetHeight, animTime);
+            var newStrength = MathHelper.Lerp(currentGreyStrength, targetStrength, animTime);
 
             // Set the new rectangle shader parameter.
             SpriteWithShader.SpriteBatchOptions.Shader.SetParameter("p_rectangle", new Vector2(newWidth, newHeight), true);
+            SpriteMultiPass.AdditionalPasses[0].Shader.SetParameter("p_strength", newStrength, true);
         }
     }
 }

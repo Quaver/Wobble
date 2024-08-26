@@ -146,7 +146,7 @@ namespace Wobble.Graphics.Sprites.Text
             if (_dirty)
             {
                 _dirty = false;
-                GameBase.Game.ScheduledRenderTargetDraws.Add(() => Cache(gameTime));
+                GameBase.Game.ScheduledRenderTargetDraws.Add(Cache);
             }
 
             base.Update(gameTime);
@@ -218,11 +218,9 @@ namespace Wobble.Graphics.Sprites.Text
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
-            GameBase.Game.GraphicsDevice.Clear(Color.TransparentBlack);
+            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
             _raw.Draw(gameTime);
             _ = GameBase.Game.TryEndBatch();
-
-            GameBase.Game.GraphicsDevice.SetRenderTarget(null);
 
             Image = RenderTarget;
         }

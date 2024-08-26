@@ -12,7 +12,7 @@ namespace Wobble.Graphics.Sprites
     /// <summary>
     ///     Container for blurring sprites. Any child element will be placed under the same blur effect.
     /// </summary>
-    public class BlurContainer : RenderTargetContainer
+    public class BlurContainer : Container
     {
         /// <summary>
         ///     The type of blur to give it.
@@ -35,8 +35,9 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public BlurContainer(BlurType blurType, float strength)
         {
+            CastToRenderTarget();
             // ReSharper disable once ArrangeConstructorOrDestructorBody
-            SpriteBatchOptions = new SpriteBatchOptions()
+            DefaultProjectionSprite.SpriteBatchOptions = new SpriteBatchOptions()
             {
                 SortMode = SpriteSortMode.Deferred,
                 BlendState = BlendState.NonPremultiplied,
@@ -56,7 +57,7 @@ namespace Wobble.Graphics.Sprites
             BlurType = blurType;
             Strength = strength;
 
-            SpriteBatchOptions.Shader = new Shader(BlurEffects[BlurType], new Dictionary<string, object>
+            DefaultProjectionSprite.SpriteBatchOptions.Shader = new Shader(BlurEffects[BlurType], new Dictionary<string, object>
             {
                 {"p_blurValues", new Vector3(Width, Height, Strength)}
             });
@@ -69,10 +70,10 @@ namespace Wobble.Graphics.Sprites
         public override void Draw(GameTime gameTime)
         {
             // Set to the correct blur type.
-            SpriteBatchOptions.Shader.ShaderEffect = BlurEffects[BlurType];
+            DefaultProjectionSprite.SpriteBatchOptions.Shader.ShaderEffect = BlurEffects[BlurType];
 
             // Set dictionary parameters with updated properties.
-            SpriteBatchOptions.Shader.SetParameter("p_blurValues", new Vector3(Width, Height, Strength), true);
+            DefaultProjectionSprite.SpriteBatchOptions.Shader.SetParameter("p_blurValues", new Vector3(Width, Height, Strength), true);
 
             base.Draw(gameTime);
         }

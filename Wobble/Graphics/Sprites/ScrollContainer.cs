@@ -229,6 +229,8 @@ namespace Wobble.Graphics.Sprites
 
             // Calculate the scrollbar's y position.
             var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
+            if (float.IsNaN(percentage))
+                percentage = 0;
             Scrollbar.Y = percentage / 100 * (Scrollbar.Parent.Height - Scrollbar.Height) - (Scrollbar.Parent.Height - Scrollbar.Height);
 
             if (IsMinScrollYEnabled && Scrollbar.Y < MinScrollBarY)

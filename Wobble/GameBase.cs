@@ -34,6 +34,7 @@ namespace Wobble
         {
             SortMode = SpriteSortMode.Immediate,
             BlendState = BlendState.NonPremultiplied,
+            RasterizerState = RasterizerState.CullNone
         };
 
         /// <summary>

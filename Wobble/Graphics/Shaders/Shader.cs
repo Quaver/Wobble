@@ -112,5 +112,13 @@ namespace Wobble.Graphics.Shaders
             else
                 throw new InvalidTypeParameterException($"ShaderEffect Parameter {key} has invalid type: {type}");
         }
+
+        public bool TrySetParameter(string key, object value, bool setDictionaryValue)
+        {
+            if (ShaderEffect.Parameters[key] == null)
+                return false;
+            SetParameter(key, value, setDictionaryValue);
+            return true;
+        }
     }
 }

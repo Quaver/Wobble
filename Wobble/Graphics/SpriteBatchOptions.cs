@@ -17,6 +17,10 @@ namespace Wobble.Graphics
         public SamplerState SamplerState { get; set; } = SamplerState.LinearClamp;
         public DepthStencilState DepthStencilState { get; set; }
         public RasterizerState RasterizerState { get; set; }
+        public float Fov { get; set; } = MathF.PI / 2;
+        public ProjectionType ProjectionType { get; set; } = ProjectionType.Orthographic;
+        public float ZFar { get; set; } = 1000.0f;
+
         /// <summary>
         ///     Custom shader for this sprite.
         /// </summary>
@@ -47,7 +51,8 @@ namespace Wobble.Graphics
                 matrix = null;
 
             _ = GameBase.Game.TryEndBatch();
-            GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix);
+            GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix,
+                ProjectionType, Fov, ZFar);
         }
     }
 }

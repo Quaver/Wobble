@@ -1,11 +1,10 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Wobble.Assets;
 using Wobble.Graphics.Animations;
-using Wobble.Graphics.Shaders;
-using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -15,6 +14,18 @@ namespace Wobble.Graphics.Sprites
         ///     the image texture of the sprite.
         /// </summary>
         private Texture2D _image;
+
+        /// <summary>
+        ///     the source texture of the sprite. If there are passes to the shaders, _image will be changed
+        ///     but this won't
+        /// </summary>
+        private Texture2D _originalTexture;
+
+        /// <summary>
+        ///     If <see cref="AdditionalPasses"/> is not empty, this is used for applying shaders in them
+        /// </summary>
+        private RenderTarget2D _intermediateImage;
+
         public Texture2D Image
         {
             get => _image;
@@ -23,32 +34,45 @@ namespace Wobble.Graphics.Sprites
                 if (value == null)
                     return;
 
-                _image = value;
+                _image = _originalTexture = value;
 
-                Origin = new Vector2(Image.Width / 2f, Image.Height / 2f);
+                Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
+
+                if (AdditionalPasses != null && AdditionalPasses.Count > 0)
+                {
+                    _intermediateImage?.Dispose();
+                    _intermediateImage = new RenderTarget2D(GameBase.Game.GraphicsDevice, _image.Width, _image.Height, false,
+                        GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+                    GameBase.Game.ScheduledRenderTargetDraws.Add(PerformAdditionalPasses);
+                }
+
                 RecalculateRectangles();
             }
         }
-
-        /// <summary>
-        ///     Angle of the sprite with it's origin in the centre. (TEMPORARILY NOT USED YET)
-        /// </summary>
-        private float _rotation;
-        public float Rotation
-        {
-            get => _rotation;
-            set => _rotation = MathHelper.ToRadians(value);
-        }
+        public List<SpriteBatchOptions> AdditionalPasses { get; set; }
 
         /// <summary>
         ///     The XNA SpriteEffects the sprite will have.
+        ///     When the sprite is negatively scaled on some axis, it will be flipped over that axis too.
         /// </summary>
-        public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
+        public SpriteEffects SpriteEffect
+        {
+            get
+            {
+                var spriteEffects = _spriteEffect;
+                if (ScreenRectangle.Width < 0)
+                    spriteEffects ^= SpriteEffects.FlipHorizontally;
+                if (ScreenRectangle.Height < 0)
+                    spriteEffects ^= SpriteEffects.FlipVertically;
+                return spriteEffects;
+            }
+            set => _spriteEffect = value;
+        }
 
         /// <summary>
         ///     The origin of this object used for rotation.
         /// </summary>
-        public Vector2 Origin { get; private set; }
+        public Vector2 Origin { get; protected set; }
 
         /// <summary>
         ///     The rectangle used to render the sprite.
@@ -59,14 +83,24 @@ namespace Wobble.Graphics.Sprites
         ///     The tint this QuaverSprite will inherit.
         /// </summary>
         private Color _tint = Color.White;
-        public Color _color = Color.White;
+
+        protected override Color RelativeColor
+        {
+            get
+            {
+                var baseColor = base.RelativeColor;
+                var spriteColor = _tint * _alpha;
+                return new Color(baseColor.ToVector4() * spriteColor.ToVector4());
+            }
+        }
+
         public Color Tint
         {
             get => _tint;
             set
             {
                 _tint = value;
-                _color = _tint * _alpha;
+                RecalculateSelfColor();
             }
         }
 
@@ -80,7 +114,7 @@ namespace Wobble.Graphics.Sprites
             set
             {
                 _alpha = value;
-                _color = _tint * _alpha;
+                RecalculateSelfColor();
 
                 if (!SetChildrenAlpha)
                     return;
@@ -98,9 +132,53 @@ namespace Wobble.Graphics.Sprites
         }
 
         /// <summary>
+        ///     Additional rotation applied to this sprite only, and not to its children
+        /// </summary>
+        public float SpriteRotation
+        {
+            get => _spriteRotation;
+            set
+            {
+                _spriteRotation = value;
+                SpriteOverallRotation = _spriteRotation + (IndependentRotation ? Rotation : AbsoluteRotation);
+            }
+        }
+
+        private bool _independentRotation;
+        private SpriteEffects _spriteEffect = SpriteEffects.None;
+        private float _spriteRotation;
+
+        /// <summary>
+        ///     If true, the rotation of sprite shown on screen will be independent of its parent.
+        /// </summary>
+        public bool IndependentRotation
+        {
+            get => _independentRotation;
+            set
+            {
+                _independentRotation = value;
+                SpriteRotation = SpriteRotation;
+            }
+        }
+
+        /// <summary>
+        ///     Actual rotation of sprite shown on screen.
+        ///     It is decided by <see cref="IndependentRotation"/> and parent's <see cref="Drawable.AbsoluteRotation"/>
+        /// </summary>
+        public float SpriteOverallRotation { get; protected set; }
+
+        /// <summary>
         ///     Dictates if we want to set the alpha of the children as well.
         /// </summary>
         public bool SetChildrenAlpha { get; set; }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (_originalTexture is RenderTarget2D && AdditionalPasses != null && AdditionalPasses.Count > 0)
+                GameBase.Game.ScheduledRenderTargetDraws.Add(PerformAdditionalPasses);
+        }
 
         /// <inheritdoc />
         /// <summary>
@@ -155,6 +233,32 @@ namespace Wobble.Graphics.Sprites
             base.Draw(gameTime);
         }
 
+        /// <summary>
+        ///     Transforms the <see cref="_originalTexture"/> from <see cref="AdditionalPasses"/>
+        ///     Due to the nature of the MonoGame's drawing order,
+        ///     Changes to <see cref="Image"/> will be delayed by one frame
+        /// </summary>
+        private void PerformAdditionalPasses(GameTime gameTime)
+        {
+            _ = GameBase.Game.TryEndBatch();
+            GameBase.Game.GraphicsDevice.SetRenderTarget(_intermediateImage);
+            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
+
+            for (var index = 0; index < AdditionalPasses.Count; index++)
+            {
+                var pass = AdditionalPasses[index];
+                pass.Begin();
+
+                var target = index == 0 ? _originalTexture : _intermediateImage;
+
+                GameBase.Game.SpriteBatch.Draw(target, new RectangleF(Point2.Zero, new Size2(target.Width, target.Height)), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0f);
+            }
+
+            _ = GameBase.Game.TryEndBatch();
+            GameBase.Game.GraphicsDevice.SetRenderTarget(null);
+            _image = _intermediateImage;
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -163,7 +267,8 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+            var matrix = Transform.WorldMatrix;
+            GameBase.Game.SpriteBatch.Draw(Image, RelativeRectangle.Size, ref matrix, null, AbsoluteColor, SpriteEffect);
         }
 
         /// <inheritdoc />
@@ -183,10 +288,35 @@ namespace Wobble.Graphics.Sprites
             if (Image == null)
                 return;
 
+            var pivot = Pivot;
+            var screenRectangleSize = ScreenRectangle.Size;
+
+            // It seems like it's impossible to render textures with one of the axis flipped,
+            // so we need manual adjustments: flip the image back so its size is always positive,
+            // and flip the pivot correspondingly
+            if (screenRectangleSize.Width < 0)
+            {
+                pivot.X = 1 - pivot.X;
+                screenRectangleSize.Width = -screenRectangleSize.Width;
+            }
+
+            if (screenRectangleSize.Height < 0)
+            {
+                pivot.Y = 1 - pivot.Y;
+                screenRectangleSize.Height = -screenRectangleSize.Height;
+            }
+
+            Origin = new Vector2(pivot.X * Image.Width, pivot.Y * Image.Height);
+
+            // The render rectangle's position will rotate around the screen rectangle's position
+            var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);
+
             // Update the render rectangle
-            // Add Width / 2 and Height / 2 to X, Y because that's what Origin is set to (in the Image setter).
-            RenderRectangle = new RectangleF(ScreenRectangle.X + ScreenRectangle.Width / 2f, ScreenRectangle.Y + ScreenRectangle.Height / 2f,
-                ScreenRectangle.Width, ScreenRectangle.Height);
+            RenderRectangle = new RectangleF(
+                ScreenRectangle.Position + rotatedScreenOrigin,
+                screenRectangleSize);
+
+            SpriteRotation = SpriteRotation;
         }
 
         /// <summary>
