@@ -334,11 +334,13 @@ namespace Wobble.Graphics
 
         protected override void RecalculateLocalMatrix(out Matrix matrix)
         {
-            matrix = Matrix.CreateTranslation(-Origin) *
-                     Matrix.CreateScale(_scale) *
-                     Matrix.CreateFromQuaternion(_rotation) *
-                     Matrix.CreateTranslation(Origin) *
-                     Matrix.CreateTranslation(_position);
+            var originMatrix = Matrix.CreateTranslation(-Origin);
+            var scaleMatrix = Matrix.CreateScale(_scale);
+            var rotationMatrix = Matrix.CreateFromQuaternion(_rotation);
+            var positionMatrix = Matrix.CreateTranslation(Origin + _position);
+            Matrix.Multiply(ref originMatrix, ref scaleMatrix, out var m1);
+            Matrix.Multiply(ref rotationMatrix, ref positionMatrix, out var m2);
+            Matrix.Multiply(ref m1, ref m2, out matrix);
         }
 
         public override string ToString()
