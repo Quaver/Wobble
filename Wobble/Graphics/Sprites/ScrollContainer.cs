@@ -225,13 +225,22 @@ namespace Wobble.Graphics.Sprites
             }
 
             // Make sure content container is clamped to the viewport.
-            TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
+            var contentHeightDifference = Height - ContentContainer.Height;
+
+            TargetY = MathHelper.Clamp(TargetY, contentHeightDifference, 0);
 
             // Calculate the scrollbar's y position.
-            var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
-            if (float.IsNaN(percentage))
-                percentage = 0;
-            Scrollbar.Y = percentage / 100 * (Scrollbar.Parent.Height - Scrollbar.Height) - (Scrollbar.Parent.Height - Scrollbar.Height);
+            var percentage = Math.Abs(-ContentContainer.Y / contentHeightDifference * 100);
+
+            float scrollBarHeightDifference = Scrollbar.Parent.Height - Scrollbar.Height;
+            const float invisibleHeight = 1e9f;
+
+            // When contentHeightDifference == 0, percentage would give an NaN value.
+            // We should avoid NaN values. When this happens, set the Y to a very large number
+            // so it gets clipped off. We can't use inf here because it gets decomposed into NaN somehow.
+            Scrollbar.Y = contentHeightDifference == 0
+                ? invisibleHeight
+                : (percentage / 100 * scrollBarHeightDifference - scrollBarHeightDifference);
 
             if (IsMinScrollYEnabled && Scrollbar.Y < MinScrollBarY)
                 Scrollbar.Y = MinScrollBarY;
