@@ -144,7 +144,6 @@ namespace Wobble.Graphics.Sprites
             }
         }
 
-        private bool _independentRotation;
         private SpriteEffects _spriteEffect = SpriteEffects.None;
         private float _spriteRotation;
 
@@ -153,10 +152,10 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public bool IndependentRotation
         {
-            get => _independentRotation;
+            get => Transform.IndependentRotation;
             set
             {
-                _independentRotation = value;
+                Transform.IndependentRotation = value;
                 SpriteRotation = SpriteRotation;
             }
         }

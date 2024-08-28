@@ -23,6 +23,8 @@ namespace Wobble.Tests.Screens.Tests.Rotation
 
         public Sprite CollisionBox { get; }
 
+        public Sprite SpriteFixZRotation { get; }
+
         /// <summary>
         ///     The background color for the scene.
         /// </summary>
@@ -85,6 +87,19 @@ namespace Wobble.Tests.Screens.Tests.Rotation
                 Alignment = Alignment.TopLeft,
                 Size = new ScalableVector2(564, 880),
                 Position = new ScalableVector2(32, -56),
+            };
+
+            // The sprite should have a visually constant rotation
+            SpriteFixZRotation = new Sprite
+            {
+                Parent = GreenBox,
+                Image = WobbleAssets.Wallpaper,
+                Alignment = Alignment.MidCenter,
+                Size = new ScalableVector2(200, 50),
+                Position = new ScalableVector2(200, 100),
+                IndependentRotation = true,
+                Rotation = MathHelper.ToRadians(30),
+                RotationAxis = Vector3.Normalize(new Vector3(1, 0, 1))
             };
 
             GreenBox.AddBorder(Color.White, 2);

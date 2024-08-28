@@ -217,6 +217,7 @@ namespace Wobble.Graphics
         private Quaternion _rotation;
         private Vector3 _scale = Vector3.One;
         private Vector3 _origin = Vector3.Zero;
+        private bool _independentRotation;
 
         public QuadTransform(Vector3? position = null, Quaternion? rotation = null, Vector2? scale = null,
             Vector3? origin = null)
@@ -343,6 +344,20 @@ namespace Wobble.Graphics
             }
         }
 
+        /// <summary>
+        ///     If true, cancels all rotation effects from the parent.
+        /// </summary>
+        public bool IndependentRotation
+        {
+            get => _independentRotation;
+            set
+            {
+                _independentRotation = value;
+                LocalMatrixBecameDirty();
+                WorldMatrixBecameDirty();
+            }
+        }
+
         protected override void RecalculateWorldMatrix(ref Matrix selfLocalMatrix, ref Matrix childLocalMatrix,
             out Matrix selfWorldMatrix,
             out Matrix childWorldMatrix)
@@ -357,14 +372,21 @@ namespace Wobble.Graphics
                 selfWorldMatrix = selfLocalMatrix;
             }
 
-            childWorldMatrix = childLocalMatrix;
+            childWorldMatrix = selfWorldMatrix;
         }
 
         protected override void RecalculateLocalMatrix(out Matrix selfLocalMatrix, out Matrix childLocalMatrix)
         {
             var originMatrix = Matrix.CreateTranslation(-Origin);
             var scaleMatrix = Matrix.CreateScale(_scale);
-            var rotationMatrix = Matrix.CreateFromQuaternion(_rotation);
+            var rotation = _rotation;
+            if (IndependentRotation && Parent != null)
+            {
+                var parentChildMatrix = Parent.ChildWorldMatrix;
+                parentChildMatrix.Decompose(out _, out var parentWorldRotation, out _);
+                rotation = Quaternion.Inverse(parentWorldRotation) * rotation;
+            }
+            var rotationMatrix = Matrix.CreateFromQuaternion(rotation);
             var positionMatrix = Matrix.CreateTranslation(Origin + _position);
             Matrix.Multiply(ref originMatrix, ref scaleMatrix, out var m1);
             Matrix.Multiply(ref rotationMatrix, ref positionMatrix, out var m2);
