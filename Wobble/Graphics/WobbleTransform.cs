@@ -34,42 +34,74 @@ namespace Wobble.Graphics
         where TMatrix : struct
     {
         private TransformFlags _flags = TransformFlags.All; // dirty flags, set all dirty flags when created
-        private TMatrix _localMatrix; // model space to local space
+        private TMatrix _selfLocalMatrix; // model space to local space
         private WobbleBaseTransform<TMatrix> _parent; // parent
-        private TMatrix _worldMatrix; // local space to world space
+        private TMatrix _selfWorldMatrix; // local space to world space
+        private TMatrix _childWorldMatrix;
+        private TMatrix _childLocalMatrix;
 
         // internal contructor because people should not be using this class directly; they should use Transform2D or Transform3D
-        internal WobbleBaseTransform()
+        protected WobbleBaseTransform()
         {
         }
 
         /// <summary>
-        ///     Gets the model-to-local space <see cref="Matrix3x2" />.
+        ///     Gets the model-to-local space.
         /// </summary>
         /// <value>
-        ///     The model-to-local space <see cref="Matrix3x2" />.
+        ///     The model-to-local space.
         /// </value>
-        public TMatrix LocalMatrix
+        public TMatrix SelfLocalMatrix
         {
             get
             {
                 RecalculateLocalMatrixIfNecessary(); // attempt to update local matrix upon request if it is dirty
-                return _localMatrix;
+                return _selfLocalMatrix;
             }
         }
 
         /// <summary>
-        ///     Gets the local-to-world space <see cref="Matrix3x2" />.
+        ///     Gets the local-to-world space.
         /// </summary>
         /// <value>
-        ///     The local-to-world space <see cref="Matrix3x2" />.
+        ///     The local-to-world space.
         /// </value>
-        public TMatrix WorldMatrix
+        public TMatrix SelfWorldMatrix
         {
             get
             {
                 RecalculateWorldMatrixIfNecessary(); // attempt to update world matrix upon request if it is dirty
-                return _worldMatrix;
+                return _selfWorldMatrix;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the local-to-world space for children.
+        /// </summary>
+        /// <value>
+        ///     The local-to-world space for children.
+        /// </value>
+        public TMatrix ChildWorldMatrix
+        {
+            get
+            {
+                RecalculateWorldMatrixIfNecessary(); // attempt to update world matrix upon request if it is dirty
+                return _childWorldMatrix;
+            }
+        }
+
+        /// <summary>
+        ///     Gets the local-to-world space for children.
+        /// </summary>
+        /// <value>
+        ///     The local-to-world space for children.
+        /// </value>
+        public TMatrix ChildLocalMatrix
+        {
+            get
+            {
+                RecalculateLocalMatrixIfNecessary(); // attempt to update world matrix upon request if it is dirty
+                return _childLocalMatrix;
             }
         }
 
@@ -103,26 +135,6 @@ namespace Wobble.Graphics
 
         public event Action TransformBecameDirty; // observer pattern for when the world (or local) matrix became dirty
         public event Action TranformUpdated; // observer pattern for after the world (or local) matrix was re-calculated
-
-        /// <summary>
-        ///     Gets the model-to-local space <see cref="Matrix3x2" />.
-        /// </summary>
-        /// <param name="matrix">The model-to-local space <see cref="Matrix3x2" />.</param>
-        public void GetLocalMatrix(out TMatrix matrix)
-        {
-            RecalculateLocalMatrixIfNecessary();
-            matrix = _localMatrix;
-        }
-
-        /// <summary>
-        ///     Gets the local-to-world space <see cref="Matrix3x2" />.
-        /// </summary>
-        /// <param name="matrix">The local-to-world space <see cref="Matrix3x2" />.</param>
-        public void GetWorldMatrix(out TMatrix matrix)
-        {
-            RecalculateWorldMatrixIfNecessary();
-            matrix = _worldMatrix;
-        }
 
         protected internal void LocalMatrixBecameDirty()
         {
@@ -163,26 +175,29 @@ namespace Wobble.Graphics
                 return;
 
             RecalculateLocalMatrixIfNecessary();
-            RecalculateWorldMatrix(ref _localMatrix, out _worldMatrix);
+            RecalculateWorldMatrix(ref _selfLocalMatrix, ref _childLocalMatrix, out _selfWorldMatrix,
+                out _childWorldMatrix);
 
             _flags &= ~TransformFlags.WorldMatrixIsDirty;
             TranformUpdated?.Invoke();
         }
 
-        protected abstract void RecalculateWorldMatrix(ref TMatrix localMatrix, out TMatrix matrix);
+        protected abstract void RecalculateWorldMatrix(ref TMatrix selfLocalMatrix, ref TMatrix childLocalMatrix,
+            out TMatrix selfWorldMatrix,
+            out TMatrix childWorldMatrix);
 
         private void RecalculateLocalMatrixIfNecessary()
         {
             if ((_flags & TransformFlags.LocalMatrixIsDirty) == 0)
                 return;
 
-            RecalculateLocalMatrix(out _localMatrix);
+            RecalculateLocalMatrix(out _selfLocalMatrix, out _childLocalMatrix);
 
             _flags &= ~TransformFlags.LocalMatrixIsDirty;
             WorldMatrixBecameDirty();
         }
 
-        protected abstract void RecalculateLocalMatrix(out TMatrix matrix);
+        protected abstract void RecalculateLocalMatrix(out TMatrix selfLocalMatrix, out TMatrix childLocalMatrix);
     }
 
     /// <summary>
@@ -218,7 +233,7 @@ namespace Wobble.Graphics
         /// <value>
         ///     The world position.
         /// </value>
-        public Vector3 WorldPosition => WorldMatrix.Translation;
+        public Vector3 WorldPosition => SelfWorldMatrix.Translation;
 
         /// <summary>
         ///     Gets the world scale.
@@ -230,7 +245,7 @@ namespace Wobble.Graphics
         {
             get
             {
-                WorldMatrix.Decompose(out var scale, out _, out _);
+                SelfWorldMatrix.Decompose(out var scale, out _, out _);
                 return scale;
             }
         }
@@ -246,7 +261,7 @@ namespace Wobble.Graphics
         {
             get
             {
-                WorldMatrix.Decompose(out _, out var rotation, out _);
+                SelfWorldMatrix.Decompose(out _, out var rotation, out _);
                 return rotation;
             }
         }
@@ -319,20 +334,33 @@ namespace Wobble.Graphics
             }
         }
 
-        protected override void RecalculateWorldMatrix(ref Matrix localMatrix, out Matrix matrix)
+        public Plane Plane
         {
-            if (Parent != null)
+            get
             {
-                Parent.GetWorldMatrix(out matrix);
-                Matrix.Multiply(ref localMatrix, ref matrix, out matrix);
-            }
-            else
-            {
-                matrix = localMatrix;
+                var worldMatrix = SelfWorldMatrix;
+                return new Plane(worldMatrix.Translation, Vector3.Cross(worldMatrix.Right, worldMatrix.Up));
             }
         }
 
-        protected override void RecalculateLocalMatrix(out Matrix matrix)
+        protected override void RecalculateWorldMatrix(ref Matrix selfLocalMatrix, ref Matrix childLocalMatrix,
+            out Matrix selfWorldMatrix,
+            out Matrix childWorldMatrix)
+        {
+            if (Parent != null)
+            {
+                var parentChildWorldMatrix = Parent.ChildWorldMatrix;
+                Matrix.Multiply(ref selfLocalMatrix, ref parentChildWorldMatrix, out selfWorldMatrix);
+            }
+            else
+            {
+                selfWorldMatrix = selfLocalMatrix;
+            }
+
+            childWorldMatrix = childLocalMatrix;
+        }
+
+        protected override void RecalculateLocalMatrix(out Matrix selfLocalMatrix, out Matrix childLocalMatrix)
         {
             var originMatrix = Matrix.CreateTranslation(-Origin);
             var scaleMatrix = Matrix.CreateScale(_scale);
@@ -340,12 +368,24 @@ namespace Wobble.Graphics
             var positionMatrix = Matrix.CreateTranslation(Origin + _position);
             Matrix.Multiply(ref originMatrix, ref scaleMatrix, out var m1);
             Matrix.Multiply(ref rotationMatrix, ref positionMatrix, out var m2);
-            Matrix.Multiply(ref m1, ref m2, out matrix);
+            Matrix.Multiply(ref m1, ref m2, out childLocalMatrix);
+
+            selfLocalMatrix = childLocalMatrix;
         }
 
         public override string ToString()
         {
             return $"Position: {Position}, Rotation: {Rotation}, Scale: {Scale}";
+        }
+    }
+
+    public class IndependentQuadTransform : QuadTransform
+    {
+        protected override void RecalculateWorldMatrix(ref Matrix selfLocalMatrix, ref Matrix childLocalMatrix,
+            out Matrix selfWorldMatrix, out Matrix childWorldMatrix)
+        {
+            selfWorldMatrix = selfLocalMatrix;
+            childWorldMatrix = childLocalMatrix;
         }
     }
 }

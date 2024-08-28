@@ -267,7 +267,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            var matrix = Transform.WorldMatrix;
+            var matrix = Transform.SelfWorldMatrix;
             GameBase.Game.SpriteBatch.Draw(Image, RelativeRectangle.Size, ref matrix, null, AbsoluteColor, SpriteEffect);
         }
 

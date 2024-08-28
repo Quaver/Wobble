@@ -19,7 +19,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Represents the rotation, position, scale, and origin of the quad we're drawing
         /// </summary>
-        public QuadTransform Transform { get; } = new QuadTransform();
+        public virtual QuadTransform Transform { get; } = new QuadTransform();
 
         /// <summary>
         ///     The main render target to render to.
