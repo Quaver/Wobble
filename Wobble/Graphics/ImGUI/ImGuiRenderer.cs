@@ -365,6 +365,9 @@ namespace Wobble.Graphics.ImGUI
             var lastRasterizerState = GraphicsDevice.RasterizerState;
             var lastDepthStencilState = GraphicsDevice.DepthStencilState;
 
+            // We are submitting vertex and index buffers without using SpriteBatch.
+            // We need to end the batch so we are drawing on top of those that are not flushed
+            GameBase.Game.TryEndBatch();
             GraphicsDevice.BlendFactor = Color.White;
             GraphicsDevice.BlendState = BlendState.NonPremultiplied;
             GraphicsDevice.RasterizerState = RasterizerState;
