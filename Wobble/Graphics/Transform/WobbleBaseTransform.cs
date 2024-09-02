@@ -28,28 +28,17 @@ namespace Wobble.Graphics.Transform
         private TMatrix _localMatrix; // model space to local space
         private WobbleBaseTransform<TMatrix> _parent; // parent
         private TMatrix _worldMatrix; // local space to world space
-        private WobbleBaseTransform<TMatrix> _childTransform;
-        private WobbleBaseTransform<TMatrix> _selfTransform;
 
-        // TODO
-        public WobbleBaseTransform<TMatrix> ChildTransform
+        public virtual TMatrix ChildWorldMatrix
         {
-            get => _childTransform ?? this;
-            set
-            {
-                _childTransform = value;
-                _childTransform.Parent = this;
-            }
+            get => WorldMatrix;
+            protected set => throw new InvalidOperationException();
         }
 
-        public WobbleBaseTransform<TMatrix> SelfTransform
+        public virtual TMatrix SelfWorldMatrix
         {
-            get => _selfTransform ?? this;
-            set
-            {
-                _selfTransform = value;
-                _childTransform.Parent = this;
-            }
+            get => WorldMatrix;
+            protected set => throw new InvalidOperationException();
         }
 
         // internal contructor because people should not be using this class directly; they should use Transform2D or Transform3D
@@ -116,7 +105,8 @@ namespace Wobble.Graphics.Transform
         }
 
         public event Action TransformBecameDirty; // observer pattern for when the world (or local) matrix became dirty
-        public event Action TranformUpdated; // observer pattern for after the world (or local) matrix was re-calculated
+        public event Action TransformUpdated; // observer pattern for after the world (or local) matrix was re-calculated
+        public event Action<WobbleBaseTransform<TMatrix>, WobbleBaseTransform<TMatrix>> ParentChanged;
 
         protected internal void LocalMatrixBecameDirty()
         {
@@ -144,6 +134,7 @@ namespace Wobble.Graphics.Transform
                 parent.TransformBecameDirty += ParentOnTransformBecameDirty;
                 parent = parent.Parent;
             }
+            ParentChanged?.Invoke(oldParent, newParent);
         }
 
         private void ParentOnTransformBecameDirty()
@@ -151,7 +142,7 @@ namespace Wobble.Graphics.Transform
             _flags |= TransformFlags.All;
         }
 
-        private void RecalculateWorldMatrixIfNecessary()
+        public void RecalculateWorldMatrixIfNecessary()
         {
             if ((_flags & TransformFlags.WorldMatrixIsDirty) == 0)
                 return;
@@ -160,7 +151,7 @@ namespace Wobble.Graphics.Transform
             RecalculateWorldMatrix(ref _localMatrix, out _worldMatrix);
 
             _flags &= ~TransformFlags.WorldMatrixIsDirty;
-            TranformUpdated?.Invoke();
+            TransformUpdated?.Invoke();
         }
 
         protected abstract void RecalculateWorldMatrix(ref TMatrix localMatrix, out TMatrix worldMatrix);

@@ -17,7 +17,8 @@ namespace Wobble.Graphics
         /// <param name="offset"></param>
         /// <param name="relative"></param>
         /// <returns></returns>
-        public static float Align(float scale, float objectSize, float boundaryLeft, float boundaryRight, float offset = 0, bool relative = false)
+        public static float Align(float scale, float objectSize, float boundaryLeft, float boundaryRight,
+            float offset = 0, bool relative = false)
         {
             var res = (boundaryRight - boundaryLeft - objectSize) * scale + offset;
             return relative ? res : boundaryLeft + res;
@@ -31,7 +32,8 @@ namespace Wobble.Graphics
         /// <param name="boundary">The Rectangle of the boundary.</param>
         /// <param name="relative"></param>
         /// <returns></returns>
-        public static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary, bool relative = false)
+        public static RectangleF AlignRect(Alignment objectAlignment, RectangleF objectRect, RectangleF boundary,
+            bool relative = false)
         {
             float alignX = 0;
             float alignY = 0;
@@ -90,23 +92,43 @@ namespace Wobble.Graphics
             return new RectangleF(resultPosition, resultSize);
         }
 
-        public static RectangleF MinimumBoundingRectangle(RectangleF objectRect, float angleRadians, bool relative = false)
+        public static RectangleF MinimumBoundingRectangle(RectangleF objectRect, float angleRadians,
+            bool relative = false)
         {
             var cos = MathF.Cos(angleRadians);
             var sin = MathF.Sin(angleRadians);
             var topLeft = Vector2.Zero;
             var bottomLeft = new Vector2(-sin * objectRect.Height, cos * objectRect.Height);
-            var bottomRight = new Vector2(cos * objectRect.Width - sin * objectRect.Height, sin * objectRect.Width + cos * objectRect.Height);
+            var bottomRight = new Vector2(cos * objectRect.Width - sin * objectRect.Height,
+                sin * objectRect.Width + cos * objectRect.Height);
             var topRight = new Vector2(cos * objectRect.Width, sin * objectRect.Width);
+            var minimumBoundingRectangle = MinimumBoundingRectangle(topLeft, topRight, bottomLeft, bottomRight);
+            if (!relative)
+                minimumBoundingRectangle.Offset(objectRect.Position);
+            return minimumBoundingRectangle;
+        }
+
+        public static RectangleF MinimumBoundingRectangle(
+            Vector2 topLeft, Vector2 topRight, Vector2 bottomLeft, Vector2 bottomRight)
+        {
             var minX = MathF.Min(MathF.Min(topLeft.X, bottomLeft.X), MathF.Min(bottomRight.X, topRight.X));
             var minY = MathF.Min(MathF.Min(topLeft.Y, bottomLeft.Y), MathF.Min(bottomRight.Y, topRight.Y));
             var maxX = MathF.Max(MathF.Max(topLeft.X, bottomLeft.X), MathF.Max(bottomRight.X, topRight.X));
             var maxY = MathF.Max(MathF.Max(topLeft.Y, bottomLeft.Y), MathF.Max(bottomRight.Y, topRight.Y));
             var minimumBoundingRectangle = new RectangleF(minX, minY, maxX - minX, maxY - minY);
-            if (!relative)
-                minimumBoundingRectangle.Offset(objectRect.Position);
             return minimumBoundingRectangle;
-        } 
+        }
+
+        public static RectangleF MinimumBoundingRectangle(
+            Vector3 topLeft, Vector3 topRight, Vector3 bottomLeft, Vector3 bottomRight)
+        {
+            var minX = MathF.Min(MathF.Min(topLeft.X, bottomLeft.X), MathF.Min(bottomRight.X, topRight.X));
+            var minY = MathF.Min(MathF.Min(topLeft.Y, bottomLeft.Y), MathF.Min(bottomRight.Y, topRight.Y));
+            var maxX = MathF.Max(MathF.Max(topLeft.X, bottomLeft.X), MathF.Max(bottomRight.X, topRight.X));
+            var maxY = MathF.Max(MathF.Max(topLeft.Y, bottomLeft.Y), MathF.Max(bottomRight.Y, topRight.Y));
+            var minimumBoundingRectangle = new RectangleF(minX, minY, maxX - minX, maxY - minY);
+            return minimumBoundingRectangle;
+        }
 
         /// <summary>
         ///     Converts a Vector2 to Point
@@ -130,12 +152,14 @@ namespace Wobble.Graphics
         /// <returns></returns>
         public static bool RectangleContains(DrawRectangle rect, Vector2 point)
         {
-            return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
+            return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y &&
+                    point.Y <= rect.Y + rect.Height);
         }
 
         public static bool RectangleContains(RectangleF rect, Vector2 point)
         {
-            return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y && point.Y <= rect.Y + rect.Height);
+            return (point.X >= rect.X && point.X <= rect.X + rect.Width && point.Y >= rect.Y &&
+                    point.Y <= rect.Y + rect.Height);
         }
     }
 }

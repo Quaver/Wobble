@@ -117,6 +117,29 @@ namespace Wobble.Graphics.Primitives
 							 0);
 		}
 
+        /// <summary>
+        /// Draws a filled rectangle
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="location">Where to draw</param>
+        /// <param name="size">The size of the rectangle</param>
+        /// <param name="angle">The angle in radians to draw the rectangle at</param>
+        /// <param name="color">The color to draw the rectangle in</param>
+        public static void FillRectangle(this SpriteBatch spriteBatch, Vector2 size, ref Matrix transform, Color color)
+        {
+            if (pixel == null)
+            {
+                CreateThePixel(spriteBatch);
+            }
+
+            // stretch the pixel between the two vectors
+            spriteBatch.Draw(pixel,
+                size,
+                ref transform,
+                null,
+                color);
+        }
+
 
 		/// <summary>
 		/// Draws a filled rectangle

@@ -8,6 +8,10 @@ namespace Wobble.Graphics.Primitives
     /// </summary>
     public class FilledRectangleSprite : Sprite
     {
+        public FilledRectangleSprite()
+        {
+            Pivot = Vector2.Zero;
+        }
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -16,8 +20,9 @@ namespace Wobble.Graphics.Primitives
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.FillRectangle(new Vector2(RenderRectangle.X, RenderRectangle.Y),
-                new Vector2(RenderRectangle.Width, RenderRectangle.Height), AbsoluteColor, Rotation);
+            var worldMatrix = Transform.SelfWorldMatrix.Matrix;
+            GameBase.Game.SpriteBatch.FillRectangle(
+                RelativeRectangle.Size, ref worldMatrix, AbsoluteColor);
         }
     }
 }

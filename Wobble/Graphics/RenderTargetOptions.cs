@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Wobble.Bindables;
+using Wobble.Graphics.Transform;
 using Wobble.Window;
 
 namespace Wobble.Graphics
@@ -15,7 +16,7 @@ namespace Wobble.Graphics
         private bool _enabled;
         private Point _containerRectangleSize;
         private Padding _overflowRenderPadding;
-        private Matrix2 _transformMatrix;
+        private Transform3D _transformMatrix;
 
         /// <summary>
         ///     Whether the render target should be and is being used.
@@ -38,6 +39,7 @@ namespace Wobble.Graphics
                     RenderTarget.Value?.Dispose();
                     RenderTarget.Value = null;
                 }
+                RecalculateTransformMatrix();
             }
         }
 
@@ -83,7 +85,7 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Absolute translation needed for the children of the container to be drawn.
         /// </summary>
-        public Vector2 RenderOffset { get; private set; }
+        public Vector3 RenderOffset { get; private set; }
 
         /// <summary>
         ///     Relative rectangle of the full render target
@@ -95,7 +97,7 @@ namespace Wobble.Graphics
         ///     This includes translation by <see cref="RenderOffset"/>
         ///     followed by inverse scaling of <see cref="WindowManager.ScreenScale"/>.
         /// </summary>
-        public Matrix2 TransformMatrix => _transformMatrix;
+        public Transform3D TransformMatrix => _transformMatrix;
 
         /// <summary>
         ///     When rendering to <see cref="RenderTarget"/>, the background color to give.
@@ -104,15 +106,43 @@ namespace Wobble.Graphics
 
         // SpriteBatchOptions will scale thing to WindowManager.ScreenScale, but out render target is already
         // scaled, so we should scale them back.
-        public Vector2 Scale { get; private set; }
+        public Vector3 Scale { get; private set; }
+
+        public Vector3[] RelativeVertices { get; private set; } = new Vector3[4];
+
+        public RenderTargetOptions()
+        {
+            WindowManager.ResolutionChanged += WindowManagerOnResolutionChanged;
+            WindowManager.VirtualScreenSizeChanged += WindowManagerOnVirtualScreenSizeChanged;
+        }
+
+        ~RenderTargetOptions()
+        {
+            WindowManager.ResolutionChanged -= WindowManagerOnResolutionChanged;
+            WindowManager.VirtualScreenSizeChanged -= WindowManagerOnVirtualScreenSizeChanged;
+        }
+
+        private void WindowManagerOnVirtualScreenSizeChanged(object sender, WindowVirtualScreenSizeChangedEventArgs e)
+        {
+            RecalculateTransformMatrix();
+        }
+
+        private void WindowManagerOnResolutionChanged(object sender, WindowResolutionChangedEventArgs e)
+        {
+            RecalculateTransformMatrix();
+        }
 
         public void RecalculateTransformMatrix()
         {
-            Scale = new Vector2(1 / WindowManager.ScreenScale.X, 1 / WindowManager.ScreenScale.Y);
-            RenderOffset = new Vector2(-_renderRectangle.X, -_renderRectangle.Y);
-            var offsetTranslation = Matrix2.CreateTranslation(RenderOffset);
-            var scalingMatrix = Matrix2.CreateScale(Scale);
-            Matrix2.Multiply(ref offsetTranslation, ref scalingMatrix, out _transformMatrix);
+            var renderRectangle = RenderRectangle;
+            Scale = new Vector3(1 / WindowManager.ScreenScale.X, 1 / WindowManager.ScreenScale.Y, 1);
+            RenderOffset = new Vector3(-renderRectangle.X, -renderRectangle.Y, 0);
+            _transformMatrix = new Transform3D(MatrixHelper.CreateTranslationScale(RenderOffset, Scale));
+            RelativeVertices[0] = new Vector3(renderRectangle.X, renderRectangle.Y, 0);
+            RelativeVertices[1] = new Vector3(renderRectangle.X + renderRectangle.Width, renderRectangle.Y, 0);
+            RelativeVertices[2] = new Vector3(renderRectangle.X, renderRectangle.Y + renderRectangle.Height, 0);
+            RelativeVertices[3] = new Vector3(renderRectangle.X + renderRectangle.Width,
+                renderRectangle.Y + renderRectangle.Height, 0);
         }
 
         /// <summary>

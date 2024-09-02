@@ -45,8 +45,6 @@ namespace Wobble.Graphics.Sprites
                         GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
                     GameBase.Game.ScheduledRenderTargetDraws.Add(PerformAdditionalPasses);
                 }
-
-                RecalculateRectangles();
             }
         }
         public List<SpriteBatchOptions> AdditionalPasses { get; set; }
@@ -134,18 +132,13 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     Additional rotation applied to this sprite only, and not to its children
         /// </summary>
-        public float SpriteRotation
+        public Quaternion SpriteRotation
         {
-            get => _spriteRotation;
-            set
-            {
-                _spriteRotation = value;
-                SpriteOverallRotation = _spriteRotation + (IndependentRotation ? Rotation : AbsoluteRotation);
-            }
+            get => Transform.SelfRotation;
+            set => Transform.SelfRotation = value;
         }
 
         private SpriteEffects _spriteEffect = SpriteEffects.None;
-        private float _spriteRotation;
 
         /// <summary>
         ///     If true, the rotation of sprite shown on screen will be independent of its parent.
@@ -153,11 +146,7 @@ namespace Wobble.Graphics.Sprites
         public bool IndependentRotation
         {
             get => Transform.IndependentRotation;
-            set
-            {
-                Transform.IndependentRotation = value;
-                SpriteRotation = SpriteRotation;
-            }
+            set => Transform.IndependentRotation = value;
         }
 
         /// <summary>
@@ -266,7 +255,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            var matrix = Transform.WorldMatrix;
+            var matrix = Transform.SelfWorldMatrix.Matrix;
             GameBase.Game.SpriteBatch.Draw(Image, RelativeRectangle.Size, ref matrix, null, AbsoluteColor, SpriteEffect);
         }
 
@@ -284,38 +273,6 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         protected override void OnRectangleRecalculated()
         {
-            if (Image == null)
-                return;
-
-            var pivot = Pivot;
-            var screenRectangleSize = ScreenRectangle.Size;
-
-            // It seems like it's impossible to render textures with one of the axis flipped,
-            // so we need manual adjustments: flip the image back so its size is always positive,
-            // and flip the pivot correspondingly
-            if (screenRectangleSize.Width < 0)
-            {
-                pivot.X = 1 - pivot.X;
-                screenRectangleSize.Width = -screenRectangleSize.Width;
-            }
-
-            if (screenRectangleSize.Height < 0)
-            {
-                pivot.Y = 1 - pivot.Y;
-                screenRectangleSize.Height = -screenRectangleSize.Height;
-            }
-
-            Origin = new Vector2(pivot.X * Image.Width, pivot.Y * Image.Height);
-
-            // The render rectangle's position will rotate around the screen rectangle's position
-            var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);
-
-            // Update the render rectangle
-            RenderRectangle = new RectangleF(
-                ScreenRectangle.Position + rotatedScreenOrigin,
-                screenRectangleSize);
-
-            SpriteRotation = SpriteRotation;
         }
 
         /// <summary>

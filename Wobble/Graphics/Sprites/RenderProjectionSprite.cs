@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -11,43 +12,25 @@ namespace Wobble.Graphics.Sprites
 
         protected override void OnRectangleRecalculated()
         {
-            if (Image == null || _boundProjectionContainerSource == null)
+        }
+
+        public override void DrawToSpriteBatch()
+        {
+            if (!Visible || _boundProjectionContainerSource == null)
                 return;
 
-            var pivot = Pivot;
-            var screenRectangleSize = ScreenRectangle.Size;
-
-            // It seems like it's impossible to render textures with one of the axis flipped,
-            // so we need manual adjustments: flip the image back so its size is always positive,
-            // and flip the pivot correspondingly
-            if (screenRectangleSize.Width < 0)
+            var matrix = Transform.SelfWorldMatrix.Matrix;
+            var vertices = new Vector3[4];
+            Array.Copy(_boundProjectionContainerSource.RenderTargetOptions.RelativeVertices, vertices, 4);
+            var rectangleSize = _boundProjectionContainerSource.RenderTargetOptions.ContainerRectangleSize.ToVector2();
+            for (var i = 0; i < vertices.Length; i++)
             {
-                pivot.X = 1 - pivot.X;
-                screenRectangleSize.Width = -screenRectangleSize.Width;
+                vertices[i] = new Vector3(vertices[i].X / rectangleSize.X * RelativeRectangle.Width,
+                    vertices[i].Y / rectangleSize.Y * RelativeRectangle.Height, 0);
             }
 
-            if (screenRectangleSize.Height < 0)
-            {
-                pivot.Y = 1 - pivot.Y;
-                screenRectangleSize.Height = -screenRectangleSize.Height;
-            }
-
-            Origin = pivot * _boundProjectionContainerSource.RenderTargetOptions.ContainerRectangleSize.ToVector2()
-                     + _boundProjectionContainerSource.RenderTargetOptions.RenderOffset;
-
-            // The render rectangle's position will rotate around the screen rectangle's position
-            var rotatedScreenOrigin =
-                (ScreenRectangle.Size * Pivot)
-                .Rotate(Parent?.AbsoluteRotation ?? 0);
-
-            // Update the render rectangle
-            RenderRectangle = new RectangleF(
-                ScreenRectangle.Position + rotatedScreenOrigin,
-                screenRectangleSize *
-                _boundProjectionContainerSource.RenderTargetOptions.RenderRectangle.Size.ToVector2() /
-                _boundProjectionContainerSource.RenderTargetOptions.ContainerRectangleSize.ToVector2());
-
-            SpriteRotation = SpriteRotation;
+            GameBase.Game.SpriteBatch.Draw(Image, vertices, ref matrix, null, AbsoluteColor,
+                SpriteEffect);
         }
 
         public override void Destroy()
