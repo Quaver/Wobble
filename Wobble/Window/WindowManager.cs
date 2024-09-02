@@ -99,8 +99,6 @@ namespace Wobble.Window
             // Create the matrix at which we'll be drawing sprites.
             ScalingFactor = new Vector3(ScreenScale.X, ScreenScale.Y, 1);
             Scale = Matrix.CreateScale(ScalingFactor);
-
-            gdm.ApplyChanges();
         }
 
         /// <summary>
@@ -115,6 +113,7 @@ namespace Wobble.Window
         public static void ChangeVirtualScreenSize(Vector2 newScreenSize)
         {
             VirtualScreen = newScreenSize;
+            Update();
             VirtualScreenSizeChanged?.Invoke(typeof(WindowManager), new WindowVirtualScreenSizeChangedEventArgs(VirtualScreen));
         }
 
@@ -152,6 +151,7 @@ namespace Wobble.Window
             gdm.PreferredBackBufferWidth = resolution.X;
             gdm.PreferredBackBufferHeight = resolution.Y;
             gdm.ApplyChanges();
+            Update();
 
             // Raise an event to let everyone know that the window has changed.
             ResolutionChanged?.Invoke(typeof(WindowManager), new WindowResolutionChangedEventArgs(resolution, oldResolution));
@@ -169,8 +169,7 @@ namespace Wobble.Window
         /// </summary>
         private static void UpdateBackBufferSize()
         {
-            GameBase.Game.Graphics.PreferredBackBufferWidth = GameBase.Game.Window.ClientBounds.Width;
-            GameBase.Game.Graphics.PreferredBackBufferHeight = GameBase.Game.Window.ClientBounds.Height;
+            ChangeScreenResolution(GameBase.Game.Window.ClientBounds.Size);
         }
     }
 }
