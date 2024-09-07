@@ -87,6 +87,8 @@ namespace Wobble.Graphics
                 // When both are null, we implicitly add this to the Default layer
                 if (value == null && (Layer == null || IsDisposed))
                     Layer = null;
+
+                RecalculateRectangles();
             }
         }
 
@@ -678,6 +680,7 @@ namespace Wobble.Graphics
                     Parent = Parent
                 };
                 DefaultProjectionSprite.BindProjectionContainer(this);
+                DefaultProjectionSprite.SyncSourceProperties();
             }
             RecalculateRectangles();
         }
@@ -762,15 +765,7 @@ namespace Wobble.Graphics
                 };
             }
 
-            if (DefaultProjectionSprite != null)
-            {
-                DefaultProjectionSprite.Parent = Parent;
-                DefaultProjectionSprite.Size = Size;
-                DefaultProjectionSprite.Scale = Scale;
-                DefaultProjectionSprite.Rotation = Rotation;
-                DefaultProjectionSprite.Position = Position;
-                DefaultProjectionSprite.Alignment = Alignment;
-            }
+            DefaultProjectionSprite?.SyncSourceProperties();
 
             if (RenderTargetOptions.Enabled)
             {

@@ -63,6 +63,17 @@ namespace Wobble.Graphics.Sprites
             container.SizeChanged += ContainerSizeChanged;
         }
 
+        public void SyncSourceProperties()
+        {
+            if (Parent != _boundProjectionContainerSource.Parent)
+                Parent = _boundProjectionContainerSource.Parent;
+            Scale = _boundProjectionContainerSource.Scale;
+            Rotation = _boundProjectionContainerSource.Rotation;
+            Position = _boundProjectionContainerSource.Position;
+            Alignment = _boundProjectionContainerSource.Alignment;
+            Size = _boundProjectionContainerSource.Size;
+        }
+
         private void ContainerSizeChanged(object sender, ScalableVector2 e)
         {
             UpdateShaderSizeParameter();
