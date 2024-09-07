@@ -35,8 +35,8 @@ namespace Wobble.Graphics.Primitives
             if (!Visible)
                 return;
 
-            Primitives2D.DrawPoints(GameBase.Game.SpriteBatch,
-                new Vector2(RenderRectangle.X, RenderRectangle.Y), Points, AbsoluteColor, Thickness);
+            var transform = Transform.SelfWorldMatrix.Matrix;
+            Primitives2D.DrawPoints(GameBase.Game.SpriteBatch, Points, ref transform, AbsoluteColor, Thickness);
         }
     }
 }

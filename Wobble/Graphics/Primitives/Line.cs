@@ -43,7 +43,7 @@ namespace Wobble.Graphics.Primitives
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.DrawLine(new Vector2(RenderRectangle.X, RenderRectangle.Y),
+            GameBase.Game.SpriteBatch.DrawLine(AbsolutePosition,
                 EndPosition, AbsoluteColor, Thickness);
         }
     }

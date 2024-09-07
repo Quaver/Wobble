@@ -348,6 +348,22 @@ namespace Wobble.Graphics.Transform
             WorldMatrixBecameDirty();
         }
 
+        public void OverrideSelfMatrix(Transform3D? matrix)
+        {
+            if (matrix.HasValue)
+            {
+                _selfFlags[SelfMatrixOverride] = true;
+                SelfWorldMatrix = matrix.Value;
+            }
+            else
+            {
+                _selfFlags[SelfMatrixOverride] = false;
+            }
+
+            LocalMatrixBecameDirty();
+            WorldMatrixBecameDirty();
+        }
+
         protected virtual void RecalculatePosition()
         {
             var parent = (DrawableTransform)Parent;

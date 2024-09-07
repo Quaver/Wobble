@@ -8,10 +8,6 @@ namespace Wobble.Graphics.Primitives
     /// </summary>
     public class FilledRectangleSprite : Sprite
     {
-        public FilledRectangleSprite()
-        {
-            Pivot = Vector2.Zero;
-        }
         /// <inheritdoc />
         /// <summary>
         /// </summary>

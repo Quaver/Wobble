@@ -27,8 +27,7 @@ namespace Wobble.Graphics.Primitives
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.DrawRectangle(new Vector2(RenderRectangle.X, RenderRectangle.Y),
-                new Vector2(RenderRectangle.Width, RenderRectangle.Height), AbsoluteColor, Thickness);
+            GameBase.Game.SpriteBatch.DrawQuad(Transform.Vertices, AbsoluteColor, Thickness);
         }
     }
 }

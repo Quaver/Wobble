@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -205,6 +206,18 @@ namespace Wobble.Graphics.Primitives
 			DrawLine(spriteBatch, new Vector2(rect.Right + 1f, rect.Y), new Vector2(rect.Right + 1f, rect.Bottom + thickness), color, thickness); // right
 		}
 
+        public static void DrawQuad(this SpriteBatch spriteBatch, Vector3[] vertices, Color color,
+            float thickness)
+        {
+            if (vertices.Length < 4)
+                throw new InvalidOperationException("The number of vertices must be at least 4.");
+            DrawLine(spriteBatch, vertices[0], vertices[1], color, thickness); // top
+            DrawLine(spriteBatch, vertices[1], vertices[3], color, thickness); // left
+            DrawLine(spriteBatch, vertices[3], vertices[2], color, thickness); // right
+            DrawLine(spriteBatch, vertices[2], vertices[0], color, thickness); // bottom
+
+        }
+
 
 		/// <summary>
 		/// Draws a rectangle with the thickness provided
@@ -299,6 +312,25 @@ namespace Wobble.Graphics.Primitives
 
 			DrawLine(spriteBatch, point1, distance, angle, color, thickness);
 		}
+
+        public static void DrawLine(this SpriteBatch spriteBatch, Vector3 point1, Vector3 point2, Color color,
+            float thickness)
+        {
+            if (pixel == null)
+            {
+                CreateThePixel(spriteBatch);
+            }
+            var extension = Vector3.Cross(point2 - point1, Vector3.UnitZ);
+            extension.Normalize();
+            extension *= thickness;
+            spriteBatch.Draw(pixel, new[]
+            {
+                point1 - extension,
+                point1,
+                point2 - extension,
+                point2
+            }, color, Vector2.Zero, Vector2.One);
+        }
 
 
 		/// <summary>
@@ -484,6 +516,20 @@ namespace Wobble.Graphics.Primitives
 				DrawLine(spriteBatch, points[i - 1] + position, points[i] + position, color, thickness);
 			}
 		}
+        public static void DrawPoints(SpriteBatch spriteBatch, List<Vector2> points, ref Matrix transform, Color color, float thickness)
+        {
+            if (points.Count < 2)
+                return;
+
+            var srcPoints = points.Select(v => new Vector3(v, 0)).ToArray();
+            var resultPoints = new Vector3[points.Count];
+            Vector3.Transform(srcPoints, 0, ref transform, resultPoints, 0, points.Count);
+
+            for (var i = 1; i < points.Count; i++)
+            {
+                DrawLine(spriteBatch, resultPoints[i - 1], resultPoints[i], color, thickness);
+            }
+        }
 
 
 		/// <summary>

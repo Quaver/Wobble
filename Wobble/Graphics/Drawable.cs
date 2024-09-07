@@ -724,6 +724,7 @@ namespace Wobble.Graphics
                 Tint = color,
                 UsePreviousSpriteBatchOptions = true
             };
+            Border.Transform.OverrideSelfMatrix(new Transform3D());
         }
 
         public void RecalculateDrawMask()
@@ -751,15 +752,6 @@ namespace Wobble.Graphics
             // Recalculate the border points.
             if (Border != null)
             {
-                // var vertices = Transform.Vertices;
-                // Border.Points = new List<Vector2>()
-                // {
-                //     new Vector2(vertices[0].X, vertices[0].Y),
-                //     new Vector2(vertices[1].X, vertices[1].Y),
-                //     new Vector2(vertices[3].X, vertices[3].Y),
-                //     new Vector2(vertices[2].X, vertices[2].Y),
-                //     new Vector2(vertices[0].X, vertices[0].Y)
-                // };
                 Border.Points = new List<Vector2>()
                 {
                     new(ScreenMinimumBoundingRectangle.Left, ScreenMinimumBoundingRectangle.Top),

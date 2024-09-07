@@ -50,22 +50,23 @@ namespace Wobble.Tests.Screens.Tests.Primitives
 
             HorizontalLine.EndPosition = new Vector2(HorizontalLine.AbsolutePosition.X + 500, HorizontalLine.AbsolutePosition.Y);
 
-            Rect = new RectangleSprite(2)
+            Rect = new RectangleSprite(5)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
-                Y = 55,
-                Size = new ScalableVector2(50, 20),
-                X = -25
+                Y = 65,
+                Size = new ScalableVector2(50, 20)
             };
 
             FilledRect = new FilledRectangleSprite()
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
-                Position = new ScalableVector2(-50, Rect.Y + Rect.Height + 5),
+                Position = new ScalableVector2(0, Rect.Y + Rect.Height + 10),
                 Size = new ScalableVector2(100, 30)
             };
+            Rect.AddBorder(Color.Green, 2);
+
 
             PrimitiveLineBatch = new PrimitiveLineBatch(new List<Vector2>()
             {
