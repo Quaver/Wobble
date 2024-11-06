@@ -11,7 +11,7 @@ namespace Wobble.Helpers
 {
     public static class XnaKeyHelper
     {
-         /// <summary>
+        /// <summary>
         ///     Gets a key from a given string.
         /// </summary>
         /// <param name="keyStr"></param>

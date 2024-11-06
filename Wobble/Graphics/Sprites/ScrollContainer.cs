@@ -60,7 +60,7 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     The target y position of the container.
         /// </summary>
-        public float TargetY { get; set;  }
+        public float TargetY { get; set; }
 
         /// <summary>
         ///     The target y position in the previous frame.
@@ -107,7 +107,7 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public bool IsMinScrollYEnabled { get; set; } = false;
 
-        
+
         public Bindable<bool> InvertedScrollingOverride { get; set; }
 
         /// <summary>
@@ -116,12 +116,12 @@ namespace Wobble.Graphics.Sprites
         /// Local behavior: override if it's set; follows global if not set; false if global is null and local not set;
         /// </summary>
         public bool InvertedScrolling => InvertedScrollingOverride?.Value ?? GlobalInvertedScrolling?.Value ?? false;
-        
+
         /// <summary>
         /// The global bindable toggle for inverted scrolling
         /// </summary>
         public static Bindable<bool> GlobalInvertedScrolling { get; set; }
-        
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -132,7 +132,7 @@ namespace Wobble.Graphics.Sprites
             // Create the SpriteBatchOptions with scissor rect enabled.
             SpriteBatchOptions = new SpriteBatchOptions
             {
-                SortMode = SpriteSortMode.Immediate,
+                SortMode = SpriteSortMode.Deferred,
                 BlendState = BlendState.NonPremultiplied,
                 RasterizerState = new RasterizerState
                 {

@@ -37,7 +37,7 @@ namespace Wobble.Logging
         /// <param name="level"></param>
         public DrawableLog(string t, LogLevel level)
         {
-            Text = new SpriteText("Calibri", t, 16, (int) (WindowManager.Width / 0.75f))
+            Text = new SpriteText("Calibri", t, 16, (int)(WindowManager.Width / 0.75f))
             {
                 Parent = this,
                 Alignment = Alignment.MidLeft,

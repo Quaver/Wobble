@@ -22,7 +22,7 @@ namespace Wobble.Graphics.Sprites
         public RenderTargetContainer(ScalableVector2 size)
         {
             Size = size;
-            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) Width, (int) Height);
+            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int)Width, (int)Height);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Wobble.Graphics.Sprites
         public RenderTargetContainer()
         {
             Size = new ScalableVector2(WindowManager.Width, WindowManager.Height);
-            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int) Width, (int) Height);
+            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, (int)Width, (int)Height);
         }
 
         /// <inheritdoc />

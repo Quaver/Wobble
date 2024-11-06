@@ -28,7 +28,8 @@ namespace Wobble.Screens
         /// <param name="screen"></param>
         /// <param name="switchImmediately"></param>
         public static void ChangeScreen(Screen screen, bool switchImmediately = false)
-        {;
+        {
+            ;
             lock (LockObject)
             {
                 if (switchImmediately)
