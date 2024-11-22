@@ -321,11 +321,10 @@ namespace Wobble.Graphics.ImGUI
             io.AddKeyEvent(ImGuiKey.X, keyboard.IsKeyDown(Keys.X));
             io.AddKeyEvent(ImGuiKey.Y, keyboard.IsKeyDown(Keys.Y));
             io.AddKeyEvent(ImGuiKey.Z, keyboard.IsKeyDown(Keys.Z));
-
-            io.KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
-            io.KeyCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
-            io.KeyAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
-            io.KeySuper = keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows);
+            io.AddKeyEvent(ImGuiKey.ModShift, keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift));
+            io.AddKeyEvent(ImGuiKey.ModCtrl, keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl));
+            io.AddKeyEvent(ImGuiKey.ModAlt, keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt));
+            io.AddKeyEvent(ImGuiKey.ModSuper, keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows));
 
             io.DisplaySize = new System.Numerics.Vector2(
                 GraphicsDevice.PresentationParameters.BackBufferWidth,
@@ -334,16 +333,13 @@ namespace Wobble.Graphics.ImGUI
 
             io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
-            io.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
-
-            io.MouseDown[0] = mouse.LeftButton == ButtonState.Pressed;
-            io.MouseDown[1] = mouse.RightButton == ButtonState.Pressed;
-            io.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
-
+            io.AddMousePosEvent(mouse.X, mouse.Y);
+            io.AddMouseButtonEvent(0, mouse.LeftButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(1, mouse.RightButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(2, mouse.MiddleButton == ButtonState.Pressed);
             var scrollDelta = mouse.ScrollWheelValue - ScrollWheelValue;
-
-            io.MouseWheel = scrollDelta > 0 ? 1 :
-                scrollDelta < 0 ? -1 : 0;
+            io.AddMouseWheelEvent(0, scrollDelta > 0 ? 1 :
+                scrollDelta < 0 ? -1 : 0);
 
             ScrollWheelValue = mouse.ScrollWheelValue;
         }
