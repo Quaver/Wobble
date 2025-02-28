@@ -34,19 +34,7 @@ namespace Wobble.Graphics.Sprites
         ///     The XNA SpriteEffects the sprite will have.
         ///     When the sprite is negatively scaled on some axis, it will be flipped over that axis too.
         /// </summary>
-        public SpriteEffects SpriteEffect
-        {
-            get
-            {
-                var spriteEffects = _spriteEffect;
-                // if (ScreenRectangle.Width < 0)
-                //     spriteEffects ^= SpriteEffects.FlipHorizontally;
-                // if (ScreenRectangle.Height < 0)
-                //     spriteEffects ^= SpriteEffects.FlipVertically;
-                return spriteEffects;
-            }
-            set => _spriteEffect = value;
-        }
+        public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
 
         /// <summary>
         ///     The origin of this object used for rotation.
@@ -119,7 +107,6 @@ namespace Wobble.Graphics.Sprites
         }
 
         private bool _independentRotation;
-        private SpriteEffects _spriteEffect = SpriteEffects.None;
         private float _spriteRotation;
 
         /// <summary>
@@ -224,21 +211,6 @@ namespace Wobble.Graphics.Sprites
 
             var pivot = Pivot;
             var screenRectangleSize = ScreenRectangle.Size;
-
-            // // It seems like it's impossible to render textures with one of the axis flipped,
-            // // so we need manual adjustments: flip the image back so its size is always positive,
-            // // and flip the pivot correspondingly
-            // if (screenRectangleSize.Width < 0)
-            // {
-            //     pivot.X = 1 - pivot.X;
-            //     screenRectangleSize.Width = -screenRectangleSize.Width;
-            // }
-            //
-            // if (screenRectangleSize.Height < 0)
-            // {
-            //     pivot.Y = 1 - pivot.Y;
-            //     screenRectangleSize.Height = -screenRectangleSize.Height;
-            // }
 
             Origin = new Vector2(pivot.X * Image.Width, pivot.Y * Image.Height);
 
