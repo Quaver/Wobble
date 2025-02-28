@@ -25,25 +25,28 @@ namespace Wobble.Graphics.Sprites
 
                 _image = value;
 
-                Origin = new Vector2(Image.Width / 2f, Image.Height / 2f);
+                Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
                 RecalculateRectangles();
             }
         }
 
         /// <summary>
-        ///     Angle of the sprite with it's origin in the centre. (TEMPORARILY NOT USED YET)
-        /// </summary>
-        private float _rotation;
-        public float Rotation
-        {
-            get => _rotation;
-            set => _rotation = MathHelper.ToRadians(value);
-        }
-
-        /// <summary>
         ///     The XNA SpriteEffects the sprite will have.
+        ///     When the sprite is negatively scaled on some axis, it will be flipped over that axis too.
         /// </summary>
-        public SpriteEffects SpriteEffect { get; set; } = SpriteEffects.None;
+        public SpriteEffects SpriteEffect
+        {
+            get
+            {
+                var spriteEffects = _spriteEffect;
+                // if (ScreenRectangle.Width < 0)
+                //     spriteEffects ^= SpriteEffects.FlipHorizontally;
+                // if (ScreenRectangle.Height < 0)
+                //     spriteEffects ^= SpriteEffects.FlipVertically;
+                return spriteEffects;
+            }
+            set => _spriteEffect = value;
+        }
 
         /// <summary>
         ///     The origin of this object used for rotation.
@@ -101,6 +104,42 @@ namespace Wobble.Graphics.Sprites
         ///     Dictates if we want to set the alpha of the children as well.
         /// </summary>
         public bool SetChildrenAlpha { get; set; }
+
+        /// <summary>
+        ///     Additional rotation applied to this sprite only, and not to its children
+        /// </summary>
+        public float SpriteRotation
+        {
+            get => _spriteRotation;
+            set
+            {
+                _spriteRotation = value;
+                SpriteOverallRotation = _spriteRotation + (IndependentRotation ? Rotation : AbsoluteRotation);
+            }
+        }
+
+        private bool _independentRotation;
+        private SpriteEffects _spriteEffect = SpriteEffects.None;
+        private float _spriteRotation;
+
+        /// <summary>
+        ///     If true, the rotation of sprite shown on screen will be independent of its parent.
+        /// </summary>
+        public bool IndependentRotation
+        {
+            get => _independentRotation;
+            set
+            {
+                _independentRotation = value;
+                SpriteRotation = SpriteRotation;
+            }
+        }
+
+        /// <summary>
+        ///     Actual rotation of sprite shown on screen.
+        ///     It is decided by <see cref="IndependentRotation"/> and parent's <see cref="Drawable.AbsoluteRotation"/>
+        /// </summary>
+        public float SpriteOverallRotation { get; protected set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -163,7 +202,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, _rotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, SpriteOverallRotation, Origin, SpriteEffect, 0f);
         }
 
         /// <inheritdoc />
@@ -183,10 +222,35 @@ namespace Wobble.Graphics.Sprites
             if (Image == null)
                 return;
 
+            var pivot = Pivot;
+            var screenRectangleSize = ScreenRectangle.Size;
+
+            // // It seems like it's impossible to render textures with one of the axis flipped,
+            // // so we need manual adjustments: flip the image back so its size is always positive,
+            // // and flip the pivot correspondingly
+            // if (screenRectangleSize.Width < 0)
+            // {
+            //     pivot.X = 1 - pivot.X;
+            //     screenRectangleSize.Width = -screenRectangleSize.Width;
+            // }
+            //
+            // if (screenRectangleSize.Height < 0)
+            // {
+            //     pivot.Y = 1 - pivot.Y;
+            //     screenRectangleSize.Height = -screenRectangleSize.Height;
+            // }
+
+            Origin = new Vector2(pivot.X * Image.Width, pivot.Y * Image.Height);
+
+            // The render rectangle's position will rotate around the screen rectangle's position
+            var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);
+
             // Update the render rectangle
-            // Add Width / 2 and Height / 2 to X, Y because that's what Origin is set to (in the Image setter).
-            RenderRectangle = new RectangleF(ScreenRectangle.X + ScreenRectangle.Width / 2f, ScreenRectangle.Y + ScreenRectangle.Height / 2f,
-                ScreenRectangle.Width, ScreenRectangle.Height);
+            RenderRectangle = new RectangleF(
+                ScreenRectangle.Position + rotatedScreenOrigin,
+                screenRectangleSize);
+
+            SpriteRotation = SpriteRotation;
         }
 
         /// <summary>
