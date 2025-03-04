@@ -310,7 +310,7 @@ namespace Wobble.Graphics.Sprites.Text
                 return;
 
             SetSize();
-            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _tint * Alpha);
+            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _tint * Alpha, AbsoluteScale);
         }
 
         private void SetSize()
