@@ -30,7 +30,8 @@ namespace Wobble.Bindables
         /// </summary>
         /// <param name="defaultVal"></param>
         /// <param name="action"></param>
-        public BindableList(List<T> defaultVal, EventHandler<BindableValueChangedEventArgs<List<T>>> action = null) : base(defaultVal, action)
+        public BindableList(List<T> defaultVal, EventHandler<BindableValueChangedEventArgs<List<T>>> action = null) :
+            base(defaultVal, action)
         {
         }
 
@@ -40,7 +41,8 @@ namespace Wobble.Bindables
         /// <param name="name"></param>
         /// <param name="defaultVal"></param>
         /// <param name="action"></param>
-        public BindableList(string name, List<T> defaultVal, EventHandler<BindableValueChangedEventArgs<List<T>>> action = null) : base(name, defaultVal, action)
+        public BindableList(string name, List<T> defaultVal,
+            EventHandler<BindableValueChangedEventArgs<List<T>>> action = null) : base(name, defaultVal, action)
         {
         }
 
@@ -48,7 +50,7 @@ namespace Wobble.Bindables
         ///     Adds an object to the list and invokes <see cref="ItemAdded"/>
         /// </summary>
         /// <param name="obj"></param>
-        public void Add(T obj)
+        public virtual void Add(T obj)
         {
             Value.Add(obj);
             ItemAdded?.Invoke(this, new BindableListItemAddedEventArgs<T>(obj));
@@ -58,7 +60,7 @@ namespace Wobble.Bindables
         ///     Removes an object from the list and invokes <see cref="ItemRemoved"/>
         /// </summary>
         /// <param name="obj"></param>
-        public void Remove(T obj)
+        public virtual void Remove(T obj)
         {
             Value.Remove(obj);
             ItemRemoved?.Invoke(this, new BindableListItemRemovedEventArgs<T>(obj));
@@ -68,7 +70,7 @@ namespace Wobble.Bindables
         ///     Adds multiple objects to the list and invokes <see cref="MultipleItemsAdded"/>
         /// </summary>
         /// <param name="list"></param>
-        public void AddRange(List<T> list)
+        public virtual void AddRange(List<T> list)
         {
             Value.AddRange(list);
             MultipleItemsAdded?.Invoke(this, new BindableListMultipleItemsAddedEventArgs<T>(list));
@@ -77,7 +79,7 @@ namespace Wobble.Bindables
         /// <summary>
         ///     Clears an object from the list and invokes
         /// </summary>
-        public void Clear()
+        public virtual void Clear()
         {
             Value.Clear();
             ListCleared?.Invoke(this, new BindableListClearedEventArgs());
