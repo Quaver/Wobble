@@ -159,13 +159,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
             GameBase.Game.GraphicsDevice.Clear(BackgroundColor);
             Container?.Draw(gameTime);
 
-            try
-            {
-                GameBase.Game.SpriteBatch.End();
-            }
-            catch (Exception)
-            {
-            }
+            GameBase.Game.TryEndBatch();
         }
 
         /// <inheritdoc />
