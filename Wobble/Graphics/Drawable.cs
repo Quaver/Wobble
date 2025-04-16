@@ -172,9 +172,8 @@ namespace Wobble.Graphics
                 var height = MathHelper.Clamp(value.Y.Value, 0, int.MaxValue);
 
                 _size = new ScalableVector2(width, height, value.X.Scale, value.Y.Scale);
-                Pivot = Pivot;
-                SizeChanged?.Invoke(this, value);
                 RecalculateRectangles();
+                SizeChanged?.Invoke(this, value);
             }
         }
 
