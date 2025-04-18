@@ -15,11 +15,13 @@ using Wobble.Tests.Screens.Tests.BitmapFont;
 using Wobble.Tests.Screens.Tests.BlurContainer;
 using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
+using Wobble.Tests.Screens.Tests.DrawableScaling;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Primitives;
+using Wobble.Tests.Screens.Tests.Rotation;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
 using Wobble.Tests.Screens.Tests.Scrolling;
@@ -102,6 +104,12 @@ namespace Wobble.Tests.Screens.Selection
                 {
                     case ScreenType.DrawingSprites:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestDrawingSpritesScreen());
+                        break;
+                    case ScreenType.Rotation:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestRotationScreen());
+                        break;
+                    case ScreenType.DrawableScaling:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestDrawableScalingScreen());
                         break;
                     case ScreenType.EasingAnimations:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestEasingAnimationsScreen());
