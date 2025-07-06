@@ -20,7 +20,6 @@
       <Reference Include="MonoGame.Framework">
         <HintPath>..\MonoGame.Framework.dll</HintPath>
       </Reference>
-        <TargetFramework>net6.0</TargetFramework>
     </ItemGroup>
 
     <ItemGroup>

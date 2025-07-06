@@ -11,13 +11,16 @@
     <ProjectReference Include="../Wobble/Wobble.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content/" />
-  </ItemGroup>
-  <ItemGroup>
     <None Update="Content\gotham.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Content\gotham_0.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\exo2-regular.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\exo2-regular_0.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
