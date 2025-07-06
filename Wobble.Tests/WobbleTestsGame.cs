@@ -148,6 +148,7 @@ namespace Wobble.Tests
 
             base.Draw(gameTime);
             GlobalUserInterface?.Draw(gameTime);
+            GameBase.Game.TryEndBatch();
         }
     }
 }
