@@ -199,6 +199,13 @@ namespace Wobble.Graphics.ImGUI
 
 #region Setup & Update
 
+        private static void OnWindowOnTextInput(object s, TextInputEventArgs a)
+        {
+            if (a.Character == '\t') return;
+
+            ImGui.GetIO().AddInputCharacter(a.Character);
+        }
+
         /// <summary>
         ///     Maps ImGui keys to XNA keys. We use this later on to tell ImGui what keys were pressed
         /// </summary>
@@ -207,12 +214,8 @@ namespace Wobble.Graphics.ImGUI
             var io = ImGui.GetIO();
 
             // MonoGame-specific //////////////////////
-            Game.Window.TextInput += (s, a) =>
-            {
-                if (a.Character == '\t') return;
 
-                io.AddInputCharacter(a.Character);
-            };
+            Game.Window.TextInput += OnWindowOnTextInput;
             ///////////////////////////////////////////
 
             // FNA-specific ///////////////////////////
@@ -547,6 +550,7 @@ namespace Wobble.Graphics.ImGUI
             RasterizerState?.Dispose();
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
+            Game.Window.TextInput -= OnWindowOnTextInput;
         }
     }
 }
