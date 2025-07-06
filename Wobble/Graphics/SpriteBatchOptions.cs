@@ -12,11 +12,11 @@ namespace Wobble.Graphics
     /// </summary>
     public class SpriteBatchOptions
     {
-        public SpriteSortMode SortMode { get; set; } = SpriteSortMode.Immediate;
+        public SpriteSortMode SortMode { get; set; } = SpriteSortMode.Deferred;
         public BlendState BlendState { get; set; } = BlendState.NonPremultiplied;
         public SamplerState SamplerState { get; set; } = SamplerState.LinearClamp;
         public DepthStencilState DepthStencilState { get; set; }
-        public RasterizerState RasterizerState { get; set; }
+        public RasterizerState RasterizerState { get; set; } = RasterizerState.CullNone;
         /// <summary>
         ///     Custom shader for this sprite.
         /// </summary>

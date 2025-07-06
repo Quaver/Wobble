@@ -128,8 +128,8 @@ namespace Wobble.Graphics.Sprites
             }
             else
             {
-                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, AbsolutePosition, _color, Rotation,
-                    Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),
+                GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, AbsolutePosition, _color, AbsoluteRotation,
+                    Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight) * AbsoluteScale,
                     Effects, 0, null);
             }
         }
@@ -271,7 +271,7 @@ namespace Wobble.Graphics.Sprites
                 GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
 
                 _ = GameBase.Game.TryEndBatch();
-                GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque);
+                GameBase.Game.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
 
                 GameBase.Game.SpriteBatch.DrawString(Font, DisplayedText, new Vector2(0, 0), Color.White, Rotation,
                     Vector2.Zero, new Vector2((float)FontSize / Font.LineHeight, (float)FontSize / Font.LineHeight),

@@ -82,6 +82,68 @@ namespace Wobble.Graphics
         public RectangleF RelativeRectangle { get; private set; }
 
         /// <summary>
+        ///     If outside this region, this will not be drawed.
+        /// </summary>
+        private RectangleF DrawRectangleMask { get; set; } =
+            new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+
+        /// <summary>
+        ///     Clipping region for children. Useful to RenderTargets
+        /// </summary>
+        protected virtual RectangleF ChildDrawRectangleMask { get; set; }
+
+        /// <summary>
+        ///     The bounding box of the drawable relative to the entire screen.
+        /// </summary>
+        public RectangleF ScreenMinimumBoundingRectangle { get; private set; } = new RectangleF();
+
+        /// <summary>
+        ///     The total width of the drawable, considering the width scale
+        /// </summary>
+        private float RelativeWidth =>
+            _size.X.Value + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * _size.X.Scale;
+
+        /// <summary>
+        ///     The total height of the drawable, considering the height scale
+        /// </summary>
+        private float RelativeHeight =>
+            _size.Y.Value + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * _size.Y.Scale;
+
+
+        private RectangleF _alignedRelativeRectangle;
+
+        /// <summary>
+        ///     The rectangle relative to the drawable's parent.
+        /// </summary>
+        public RectangleF AlignedRelativeRectangle
+        {
+            get => _alignedRelativeRectangle;
+            private set
+            {
+                _alignedRelativeRectangle = value;
+                var size = new Vector2(value.Width, value.Height);
+                var position = new Vector2(value.X, value.Y);
+                var offsetFactor = Vector2.One - _scale;
+
+                // scaledPos = value.Position + Pivot * (Vector2.One - Scale) * value.Size,
+                // scaledSize = value.Size * Scale
+                Vector2.Multiply(ref _pivot, ref offsetFactor, out var intermediate);
+                Vector2.Multiply(ref intermediate, ref size, out var intermediate2);
+                Vector2.Add(ref position, ref intermediate2, out var scaledPos);
+                Vector2.Multiply(ref size, ref _scale, out var scaledSize);
+                
+                // Update _scaledAlignedRelativeRectangle
+                // So that the rectangle is scaled with its position adjusted according to the pivot and scale
+                _scaledAlignedRelativeRectangle = new RectangleF(scaledPos.X, scaledPos.Y,
+                    scaledSize.X, scaledSize.Y);
+            }
+        }
+
+        /// <summary>
+        ///     The rectangle relative to the drawable's parent.
+        /// </summary>
+        private RectangleF _scaledAlignedRelativeRectangle;
+        /// <summary>
         ///     The position of the drawable
         /// </summary>
         private ScalableVector2 _position = new ScalableVector2(0, 0);
@@ -95,6 +157,8 @@ namespace Wobble.Graphics
             }
         }
 
+
+        public event EventHandler<ScalableVector2> SizeChanged;
         /// <summary>
         ///     The size of the drawable.
         /// </summary>
@@ -109,6 +173,7 @@ namespace Wobble.Graphics
 
                 _size = new ScalableVector2(width, height, value.X.Scale, value.Y.Scale);
                 RecalculateRectangles();
+                SizeChanged?.Invoke(this, value);
             }
         }
 
@@ -208,6 +273,19 @@ namespace Wobble.Graphics
             }
         }
 
+        private Vector2 _scale = Vector2.One;
+
+        public Vector2 Scale
+        {
+            get => _scale;
+            set
+            {
+                _scale = value;
+                RecalculateRectangles();
+            }
+        }
+
+        public Vector2 AbsoluteScale { get; private set; }
         /// <summary>
         ///     The alignment of the object.
         /// </summary>
@@ -261,6 +339,49 @@ namespace Wobble.Graphics
         ///     The absolute position of the object relative to the screen.
         /// </summary>
         public Vector2 AbsolutePosition => new Vector2(ScreenRectangle.X, ScreenRectangle.Y);
+
+        private Vector2 _pivot = new Vector2(0.5f, 0.5f);
+
+        /// <summary>
+        ///     The pivot about which the rotation will be performed.
+        ///     (0, 0) corresponds to the top-left corner, (1, 1) bottom right.
+        /// </summary>
+        public Vector2 Pivot
+        {
+            get => _pivot;
+            set
+            {
+                _pivot = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     Angle of the sprite with it's origin in the centre. (TEMPORARILY NOT USED YET)
+        /// </summary>
+        private float _rotation;
+        public float Rotation
+        {
+            get => _rotation;
+            set
+            {
+                _rotation = value;
+                RecalculateRectangles();
+            }
+        }
+
+        public float AbsoluteRotation { get; private set; }
+
+        /// <summary>
+        ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
+        /// </summary>
+        private Matrix2D _childPositionTransform = Matrix2D.Identity;
+
+        /// <summary>
+        ///     A transform that rotates the relative coordinates about the pivot
+        ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the relative coordinate after rotation.
+        /// </summary>
+        private Matrix2D _childRelativeTransform = Matrix2D.Identity;
 
         /// <summary>
         ///     Determines if the object is going to get drawn.
@@ -343,6 +464,25 @@ namespace Wobble.Graphics
         /// </summary>
         private List<Action> ScheduledUpdates { get; } = new List<Action>();
 
+        protected virtual void RecalculateTransformMatrix()
+        {
+            var relativeOrigin = Pivot * new Vector2(RelativeWidth, RelativeHeight);
+
+            // Move so the origin is at RelativeOrigin, rotate, then move back
+            var shiftToOrigin = Matrix2D.CreateTranslation(-relativeOrigin);
+            var scalingMatrix = Matrix2D.CreateScale(Scale);
+            var rotationMatrix = Matrix2D.CreateRotationZ(Rotation);
+            var originBack = Matrix2D.CreateTranslation(relativeOrigin * Scale);
+            var thisTranslation = Matrix2D.CreateTranslation(_scaledAlignedRelativeRectangle.Position);
+            var parentTransform = Parent?._childPositionTransform ?? Matrix2D.Identity;
+            Matrix2D.Multiply(ref shiftToOrigin, ref scalingMatrix, out var intermediate1);
+            Matrix2D.Multiply(ref rotationMatrix, ref originBack, out var intermediate2);
+            Matrix2D.Multiply(ref thisTranslation, ref parentTransform, out var outerTransform);
+
+            Matrix2D.Multiply(ref intermediate1, ref intermediate2, out _childRelativeTransform);
+            // Finally, apply our parent's transformation
+            Matrix2D.Multiply(ref _childRelativeTransform, ref outerTransform, out _childPositionTransform);
+        }
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -385,7 +525,7 @@ namespace Wobble.Graphics
             if (!Visible)
                 return;
 
-            if (!RectangleF.Intersects(ScreenRectangle, new RectangleF(0, 0, WindowManager.Width, WindowManager.Height)) && !DrawIfOffScreen)
+            if (!RectangleF.Intersects(ScreenMinimumBoundingRectangle, new RectangleF(0, 0, WindowManager.Width, WindowManager.Height)) && !DrawIfOffScreen)
                 return;
 
             // Draw the children and set their order.
@@ -451,47 +591,77 @@ namespace Wobble.Graphics
         /// </summary>
         public virtual void Dispose() => IsDisposed = true;
 
+
+        public void RecalculateDrawMask()
+        {
+            DrawRectangleMask = Parent?.ChildDrawRectangleMask
+                                ?? new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
+            ChildDrawRectangleMask = DrawRectangleMask;
+        }
+
         /// <summary>
         ///     Recalculates the local and global rectangles of the object. Makes sure that the position
         ///     and sizes are relative to the parent if the drawable has one.
         /// </summary>
         protected void RecalculateRectangles()
         {
+            // Update AbsoluteRotation
+            AbsoluteRotation = (Parent?.AbsoluteRotation ?? 0) + Rotation;
+            AbsoluteScale = (Parent?.AbsoluteScale ?? Vector2.One) * Scale;
+        
+            RecalculateDrawMask();
+
             // Make it relative to the parent.
+            var width = RelativeWidth;
+            var height = RelativeHeight;
+            var x = Position.X.Value;
+            var y = Position.Y.Value;
+
+            RelativeRectangle = new RectangleF(x, y, width, height);
             if (Parent != null)
             {
-                var width = Size.X.Value + Parent.ScreenRectangle.Width * WidthScale;
-                var height = Size.Y.Value + Parent.ScreenRectangle.Height * HeightScale;
-                var x = Position.X.Value;
-                var y = Position.Y.Value;
-
-                RelativeRectangle = new RectangleF(x, y, width, height);
-                ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.ScreenRectangle);
+                AlignedRelativeRectangle =
+                    GraphicsHelper.AlignRect(Alignment, RelativeRectangle, Parent.RelativeRectangle, true);
+                ScreenRectangle = GraphicsHelper.Transform(_scaledAlignedRelativeRectangle,
+                    Parent._childPositionTransform, Parent.AbsoluteScale);
             }
             // Make it relative to the screen size.
             else
             {
-                var width = Size.X.Value + WindowManager.VirtualScreen.X * WidthScale;
-                var height = Size.Y.Value + WindowManager.VirtualScreen.Y * HeightScale;
-                var x = Position.X.Value;
-                var y = Position.Y.Value;
-
-                RelativeRectangle = new RectangleF(x, y, width, height);
-                ScreenRectangle = GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle);
+                AlignedRelativeRectangle =
+                    GraphicsHelper.AlignRect(Alignment, RelativeRectangle, WindowManager.Rectangle, true);
+                ScreenRectangle = GraphicsHelper.Offset(_scaledAlignedRelativeRectangle, WindowManager.Rectangle);
             }
+
+            // Update the matrix, now that we have AlignedRelativeRectangle calculated
+            // Note that this calculation of AlignedRelativeRectangle and ScreenRectangle relies on the parent's
+            // transform, and the parent's matrices are calculated before RecalculateRectangles() is called, had there
+            // been an update to the parent.
+            RecalculateTransformMatrix();
+
+            var relativeBoundingRectangle =
+                GraphicsHelper.MinimumBoundingRectangle(ScreenRectangle, AbsoluteRotation, true);
 
             // Recalculate the border points.
             if (Border != null)
             {
                 Border.Points = new List<Vector2>()
                 {
-                    new Vector2(0, 0),
-                    new Vector2(Width, 0),
-                    new Vector2(Width, Height),
-                    new Vector2(0, Height),
-                    new Vector2(0, 0)
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Top),
+                    new Vector2(relativeBoundingRectangle.Right, relativeBoundingRectangle.Top),
+                    new Vector2(relativeBoundingRectangle.Right, relativeBoundingRectangle.Bottom),
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Bottom),
+                    new Vector2(relativeBoundingRectangle.Left, relativeBoundingRectangle.Top)
                 };
             }
+
+            // (0, 0) * ChildPositionTransform + relativeBoundingRectangle.Position
+            // TopLeft absolute coordinate offset by the top left of relative bounding rect
+            // gives the screen bounding rect
+            ScreenMinimumBoundingRectangle =
+                new RectangleF(
+                    _childPositionTransform.Translation + relativeBoundingRectangle.Position,
+                    relativeBoundingRectangle.Size);
 
             for (var i = 0; i < Children.Count; i++)
                 Children[i].RecalculateRectangles();

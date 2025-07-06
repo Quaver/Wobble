@@ -93,6 +93,44 @@ namespace Wobble.Input
             }
         }
 
+        public static bool IsPressed(MouseButton button)
+        {
+            switch (button)
+            {
+                case MouseButton.Left:
+                    return CurrentState.LeftButton == ButtonState.Pressed;
+                case MouseButton.Right:
+                    return CurrentState.RightButton == ButtonState.Pressed;
+                case MouseButton.Middle:
+                    return CurrentState.MiddleButton == ButtonState.Pressed;
+                case MouseButton.Thumb1:
+                    return CurrentState.XButton1 == ButtonState.Pressed;
+                case MouseButton.Thumb2:
+                    return CurrentState.XButton2 == ButtonState.Pressed;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(button), button, null);
+            }
+        }
+
+        public static bool IsReleased(MouseButton button)
+        {
+            switch (button)
+            {
+                case MouseButton.Left:
+                    return CurrentState.LeftButton == ButtonState.Released;
+                case MouseButton.Right:
+                    return CurrentState.RightButton == ButtonState.Released;
+                case MouseButton.Middle:
+                    return CurrentState.MiddleButton == ButtonState.Released;
+                case MouseButton.Thumb1:
+                    return CurrentState.XButton1 == ButtonState.Released;
+                case MouseButton.Thumb2:
+                    return CurrentState.XButton2 == ButtonState.Released;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(button), button, null);
+            }
+        }
+
         /// <summary>
         ///     Shows the mouse cursor.
         /// </summary>

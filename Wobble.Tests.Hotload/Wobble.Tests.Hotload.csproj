@@ -2,12 +2,18 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="../Wobble.Extended/Wobble.Extended.csproj" />
       <ProjectReference Include="../Wobble.Tests/Wobble.Tests.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="MonoGame.Framework">
+        <HintPath>..\MonoGame.Framework.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
     <ItemGroup>

@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+<<<<<<< HEAD
     <TargetFramework>net8.0</TargetFramework>
+=======
+    <TargetFramework>net6.0</TargetFramework>
+>>>>>>> origin/master
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
@@ -8,8 +12,12 @@
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.3.7" />
     <PackageReference Include="ImGui.NET" Version="1.67.0" />
+=======
+    <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
+>>>>>>> origin/master
     <PackageReference Include="IniFileParserStandard" Version="1.0.1" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
@@ -40,6 +48,18 @@
     <None Update="x64/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\MonoGame.Framework.dll</HintPath>
+    </Reference>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.3.7" />
+    <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
+    <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="runtime.osx.10.10-x64.CoreCompat.System.Drawing" Version="6.0.5.128" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
