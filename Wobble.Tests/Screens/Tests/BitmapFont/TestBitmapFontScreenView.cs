@@ -18,7 +18,7 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         /// <param name="screen"></param>
         public TestBitmapFontScreenView(Screen screen) : base(screen)
         {
-            font = GameBase.Game.Content.Load<MonoGame.Extended.BitmapFonts.BitmapFont>("Fonts/exo-2-bigger");
+            font = GameBase.Game.Content.Load<MonoGame.Extended.BitmapFonts.BitmapFont>("exo2-regular");
 
             new SpriteTextBitmap(font, "The quick brown fox jumps over the lazy dog")
             {

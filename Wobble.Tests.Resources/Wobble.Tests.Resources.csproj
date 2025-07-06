@@ -8,4 +8,8 @@
     <EmbeddedResource Include="Wobble.Tests.Resources/**\*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ClCompile Include="Wobble.Tests.Resources\Shaders\semi-transparent.fx" />
+  </ItemGroup>
+
 </Project>

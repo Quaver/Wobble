@@ -1,4 +1,3 @@
-using SpriteFontPlus;
 using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites.Text
@@ -59,13 +58,13 @@ namespace Wobble.Graphics.Sprites.Text
             if (!Visible)
                 return;
 
-            Font.Store.Size = FontSize;
-            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _color, AbsoluteScale);
+            Font.FontSize = FontSize;
+            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _color, scale: AbsoluteScale);
         }
 
         private void RefreshSize()
         {
-            Font.Store.Size = FontSize;
+            Font.FontSize = FontSize;
 
             var (x, y) = Font.Store.MeasureString(Text);
             Size = new ScalableVector2(x, y);

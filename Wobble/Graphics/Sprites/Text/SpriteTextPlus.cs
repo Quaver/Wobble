@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using SpriteFontPlus;
 using Wobble.Graphics.Animations;
 
 namespace Wobble.Graphics.Sprites.Text
@@ -260,8 +259,8 @@ namespace Wobble.Graphics.Sprites.Text
 
                 width = Math.Max(width, lineSprite.Width);
 
-                Font.Store.Size = FontSize;
-                height += Font.Store.GetLineHeight();
+                Font.FontSize = FontSize;
+                height += Font.Store.LineHeight;
             }
 
             Size = new ScalableVector2(width, height);
@@ -280,14 +279,14 @@ namespace Wobble.Graphics.Sprites.Text
             {
                 var text = Text;
 
-                Font.Store.Size = FontSize;
+                Font.FontSize = FontSize;
                 var totalWidth = Font.Store.MeasureString(text).X;
 
                 while (totalWidth > maxWidth)
                 {
                     text = text.Substring(0, text.Length - 1);
 
-                    Font.Store.Size = FontSize;
+                    Font.FontSize = FontSize;
                     totalWidth = Font.Store.MeasureString(text).X;
                 }
 
@@ -310,12 +309,12 @@ namespace Wobble.Graphics.Sprites.Text
                 return;
 
             SetSize();
-            GameBase.Game.SpriteBatch.DrawString(Font.Store, Text, AbsolutePosition, _tint * Alpha, AbsoluteScale);
+            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _tint * Alpha, scale: AbsoluteScale);
         }
 
         private void SetSize()
         {
-            Font.Store.Size = FontSize;
+            Font.FontSize = FontSize;
             var (x, y) = Font.Store.MeasureString(Text);
             Size = new ScalableVector2(x, y);
         }

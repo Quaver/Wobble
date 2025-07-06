@@ -8,20 +8,20 @@
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.3.7" />
     <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
     <PackageReference Include="IniFileParserStandard" Version="1.0.1" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.6.0-preview7.19362.9" />
-    <PackageReference Include="MonoGame.Extended" Version="1.1.0" />
-    <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="1.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="runtime.osx.10.10-x64.CoreCompat.System.Drawing" Version="6.0.5.128" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../MonoGame/MonoGame.Framework/MonoGame.Framework.DesktopGL.csproj" />
-    <ProjectReference Include="../SpriteFontPlus/src/SpriteFontPlus/SpriteFontPlus.csproj" />
     <ProjectReference Include="../Wobble.Resources/Wobble.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -40,5 +40,10 @@
     <None Update="x64/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\MonoGame.Framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

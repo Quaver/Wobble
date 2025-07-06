@@ -527,7 +527,7 @@ namespace Wobble.Graphics.UI.Form
             }
 
             var substring = RawText.Substring(0, CursorPosition);
-            InputText.Font.Store.Size = InputText.FontSize;
+            InputText.Font.FontSize = InputText.FontSize;
             var x = InputText.Font.Store.MeasureString(substring).X;
 
             Cursor.X = x + InputText.X;
@@ -552,7 +552,7 @@ namespace Wobble.Graphics.UI.Form
             }
             var startSubstring = RawText.Substring(0, SelectedPart.start);
             var selectedSubstring = RawText.Substring(SelectedPart.start, SelectedPart.end - SelectedPart.start);
-            InputText.Font.Store.Size = InputText.FontSize;
+            InputText.Font.FontSize = InputText.FontSize;
             var x = InputText.Font.Store.MeasureString(startSubstring).X;
             var width = InputText.Font.Store.MeasureString(selectedSubstring).X;
 

@@ -375,13 +375,13 @@ namespace Wobble.Graphics
         /// <summary>
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the screen space position
         /// </summary>
-        private Matrix2D _childPositionTransform = Matrix2D.Identity;
+        private Matrix2 _childPositionTransform = Matrix2.Identity;
 
         /// <summary>
         ///     A transform that rotates the relative coordinates about the pivot
         ///     Applying this to <see cref="AlignedRelativeRectangle"/> gives the relative coordinate after rotation.
         /// </summary>
-        private Matrix2D _childRelativeTransform = Matrix2D.Identity;
+        private Matrix2 _childRelativeTransform = Matrix2.Identity;
 
         /// <summary>
         ///     Determines if the object is going to get drawn.
@@ -469,19 +469,19 @@ namespace Wobble.Graphics
             var relativeOrigin = Pivot * new Vector2(RelativeWidth, RelativeHeight);
 
             // Move so the origin is at RelativeOrigin, rotate, then move back
-            var shiftToOrigin = Matrix2D.CreateTranslation(-relativeOrigin);
-            var scalingMatrix = Matrix2D.CreateScale(Scale);
-            var rotationMatrix = Matrix2D.CreateRotationZ(Rotation);
-            var originBack = Matrix2D.CreateTranslation(relativeOrigin * Scale);
-            var thisTranslation = Matrix2D.CreateTranslation(_scaledAlignedRelativeRectangle.Position);
-            var parentTransform = Parent?._childPositionTransform ?? Matrix2D.Identity;
-            Matrix2D.Multiply(ref shiftToOrigin, ref scalingMatrix, out var intermediate1);
-            Matrix2D.Multiply(ref rotationMatrix, ref originBack, out var intermediate2);
-            Matrix2D.Multiply(ref thisTranslation, ref parentTransform, out var outerTransform);
+            var shiftToOrigin = Matrix2.CreateTranslation(-relativeOrigin);
+            var scalingMatrix = Matrix2.CreateScale(Scale);
+            var rotationMatrix = Matrix2.CreateRotationZ(Rotation);
+            var originBack = Matrix2.CreateTranslation(relativeOrigin * Scale);
+            var thisTranslation = Matrix2.CreateTranslation(_scaledAlignedRelativeRectangle.Position);
+            var parentTransform = Parent?._childPositionTransform ?? Matrix2.Identity;
+            Matrix2.Multiply(ref shiftToOrigin, ref scalingMatrix, out var intermediate1);
+            Matrix2.Multiply(ref rotationMatrix, ref originBack, out var intermediate2);
+            Matrix2.Multiply(ref thisTranslation, ref parentTransform, out var outerTransform);
 
-            Matrix2D.Multiply(ref intermediate1, ref intermediate2, out _childRelativeTransform);
+            Matrix2.Multiply(ref intermediate1, ref intermediate2, out _childRelativeTransform);
             // Finally, apply our parent's transformation
-            Matrix2D.Multiply(ref _childRelativeTransform, ref outerTransform, out _childPositionTransform);
+            Matrix2.Multiply(ref _childRelativeTransform, ref outerTransform, out _childPositionTransform);
         }
         /// <inheritdoc />
         /// <summary>
@@ -544,12 +544,6 @@ namespace Wobble.Graphics
                     TotalDrawn++;
                     drawable.DrawOrder = TotalDrawn;
                 }
-            }
-            // In the case of modifying a drawable collection, an InvalidOperationException might occur
-            catch (InvalidOperationException e)
-            {
-                if (!e.Message.Contains("Collection was modified; enumeration operation may not execute."))
-                    throw;
             }
             catch (Exception e)
             {
