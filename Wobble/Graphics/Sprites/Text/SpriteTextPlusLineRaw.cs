@@ -59,7 +59,7 @@ namespace Wobble.Graphics.Sprites.Text
                 return;
 
             Font.FontSize = FontSize;
-            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _color);
+            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _color, scale: AbsoluteScale);
         }
 
         private void RefreshSize()
