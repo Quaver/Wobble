@@ -157,7 +157,7 @@ namespace Wobble.Graphics.Sprites
                 Alignment = Alignment.BotRight,
                 Width = 15,
                 Tint = Color.Black,
-                X = 1
+                X = 0
             };
 
             TargetY = ContentContainer.Y;
