@@ -1,9 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.BitmapFonts;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
+using Wobble.Managers;
 
 namespace Wobble.Graphics.UI.Debugging
 {
@@ -20,9 +20,9 @@ namespace Wobble.Graphics.UI.Debugging
         private int FrameCounter { get; set; }
 
         /// <summary>
-        ///     The SpriteText that displays the FPS value.
+        ///     The SpriteTextPlus that displays the FPS value.
         /// </summary>
-        public SpriteTextBitmap TextFps { get; }
+        public SpriteTextPlus TextFps { get; }
 
         /// <summary>
         ///     The current update rate.
@@ -35,9 +35,9 @@ namespace Wobble.Graphics.UI.Debugging
         private int UpdateCounter { get; set; }
 
         /// <summary>
-        ///     The SpriteText that displays the UPS value.
+        ///     The SpriteTextPlus that displays the UPS value.
         /// </summary>
-        public SpriteTextBitmap TextUps { get; }
+        public SpriteTextPlus TextUps { get; }
 
         /// <summary>
         ///     The amount of time elapsed so we can begin counting each second.
@@ -48,20 +48,18 @@ namespace Wobble.Graphics.UI.Debugging
         /// <summary>
         ///     Ctor
         /// </summary>
-        public FpsCounter(BitmapFont font, int size)
+        public FpsCounter(WobbleFontStore font, int size)
         {
-            TextFps = new SpriteTextBitmap(font, "0 FPS", false)
+            TextFps = new SpriteTextPlus(font, "0 FPS", size)
             {
                 Parent = this,
                 Alignment = Alignment.TopRight,
-                FontSize = size
             };
 
-            TextUps = new SpriteTextBitmap(font, "0 UPS", false)
+            TextUps = new SpriteTextPlus(font, "0 UPS", size)
             {
                 Parent = this,
                 Alignment = Alignment.TopRight,
-                FontSize = size,
                 Y = TextFps.Size.Y.Value
             };
         }
