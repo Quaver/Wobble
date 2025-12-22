@@ -3,6 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>7.1</LangVersion>
+    <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
@@ -17,8 +18,7 @@
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
     <PackageReference Include="MonoGame.Extended.Content.Pipeline" Version="3.8.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="runtime.osx.10.10-x64.CoreCompat.System.Drawing" Version="6.0.5.128" />
-    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
@@ -35,6 +35,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="libSDL2-2.0.0.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="libgdiplus.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="x64/*">

@@ -31,6 +31,11 @@ namespace Wobble.Graphics.BitmapFonts
         public static Dictionary<string, FontStore> CustomFonts { get; } = new Dictionary<string, FontStore>();
 
         /// <summary>
+        ///     Stores the font collections to keep them from being garbage collected.
+        /// </summary>
+        private static List<PrivateFontCollection> FontCollections { get; } = new List<PrivateFontCollection>();
+
+        /// <summary>
         ///     Adds a font from memory/resource store.
         /// </summary>
         /// <param name="name">The name of the font to use for the store.</param>
@@ -44,8 +49,7 @@ namespace Wobble.Graphics.BitmapFonts
             fontCollection.AddMemoryFont(fontData, fontBytes.Length);
 
             CustomFonts.Add(name, new FontStore(name, fontCollection.Families[0]));
-
-            fontCollection.Dispose();
+            FontCollections.Add(fontCollection);
         }
 
         /// <summary>
@@ -59,8 +63,7 @@ namespace Wobble.Graphics.BitmapFonts
             fontCollection.AddFontFile(filePath);
 
             CustomFonts.Add(name, new FontStore(name, fontCollection.Families[0]));
-
-            fontCollection.Dispose();
+            FontCollections.Add(fontCollection);
         }
 
         ///  <summary>
@@ -218,6 +221,12 @@ namespace Wobble.Graphics.BitmapFonts
         {
             foreach (var font in CustomFonts)
                 font.Value.Family.Dispose();
+
+            foreach (var collection in FontCollections)
+                collection.Dispose();
+
+            FontCollections.Clear();
+            CustomFonts.Clear();
         }
     }
 }

@@ -143,11 +143,11 @@ namespace Wobble.Logging
                 // Write to the log file
                 try
                 {
-                    using (var sw = new StreamWriter(GetLogPath(type), true))
-                    {
-                        sw.AutoFlush = true;
-                        sw.WriteLine(log);
-                    }
+                    // using (var sw = new StreamWriter(GetLogPath(type), true))
+                    // {
+                    //     sw.AutoFlush = true;
+                    //     sw.WriteLine(log);
+                    // }
                 }
                 catch (Exception e)
                 {
