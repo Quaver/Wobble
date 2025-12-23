@@ -44,6 +44,8 @@ namespace Wobble.Graphics.BitmapFonts
             fontCollection.AddMemoryFont(fontData, fontBytes.Length);
 
             CustomFonts.Add(name, new FontStore(name, fontCollection.Families[0]));
+
+            fontCollection.Dispose();
         }
 
         /// <summary>
@@ -57,6 +59,8 @@ namespace Wobble.Graphics.BitmapFonts
             fontCollection.AddFontFile(filePath);
 
             CustomFonts.Add(name, new FontStore(name, fontCollection.Families[0]));
+
+            fontCollection.Dispose();
         }
 
         ///  <summary>
@@ -214,8 +218,6 @@ namespace Wobble.Graphics.BitmapFonts
         {
             foreach (var font in CustomFonts)
                 font.Value.Family.Dispose();
-
-            CustomFonts.Clear();
         }
     }
 }
