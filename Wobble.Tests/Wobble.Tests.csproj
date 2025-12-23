@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
@@ -24,13 +24,8 @@
     <None Update="Content\exo2-regular_0.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="MonoGame.Framework" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">
-      <HintPath>..\MonoGame.Framework.arm64.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Framework" Condition="'$(RuntimeIdentifier)' != 'osx-arm64'">
-      <HintPath>..\MonoGame.Framework.x64.dll</HintPath>
-    </Reference>
+      <Reference Include="MonoGame.Framework">
+        <HintPath>..\MonoGame.Framework.dll</HintPath>
+      </Reference>
   </ItemGroup>
 </Project>

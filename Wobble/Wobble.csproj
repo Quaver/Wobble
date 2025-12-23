@@ -43,13 +43,8 @@
     <None Update="x64/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="MonoGame.Framework" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">
-      <HintPath>..\MonoGame.Framework.arm64.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoGame.Framework" Condition="'$(RuntimeIdentifier)' != 'osx-arm64'">
-      <HintPath>..\MonoGame.Framework.x64.dll</HintPath>
-    </Reference>
+      <Reference Include="MonoGame.Framework">
+          <HintPath>..\MonoGame.Framework.dll</HintPath>
+      </Reference>
   </ItemGroup>
 </Project>
