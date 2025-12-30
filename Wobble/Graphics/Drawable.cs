@@ -539,6 +539,12 @@ namespace Wobble.Graphics
                 for (var i = 0; i < Children.Count; i++)
                 {
                     var drawable = Children[i];
+                    if (drawable == null)
+                    {
+                        Children.RemoveAt(i);
+                        i--;
+                        continue;
+                    }
                     drawable.Draw(gameTime);
 
                     TotalDrawn++;

@@ -135,7 +135,7 @@ namespace Wobble.Graphics.Sprites
         public override void Draw(GameTime gameTime)
         {
             // If there is no image set, create a dummy 1px one.
-            if (Image == null)
+            if (Image == null || Image.IsDisposed)
                 Image = WobbleAssets.WhiteBox;
 
             if (SpriteBatchOptions != null)
