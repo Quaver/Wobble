@@ -112,7 +112,10 @@ namespace Wobble.Graphics.Sprites.Text
         private static float GetScale()
         {
             var scale = WindowManager.ScreenScale.X;
-            Debug.Assert(scale > 0, "You're setting up text too early (WindowManager.ScreenScale.X is 0).");
+            
+            // Some stuff (namely DrawableLog and the FPS counter) wants to draw text before anything is initialized.
+            if (scale == 0)
+                scale = 1;
 
             if (GameBase.Game.Graphics.PreferredBackBufferWidth < 1600)
                 return scale * 2;

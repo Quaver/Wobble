@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Debugging;
@@ -24,7 +22,7 @@ namespace Wobble.Tests
 
         private FpsCounter FpsCounter { get; set; }
         
-        private SpriteText WaylandState { get; set; }
+        private SpriteTextPlus WaylandState { get; set; }
 
         public WobbleTestsGame() : base(true)
         {
@@ -72,36 +70,30 @@ namespace Wobble.Tests
 
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
 
-            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-bold"))
-                BitmapFontFactory.AddFont("exo2-bold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-bold.ttf"));
+            var fonts = new List<string> { "exo2-bold", "exo2-regular", "exo2-semibold", "exo2-medium" };
+            foreach (var fontName in fonts)
+            {
+                FontManager.CacheWobbleFont(fontName, new WobbleFontStore(20, GameBase.Game.Resources.Get($"Wobble.Tests.Resources/Fonts/{fontName}.ttf")));
+            }
 
-            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-regular"))
-                BitmapFontFactory.AddFont("exo2-regular", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-regular.ttf"));
-
-            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-semibold"))
-                BitmapFontFactory.AddFont("exo2-semibold", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-semibold.ttf"));
-
-            if (!BitmapFontFactory.CustomFonts.ContainsKey("exo2-medium"))
-                BitmapFontFactory.AddFont("exo2-medium", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-medium.ttf"));
-
-            var font = new WobbleFontStore(20, GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-semibold.ttf"), new Dictionary<string, byte[]>()
+            var japaneseFont = new WobbleFontStore(20, GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-semibold.ttf"), new Dictionary<string, byte[]>()
                 {
                     {"Emoji", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/symbola-emoji.ttf")},
                     {"Japanese", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/droid-sans-japanese.ttf")}
                 });
 
-            FontManager.CacheWobbleFont("exo2-semibold", font);
+            FontManager.CacheWobbleFont("exo2-semibold-japanese", japaneseFont);
 
             IsReadyToUpdate = true;
 
-            FpsCounter = new FpsCounter(FontManager.LoadBitmapFont("Content/gotham"), 18)
+            FpsCounter = new FpsCounter(FontManager.GetWobbleFont("exo2-semibold"), 18)
             {
                 Parent = GlobalUserInterface,
                 Alignment = Alignment.BotRight,
                 Size = new ScalableVector2(70, 30),
             };
 
-            WaylandState = new SpriteText("exo2-semibold", $"Wayland: {WaylandVsync}", 18)
+            WaylandState = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"), $"Wayland: {WaylandVsync}", 18)
             {
                 Parent = GlobalUserInterface,
                 Alignment = Alignment.BotRight,
@@ -137,7 +129,7 @@ namespace Wobble.Tests
             if (KeyboardManager.IsUniqueKeyPress(Keys.W) && OperatingSystem.IsLinux())
             {
                 WaylandVsync = !WaylandVsync;
-                WaylandState.ScheduleUpdate(() => WaylandState.Text = $"Wayland: {WaylandVsync}");
+                WaylandState.Text = $"Wayland: {WaylandVsync}";
             }
         }
 
