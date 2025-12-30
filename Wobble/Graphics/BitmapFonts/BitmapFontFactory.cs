@@ -106,6 +106,9 @@ namespace Wobble.Graphics.BitmapFonts
             textSize.Width = Math.Max(1, textSize.Width);
             textSize.Height = Math.Max(1, textSize.Height);
 
+            // Add a pad based on font size to avoid descender clipping when rendering into the bitmap.
+            textSize.Height += Math.Max(2f, fontSize * 0.25f);
+
             // Create the actual bitmap using the size of the text.
             using (var bmp = new Bitmap((int)(textSize.Width + 0.5), (int)(textSize.Height + 0.5), PixelFormat.Format32bppArgb))
             using (var g = System.Drawing.Graphics.FromImage(bmp))

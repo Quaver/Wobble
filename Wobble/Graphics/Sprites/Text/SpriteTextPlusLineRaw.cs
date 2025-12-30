@@ -1,3 +1,4 @@
+using System;
 using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites.Text
@@ -67,7 +68,9 @@ namespace Wobble.Graphics.Sprites.Text
             Font.FontSize = FontSize;
 
             var (x, y) = Font.Store.MeasureString(Text);
-            Size = new ScalableVector2(x, y);
+            var padding = Math.Max(2f, FontSize * 0.25f);
+            var height = Math.Max(y, Font.Store.LineHeight) + padding;
+            Size = new ScalableVector2(x, height);
         }
     }
 }
