@@ -8,6 +8,7 @@ using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
 using Wobble.IO;
+using Wobble.Logging;
 using Wobble.Managers;
 using Wobble.Screens;
 using Wobble.Tests.Screens.Selection;
@@ -23,6 +24,10 @@ namespace Wobble.Tests
         private FpsCounter FpsCounter { get; set; }
         
         private SpriteTextPlus WaylandState { get; set; }
+
+        private bool _logGc;
+        private double _gcLogTimer;
+        private readonly int[] _lastGcCounts = new int[3];
 
         public WobbleTestsGame() : base(true)
         {
@@ -131,6 +136,32 @@ namespace Wobble.Tests
                 WaylandVsync = !WaylandVsync;
                 WaylandState.Text = $"Wayland: {WaylandVsync}";
             }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.F10))
+            {
+                _logGc = !_logGc;
+                _gcLogTimer = 0;
+                Logger.Debug($"GC logging {(_logGc ? "enabled" : "disabled")}.", LogType.Runtime);
+                LogGc("GC toggle");
+            }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.F9))
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                LogGc("GC forced");
+            }
+
+            if (_logGc)
+            {
+                _gcLogTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (_gcLogTimer >= 1000)
+                {
+                    _gcLogTimer = 0;
+                    LogGc("GC tick");
+                }
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -141,6 +172,26 @@ namespace Wobble.Tests
             base.Draw(gameTime);
             GlobalUserInterface?.Draw(gameTime);
             GameBase.Game.TryEndBatch();
+        }
+
+        private void LogGc(string tag)
+        {
+            var totalBytes = GC.GetTotalMemory(false);
+            var gen0 = GC.CollectionCount(0);
+            var gen1 = GC.CollectionCount(1);
+            var gen2 = GC.CollectionCount(2);
+
+            var delta0 = gen0 - _lastGcCounts[0];
+            var delta1 = gen1 - _lastGcCounts[1];
+            var delta2 = gen2 - _lastGcCounts[2];
+
+            _lastGcCounts[0] = gen0;
+            _lastGcCounts[1] = gen1;
+            _lastGcCounts[2] = gen2;
+
+            Logger.Debug(
+                $"{tag}: managed={totalBytes / (1024 * 1024)}MB gen0={gen0}(+{delta0}) gen1={gen1}(+{delta1}) gen2={gen2}(+{delta2})",
+                LogType.Runtime);
         }
     }
 }

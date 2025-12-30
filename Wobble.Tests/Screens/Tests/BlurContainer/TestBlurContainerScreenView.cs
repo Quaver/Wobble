@@ -23,6 +23,8 @@ namespace Wobble.Tests.Screens.Tests.BlurContainer
         /// </summary>
         public SpriteText BlurStrengthText { get; }
 
+        private int _lastStrength;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -57,6 +59,8 @@ namespace Wobble.Tests.Screens.Tests.BlurContainer
                 Alignment = Alignment.TopCenter,
                 Y = 15,
             };
+
+            _lastStrength = (int)Blur.Strength;
         }
 
         /// <inheritdoc />
@@ -85,7 +89,11 @@ namespace Wobble.Tests.Screens.Tests.BlurContainer
             if (KeyboardManager.IsUniqueKeyPress(Keys.Right))
                 Blur.Strength += 1;
 
-            BlurStrengthText.Text = $"Blur Strength: {Blur.Strength}";
+            if ((int)Blur.Strength != _lastStrength)
+            {
+                _lastStrength = (int)Blur.Strength;
+                BlurStrengthText.Text = $"Blur Strength: {Blur.Strength}";
+            }
             Container?.Update(gameTime);
         }
 

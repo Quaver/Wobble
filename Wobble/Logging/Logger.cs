@@ -152,7 +152,7 @@ namespace Wobble.Logging
                 catch (Exception e)
                 {
                     // If it fails, we can't really handle the error here. This shouldn't happen though.
-                    Console.WriteLine(e);
+                    // Console.WriteLine(e);
                 }
             }
 
