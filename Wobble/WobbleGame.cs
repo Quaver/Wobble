@@ -34,10 +34,34 @@ namespace Wobble
     {
         static readonly Predicate<SpriteBatch> _beginCalled;
 
+        private static string _workingDirectory;
+
         /// <summary>
         ///     The current working directory of the executable.
         /// </summary>
-        public static string WorkingDirectory => AppDomain.CurrentDomain.BaseDirectory;
+        public static string WorkingDirectory
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_workingDirectory))
+                {
+                    return _workingDirectory;
+                }
+                _workingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                try
+                {
+                    File.WriteAllText(Path.Join(_workingDirectory, ".WritableTest"), "test");
+                    File.Delete(Path.Join(_workingDirectory, ".WritableTest"));
+                }
+                catch (Exception e)
+                when (e is UnauthorizedAccessException || e is IOException)
+                {
+                    _workingDirectory = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Quaver");
+                    Directory.CreateDirectory(_workingDirectory);
+                }
+                return _workingDirectory;
+            }
+        }
 
         /// <summary>
         ///     Device period to pass to AudioManager.Initialize().
