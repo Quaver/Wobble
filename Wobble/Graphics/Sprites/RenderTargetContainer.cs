@@ -69,5 +69,16 @@ namespace Wobble.Graphics.Sprites
             // Attempt to end the spritebatch
             _ = GameBase.Game.TryEndBatch();
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public override void Destroy()
+        {
+            if (RenderTarget != null && !RenderTarget.IsDisposed)
+                RenderTarget.Dispose();
+
+            base.Destroy();
+        }
     }
 }

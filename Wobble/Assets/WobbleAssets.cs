@@ -27,6 +27,10 @@ namespace Wobble.Assets
         /// <summary>
         ///     Disposes of all the assets that Wobble has included
         /// </summary>
-        internal static void Dispose() => WhiteBox.Dispose();
+        internal static void Dispose()
+        {
+            WhiteBox?.Dispose();
+            Wallpaper?.Dispose();
+        }
     }
 }

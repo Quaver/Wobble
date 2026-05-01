@@ -17,7 +17,7 @@ namespace Wobble.Tests.Screens.Tests.Background
         /// <summary>
         /// </summary>
         /// <param name="screen"></param>
-        public TestBackgroundImageScreenView(Screen screen) : base(screen) => Background = new BackgroundImage(WobbleAssets.WhiteBox, 60)
+        public TestBackgroundImageScreenView(Screen screen) : base(screen) => Background = new BackgroundImage(WobbleAssets.Wallpaper, 60)
         {
             Parent = Container
         };

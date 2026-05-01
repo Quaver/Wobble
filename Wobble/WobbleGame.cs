@@ -17,6 +17,7 @@ using Wobble.Graphics.Sprites;
 using Wobble.Input;
 using Wobble.IO;
 using Wobble.Logging;
+using Wobble.Managers;
 using Wobble.Platform;
 using Wobble.Platform.Linux;
 using Wobble.Screens;
@@ -216,6 +217,9 @@ namespace Wobble
         protected override void UnloadContent()
         {
             WobbleAssets.Dispose();
+            TextureManager.Dispose();
+            Resources?.Dispose();
+            Window.ClientSizeChanged -= WindowManager.OnClientSizeChanged;
             WindowManager.UnHookEvents();
             AudioManager.Dispose();
             DiscordManager.Dispose();

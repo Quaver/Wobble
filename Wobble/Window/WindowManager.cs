@@ -106,7 +106,11 @@ namespace Wobble.Window
         /// <summary>
         ///     Unhooks all events from the WindowManager.
         /// </summary>
-        public static void UnHookEvents() => ResolutionChanged = null;
+        public static void UnHookEvents()
+        {
+            ResolutionChanged = null;
+            VirtualScreenSizeChanged = null;
+        }
 
         /// <summary>
         ///     Changes the size of the virtual screen to be used.

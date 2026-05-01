@@ -45,10 +45,29 @@ namespace Wobble.Managers
 
             var tex = AssetLoader.LoadTexture2D(GameBase.Game.Resources.Get(name));
             var textures = AssetLoader.LoadSpritesheetFromTexture(tex, rows, columns);
+            tex.Dispose();
 
             TextureAtlases.Add(name, textures);
 
             return textures;
+        }
+
+        /// <summary>
+        ///     Disposes all cached textures and clears the caches.
+        /// </summary>
+        internal static void Dispose()
+        {
+            foreach (var texture in Textures.Values)
+                texture?.Dispose();
+
+            foreach (var atlas in TextureAtlases.Values)
+            {
+                for (var i = 0; i < atlas.Count; i++)
+                    atlas[i]?.Dispose();
+            }
+
+            Textures.Clear();
+            TextureAtlases.Clear();
         }
     }
 }

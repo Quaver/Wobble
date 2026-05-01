@@ -55,6 +55,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
         {
             Song?.Dispose();
             Train?.Dispose();
+            HitSound?.Dispose();
 
             base.Destroy();
         }

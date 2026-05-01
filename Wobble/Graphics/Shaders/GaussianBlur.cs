@@ -81,7 +81,7 @@ namespace Wobble.Graphics.Shaders
     /// offsetsHoriz and offsetsVert fields.
     /// </para>
     /// </summary>
-    public class GaussianBlur
+    public class GaussianBlur : IDisposable
     {
         private Game game => GameBase.Game;
         private Effect effect;
@@ -140,6 +140,15 @@ namespace Wobble.Graphics.Shaders
         {
             effect = new Effect(GameBase.Game.GraphicsDevice, GameBase.Game.Resources.Get("Wobble.Resources/Shaders/fast-gaussian-blur.mgfxo"));
             ComputeKernel(7, strength);
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public void Dispose()
+        {
+            effect?.Dispose();
+            effect = null;
         }
 
         /// <summary>

@@ -17,6 +17,8 @@ namespace Wobble.Tests.Screens.Tests.ScheduledUpdates
     public class TestScheduledUpdatesScreenView: ScreenView
     {
         private SpriteTextPlus Scheduled { get; }
+        private CancellationTokenSource _updateTokenSource;
+        private Task _updateTask;
 
         /// <summary>
         /// </summary>
@@ -27,20 +29,25 @@ namespace Wobble.Tests.Screens.Tests.ScheduledUpdates
             Scheduled = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"),
                 "", 36)
             {
+                Parent = Container,
                 Alignment = Alignment.TopCenter,
                 Y = 250
             };
 
-            Task.Run(() =>
+            _updateTokenSource = new CancellationTokenSource();
+            var token = _updateTokenSource.Token;
+            _updateTask = Task.Run(async () =>
             {
-                while (!Scheduled.IsDisposed)
+                while (!token.IsCancellationRequested && !Scheduled.IsDisposed)
                 {
                     if (IsScheduled)
                         Scheduled.ScheduleUpdate(() => Scheduled.Text = $"Scheduled - {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}");
                     else
                         Scheduled.Text = $"Unscheduled - {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+
+                    await Task.Delay(16, token);
                 }
-            });
+            }, token);
 
             new SpriteText("exo2-semibold", "Press 1 to toggle between scheduled & unscheduled", 32)
             {
@@ -62,10 +69,16 @@ namespace Wobble.Tests.Screens.Tests.ScheduledUpdates
         {
             GameBase.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
             Container?.Draw(gameTime);
-
-            Scheduled.Draw(gameTime);
         }
 
-        public override void Destroy() => Container?.Destroy();
+        public override void Destroy()
+        {
+            _updateTokenSource?.Cancel();
+            _updateTokenSource?.Dispose();
+            _updateTokenSource = null;
+            _updateTask = null;
+
+            Container?.Destroy();
+        }
     }
 }

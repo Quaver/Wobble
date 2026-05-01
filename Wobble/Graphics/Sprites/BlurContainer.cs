@@ -76,6 +76,31 @@ namespace Wobble.Graphics.Sprites
 
             base.Draw(gameTime);
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public override void Destroy()
+        {
+            var activeEffect = SpriteBatchOptions?.Shader?.ShaderEffect;
+
+            if (SpriteBatchOptions?.Shader != null)
+            {
+                SpriteBatchOptions.Shader.Dispose();
+                SpriteBatchOptions.Shader = null;
+            }
+
+            if (BlurEffects != null)
+            {
+                foreach (var effect in BlurEffects.Values)
+                {
+                    if (!ReferenceEquals(effect, activeEffect))
+                        effect.Dispose();
+                }
+            }
+
+            base.Destroy();
+        }
     }
 
     /// <summary>

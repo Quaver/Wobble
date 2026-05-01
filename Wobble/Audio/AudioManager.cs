@@ -64,7 +64,21 @@ namespace Wobble.Audio
         /// <summary>
         ///     Disposes of any resources used by BASS.
         /// </summary>
-        internal static void Dispose() => Bass.Free();
+        internal static void Dispose()
+        {
+            if (Tracks != null)
+            {
+                lock (Tracks)
+                {
+                    for (var i = 0; i < Tracks.Count; i++)
+                        Tracks[i]?.Dispose();
+
+                    Tracks.Clear();
+                }
+            }
+
+            Bass.Free();
+        }
 
         /// <summary>
         ///     Updates the AudioManager and keeps things up-to-date.

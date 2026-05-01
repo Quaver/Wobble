@@ -11,7 +11,7 @@ namespace Wobble.Tests.Screens.Tests.BlurredBgImage
     {
         public TestBlurredBackgroundImageScreenView(Screen screen) : base(screen)
         {
-            var blur = new GaussianBlur(1.1f);
+            using var blur = new GaussianBlur(1.1f);
             var image = blur.PerformGaussianBlur(WobbleAssets.Wallpaper);
 
             var background = new BackgroundImage(image)

@@ -68,5 +68,16 @@ namespace Wobble.Graphics.Sprites
 
             HasBeenBaked = true;
         }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        public override void Destroy()
+        {
+            if (BakedRenderTarget != null && !BakedRenderTarget.IsDisposed)
+                BakedRenderTarget.Dispose();
+
+            base.Destroy();
+        }
     }
 }

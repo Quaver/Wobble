@@ -172,7 +172,13 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         ///     Removes a previously created texture pointer, releasing its reference and allowing it to be deallocated
         /// </summary>
-        public void UnbindTexture(IntPtr textureId) => LoadedTextures.Remove(textureId);
+        public void UnbindTexture(IntPtr textureId)
+        {
+            if (LoadedTextures.TryGetValue(textureId, out var texture))
+                texture.Dispose();
+
+            LoadedTextures.Remove(textureId);
+        }
 
         /// <summary>
         ///     Sets up ImGui for a new frame, should be called at frame start
@@ -546,6 +552,10 @@ namespace Wobble.Graphics.ImGUI
             if (DestroyContext)
                 ImGui.DestroyContext(Context);
 
+            foreach (var texture in LoadedTextures.Values)
+                texture.Dispose();
+
+            LoadedTextures.Clear();
             Effect?.Dispose();
             RasterizerState?.Dispose();
             VertexBuffer?.Dispose();
