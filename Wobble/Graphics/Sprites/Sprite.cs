@@ -51,7 +51,7 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         private Color _tint = Color.White;
         public Color _color = Color.White;
-        public Color Tint
+        public virtual Color Tint
         {
             get => _tint;
             set
