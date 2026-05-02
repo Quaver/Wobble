@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics.Animations;
+using Wobble.Helpers;
 
 namespace Wobble.Graphics.Sprites.Text
 {
@@ -192,7 +193,7 @@ namespace Wobble.Graphics.Sprites.Text
                     // which aren't supported yet anyway), but C# doesn't have a built-in method
                     // for binary search by an arbitrary predicate. So I guess we'll just go with a regular find-last,
                     // which can be slower, but has a bonus of not making any of the aforementioned assumptions.
-                    var splitOnIndex = spaces.FindLastIndex(spacePosition =>
+                    var splitOnIndex = spaces.LastTrue(spacePosition =>
                     {
                         var lineBeforeSpace = line.Substring(0, spacePosition);
                         var sprite = new SpriteTextPlusLine(Font, lineBeforeSpace, FontSize);
@@ -218,23 +219,24 @@ namespace Wobble.Graphics.Sprites.Text
                         if (spaces.Count > 0)
                             lastIndex = spaces[0];
 
-                        for (var i = lastIndex; i != 0; i--)
+                        nextLineStart = new ListHelper.Iota(0, lastIndex).LastTrue(i =>
                         {
-                            var lineCut = line.Substring(0, i);
-                            var sprite = new SpriteTextPlusLine(Font, lineCut, FontSize);
+                            var testLineCut = line.Substring(0, i);
+                            var testSprite = new SpriteTextPlusLine(Font, testLineCut, FontSize);
 
                             // If we're left with 1 character, just go with it even if we're over MaxWidth.
-                            if (sprite.Width > MaxWidth && i > 1)
+                            if (testSprite.Width > MaxWidth && i > 1)
                             {
-                                sprite.Destroy();
-                                continue;
+                                testSprite.Destroy();
+                                return false;
                             }
+                            return true;
+                        });
 
-                            lineSprite.Destroy();
-                            lineSprite = sprite;
-                            nextLineStart = i;
-                            break;
-                        }
+                        var lineCut = line.Substring(0, nextLineStart.Value);
+                        var sprite = new SpriteTextPlusLine(Font, lineCut, FontSize);
+                        lineSprite.Destroy();
+                        lineSprite = sprite;
                     }
                     else
                     {
