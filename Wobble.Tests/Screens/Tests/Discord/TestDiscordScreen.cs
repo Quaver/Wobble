@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordRPC;
+using DiscordRPC.Logging;
 using Wobble.Discord;
-using Wobble.Discord.RPC;
-using Wobble.Discord.RPC.Logging;
 using Wobble.Screens;
 
 namespace Wobble.Tests.Screens.Tests.Discord

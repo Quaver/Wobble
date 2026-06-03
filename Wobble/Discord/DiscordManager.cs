@@ -1,6 +1,6 @@
 ﻿using System;
-using Wobble.Discord.RPC;
-using Wobble.Discord.RPC.Logging;
+using DiscordRPC;
+using DiscordRPC.Logging;
 
 namespace Wobble.Discord
 {
@@ -24,16 +24,17 @@ namespace Wobble.Discord
         /// <param name="logLevel">The level of logging for the client.</param>
         public static void CreateClient(string appId, LogLevel logLevel = LogLevel.None)
         {
-            if (Client != null && !Client.Disposed)
+            if (Client != null && !Client.IsDisposed)
                 throw new InvalidOperationException("DiscordRpcClient already is initialized and hasn't been disposed.");
 
             AppId = appId;
 
-            Client = new DiscordRpcClient(AppId, true, -1)
+            Client = new DiscordRpcClient(AppId, -1, new ConsoleLogger { Level = logLevel })
             {
-                Logger = new ConsoleLogger { Level = logLevel }
+                SkipIdenticalPresence = false
             };
 
+            Client.RegisterUriScheme();
             Client.Initialize();
         }
 
