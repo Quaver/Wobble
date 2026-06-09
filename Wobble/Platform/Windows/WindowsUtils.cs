@@ -1,13 +1,20 @@
 using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace Wobble.Platform.Windows
 {
+    [SupportedOSPlatform("windows")]
     public class WindowsUtils : Utils
     {
+        private const uint SHCNE_ASSOCCHANGED = 0x08000000;
+        private const uint SHCNF_IDLIST = 0x0000;
+
         public override void HighlightInFileManager(string path)
         {
             Process.Start("explorer.exe", "/select, \"" + path.Replace("/", "\\") + "\"");
@@ -52,6 +59,11 @@ namespace Wobble.Platform.Windows
                 {
                     extensionKey.SetValue("", progId);
 
+                    using (var defaultIcon = extensionKey.CreateSubKey("DefaultIcon"))
+                    {
+                        defaultIcon.SetValue("", "\"" + association.Value.IconPath + "\",0");
+                    }
+
                     using (var openWithProgIds = extensionKey.CreateSubKey("OpenWithProgids"))
                         openWithProgIds.SetValue(progId, new byte[0], RegistryValueKind.None);
                 }
@@ -74,10 +86,15 @@ namespace Wobble.Platform.Windows
                     }
                 }
             }
+
+            SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
         }
 
         public override void EnableWindowsKey() => WindowsKey.EnableWindowsKey();
 
         public override void DisableWindowsKey() => WindowsKey.DisableWindowsKey();
+
+        [DllImport("shell32.dll")]
+        private static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
     }
 }
