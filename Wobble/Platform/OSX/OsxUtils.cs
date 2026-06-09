@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Wobble.Platform.OSX
@@ -23,6 +24,11 @@ namespace Wobble.Platform.OSX
         }
 
         public override void RegisterURIScheme(string scheme, string friendlyName)
+        {
+        }
+
+        public override void RegisterFileAssociations(IReadOnlyDictionary<string, FileAssociation> associations,
+            string applicationIconPath)
         {
         }
 

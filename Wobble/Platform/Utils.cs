@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using Wobble.Platform.Linux;
@@ -47,6 +48,14 @@ namespace Wobble.Platform
         public abstract void RegisterURIScheme(string scheme, string friendlyName);
 
         /// <summary>
+        ///     Registers the current executable as the handler for native file extensions.
+        /// </summary>
+        /// <param name="associations">file extensions mapped to their association metadata</param>
+        /// <param name="applicationIconPath">path to the native application icon</param>
+        public abstract void RegisterFileAssociations(IReadOnlyDictionary<string, FileAssociation> associations,
+            string applicationIconPath);
+
+        /// <summary>
         ///     Enables the windows key to be used
         /// </summary>
         public abstract void EnableWindowsKey();
@@ -55,5 +64,16 @@ namespace Wobble.Platform
         ///     Disables the windows key from being used
         /// </summary>
         public abstract void DisableWindowsKey();
+    }
+
+    public class FileAssociation
+    {
+        public string ProgId { get; set; }
+
+        public string FriendlyName { get; set; }
+
+        public string IconPath { get; set; }
+
+        public string MimeType { get; set; }
     }
 }
