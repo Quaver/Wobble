@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Logging;
+using Wobble.Managers;
 using Color = Microsoft.Xna.Framework.Color;
 using Font = System.Drawing.Font;
 using FontStyle = System.Drawing.FontStyle;
@@ -37,6 +38,9 @@ namespace Wobble.Graphics.BitmapFonts
         /// <param name="fontBytes"></param>
         public static void AddFont(string name, byte[] fontBytes)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return;
+
             var fontData = Marshal.AllocCoTaskMem(fontBytes.Length);
             Marshal.Copy(fontBytes, 0, fontData, fontBytes.Length);
 
@@ -55,6 +59,9 @@ namespace Wobble.Graphics.BitmapFonts
         /// <param name="filePath"></param>
         public static void AddFont(string name, string filePath)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return;
+
             var fontCollection = new PrivateFontCollection();
             fontCollection.AddFontFile(filePath);
 
@@ -75,6 +82,44 @@ namespace Wobble.Graphics.BitmapFonts
         ///  <returns></returns>
         internal static Texture2D Create(string fontName, string text, float fontSize, Color color, Alignment textAlignment, int maxWidth)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                try
+                {
+                    var wobbleFont = FontManager.GetWobbleFont(fontName);
+                    wobbleFont.FontSize = fontSize;
+
+                    var size = wobbleFont.Store.MeasureString(text);
+                    var width = Math.Max(1, (int)Math.Ceiling(size.X));
+                    var height = Math.Max(1, (int)Math.Ceiling(size.Y));
+
+                    var renderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, width, height);
+
+                    var oldRenderTargets = GameBase.Game.GraphicsDevice.GetRenderTargets();
+                    GameBase.Game.GraphicsDevice.SetRenderTarget(renderTarget);
+                    GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
+
+                    GameBase.Game.SpriteBatch.Begin();
+                    wobbleFont.Store.DrawText(GameBase.Game.SpriteBatch, text, Microsoft.Xna.Framework.Vector2.Zero, Color.White);
+                    GameBase.Game.SpriteBatch.End();
+
+                    GameBase.Game.GraphicsDevice.SetRenderTargets(oldRenderTargets);
+
+                    var texture = new Texture2D(GameBase.Game.GraphicsDevice, width, height);
+                    var data = new Color[width * height];
+                    renderTarget.GetData(data);
+                    texture.SetData(data);
+
+                    renderTarget.Dispose();
+
+                    return texture;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"Failed to create bitmap font texture for {fontName} using FontStashSharp: {e.Message}", LogType.Runtime);
+                }
+            }
+
             // Stores the size of the text & Texture2D
             SizeF textSize;
 
