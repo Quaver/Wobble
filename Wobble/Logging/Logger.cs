@@ -143,6 +143,9 @@ namespace Wobble.Logging
                 // Write to the log file
                 try
                 {
+                    if (!Directory.Exists(LogsFolder))
+                        Directory.CreateDirectory(LogsFolder);
+
                     using (var sw = new StreamWriter(GetLogPath(type), true))
                     {
                         sw.AutoFlush = true;
