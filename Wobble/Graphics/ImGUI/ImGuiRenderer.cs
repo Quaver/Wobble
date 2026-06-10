@@ -205,17 +205,25 @@ namespace Wobble.Graphics.ImGUI
 
 #region Setup & Update
 
-        private static void OnWindowOnTextInput(object s, TextInputEventArgs a)
+        private void OnWindowOnTextInput(object s, TextInputEventArgs a)
         {
             if (a.Character == '\t') return;
 
+            var previousContext = ImGui.GetCurrentContext();
+
+            if (previousContext != Context)
+                ImGui.SetCurrentContext(Context);
+
             ImGui.GetIO().AddInputCharacter(a.Character);
+
+            if (previousContext != Context)
+                ImGui.SetCurrentContext(previousContext);
         }
 
         /// <summary>
         ///     Maps ImGui keys to XNA keys. We use this later on to tell ImGui what keys were pressed
         /// </summary>
-        private static void SetupInput()
+        private void SetupInput()
         {
             var io = ImGui.GetIO();
 
