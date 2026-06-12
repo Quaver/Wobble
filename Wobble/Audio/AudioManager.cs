@@ -23,6 +23,11 @@ namespace Wobble.Audio
         public static List<IAudioTrack> Tracks { get; private set; }
 
         /// <summary>
+        ///     Emitted when the output device is automatically changed.
+        /// </summary>
+        public static event Action<string> OutputDeviceChanged;
+
+        /// <summary>
         ///     Initializes BASS and throws an exception if it fails.
         /// </summary>
         /// <param name="devicePeriod">Set to override the device period, milliseconds.</param>
@@ -159,7 +164,9 @@ namespace Wobble.Audio
                 {
                     Bass.CurrentDevice = i;
                     MoveTracksToDevice(i);
-                    Logger.Warning($"Lost audio output device. Switched to: {Bass.GetDeviceInfo(i).Name}", LogType.Runtime);
+                    var deviceName = Bass.GetDeviceInfo(i).Name;
+                    Logger.Warning($"Lost audio output device. Switched to: {deviceName}", LogType.Runtime);
+                    OutputDeviceChanged?.Invoke(deviceName);
                     return true;
                 }
                 catch (Exception e)
