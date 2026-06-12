@@ -62,7 +62,7 @@ namespace Wobble.Audio
                 if (error == Errors.Device)
                     throw new AudioEngineException("Quaver could not find an audio output device. Please connect or enable an audio output device and restart the game.");
 
-                throw new AudioEngineException($"BASS has failed to initialize (error code: {(int)error}, name: \"{error}\")! Are your platform-specific dlls present?");
+                throw new AudioEngineException("Quaver could not find an audio output device. Please connect or enable an audio output device and restart the game.");
             }
 
             Logger.Debug($"BASS version: {Bass.Version}", LogType.Runtime);
