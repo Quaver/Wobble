@@ -53,6 +53,10 @@ namespace Wobble.Audio
             if (!Bass.Init(device.Value))
             {
                 var error = Bass.LastError;
+
+                if (error == Errors.Device)
+                    throw new AudioEngineException("Quaver could not find an audio output device. Please connect or enable an audio output device and restart the game.");
+
                 throw new AudioEngineException($"BASS has failed to initialize (error code: {(int)error}, name: \"{error}\")! Are your platform-specific dlls present?");
             }
 
@@ -83,7 +87,11 @@ namespace Wobble.Audio
         /// <summary>
         ///     Updates the AudioManager and keeps things up-to-date.
         /// </summary>
-        internal static void Update(GameTime gameTime) => UpdateTracks(gameTime);
+        internal static void Update(GameTime gameTime)
+        {
+            CheckForLostOutputDevice();
+            UpdateTracks(gameTime);
+        }
 
         /// <summary>
         ///     Returns an audio device by its name
@@ -101,6 +109,109 @@ namespace Wobble.Audio
             }
 
             return null;
+        }
+
+        /// <summary>
+        ///     Throws if the initialized output device is no longer available.
+        /// </summary>
+        private static void CheckForLostOutputDevice()
+        {
+            if (Tracks == null)
+                return;
+
+            if (IsCurrentOutputDeviceAvailable())
+                return;
+
+            if (TrySwitchToAvailableOutputDevice())
+                return;
+
+            throw new AudioEngineException("Quaver lost access to its audio output device and could not find another output device. Please connect or enable an audio output device and restart the game.");
+        }
+
+        /// <summary>
+        ///     Checks if the current output device is still usable.
+        /// </summary>
+        private static bool IsCurrentOutputDeviceAvailable()
+        {
+            try
+            {
+                return IsOutputDeviceAvailable(Bass.CurrentDevice);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Attempts to switch BASS and active tracks to another available output device.
+        /// </summary>
+        private static bool TrySwitchToAvailableOutputDevice()
+        {
+            var previousDevice = Bass.CurrentDevice;
+
+            for (var i = 1; i < Bass.DeviceCount; i++)
+            {
+                if (i == previousDevice || !TryInitializeOutputDevice(i))
+                    continue;
+
+                try
+                {
+                    Bass.CurrentDevice = i;
+                    MoveTracksToDevice(i);
+                    Logger.Warning($"Lost audio output device. Switched to: {Bass.GetDeviceInfo(i).Name}", LogType.Runtime);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, LogType.Runtime);
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Returns if a BASS output device can be used.
+        /// </summary>
+        private static bool IsOutputDeviceAvailable(int device)
+        {
+            if (device < 1 || device >= Bass.DeviceCount)
+                return false;
+
+            var info = Bass.GetDeviceInfo(device);
+            return info.IsEnabled && info.IsInitialized;
+        }
+
+        /// <summary>
+        ///     Initializes an enabled output device if it is not already initialized.
+        /// </summary>
+        private static bool TryInitializeOutputDevice(int device)
+        {
+            if (device < 1 || device >= Bass.DeviceCount)
+                return false;
+
+            var info = Bass.GetDeviceInfo(device);
+
+            if (!info.IsEnabled)
+                return false;
+
+            return info.IsInitialized || Bass.Init(device);
+        }
+
+        /// <summary>
+        ///     Moves active track streams to another output device.
+        /// </summary>
+        private static void MoveTracksToDevice(int device)
+        {
+            lock (Tracks)
+            {
+                foreach (var track in Tracks)
+                {
+                    if (track is AudioTrack audioTrack && !audioTrack.IsDisposed)
+                        Bass.ChannelSetDevice(audioTrack.Stream, device);
+                }
+            }
         }
 
         /// <summary>

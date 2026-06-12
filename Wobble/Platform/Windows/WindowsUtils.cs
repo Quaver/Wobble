@@ -94,7 +94,13 @@ namespace Wobble.Platform.Windows
 
         public override void DisableWindowsKey() => WindowsKey.DisableWindowsKey();
 
+        public override void ShowErrorMessage(string title, string message)
+            => MessageBox(IntPtr.Zero, message, title, 0x00000010);
+
         [DllImport("shell32.dll")]
         private static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int MessageBox(IntPtr hWnd, string lpText, string lpCaption, uint uType);
     }
 }

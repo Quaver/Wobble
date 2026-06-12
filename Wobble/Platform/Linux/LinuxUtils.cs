@@ -147,6 +147,17 @@ namespace Wobble.Platform.Linux
         {
         }
 
+        public override void ShowErrorMessage(string title, string message)
+        {
+            if (TryRunDialog("zenity", "--error", "--title", title, "--text", message))
+                return;
+
+            if (TryRunDialog("kdialog", "--error", message, "--title", title))
+                return;
+
+            TryRunDialog("xmessage", "-center", "-title", title, message);
+        }
+
         private static void TryRun(string fileName, params string[] arguments)
         {
             try
@@ -162,6 +173,24 @@ namespace Wobble.Platform.Linux
             catch (Exception)
             {
                 // No matching XDG tool? Oh well.
+            }
+        }
+
+        private static bool TryRunDialog(string fileName, params string[] arguments)
+        {
+            try
+            {
+                var info = new ProcessStartInfo(fileName);
+
+                foreach (var argument in arguments)
+                    info.ArgumentList.Add(argument);
+
+                Process.Start(info)?.WaitForExit();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

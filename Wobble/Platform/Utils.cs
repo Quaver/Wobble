@@ -56,6 +56,13 @@ namespace Wobble.Platform
             string applicationIconPath);
 
         /// <summary>
+        ///     Shows a native error dialog.
+        /// </summary>
+        /// <param name="title">dialog title</param>
+        /// <param name="message">dialog message</param>
+        public abstract void ShowErrorMessage(string title, string message);
+
+        /// <summary>
         ///     Enables the windows key to be used
         /// </summary>
         public abstract void EnableWindowsKey();

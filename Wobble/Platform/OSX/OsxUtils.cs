@@ -39,5 +39,21 @@ namespace Wobble.Platform.OSX
         public override void DisableWindowsKey()
         {
         }
+
+        public override void ShowErrorMessage(string title, string message)
+        {
+            var info = new ProcessStartInfo("osascript")
+            {
+                ArgumentList =
+                {
+                    "-e",
+                    $"display alert {QuoteAppleScript(title)} message {QuoteAppleScript(message)} as critical"
+                }
+            };
+
+            Process.Start(info)?.WaitForExit();
+        }
+
+        private static string QuoteAppleScript(string value) => "\"" + value.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
     }
 }
