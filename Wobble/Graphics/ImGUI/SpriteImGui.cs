@@ -9,7 +9,7 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         ///     Used to render the imgui context to the screen.
         /// </summary>
-        private ImGuiRenderer Renderer { get; }
+        protected ImGuiRenderer Renderer { get; }
 
         /// <summary>
         /// </summary>
@@ -37,7 +37,7 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
             if (ImGui.GetCurrentContext() != Renderer.Context)
                 ImGui.SetCurrentContext(Renderer.Context);
@@ -47,6 +47,9 @@ namespace Wobble.Graphics.ImGUI
                 Renderer.BeforeLayout(gameTime);
                 RenderImguiLayout();
                 Renderer.AfterLayout();
+#if DEBUG
+                global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordImGuiDrawData(Renderer.LastVertexCount, Renderer.LastIndexCount);
+#endif
             }
             catch (Exception e)
             {

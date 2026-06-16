@@ -170,8 +170,6 @@ namespace Wobble.Tests
                 return;
 
             base.Draw(gameTime);
-            GlobalUserInterface?.Draw(gameTime);
-            GameBase.Game.TryEndBatch();
         }
 
         private void LogGc(string tag)

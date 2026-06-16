@@ -130,6 +130,10 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         private void LoadTexture()
         {
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextTextureRegeneration();
+#endif
+
             var oldTexture = Image;
 
             if (string.IsNullOrEmpty(Text))

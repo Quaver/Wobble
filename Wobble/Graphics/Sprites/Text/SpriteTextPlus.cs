@@ -151,12 +151,20 @@ namespace Wobble.Graphics.Sprites.Text
             SetChildrenAlpha = true;
 
             RefreshText();
+
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.SpriteTextPlusDebugRegistry.Register(this);
+#endif
         }
 
         /// <summary>
         /// </summary>
         private void RefreshText()
         {
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextPlusRefresh();
+#endif
+
             for (var i = Children.Count - 1; i >= 0; i--)
                 Children[i].Destroy();
 
@@ -308,8 +316,21 @@ namespace Wobble.Graphics.Sprites.Text
             if (IsCached || !Visible)
                 return;
 
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextPlusDraw(false);
+#endif
+
             SetSize();
             Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _tint * Alpha, scale: AbsoluteScale);
+        }
+
+        public override void Destroy()
+        {
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.SpriteTextPlusDebugRegistry.Unregister(this);
+#endif
+
+            base.Destroy();
         }
 
         private void SetSize()

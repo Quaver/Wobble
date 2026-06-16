@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -14,6 +15,7 @@ using Wobble.Discord;
 using Wobble.Graphics;
 using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
 using Wobble.IO;
 using Wobble.Logging;
@@ -98,6 +100,20 @@ namespace Wobble
         ///     The sprite used for clearing the alpha channel. Its alpha must be 1 (fully opaque) and its color does not matter.
         /// </summary>
         private readonly Sprite alphaOneSprite;
+
+#if DEBUG
+        private DebugOverlay DebugOverlay { get; set; }
+
+        private Stopwatch DebugDrawStopwatch { get; } = new Stopwatch();
+
+        private double DebugScheduledRenderTargetDrawMs { get; set; }
+
+        private double DebugScreenDrawMs { get; set; }
+
+        private double DebugGlobalUiDrawMs { get; set; }
+
+        private int DebugDrawnDrawableCount { get; set; }
+#endif
 
         /// <summary>
         ///     Initializes <see cref="_beginCalled"/>.
@@ -208,6 +224,10 @@ namespace Wobble
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             WobbleAssets.Load();
+
+#if DEBUG
+            DebugOverlay = new DebugOverlay();
+#endif
         }
 
         /// <summary>
@@ -216,6 +236,10 @@ namespace Wobble
         /// </summary>
         protected override void UnloadContent()
         {
+#if DEBUG
+            DebugOverlay?.Destroy();
+#endif
+
             WobbleAssets.Dispose();
             TextureManager.Dispose();
             Resources?.Dispose();
@@ -236,27 +260,65 @@ namespace Wobble
             if (!IsReadyToUpdate)
                 return;
 
+#if DEBUG
+            PerformanceStats.BeginUpdate(gameTime);
+            var updateStopwatch = Stopwatch.StartNew();
+            var phaseStopwatch = Stopwatch.StartNew();
+            double inputUpdateMs;
+            double screenUpdateMs;
+            double globalUiUpdateMs;
+            double audioUpdateMs;
+            double audioLogUpdateMs;
+#endif
+
             // Update the time since the last frame and the game's clock.
             TimeSinceLastFrame = gameTime.ElapsedGameTime.TotalMilliseconds;
             TimeRunningPrecise += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            Drawable.ResetTotalDrawnCount();
 
             // Keep the window updated with the current resolution.
             WindowManager.Update();
             MouseManager.Update();
             KeyboardManager.Update();
             JoystickManager.Update();
+
+#if DEBUG
+            inputUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            phaseStopwatch.Restart();
+#endif
+
             ScreenManager.Update(gameTime);
+
+#if DEBUG
+            screenUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            phaseStopwatch.Restart();
+#endif
+
             AudioManager.Update(gameTime);
+
+#if DEBUG
+            audioUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            phaseStopwatch.Restart();
+#endif
 
             // Update the global sprite container
             GlobalUserInterface.Update(gameTime);
+
+#if DEBUG
+            DebugOverlay?.Update(gameTime);
+            globalUiUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            phaseStopwatch.Restart();
+#endif
 
             // Keep the RPC client up-to-date.
             DiscordManager.Client?.Invoke();
             LogManager.Update(gameTime);
             Logger.Update();
+
+#if DEBUG
+            audioLogUpdateMs = audioUpdateMs + phaseStopwatch.Elapsed.TotalMilliseconds;
+            PerformanceStats.RecordUpdateTimings(inputUpdateMs, screenUpdateMs, globalUiUpdateMs, audioLogUpdateMs,
+                updateStopwatch.Elapsed.TotalMilliseconds);
+#endif
 
             base.Update(gameTime);
         }
@@ -270,16 +332,64 @@ namespace Wobble
             if (!IsReadyToUpdate)
                 return;
 
+#if DEBUG
+            DebugDrawStopwatch.Restart();
+            var phaseStopwatch = Stopwatch.StartNew();
+            var scheduledRenderTargetDrawCount = ScheduledRenderTargetDraws.Count;
+            PerformanceStats.BeginDraw(scheduledRenderTargetDrawCount, ScreenManager.CurrentScreenName);
+#endif
+
             for (var i = ScheduledRenderTargetDraws.Count - 1; i >= 0; i--)
             {
                 ScheduledRenderTargetDraws[i]?.Invoke();
                 ScheduledRenderTargetDraws.Remove(ScheduledRenderTargetDraws[i]);
             }
 
+#if DEBUG
+            DebugScheduledRenderTargetDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            phaseStopwatch.Restart();
+#endif
+
             base.Draw(gameTime);
+
+            Drawable.ResetTotalDrawnCount();
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
+
+#if DEBUG
+            DebugScreenDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            phaseStopwatch.Restart();
+#endif
+
+            GlobalUserInterface?.Draw(gameTime);
+
+#if DEBUG
+            DebugGlobalUiDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            DebugDrawnDrawableCount = Drawable.TotalDrawn;
+#endif
+
+            TryEndBatch();
+        }
+
+        protected override void EndDraw()
+        {
+#if DEBUG
+            if (IsReadyToUpdate)
+            {
+                var overlayStopwatch = Stopwatch.StartNew();
+                DebugOverlay?.Draw(new GameTime(TimeSpan.FromMilliseconds(TimeRunning), TimeSpan.FromMilliseconds(TimeSinceLastFrame)));
+                var overlayDrawMs = overlayStopwatch.Elapsed.TotalMilliseconds;
+
+                PerformanceStats.RecordDrawTimings(DebugScheduledRenderTargetDrawMs, DebugScreenDrawMs, DebugGlobalUiDrawMs, overlayDrawMs,
+                    DebugDrawStopwatch.Elapsed.TotalMilliseconds, DebugDrawnDrawableCount);
+            }
+#endif
+
+            if (SpriteBatch != null)
+                TryEndBatch();
+
+            base.EndDraw();
         }
 
         /// <summary>

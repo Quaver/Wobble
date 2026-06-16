@@ -18,6 +18,17 @@ namespace Wobble.Graphics
     /// </summary>
     public abstract class Drawable : IDrawable, IDisposable
     {
+#if DEBUG
+        internal int DebugId { get; }
+#endif
+
+        protected Drawable()
+        {
+#if DEBUG
+            DebugId = global::Wobble.Graphics.UI.Debugging.DrawableDebugRegistry.Register(this);
+#endif
+        }
+
         /// <summary>
         ///     The total amount of drawables that are drawn on-screen.
         /// </summary>
@@ -534,6 +545,10 @@ namespace Wobble.Graphics
             TotalDrawn++;
             DrawOrder = TotalDrawn;
 
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.DrawableDebugRegistry.RecordDraw(this);
+#endif
+
             try
             {
                 for (var i = 0; i < Children.Count; i++)
@@ -595,7 +610,13 @@ namespace Wobble.Graphics
         /// <inheritdoc />
         /// <summary>
         /// </summary>
-        public virtual void Dispose() => IsDisposed = true;
+        public virtual void Dispose()
+        {
+            IsDisposed = true;
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.DrawableDebugRegistry.Unregister(this);
+#endif
+        }
 
 
         public void RecalculateDrawMask()
@@ -691,7 +712,13 @@ namespace Wobble.Graphics
         ///     Resets the count of total drawn objects.
         ///     This is usually performed once every initial draw call.
         /// </summary>
-        internal static void ResetTotalDrawnCount() => TotalDrawn = 0;
+        internal static void ResetTotalDrawnCount()
+        {
+            TotalDrawn = 0;
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.DrawableDebugRegistry.ResetFrame();
+#endif
+        }
 
         /// <summary>
         ///     Performs all of the Animations in the queue.
