@@ -168,6 +168,15 @@ namespace Wobble.Graphics.Sprites.Text
             base.Destroy();
         }
 
+        public override void DrawToSpriteBatch()
+        {
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextPlusDraw(true);
+#endif
+
+            base.DrawToSpriteBatch();
+        }
+
         /// <summary>
         ///     Round the position to align with pixels exactly.
         /// </summary>
@@ -200,6 +209,10 @@ namespace Wobble.Graphics.Sprites.Text
         {
             if (IsDisposed)
                 return;
+
+#if DEBUG
+            global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextPlusCacheBuild();
+#endif
 
             _ = GameBase.Game.TryEndBatch();
             var (width, height) = _raw.AbsoluteSize;

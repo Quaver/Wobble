@@ -15,6 +15,8 @@ namespace Wobble.Screens
         /// </summary>
         private static Screen CurrentScreen { get; set; }
 
+        public static string CurrentScreenName => CurrentScreen?.GetType().Name ?? "None";
+
         /// <summary>
         ///     The screen that is queued to be changed.
         /// </summary>

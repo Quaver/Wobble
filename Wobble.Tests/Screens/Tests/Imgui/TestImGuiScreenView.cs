@@ -109,7 +109,7 @@ namespace Wobble.Tests.Screens.Tests.Imgui
             GameBase.Game.GraphicsDevice.Clear(color);
             Container?.Draw(gameTime);
 
-            GameBase.Game.SpriteBatch.End();
+            GameBase.Game.TryEndBatch();
             TestImGuiMenu.Draw(gameTime);
         }
 

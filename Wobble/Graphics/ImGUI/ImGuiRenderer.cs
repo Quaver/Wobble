@@ -85,6 +85,10 @@ namespace Wobble.Graphics.ImGUI
 
         public float Scale { get; }
 
+        public int LastVertexCount { get; private set; }
+
+        public int LastIndexCount { get; private set; }
+
         /// <summary>
         /// </summary>
         public ImGuiRenderer(bool destroyContext = true, ImGuiOptions options = null, float scale = 1.0f)
@@ -370,6 +374,9 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         private void RenderDrawData(ImDrawDataPtr drawData)
         {
+            LastVertexCount = drawData.TotalVtxCount;
+            LastIndexCount = drawData.TotalIdxCount;
+
             // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, vertex/texcoord/color pointers
             var lastViewport = GraphicsDevice.Viewport;
             var lastScissorBox = GraphicsDevice.ScissorRectangle;
@@ -384,7 +391,7 @@ namespace Wobble.Graphics.ImGUI
             GraphicsDevice.BlendFactor = Color.White;
             GraphicsDevice.BlendState = BlendState.NonPremultiplied;
             GraphicsDevice.RasterizerState = RasterizerState;
-            GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+            GraphicsDevice.DepthStencilState = DepthStencilState.None;
 
             // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
             drawData.ScaleClipRects(ImGui.GetIO().DisplayFramebufferScale);
@@ -522,6 +529,8 @@ namespace Wobble.Graphics.ImGUI
                     );
 
                     var effect = UpdateEffect(LoadedTextures[drawCmd.TextureId]);
+                    var vertexOffset = vtxOffset + (int)drawCmd.VtxOffset;
+                    var indexOffset = idxOffset + (int)drawCmd.IdxOffset;
 
                     foreach (var pass in effect.CurrentTechnique.Passes)
                     {
@@ -530,19 +539,18 @@ namespace Wobble.Graphics.ImGUI
 #pragma warning disable CS0618 // // FNA does not expose an alternative method.
                         GraphicsDevice.DrawIndexedPrimitives(
                             PrimitiveType.TriangleList,
-                            vtxOffset,
+                            vertexOffset,
                             0,
                             cmdList.VtxBuffer.Size,
-                            idxOffset,
+                            indexOffset,
                             (int)drawCmd.ElemCount / 3
                         );
 #pragma warning restore CS0618
                     }
-
-                    idxOffset += (int)drawCmd.ElemCount;
                 }
 
                 vtxOffset += cmdList.VtxBuffer.Size;
+                idxOffset += cmdList.IdxBuffer.Size;
             }
 
             GraphicsDevice.SetVertexBuffer(null);
