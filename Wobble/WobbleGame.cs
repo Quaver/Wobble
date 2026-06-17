@@ -357,17 +357,18 @@ namespace Wobble
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
 
-#if DEBUG
-            DebugScreenDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-            phaseStopwatch.Restart();
-#endif
-
-            GlobalUserInterface?.Draw(gameTime);
-
-#if DEBUG
-            DebugGlobalUiDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-            DebugDrawnDrawableCount = Drawable.TotalDrawn;
-#endif
+            // Causes issues with Quaver for FPSCounter
+// #if DEBUG
+//             DebugScreenDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+//             phaseStopwatch.Restart();
+// #endif
+//
+//             GlobalUserInterface?.Draw(gameTime);
+//
+// #if DEBUG
+//             DebugGlobalUiDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+//             DebugDrawnDrawableCount = Drawable.TotalDrawn;
+// #endif
 
             TryEndBatch();
         }
