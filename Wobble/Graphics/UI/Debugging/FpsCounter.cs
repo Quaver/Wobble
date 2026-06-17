@@ -50,6 +50,8 @@ namespace Wobble.Graphics.UI.Debugging
         /// </summary>
         public FpsCounter(WobbleFontStore font, int size)
         {
+            SetChildrenVisibility = true;
+
             TextFps = new SpriteTextPlus(font, "0 FPS", size)
             {
                 Parent = this,
@@ -70,6 +72,15 @@ namespace Wobble.Graphics.UI.Debugging
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            if (!Visible)
+            {
+                ElapsedTime = TimeSpan.Zero;
+                FrameCounter = 0;
+                UpdateCounter = 0;
+                base.Update(gameTime);
+                return;
+            }
+
             ElapsedTime += gameTime.ElapsedGameTime;
 
             if (ElapsedTime > TimeSpan.FromSeconds(1))
@@ -108,6 +119,9 @@ namespace Wobble.Graphics.UI.Debugging
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
+            if (!Visible)
+                return;
+
             FrameCounter++;
             base.Draw(gameTime);
         }
