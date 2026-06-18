@@ -370,12 +370,12 @@ namespace Wobble
 //             DebugDrawnDrawableCount = Drawable.TotalDrawn;
 // #endif
 
+#if DEBUG
             TryEndBatch();
         }
 
         protected override void EndDraw()
         {
-#if DEBUG
             if (IsReadyToUpdate)
             {
                 var overlayStopwatch = Stopwatch.StartNew();
@@ -385,12 +385,12 @@ namespace Wobble
                 PerformanceStats.RecordDrawTimings(DebugScheduledRenderTargetDrawMs, DebugScreenDrawMs, DebugGlobalUiDrawMs, overlayDrawMs,
                     DebugDrawStopwatch.Elapsed.TotalMilliseconds, DebugDrawnDrawableCount);
             }
-#endif
 
             if (SpriteBatch != null)
                 TryEndBatch();
 
             base.EndDraw();
+#endif
         }
 
         /// <summary>
