@@ -33,6 +33,8 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
             {
                 Parent = Container,
                 Alignment = Alignment.MidLeft,
+                ShadowColor = new Color(0, 0, 0, 180),
+                ShadowOffset = new Vector2(2, 2),
             };
 
             text.AddBorder(Color.Crimson, 2);
@@ -44,7 +46,9 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
                 Y = text.Height + 20,
-                Tint = Color.Lime
+                Tint = Color.Lime,
+                OutlineColor = new Color(0, 0, 0, 220),
+                OutlineThickness = 1
             };
 
             cyrillic.AddBorder(Color.Cyan, 2);

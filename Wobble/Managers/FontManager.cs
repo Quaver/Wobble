@@ -33,5 +33,15 @@ namespace Wobble.Managers
         /// <param name="name"></param>
         /// <returns></returns>
         public static WobbleFontStore GetWobbleFont(string name) => WobbleFonts[name];
+
+        /// <summary>
+        ///     Configures a heavier or otherwise more legible face for small physical text.
+        /// </summary>
+        public static void SetSmallTextAlternative(string font, string alternative, float threshold = 16f)
+        {
+            var source = GetWobbleFont(font);
+            source.SmallTextAlternative = GetWobbleFont(alternative);
+            source.SmallTextThreshold = threshold;
+        }
     }
 }

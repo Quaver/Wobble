@@ -20,6 +20,18 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         public int DefaultSize { get; }
 
+        /// <summary>
+        ///     Optional heavier face used when this font would be physically smaller than
+        ///     <see cref="SmallTextThreshold"/>. This keeps the choice explicit instead of
+        ///     guessing font family names in the renderer.
+        /// </summary>
+        public WobbleFontStore SmallTextAlternative { get; set; }
+
+        /// <summary>
+        ///     Physical-pixel threshold below which <see cref="SmallTextAlternative"/> is used.
+        /// </summary>
+        public float SmallTextThreshold { get; set; } = 16f;
+
         public float FontSize
         {
             get => _fontSize;

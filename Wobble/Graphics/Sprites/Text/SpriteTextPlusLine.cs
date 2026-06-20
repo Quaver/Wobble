@@ -25,18 +25,21 @@ namespace Wobble.Graphics.Sprites.Text
         ///     Current WindowManager scale.
         /// </summary>
         private float _scale;
-        private float Scale
+        private Vector2 _cacheScale;
+        private Vector2 CacheScale
         {
-            get => _scale;
+            get => _cacheScale;
             set
             {
-                if (_scale == value)
+                if (_cacheScale == value)
                     return;
 
                 // Retrieve the original font size (computed with old scale).
                 var fontSize = FontSize;
 
-                _scale = value;
+                _cacheScale = value;
+                _scale = value.Y;
+                _raw.Scale = new Vector2(value.X / value.Y, 1f);
 
                 // Set the font size with the new scale.
                 FontSize = fontSize;
@@ -82,16 +85,30 @@ namespace Wobble.Graphics.Sprites.Text
         private RenderTarget2D RenderTarget { get; set; }
 
         /// <summary>
+        ///     Whether this line owns and draws a render target. SpriteTextPlus disables this and
+        ///     caches all of its lines into one render target instead.
+        /// </summary>
+        internal bool CacheEnabled { get; }
+
+        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
         /// <param name="size"></param>
         public SpriteTextPlusLine(WobbleFontStore font, string text, float size = 0)
+            : this(font, text, size, true)
         {
-            _scale = GetScale();
+        }
+
+        internal SpriteTextPlusLine(WobbleFontStore font, string text, float size, bool cacheEnabled)
+        {
+            CacheEnabled = cacheEnabled;
+            _cacheScale = TextRenderQuality.CacheScale;
+            _scale = _cacheScale.Y;
 
             _raw = new SpriteTextPlusLineRaw(font, text, size * _scale)
             {
+                Scale = new Vector2(_cacheScale.X / _cacheScale.Y, 1f),
                 SpriteBatchOptions = new SpriteBatchOptions
                 {
                     DoNotScale = true,
@@ -109,19 +126,7 @@ namespace Wobble.Graphics.Sprites.Text
         ///     Get the current WindowManager scale and check that it's valid.
         /// </summary>
         /// <returns></returns>
-        private static float GetScale()
-        {
-            var scale = WindowManager.ScreenScale.X;
-            
-            // Some stuff (namely DrawableLog and the FPS counter) wants to draw text before anything is initialized.
-            if (scale == 0)
-                scale = 1;
-
-            if (GameBase.Game.Graphics.PreferredBackBufferWidth < 1600)
-                return scale * 2;
-
-            return scale;
-        }
+        private static Vector2 GetScale() => TextRenderQuality.CacheScale;
 
         /// <summary>
         ///     Set the component size taking rounding into account.
@@ -133,8 +138,9 @@ namespace Wobble.Graphics.Sprites.Text
             var pixelWidth = Math.Ceiling(width);
             var pixelHeight = Math.Ceiling(height);
 
-            var flooredSize = new ScalableVector2((float) pixelWidth, (float) pixelHeight);
-            Size = flooredSize / _scale;
+            Size = new ScalableVector2(
+                (float)pixelWidth / _cacheScale.X,
+                (float)pixelHeight / _cacheScale.Y);
         }
 
         /// <inheritdoc />
@@ -144,9 +150,9 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            Scale = GetScale();
+            CacheScale = GetScale();
 
-            if (_dirty)
+            if (_dirty && CacheEnabled)
             {
                 _dirty = false;
                 GameBase.Game.ScheduledRenderTargetDraws.Add(() => Cache(gameTime));
@@ -170,6 +176,9 @@ namespace Wobble.Graphics.Sprites.Text
 
         public override void DrawToSpriteBatch()
         {
+            if (!CacheEnabled)
+                return;
+
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextPlusDraw(true);
 #endif
@@ -189,11 +198,20 @@ namespace Wobble.Graphics.Sprites.Text
             if (Rotation == 0)
             {
                 // Round the coordinates. Not rounding the coordinates means bad text.
-                var pixelX = (int) (x * WindowManager.ScreenScale.X);
-                var pixelY = (int) (y * WindowManager.ScreenScale.Y);
+                var displayScale = TextRenderQuality.DisplayScale;
+                x = TextRenderQuality.Snap(x, displayScale.X);
+                y = TextRenderQuality.Snap(y, displayScale.Y);
 
-                x = pixelX / WindowManager.ScreenScale.X;
-                y = pixelY / WindowManager.ScreenScale.Y;
+                // Keep both edges on physical pixels. This avoids filtering caused by a
+                // fractionally-sized destination rectangle even when its origin is snapped.
+                var right = TextRenderQuality.Snap(x + ScreenRectangle.Width, displayScale.X);
+                var bottom = TextRenderQuality.Snap(y + ScreenRectangle.Height, displayScale.Y);
+                var snappedWidth = Math.Max(0, right - x);
+                var snappedHeight = Math.Max(0, bottom - y);
+
+                RenderRectangle = new RectangleF(x + snappedWidth / 2f, y + snappedHeight / 2f,
+                    snappedWidth, snappedHeight);
+                return;
             }
 
             // Add Width / 2 and Height / 2 to X, Y because that's what Origin is set to (in the Image setter).
@@ -227,11 +245,15 @@ namespace Wobble.Graphics.Sprites.Text
 
             Visible = true;
 
-            if (RenderTarget != null && !RenderTarget.IsDisposed)
-                RenderTarget?.Dispose();
+            if (RenderTarget == null || RenderTarget.IsDisposed ||
+                RenderTarget.Width != pixelWidth || RenderTarget.Height != pixelHeight)
+            {
+                if (RenderTarget != null && !RenderTarget.IsDisposed)
+                    RenderTarget.Dispose();
 
-            RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, pixelWidth, pixelHeight, false,
-                GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+                RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, pixelWidth, pixelHeight, false,
+                    GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+            }
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
             GameBase.Game.GraphicsDevice.Clear(Color.Transparent);

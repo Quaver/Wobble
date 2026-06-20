@@ -77,6 +77,8 @@ namespace Wobble.Tests
                 FontManager.CacheWobbleFont(fontName, new WobbleFontStore(20, GameBase.Game.Resources.Get($"Wobble.Tests.Resources/Fonts/{fontName}.ttf")));
             }
 
+            FontManager.SetSmallTextAlternative("exo2-regular", "exo2-medium");
+
             var japaneseFont = new WobbleFontStore(20, GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-semibold.ttf"), new Dictionary<string, byte[]>()
                 {
                     {"Emoji", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/symbola-emoji.ttf")},
