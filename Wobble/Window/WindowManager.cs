@@ -21,6 +21,12 @@ namespace Wobble.Window
         private static int PreferredBackBufferHeight { get; set; }
 
         /// <summary>
+        ///     Whether a window resize needs to be applied to the graphics device.
+        ///     Resize events can occur several times in one frame, so apply only the latest size.
+        /// </summary>
+        private static bool BackBufferResizePending { get; set; }
+
+        /// <summary>
         ///     The base resolution to draw at for sizes, positions, and scaling.
         /// </summary>
         public static Vector2 BaseResolution { get; private set; } = new Vector2(1366, 768);
@@ -88,6 +94,14 @@ namespace Wobble.Window
             if (gdm == null)
                 throw new ArgumentNullException($"GraphicsDeviceManager");
 
+            if (BackBufferResizePending)
+            {
+                // Clear this before ApplyChanges because changing the swapchain can synchronously
+                // raise another ClientSizeChanged event.
+                BackBufferResizePending = false;
+                gdm.ApplyChanges();
+            }
+
             // Grab the back buffer's dimensions.
             PreferredBackBufferWidth = gdm.PreferredBackBufferWidth;
             PreferredBackBufferHeight = gdm.PreferredBackBufferHeight;
@@ -99,8 +113,6 @@ namespace Wobble.Window
             // Create the matrix at which we'll be drawing sprites.
             ScalingFactor = new Vector3(ScreenScale.X, ScreenScale.Y, 1);
             Scale = Matrix.CreateScale(ScalingFactor);
-
-            gdm.ApplyChanges();
         }
 
         /// <summary>
@@ -155,6 +167,7 @@ namespace Wobble.Window
 
             gdm.PreferredBackBufferWidth = resolution.X;
             gdm.PreferredBackBufferHeight = resolution.Y;
+            BackBufferResizePending = false;
             gdm.ApplyChanges();
 
             // Raise an event to let everyone know that the window has changed.
@@ -173,8 +186,21 @@ namespace Wobble.Window
         /// </summary>
         private static void UpdateBackBufferSize()
         {
-            GameBase.Game.Graphics.PreferredBackBufferWidth = GameBase.Game.Window.ClientBounds.Width;
-            GameBase.Game.Graphics.PreferredBackBufferHeight = GameBase.Game.Window.ClientBounds.Height;
+            var width = GameBase.Game.Window.ClientBounds.Width;
+            var height = GameBase.Game.Window.ClientBounds.Height;
+
+            // A minimized window can briefly report a zero-sized drawable. Do not create a
+            // swapchain for it; a later resize event will provide usable dimensions.
+            if (width <= 0 || height <= 0)
+                return;
+
+            var graphics = GameBase.Game.Graphics;
+            if (graphics.PreferredBackBufferWidth == width && graphics.PreferredBackBufferHeight == height)
+                return;
+
+            graphics.PreferredBackBufferWidth = width;
+            graphics.PreferredBackBufferHeight = height;
+            BackBufferResizePending = true;
         }
     }
 }
