@@ -13,7 +13,6 @@ using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Discord;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
@@ -134,7 +133,7 @@ namespace Wobble
         /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
-        protected WobbleGame(bool preferWayland = false) : base(preferWayland)
+        protected WobbleGame()
         {
             Directory.SetCurrentDirectory(WorkingDirectory);
             Environment.CurrentDirectory = WorkingDirectory;
@@ -247,7 +246,6 @@ namespace Wobble
             WindowManager.UnHookEvents();
             AudioManager.Dispose();
             DiscordManager.Dispose();
-            BitmapFontFactory.Dispose();
         }
 
         /// <summary>
@@ -357,18 +355,17 @@ namespace Wobble
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
 
-            // Causes issues with Quaver for FPSCounter
-// #if DEBUG
-//             DebugScreenDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-//             phaseStopwatch.Restart();
-// #endif
-//
-//             GlobalUserInterface?.Draw(gameTime);
-//
-// #if DEBUG
-//             DebugGlobalUiDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-//             DebugDrawnDrawableCount = Drawable.TotalDrawn;
-// #endif
+#if DEBUG
+            DebugScreenDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            phaseStopwatch.Restart();
+#endif
+
+            GlobalUserInterface?.Draw(gameTime);
+
+#if DEBUG
+            DebugGlobalUiDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
+            DebugDrawnDrawableCount = Drawable.TotalDrawn;
+#endif
 
             TryEndBatch();
         }

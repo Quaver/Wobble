@@ -10,23 +10,4 @@
     <ProjectReference Include="../Wobble.Tests.Resources/Wobble.Tests.Resources.csproj" />
     <ProjectReference Include="../Wobble/Wobble.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="Content\gotham.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Content\gotham_0.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Content\exo2-regular.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Content\exo2-regular_0.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>..\MonoGame.Framework.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>

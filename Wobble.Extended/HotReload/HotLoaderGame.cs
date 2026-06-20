@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.BitmapFonts;
 using Wobble.Assets;
 using Wobble.Extended.HotReload.Screens;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Screens;
 
 namespace Wobble.Extended.HotReload
@@ -20,9 +20,9 @@ namespace Wobble.Extended.HotReload
         /// </summary>
         public HotLoaderScreen HotLoaderScreen { get; protected set; }
 
-        public static BitmapFont Font { get; set; }
+        public static WobbleFontStore Font { get; set; }
 
-        public HotLoaderGame(HotLoader hl, bool preferWayland = false) : base(preferWayland)
+        public HotLoaderGame(HotLoader hl)
         {
             HotLoader = hl;
             IsMouseVisible = true;
@@ -30,13 +30,17 @@ namespace Wobble.Extended.HotReload
 
         protected override void Initialize()
         {
-            HotLoaderScreen = InitializeHotLoaderScreen();
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             base.LoadContent();
+
+            if (Font == null)
+                throw new InvalidOperationException("HotLoaderGame.Font must be configured before loading content.");
+
+            HotLoaderScreen = InitializeHotLoaderScreen();
 
             ScreenManager.ChangeScreen(HotLoaderScreen);
 

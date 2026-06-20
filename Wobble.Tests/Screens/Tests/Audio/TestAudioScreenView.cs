@@ -9,6 +9,7 @@ using Wobble.Assets;
 using Wobble.Audio.Tracks;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Input;
@@ -41,7 +42,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
                 Alignment = Alignment.BotLeft
             };
 
-            new SpriteText("exo2-regular",
+            new SpriteTextPlus("exo2-regular",
                 "Press Space to pause or resume the song.\nUse the mouse wheel to adjust the song volume.\nPress T and Y to play a hitsound.", 10)
             {
                 Parent = Container,
@@ -101,7 +102,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
             };
 
             // Create text that displays the current audio time.
-            CurrentTime = new SpriteText(Fonts.AllerRegular16, "Audio Time: 0ms")
+            CurrentTime = new SpriteTextPlus(Fonts.AllerRegular16, "Audio Time: 0ms")
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -111,7 +112,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
             };
 
             // Create text that displays audio rate.
-            AudioRate = new SpriteText(Fonts.AllerRegular16, "Audio Rate: 1.0x")
+            AudioRate = new SpriteTextPlus(Fonts.AllerRegular16, "Audio Rate: 1.0x")
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,

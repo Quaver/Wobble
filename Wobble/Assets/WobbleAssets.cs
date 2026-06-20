@@ -1,4 +1,3 @@
-using System.Drawing.Imaging;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Wobble.Assets

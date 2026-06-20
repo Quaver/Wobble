@@ -2,8 +2,8 @@
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 
@@ -41,7 +41,7 @@ namespace Wobble.Tests.Screens.Tests.SpriteMasking
                 Image = WobbleAssets.Wallpaper,
             });
 
-            maskContainer.AddContainedSprite(new SpriteText("exo2-bold", "This is masked!", 16)
+            maskContainer.AddContainedSprite(new SpriteTextPlus("exo2-bold", "This is masked!", 16)
             {
                 Parent = maskContainer,
                 Alignment = Alignment.MidCenter,

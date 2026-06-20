@@ -7,6 +7,7 @@ using Wobble.Scheduling;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Screens;
 
@@ -32,12 +33,12 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
         /// <summary>
         ///    Displays progression of Random Numbers Task
         /// </summary>
-        private SpriteText ProgressionText { get; }
+        private SpriteTextPlus ProgressionText { get; }
 
         /// <summary>
         ///    Displays result of Random Numbers Task
         /// </summary>
-        private SpriteText ResultText { get; }
+        private SpriteTextPlus ResultText { get; }
 
         /// <summary>
         /// </summary>
@@ -61,7 +62,7 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
             };
             TestButton.Clicked += ButtonPressed;
 
-            ProgressionText = new SpriteText("exo2-medium", "", 14)
+            ProgressionText = new SpriteTextPlus("exo2-medium", "", 14)
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
@@ -69,7 +70,7 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
                 Y = 10
             };
 
-            ResultText = new SpriteText("exo2-medium", "", 14)
+            ResultText = new SpriteTextPlus("exo2-medium", "", 14)
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,

@@ -1,7 +1,9 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 
@@ -9,6 +11,10 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
 {
     public class TestSpriteAlphaMaskingBlendScreenView : ScreenView
     {
+        private readonly SpriteAlphaMaskBlend maskedText;
+        private readonly SpriteTextPlus textSprite;
+        private bool textBlendCreated;
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -23,9 +29,13 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
                 Size = new ScalableVector2(500, 200)
             };
 
-            var textSprite = new SpriteText("exo2-bold", "This is masked!", 16);
+            textSprite = new SpriteTextPlus("exo2-bold", "This is masked!", 16)
+            {
+                Parent = Container,
+                Visible = false
+            };
 
-            var maskedText = new SpriteAlphaMaskBlend()
+            maskedText = new SpriteAlphaMaskBlend()
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
@@ -35,7 +45,6 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
 
             // Perform the blend between the Sprite and the Mask
             maskedSprite.Image = maskedSprite.PerformBlend(WobbleAssets.Wallpaper, Textures.CircleAlphaMask);
-            maskedText.Image = maskedText.PerformBlend(textSprite.Image, Textures.RectangleAlphaMask);
         }
 
         /// <inheritdoc />
@@ -50,8 +59,24 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
+            CreateTextBlendWhenReady();
+
             GameBase.Game.GraphicsDevice.Clear(Color.CornflowerBlue);
             Container?.Draw(gameTime);
+        }
+
+        private void CreateTextBlendWhenReady()
+        {
+            if (textBlendCreated || textSprite.Children.Count == 0)
+                return;
+
+            var line = textSprite.Children[0] as SpriteTextPlusLine;
+            if (!(line?.Image is RenderTarget2D))
+                return;
+
+            maskedText.Image = maskedText.PerformBlend(line.Image, Textures.RectangleAlphaMask);
+            textBlendCreated = true;
+            textSprite.Destroy();
         }
 
         /// <inheritdoc />

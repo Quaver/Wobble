@@ -1,8 +1,8 @@
 ﻿using Wobble.Screens;
 
-namespace Wobble.Tests.Screens.Tests.BitmapFont
+namespace Wobble.Tests.Screens.Tests.TextLine
 {
-    public class TestBitmapFontScreen : Screen
+    public class TestSpriteTextPlusLineScreen : Screen
     {
         /// <inheritdoc />
         /// <summary>
@@ -12,6 +12,6 @@ namespace Wobble.Tests.Screens.Tests.BitmapFont
         /// <summary>
         ///
         /// </summary>
-        public TestBitmapFontScreen() => View = new TestBitmapFontScreenView(this);
+        public TestSpriteTextPlusLineScreen() => View = new TestSpriteTextPlusLineScreenView(this);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Framework.Utilities;
 
 namespace Wobble.Graphics.Shaders
 {
@@ -33,6 +34,41 @@ namespace Wobble.Graphics.Shaders
             ShaderEffect = new Effect(GameBase.Game.GraphicsDevice, data);
             Parameters = parameters;
             SetParameters(false);
+        }
+
+        /// <summary>
+        ///     Loads a shader resource compiled for the active graphics backend.
+        /// </summary>
+        /// <param name="resourcePath">
+        ///     The embedded resource path without a backend suffix or file extension.
+        /// </param>
+        /// <param name="parameters"></param>
+        public Shader(string resourcePath, Dictionary<string, object> parameters)
+            : this(LoadEffectResource(resourcePath), parameters)
+        {
+        }
+
+        /// <summary>
+        ///     Loads effect bytecode compiled for the active graphics backend.
+        /// </summary>
+        internal static byte[] LoadEffectResource(string resourcePath)
+        {
+            string backendSuffix;
+
+            switch (PlatformInfo.GraphicsBackend)
+            {
+                case GraphicsBackend.Vulkan:
+                    backendSuffix = "vulkan";
+                    break;
+                case GraphicsBackend.DirectX12:
+                    backendSuffix = "dx12";
+                    break;
+                default:
+                    throw new PlatformNotSupportedException(
+                        $"The {PlatformInfo.GraphicsBackend} graphics backend is not supported by Wobble.");
+            }
+
+            return GameBase.Game.Resources.Get($"{resourcePath}.{backendSuffix}.mgfxo");
         }
 
         /// <summary>

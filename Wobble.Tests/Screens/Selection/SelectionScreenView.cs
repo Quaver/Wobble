@@ -11,7 +11,7 @@ using Wobble.Screens;
 using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Tests.Audio;
 using Wobble.Tests.Screens.Tests.Background;
-using Wobble.Tests.Screens.Tests.BitmapFont;
+using Wobble.Tests.Screens.Tests.TextLine;
 using Wobble.Tests.Screens.Tests.BlurContainer;
 using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
@@ -141,8 +141,8 @@ namespace Wobble.Tests.Screens.Selection
                     case ScreenType.SpriteAlphaMaskingBlend:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestSpriteAlphaMaskingBlendScreen());
                         break;
-                    case ScreenType.BitmapFont:
-                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestBitmapFontScreen());
+                    case ScreenType.SpriteTextPlusLine:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestSpriteTextPlusLineScreen());
                         break;
                     case ScreenType.Primitives:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestPrimitivesScreen());

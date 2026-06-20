@@ -138,7 +138,8 @@ namespace Wobble.Graphics.Shaders
         /// </summary>
         public GaussianBlur(float strength)
         {
-            effect = new Effect(GameBase.Game.GraphicsDevice, GameBase.Game.Resources.Get("Wobble.Resources/Shaders/fast-gaussian-blur.mgfxo"));
+            effect = new Effect(GameBase.Game.GraphicsDevice,
+                Shader.LoadEffectResource("Wobble.Resources/Shaders/fast-gaussian-blur"));
             ComputeKernel(7, strength);
         }
 

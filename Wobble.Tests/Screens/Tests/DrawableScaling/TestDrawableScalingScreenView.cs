@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Input;
 using Wobble.Screens;
 
@@ -21,7 +22,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
 
         public Sprite BottomRight { get; }
 
-        public SpriteText SpriteText { get; }
+        public SpriteTextPlus SpriteTextPlus { get; }
 
         /// <summary>
         ///     The background color for the scene.
@@ -31,7 +32,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
         private Vector2 _scale = Vector2.One;
         private bool _rotating;
 
-        private SpriteText DebugText { get; }
+        private SpriteTextPlus DebugText { get; }
 
         public Vector2 Scale
         {
@@ -93,7 +94,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
                 Alignment = Alignment.MidCenter,
             };
 
-            SpriteText = new SpriteText("exo2-bold", "ABC", 20)
+            SpriteTextPlus = new SpriteTextPlus("exo2-bold", "ABC", 20)
             {
                 Parent = BottomRight,
                 Size = new ScalableVector2(50, 50),
@@ -110,7 +111,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
 
             #endregion
 
-            DebugText = new SpriteText("exo2-bold", "Hello, World!", 18)
+            DebugText = new SpriteTextPlus("exo2-bold", "Hello, World!", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopRight

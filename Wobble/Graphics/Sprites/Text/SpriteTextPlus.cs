@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics.Animations;
+using Wobble.Managers;
 
 namespace Wobble.Graphics.Sprites.Text
 {
@@ -155,6 +156,14 @@ namespace Wobble.Graphics.Sprites.Text
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.SpriteTextPlusDebugRegistry.Register(this);
 #endif
+        }
+
+        /// <summary>
+        ///     Creates text using a font cached in <see cref="FontManager"/>.
+        /// </summary>
+        public SpriteTextPlus(string font, string text, int size = 0, bool cache = true)
+            : this(FontManager.GetWobbleFont(font), text, size, cache)
+        {
         }
 
         /// <summary>

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Wobble.Extended.HotReload;
 using Wobble.Extended.HotReload.Screens;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.IO;
 using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Tests.Audio;
 using Wobble.Tests.Screens.Tests.Background;
-using Wobble.Tests.Screens.Tests.BitmapFont;
+using Wobble.Tests.Screens.Tests.TextLine;
 using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
@@ -36,9 +37,11 @@ namespace Wobble.Tests.Hotload
 
         protected override void LoadContent()
         {
-            base.LoadContent();
-
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
+            Font = new WobbleFontStore(20,
+                Resources.Get("Wobble.Tests.Resources/Fonts/exo2-regular.ttf"));
+
+            base.LoadContent();
             IsReadyToUpdate = true;
         }
 
@@ -64,7 +67,7 @@ namespace Wobble.Tests.Hotload
             {"ImGUI", typeof(TestImGuiScreen)},
             {"Audio", typeof(TestAudioScreen)},
             {"Background", typeof(TestBackgroundImageScreen)},
-            {"BitmapFont", typeof(TestBitmapFontScreen)},
+            {"SpriteTextPlusLine", typeof(TestSpriteTextPlusLineScreen)},
             {"Blurred BG Image", typeof(TestBlurredBackgroundImageScreen)},
             {"Discord", typeof(TestDiscordScreen)},
             {"Primitives", typeof(TestPrimitivesScreen)},

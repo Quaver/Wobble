@@ -2,17 +2,17 @@
 	#define SV_POSITION POSITION
 	#define VS_SHADERMODEL vs_3_0
 	#define PS_SHADERMODEL ps_3_0
+#elif SM6
+	#define SV_POSITION SV_Position
+	#define VS_SHADERMODEL vs_6_0
+	#define PS_SHADERMODEL ps_6_0
 #else
 	#define VS_SHADERMODEL vs_4_0_level_9_1
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-Texture2D SpriteTexture;
-
-sampler2D SpriteTextureSampler = sampler_state
-{
-	Texture = <SpriteTexture>;
-};
+Texture2D<float4> SpriteTexture : register(t0);
+sampler SpriteTextureSampler : register(s0);
 
 struct VertexShaderOutput
 {
@@ -30,7 +30,7 @@ float2 p_rectangle;
 float  p_alpha;
 
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 MainPS(VertexShaderOutput input) : SV_Target0
 {
 
 	float2 coord = input.TextureCoordinates * p_dimensions;
@@ -41,7 +41,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 		input.Color.a = p_alpha;
 	}
 
-	return tex2D(SpriteTextureSampler,input.TextureCoordinates) * input.Color;	
+	return SpriteTexture.Sample(SpriteTextureSampler, input.TextureCoordinates) * input.Color;
 }
 
 technique SpriteDrawing

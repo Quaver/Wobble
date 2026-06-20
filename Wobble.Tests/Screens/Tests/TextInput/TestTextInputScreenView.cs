@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Drawing;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Form;
 using Wobble.Managers;
 using Wobble.Screens;
@@ -39,10 +38,10 @@ namespace Wobble.Tests.Screens.Tests.TextInput
 
             textbox.OnSubmit += text =>
             {
-                // Just create a new SpriteText and move it across the screen.
-                // Not recommended in production, as you'll have a random SpriteText floating around still
+                // Just create a new SpriteTextPlus and move it across the screen.
+                // Not recommended in production, as you'll have a random SpriteTextPlus floating around still
                 // a child to the container.
-                new SpriteText("exo2-bold", text, 18)
+                new SpriteTextPlus("exo2-bold", text, 18)
                 {
                     Parent = Container,
                     X = -100,

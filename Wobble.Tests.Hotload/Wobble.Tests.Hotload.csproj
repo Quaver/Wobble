@@ -10,16 +10,4 @@
       <ProjectReference Include="../Wobble.Tests/Wobble.Tests.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="MonoGame.Framework">
-        <HintPath>..\MonoGame.Framework.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="MonoGame.Framework">
-        <HintPath>..\MonoGame.Framework.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>

@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework.Input;
 using Wobble.Assets;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI;
 using Wobble.Input;
 using Wobble.Screens;
@@ -21,7 +21,7 @@ namespace Wobble.Tests.Screens.Tests.BlurContainer
         /// <summary>
         ///     Text that displays the current blur strength.
         /// </summary>
-        public SpriteText BlurStrengthText { get; }
+        public SpriteTextPlus BlurStrengthText { get; }
 
         private int _lastStrength;
 
@@ -53,7 +53,7 @@ namespace Wobble.Tests.Screens.Tests.BlurContainer
                 Size = new ScalableVector2(100, 100)
             };
 
-            BlurStrengthText = new SpriteText("exo2-bold", $"Blur Strength: {Blur.Strength}", 18)
+            BlurStrengthText = new SpriteTextPlus("exo2-bold", $"Blur Strength: {Blur.Strength}", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,

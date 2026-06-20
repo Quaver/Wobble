@@ -49,7 +49,7 @@ namespace Wobble.Tests.Screens.Tests.ScheduledUpdates
                 }
             }, token);
 
-            new SpriteText("exo2-semibold", "Press 1 to toggle between scheduled & unscheduled", 32)
+            new SpriteTextPlus("exo2-semibold", "Press 1 to toggle between scheduled & unscheduled", 32)
             {
                 Parent = Container,
                 Alignment = Alignment.BotCenter

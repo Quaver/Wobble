@@ -1,8 +1,8 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Window;
 
 namespace Wobble.Graphics.UI.Buttons
@@ -12,7 +12,7 @@ namespace Wobble.Graphics.UI.Buttons
         /// <summary>
         ///     The sprite text inside of the button
         /// </summary>
-        public SpriteText Text { get; }
+        public SpriteTextPlus Text { get; }
 
         /// <inheritdoc />
         /// <summary>
@@ -25,7 +25,7 @@ namespace Wobble.Graphics.UI.Buttons
         public TextButton(Texture2D image, string font, string text, int fontSize, EventHandler clickAction = null)
             : base(image, clickAction)
         {
-            Text = new SpriteText(font, text, fontSize)
+            Text = new SpriteTextPlus(font, text, fontSize)
             {
                 Parent = this,
                 Alignment = Alignment.MidCenter,

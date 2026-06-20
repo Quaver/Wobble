@@ -91,11 +91,10 @@ namespace Wobble.Tests.Unit.Localization
 
         private void Setup()
         {
-            if (GameBase.Game != null)
+            if (LocalizationManager.ResourceStore != null)
                 return;
 
-            var game = new WobbleTestsGame();
-            game.Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
+            LocalizationManager.ResourceStore = new DllResourceStore("Wobble.Tests.Resources.dll");
 
             LocalizationManager.SetDefaultLanguageFile($"{FolderPath}/en.txt");
         }

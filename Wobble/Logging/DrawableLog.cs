@@ -4,8 +4,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Window;
 
 namespace Wobble.Logging
@@ -18,7 +18,7 @@ namespace Wobble.Logging
         /// <summary>
         ///     The text for the log.
         /// </summary>
-        public SpriteText Text { get; }
+        public SpriteTextPlus Text { get; }
 
         /// <summary>
         ///     The amount of time the log has been active.
@@ -37,10 +37,11 @@ namespace Wobble.Logging
         /// <param name="level"></param>
         public DrawableLog(string t, LogLevel level)
         {
-            Text = new SpriteText("Calibri", t, 16, (int)(WindowManager.Width / 0.75f))
+            Text = new SpriteTextPlus("Calibri", t, 16)
             {
                 Parent = this,
                 Alignment = Alignment.MidLeft,
+                MaxWidth = WindowManager.Width / 0.75f,
                 Y = 1
             };
 

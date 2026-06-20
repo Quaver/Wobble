@@ -16,6 +16,8 @@ namespace Wobble.Graphics.UI.Debugging
     {
         public bool Visible { get; private set; }
 
+        public bool DiagnosticsVisible { get; private set; }
+
 #if DEBUG
         private bool showCachedTextBounds;
         private bool showUncachedTextBounds;
@@ -43,12 +45,15 @@ namespace Wobble.Graphics.UI.Debugging
                     Button.IsGloballyClickable = true;
             }
 
+            if (KeyboardManager.IsUniqueKeyPress(Keys.F4))
+                DiagnosticsVisible = !DiagnosticsVisible;
+
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            if (!Visible)
+            if (!Visible && !DiagnosticsVisible)
                 return;
 
             base.Draw(gameTime);
@@ -56,7 +61,13 @@ namespace Wobble.Graphics.UI.Debugging
 
         protected override void RenderImguiLayout()
         {
-            ImGui.GetIO().MouseDrawCursor = true;
+            ImGui.GetIO().MouseDrawCursor = Visible;
+
+            if (DiagnosticsVisible)
+                RenderDiagnostics();
+
+            if (!Visible)
+                return;
 
             ImGui.SetNextWindowPos(new Vector2(12, 12), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSize(new Vector2(640, 720), ImGuiCond.FirstUseEver);
@@ -97,6 +108,37 @@ namespace Wobble.Graphics.UI.Debugging
                                          !(io.WantCaptureMouse || ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow));
         }
 
+        private static void RenderDiagnostics()
+        {
+            const float margin = 12;
+            var io = ImGui.GetIO();
+
+            ImGui.SetNextWindowPos(new Vector2(margin, io.DisplaySize.Y - margin), ImGuiCond.Always,
+                new Vector2(0, 1));
+            ImGui.SetNextWindowBgAlpha(0.72f);
+
+            const ImGuiWindowFlags flags = ImGuiWindowFlags.NoDecoration |
+                                           ImGuiWindowFlags.AlwaysAutoResize |
+                                           ImGuiWindowFlags.NoSavedSettings |
+                                           ImGuiWindowFlags.NoFocusOnAppearing |
+                                           ImGuiWindowFlags.NoNav |
+                                           ImGuiWindowFlags.NoInputs;
+
+            if (ImGui.Begin("Wobble Diagnostics", flags))
+            {
+                ImGui.Text($"FPS / UPS: {PerformanceStats.FrameRate} / {PerformanceStats.UpdateRate}");
+                ImGui.Text($"Graphics: {GraphicsRuntimeInfo.GraphicsBackend}");
+                ImGui.Text($"GPU: {GraphicsRuntimeInfo.GraphicsAdapter}");
+                ImGui.Text($"Window system: {GraphicsRuntimeInfo.WindowSystem}");
+                ImGui.Text($"Wayland: {GraphicsRuntimeInfo.WaylandStatus}");
+                ImGui.Text($"OS: {GraphicsRuntimeInfo.OperatingSystem}");
+                ImGui.Text($"Backbuffer: {PerformanceStats.BackBufferDescription}");
+                ImGui.Text($"VSync: {(GameBase.Game.Graphics.SynchronizeWithVerticalRetrace ? "on" : "off")}");
+            }
+
+            ImGui.End();
+        }
+
         public override void Destroy()
         {
             Button.IsGloballyClickable = true;
@@ -134,7 +176,6 @@ namespace Wobble.Graphics.UI.Debugging
         private void RenderTextStats()
         {
             ImGui.Text("Text / fonts per second");
-            ImGui.Text($"SpriteText texture rebuilds: {PerformanceStats.SpriteTextTextureRegenerationsPerSecond}");
             ImGui.Text($"SpriteTextPlus refreshes: {PerformanceStats.SpriteTextPlusRefreshesPerSecond}");
             ImGui.Text($"SpriteTextPlus cache builds: {PerformanceStats.SpriteTextPlusCacheBuildsPerSecond}");
             ImGui.Text($"SpriteTextPlus cached draws: {PerformanceStats.SpriteTextPlusCachedDrawsPerSecond}");

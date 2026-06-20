@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Wobble.Graphics;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Screens;
 
 namespace Wobble.Tests.Screens.Tests.TextSizes
@@ -30,7 +31,7 @@ namespace Wobble.Tests.Screens.Tests.TextSizes
             float y = 0;
             for (int i = 1; i < 30; i++)
             {
-                var line = new SpriteText("exo2-regular", "The quick brown fox jumps over the lazy dog", i)
+                var line = new SpriteTextPlus("exo2-regular", "The quick brown fox jumps over the lazy dog", i)
                 {
                     Parent = Container,
                     Y = y,

@@ -1,40 +1,30 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Wobble.Audio.Tracks;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics;
-using Wobble.Graphics.Sprites;
+using Wobble.Managers;
 using Wobble.Screens;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace Wobble.Tests.Screens.Tests.BitmapFont
+namespace Wobble.Tests.Screens.Tests.TextLine
 {
-    public class TestBitmapFontScreenView : ScreenView
+    public class TestSpriteTextPlusLineScreenView : ScreenView
     {
-        private MonoGame.Extended.BitmapFonts.BitmapFont font;
-
         /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="screen"></param>
-        public TestBitmapFontScreenView(Screen screen) : base(screen)
+        public TestSpriteTextPlusLineScreenView(Screen screen) : base(screen)
         {
-            font = GameBase.Game.Content.Load<MonoGame.Extended.BitmapFonts.BitmapFont>("exo2-regular");
-
-            new SpriteTextBitmap(font, "The quick brown fox jumps over the lazy dog")
+            new SpriteTextPlusLine(FontManager.GetWobbleFont("exo2-regular"),
+                "The quick brown fox jumps over the lazy dog", 72)
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
-                FontSize = 72,
-                MaxWidth = 300,
-                Tint = Color.White,
-                SpriteBatchOptions = new SpriteBatchOptions()
-                {
-                    BlendState = BlendState.NonPremultiplied,
-                    SamplerState = SamplerState.LinearClamp,
-                }
+                Tint = Color.White
             };
 
-            new SpriteText("exo2-regular", "The quick brown fox jumps over the lazy dog", 12)
+            new SpriteTextPlusLine(FontManager.GetWobbleFont("exo2-regular"),
+                "The quick brown fox jumps over the lazy dog", 12)
             {
                 Parent = Container,
                 Alignment = Alignment.MidRight,

@@ -48,9 +48,9 @@ namespace Wobble.Graphics.Sprites
             // Load all three shaders.
             BlurEffects = new Dictionary<BlurType, Effect>
             {
-                {BlurType.Gaussian, new Effect(GameBase.Game.GraphicsDevice, GameBase.Game.Resources.Get("Wobble.Resources/Shaders/gaussian-blur.mgfxo"))},
-                {BlurType.Frosty, new Effect(GameBase.Game.GraphicsDevice, GameBase.Game.Resources.Get("Wobble.Resources/Shaders/frosty-blur.mgfxo"))},
-                {BlurType.Fast, new Effect(GameBase.Game.GraphicsDevice, GameBase.Game.Resources.Get("Wobble.Resources/Shaders/fast-blur.mgfxo"))},
+                {BlurType.Gaussian, new Effect(GameBase.Game.GraphicsDevice, Shader.LoadEffectResource("Wobble.Resources/Shaders/gaussian-blur"))},
+                {BlurType.Frosty, new Effect(GameBase.Game.GraphicsDevice, Shader.LoadEffectResource("Wobble.Resources/Shaders/frosty-blur"))},
+                {BlurType.Fast, new Effect(GameBase.Game.GraphicsDevice, Shader.LoadEffectResource("Wobble.Resources/Shaders/fast-blur"))},
             };
 
             BlurType = blurType;

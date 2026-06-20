@@ -28,7 +28,6 @@ namespace Wobble.Graphics.UI.Debugging
         public static int ScheduledRenderTargetDrawCount { get; private set; }
         public static string CurrentScreenName { get; private set; } = "None";
 
-        public static int SpriteTextTextureRegenerationsPerSecond { get; private set; }
         public static int SpriteTextPlusRefreshesPerSecond { get; private set; }
         public static int SpriteTextPlusCacheBuildsPerSecond { get; private set; }
         public static int SpriteTextPlusCachedDrawsPerSecond { get; private set; }
@@ -49,7 +48,6 @@ namespace Wobble.Graphics.UI.Debugging
         private static int frameCounter;
         private static int updateCounter;
 
-        private static int spriteTextTextureRegenerations;
         private static int spriteTextPlusRefreshes;
         private static int spriteTextPlusCacheBuilds;
         private static int spriteTextPlusCachedDraws;
@@ -78,13 +76,11 @@ namespace Wobble.Graphics.UI.Debugging
             updateCounter = 0;
             elapsedSampleMs -= 1000;
 
-            SpriteTextTextureRegenerationsPerSecond = spriteTextTextureRegenerations;
             SpriteTextPlusRefreshesPerSecond = spriteTextPlusRefreshes;
             SpriteTextPlusCacheBuildsPerSecond = spriteTextPlusCacheBuilds;
             SpriteTextPlusCachedDrawsPerSecond = spriteTextPlusCachedDraws;
             SpriteTextPlusUncachedDrawsPerSecond = spriteTextPlusUncachedDraws;
 
-            spriteTextTextureRegenerations = 0;
             spriteTextPlusRefreshes = 0;
             spriteTextPlusCacheBuilds = 0;
             spriteTextPlusCachedDraws = 0;
@@ -123,8 +119,6 @@ namespace Wobble.Graphics.UI.Debugging
             AverageDrawTimeMs = Smooth(AverageDrawTimeMs, drawMs);
             frameCounter++;
         }
-
-        public static void RecordSpriteTextTextureRegeneration() => spriteTextTextureRegenerations++;
 
         public static void RecordSpriteTextPlusRefresh() => spriteTextPlusRefreshes++;
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 using IDrawable = Microsoft.Xna.Framework.IDrawable;
@@ -34,13 +34,13 @@ namespace Wobble.Tests.Screens.Tests.Scrolling
                 Tint = Color.Black
             });
 
-            ScrollContainer.AddContainedDrawable(new SpriteText("exo2-regular", "I love eggplants.", 12)
+            ScrollContainer.AddContainedDrawable(new SpriteTextPlus("exo2-regular", "I love eggplants.", 12)
             {
                 Alignment = Alignment.MidCenter,
                 Tint = Color.Purple
             });
 
-            var testText = new SpriteText("exo2-regular", "This should be clipped off-screen!", 12)
+            var testText = new SpriteTextPlus("exo2-regular", "This should be clipped off-screen!", 12)
             {
                 Alignment = Alignment.BotCenter,
                 Y = 0,

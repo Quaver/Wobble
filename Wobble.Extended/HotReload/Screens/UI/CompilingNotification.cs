@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Window;
 
 namespace Wobble.Extended.HotReload.Screens.UI
@@ -9,7 +10,7 @@ namespace Wobble.Extended.HotReload.Screens.UI
     {
         /// <summary>
         /// </summary>
-        public SpriteTextBitmap Text { get; }
+        public SpriteTextPlusLine Text { get; }
 
         /// <summary>
         /// </summary>
@@ -23,11 +24,10 @@ namespace Wobble.Extended.HotReload.Screens.UI
             Size = new ScalableVector2(WindowManager.Width, 75);
             SetChildrenAlpha = true;
 
-            Text = new SpriteTextBitmap(HotLoaderGame.Font, "", false)
+            Text = new SpriteTextPlusLine(HotLoaderGame.Font, "", 16)
             {
                 Parent = this,
-                Alignment = Alignment.MidCenter,
-                FontSize = 16
+                Alignment = Alignment.MidCenter
             };
 
             SetCompilingText();

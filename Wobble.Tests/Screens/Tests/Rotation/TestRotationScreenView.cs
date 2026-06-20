@@ -5,6 +5,7 @@ using MonoGame.Extended.Timers;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Input;
 using Wobble.Screens;
 
@@ -32,7 +33,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
 
         private bool _rotating = true;
 
-        private SpriteText DebugText { get; }
+        private SpriteTextPlus DebugText { get; }
 
         private float _increment = 0.0005f;
 
@@ -107,7 +108,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
 
             #endregion
 
-            DebugText = new SpriteText("exo2-bold", "Hello, World!", 18)
+            DebugText = new SpriteTextPlus("exo2-bold", "Hello, World!", 18)
             {
                 Parent = Container, Alignment = Alignment.TopRight
             };

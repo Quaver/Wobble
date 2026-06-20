@@ -4,11 +4,17 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using IniFileParser.Model;
+using Wobble.IO;
 
 namespace Wobble.Managers
 {
     public static class LocalizationManager
     {
+        /// <summary>
+        ///     Optional resource store used outside a running game, such as in unit tests.
+        /// </summary>
+        public static IResourceStore<byte[]> ResourceStore { get; set; }
+
         /// <summary>
         ///     The default/fallback language for localization
         /// </summary>
@@ -28,14 +34,17 @@ namespace Wobble.Managers
             if (DefaultLanguage != null)
                 throw new InvalidOperationException("Default language file was already specified!");
 
-            DefaultLanguage = ParseLanguageFile(GameBase.Game.Resources.GetStream(resource));
+            DefaultLanguage = ParseLanguageFile(GetResourceStream(resource));
         }
 
         /// <summary>
         ///     Sets the current language resource to use for strings
         /// </summary>
         /// <param name="resource"></param>
-        public static void SetCurrentLanguage(string resource) => CurrentLanguage = ParseLanguageFile(GameBase.Game.Resources.GetStream(resource));
+        public static void SetCurrentLanguage(string resource) => CurrentLanguage = ParseLanguageFile(GetResourceStream(resource));
+
+        private static Stream GetResourceStream(string resource) =>
+            ResourceStore?.GetStream(resource) ?? GameBase.Game.Resources.GetStream(resource);
 
         /// <summary>
         ///     Gets a localized string. Checks <see cref="CurrentLanguage"/>  for the string first. Then it will

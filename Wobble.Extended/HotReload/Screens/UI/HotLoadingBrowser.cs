@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Logging;
 using Wobble.Screens;
@@ -66,12 +67,11 @@ namespace Wobble.Extended.HotReload.Screens.UI
             };
 
             // ReSharper disable once ObjectCreationAsStatement
-            new SpriteTextBitmap(HotLoaderGame.Font, name, false)
+            new SpriteTextPlusLine(HotLoaderGame.Font, name, 16)
             {
                 Parent = btn,
                 UsePreviousSpriteBatchOptions = true,
-                Alignment = Alignment.MidCenter,
-                FontSize = 16
+                Alignment = Alignment.MidCenter
             };
 
             Buttons.Add(btn);

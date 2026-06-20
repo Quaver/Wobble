@@ -10,13 +10,15 @@ If you can master this framework, you'll have no problem jumping in on the Quave
 
 # Requirements
 
-* [.NET Core SDK 3.1](https://www.microsoft.com/net/download)
+* [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 # Getting Started
 
-Wobble is designed to work directly with the [MonoGame.Framework.DesktopGL Nuget Package](https://www.nuget.org/packages/MonoGame.Framework.DesktopGL/). It has not been tested with the others, although it should work properly.
+Wobble references [MonoGame.Framework 3.8.5-preview.6](https://www.nuget.org/packages/MonoGame.Framework/3.8.5-preview.6). This preview uses Vulkan on macOS and Linux and DirectX 12 on Windows. OpenGL is not supported by this version of Wobble.
 
-If creating a new game, it's best to start with that, as Wobble provides all the dlls needed to get up and running.
+MonoGame preview packages are intended for testing and may contain incomplete functionality. Applications that need to configure Wayland must do so before constructing their `WobbleGame` instance.
+
+The MonoGame managed and native runtime dependencies are restored through NuGet.
 
 Currently there is no NuGet package for Wobble, however this may change in the future.
 
@@ -30,7 +32,7 @@ These are the following steps that we find to be particularly handy when using W
 
 **3.** Run `git submodule update --init --recursive` to install all of Wobble's dependencies.
 
-**4.** Reference both Wobble and MonoGame.Framework.DesktopGL.Core in your project.
+**4.** Reference the Wobble project. Its MonoGame dependency is provided transitively.
 
 **5.** Create a class that derives from `WobbleGame`. In this case, we'll call it `MyGame`. It should look similar to this:
 
@@ -116,6 +118,17 @@ public class MyGame : WobbleGame
     }
 }
 ```
+
+## Compiling shaders
+
+Wobble stores separate effect bytecode for its Vulkan and DirectX 12 backends. Restore the pinned compiler with `dotnet tool restore`, then compile each `.fx` source twice:
+
+```sh
+dotnet mgfxc path/to/shader.fx path/to/shader.vulkan.mgfxo /Profile:Vulkan
+dotnet mgfxc path/to/shader.fx path/to/shader.dx12.mgfxo /Profile:DirectX_12
+```
+
+Pass the embedded resource path without its backend suffix or extension to the `Shader(string resourcePath, ...)` constructor. Wobble selects the matching bytecode at runtime.
 
 **6.** The **main method** *(usually in Program.cs)* of your application should look very straight forward. 
 

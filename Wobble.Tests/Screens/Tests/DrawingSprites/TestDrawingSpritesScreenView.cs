@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Logging;
 using Wobble.Screens;
@@ -25,7 +25,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
         /// <summary>
         ///     Text that displays "Hello World!"
         /// </summary>
-        public SpriteText HelloWorldText { get; }
+        public SpriteTextPlus HelloWorldText { get; }
 
         /// <summary>
         ///     Button that says click me! Click it to find out the surprise.
@@ -83,7 +83,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region HELLO_WORLD_TEXT
-            HelloWorldText = new SpriteText("exo2-bold", "Hello, World!", 18)
+            HelloWorldText = new SpriteTextPlus("exo2-bold", "Hello, World!", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -150,7 +150,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
                     RasterizerState = RasterizerState.CullNone,
                     // The shader attached is to make the sprite semi transparent
                     // Shader created by "Vortex-" (https://github.com/VortexCoyote)
-                    Shader = new Shader(GameBase.Game.Resources.Get("Wobble.Tests.Resources/Shaders/semi-transparent.mgfxo"),
+                    Shader = new Shader("Wobble.Tests.Resources/Shaders/semi-transparent",
                         new Dictionary<string, object>
                     {
                         {"p_dimensions", new Vector2(200, 200)},
