@@ -134,6 +134,7 @@ namespace Wobble.Graphics.UI.Debugging
                 ImGui.Text($"OS: {GraphicsRuntimeInfo.OperatingSystem}");
                 ImGui.Text($"Backbuffer: {PerformanceStats.BackBufferDescription}");
                 ImGui.Text($"VSync: {(GameBase.Game.Graphics.SynchronizeWithVerticalRetrace ? "on" : "off")}");
+                ImGui.Text($"Frame pacing: {PerformanceStats.FramePacingDescription} (F7)");
             }
 
             ImGui.End();

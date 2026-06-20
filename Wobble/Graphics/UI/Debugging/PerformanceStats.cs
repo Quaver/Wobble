@@ -147,6 +147,21 @@ namespace Wobble.Graphics.UI.Debugging
         public static string BackBufferDescription =>
             $"{GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferWidth}x{GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferHeight}";
 
+        public static string FramePacingDescription
+        {
+            get
+            {
+                if (GameBase.Game.Graphics.SynchronizeWithVerticalRetrace)
+                    return "VSync";
+
+                if (!GameBase.Game.IsFixedTimeStep)
+                    return "Unlimited";
+
+                var limit = (int)Math.Round(1d / GameBase.Game.TargetElapsedTime.TotalSeconds);
+                return $"Limited ({limit} FPS)";
+            }
+        }
+
         public static string VirtualResolutionDescription =>
             $"{WindowManager.VirtualScreen.X:0}x{WindowManager.VirtualScreen.Y:0}";
 

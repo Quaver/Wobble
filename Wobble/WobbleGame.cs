@@ -119,6 +119,23 @@ namespace Wobble
         /// </summary>
         static WobbleGame()
         {
+            // This must be set before the MonoGame Game constructor initializes SDL.
+            // Preserve an explicit override so users can still select another SDL video driver.
+            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("SDL_VIDEODRIVER")))
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    // SDL tries the drivers in order and falls back to X11 when it cannot
+                    // connect to Wayland.
+                    Environment.SetEnvironmentVariable("SDL_VIDEODRIVER", "wayland,x11");
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    // Use macOS-native window, keyboard, and mouse event handling.
+                    Environment.SetEnvironmentVariable("SDL_VIDEODRIVER", "cocoa");
+                }
+            }
+
             var field = typeof(SpriteBatch).GetField("_beginCalled", BindingFlags.Instance | BindingFlags.NonPublic);
             var getter = new DynamicMethod(nameof(_beginCalled), typeof(bool), new[] { typeof(SpriteBatch) }, true);
             var il = getter.GetILGenerator();

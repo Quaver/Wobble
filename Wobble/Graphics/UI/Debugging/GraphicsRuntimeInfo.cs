@@ -52,8 +52,9 @@ namespace Wobble.Graphics.UI.Debugging
             var libraryNames = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? new[] { "SDL2.dll" }
                 : RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-                    ? new[] { "libSDL2.dylib", "SDL2" }
-                    : new[] { "libSDL2-2.0.so.0", "libSDL2.so", "SDL2" };
+                    ? new[] { "libmgruntime.dylib", "libSDL2.dylib", "SDL2" }
+                    // MonoGame's Linux runtime embeds SDL, so query it before trying a system SDL.
+                    : new[] { "libmgruntime.so", "libSDL2-2.0.so.0", "libSDL2.so", "SDL2" };
 
             foreach (var libraryName in libraryNames)
             {

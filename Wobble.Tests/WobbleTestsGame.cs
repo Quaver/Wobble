@@ -121,6 +121,9 @@ namespace Wobble.Tests
             if (KeyboardManager.IsUniqueKeyPress(Keys.Escape))
                 ScreenManager.ChangeScreen(new SelectionScreen());
 
+            if (KeyboardManager.IsUniqueKeyPress(Keys.F7))
+                CycleFramePacing();
+
             if (KeyboardManager.IsUniqueKeyPress(Keys.F10))
             {
                 _logGc = !_logGc;
@@ -146,6 +149,33 @@ namespace Wobble.Tests
                     LogGc("GC tick");
                 }
             }
+        }
+
+        private void CycleFramePacing()
+        {
+            string mode;
+
+            if (Graphics.SynchronizeWithVerticalRetrace)
+            {
+                Graphics.SynchronizeWithVerticalRetrace = false;
+                IsFixedTimeStep = true;
+                TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
+                mode = "Limited (60 FPS)";
+            }
+            else if (IsFixedTimeStep)
+            {
+                IsFixedTimeStep = false;
+                mode = "Unlimited";
+            }
+            else
+            {
+                Graphics.SynchronizeWithVerticalRetrace = true;
+                IsFixedTimeStep = false;
+                mode = "VSync";
+            }
+
+            Graphics.ApplyChanges();
+            Logger.Debug($"Frame pacing changed to {mode}.", LogType.Runtime);
         }
 
         protected override void Draw(GameTime gameTime)
