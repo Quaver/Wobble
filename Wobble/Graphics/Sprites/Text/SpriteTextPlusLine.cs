@@ -88,7 +88,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="size"></param>
         public SpriteTextPlusLine(WobbleFontStore font, string text, float size = 0)
         {
-            _scale = GetScale();
+            _scale = GetRenderScale();
 
             _raw = new SpriteTextPlusLineRaw(font, text, size * _scale)
             {
@@ -109,18 +109,15 @@ namespace Wobble.Graphics.Sprites.Text
         ///     Get the current WindowManager scale and check that it's valid.
         /// </summary>
         /// <returns></returns>
-        private static float GetScale()
+        internal static float GetRenderScale()
         {
-            var scale = WindowManager.ScreenScale.X;
+            var scale = Math.Max(WindowManager.ScreenScale.X, WindowManager.ScreenScale.Y);
             
             // Some stuff (namely DrawableLog and the FPS counter) wants to draw text before anything is initialized.
             if (scale == 0)
                 scale = 1;
 
-            if (GameBase.Game.Graphics.PreferredBackBufferWidth < 1600)
-                return scale * 2;
-
-            return scale;
+            return Math.Max(1, scale);
         }
 
         /// <summary>
@@ -144,7 +141,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            Scale = GetScale();
+            Scale = GetRenderScale();
 
             if (_dirty)
             {

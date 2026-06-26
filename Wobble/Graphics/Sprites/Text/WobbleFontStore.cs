@@ -10,6 +10,14 @@ namespace Wobble.Graphics.Sprites.Text
         private float _fontSize;
         private readonly FontSystem _fontSystem;
 
+        static WobbleFontStore()
+        {
+            FontSystemDefaults.FontResolutionFactor = 2;
+            FontSystemDefaults.StbTrueTypeUseOldRasterizer = false;
+            FontSystemDefaults.KernelWidth = 2;
+            FontSystemDefaults.KernelHeight = 2;
+        }
+
         /// <summary>
         ///     All of the contained fonts at different sizes
         /// </summary>
