@@ -6,12 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 using Wobble.Logging;
 
 namespace Wobble.Extended.HotReload
 {
-    public class HotLoader : IDisposable, IUpdate
+    public class HotLoader : IDisposable, IHotLoaderUpdate
     {
         /// <summary>
         ///     The directory that will be watched for changes
