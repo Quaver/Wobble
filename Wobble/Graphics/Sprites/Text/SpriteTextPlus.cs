@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Wobble.Graphics.Animations;
-using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites.Text
 {
@@ -323,35 +320,7 @@ namespace Wobble.Graphics.Sprites.Text
 #endif
 
             SetSize();
-            DrawUncachedText();
-        }
-
-        private void DrawUncachedText()
-        {
-            var renderScale = SpriteTextPlusLine.GetRenderScale();
-            var screenScale = WindowManager.ScreenScale;
-
-            if (screenScale.X == 0 || screenScale.Y == 0)
-                screenScale = Vector2.One;
-
-            _ = GameBase.Game.TryEndBatch();
-            GameBase.Game.SpriteBatch.Begin(
-                SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
-                SamplerState.LinearClamp,
-                null,
-                RasterizerState.CullNone);
-
-            Font.FontSize = FontSize * renderScale;
-            Font.Store.DrawText(
-                GameBase.Game.SpriteBatch,
-                Text,
-                AbsolutePosition * screenScale,
-                _tint * Alpha,
-                scale: AbsoluteScale * screenScale / renderScale);
-
-            _ = GameBase.Game.TryEndBatch();
-            GameBase.DefaultSpriteBatchInUse = false;
+            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _tint * Alpha, scale: AbsoluteScale);
         }
 
         public override void Destroy()
