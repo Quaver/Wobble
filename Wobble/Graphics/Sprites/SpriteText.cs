@@ -1,206 +1,97 @@
 using System;
-using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Wobble.Assets;
-using Wobble.Graphics.BitmapFonts;
-using Wobble.Logging;
-using Wobble.Window;
+using Wobble.Graphics.Sprites.Text;
+using Wobble.Managers;
 
 namespace Wobble.Graphics.Sprites
 {
-    public class SpriteText : Sprite
+    public class SpriteText : SpriteTextPlus
     {
+        private string _font;
+        private Alignment _textAlignment = Alignment.MidLeft;
+
         /// <summary>
-        ///     The name of the font to use.
-        ///
-        ///     This will first try to load the font from BitmapFontFactory.CustomFonts.
-        ///     If it cannot find it, it will try and load the font from the system.
+        ///     The name of the cached font to use.
         /// </summary>
-        public string _font;
-        public string Font
+        public new string Font
         {
             get => _font;
             set
             {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("Font must be not null or empty.");
+
                 _font = value;
-                LoadTexture();
+                base.Font = FontManager.GetWobbleFont(value);
             }
         }
 
         /// <summary>
-        ///     The displayed text.
+        ///     The maximum width before the text wraps to the next line.
         /// </summary>
-        private string _text;
-        public string Text
+        public new int MaxWidth
         {
-            get => _text;
-            set
-            {
-                _text = value;
-                LoadTexture();
-            }
+            get => base.MaxWidth == null ? int.MaxValue : (int) base.MaxWidth.Value;
+            set => base.MaxWidth = value == int.MaxValue ? (float?) null : value;
         }
 
         /// <summary>
-        ///     The size of the font.
+        ///     The legacy alignment shape used by SpriteText.
         /// </summary>
-        private int _fontSize;
-        public int FontSize
-        {
-            get => _fontSize;
-            set
-            {
-                _fontSize = value;
-                LoadTexture();
-            }
-        }
-
-        /// <summary>
-        ///     The max width of the text.
-        /// </summary>
-        private int _maxWidth;
-        public int MaxWidth
-        {
-            get => _maxWidth;
-            set
-            {
-                _maxWidth = value;
-                LoadTexture();
-            }
-        }
-
-        /// <summary>
-        ///     The alignment of the text
-        /// </summary>
-        private Alignment _textAlignment = Alignment.MidLeft;
-        public Alignment TextAlignment
+        public new Alignment TextAlignment
         {
             get => _textAlignment;
             set
             {
                 _textAlignment = value;
-                LoadTexture();
+                base.TextAlignment = ConvertTextAlignment(value);
             }
         }
 
-        /// <summary>
-        ///     The amount of text updates that have occurred in the previous second.
-        /// </summary>
-        private int AmountOfTextUpdatesInSecond { get; set; }
-
-        /// <summary>
-        ///     The amount of time that has elapsed since the previous second.
-        /// </summary>
-        private double TimeSinceLastSecond { get; set; }
-
-        /// <inheritdoc />
         /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
         /// <param name="fontSize"></param>
         /// <param name="maxWidth">The maximum width before it wraps to the next line</param>
-        /// <exception cref="T:System.ArgumentException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public SpriteText(string font, string text, int fontSize, int maxWidth = int.MaxValue)
+            : base(ResolveFont(font), text, fontSize)
         {
             if (string.IsNullOrEmpty(font))
                 throw new ArgumentException("Font must be not null or empty.");
 
             _font = font;
-            _text = text;
-            _fontSize = fontSize;
-            _maxWidth = maxWidth;
-
-            LoadTexture();
+            MaxWidth = maxWidth;
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
+        private static WobbleFontStore ResolveFont(string font)
         {
-            MonitorPerformance(gameTime);
-            base.Update(gameTime);
+            if (string.IsNullOrEmpty(font))
+                throw new ArgumentException("Font must be not null or empty.");
+
+            return FontManager.GetWobbleFont(font);
         }
 
-        /// <summary>
-        ///     Sets the texture of t
-        /// </summary>
-        private void LoadTexture()
+        private static global::Wobble.Graphics.Sprites.Text.TextAlignment ConvertTextAlignment(Alignment alignment)
         {
-#if DEBUG
-            global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextTextureRegeneration();
-#endif
-
-            var oldTexture = Image;
-
-            if (string.IsNullOrEmpty(Text))
+            switch (alignment)
             {
-                Image = new Texture2D(GameBase.Game.GraphicsDevice, 1, 1);
-                Size = new ScalableVector2(0, 0);
-                oldTexture?.Dispose();
-                return;
+                case Alignment.TopLeft:
+                case Alignment.MidLeft:
+                case Alignment.BotLeft:
+                    return global::Wobble.Graphics.Sprites.Text.TextAlignment.Left;
+                case Alignment.TopCenter:
+                case Alignment.MidCenter:
+                case Alignment.BotCenter:
+                    return global::Wobble.Graphics.Sprites.Text.TextAlignment.Center;
+                case Alignment.TopRight:
+                case Alignment.MidRight:
+                case Alignment.BotRight:
+                    return global::Wobble.Graphics.Sprites.Text.TextAlignment.Right;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null);
             }
-
-            var scale = WindowManager.ScreenScale.X;
-
-            // Some stuff (namely DrawableLog and the FPS counter) wants to draw text before anything is initialized.
-            if (scale == 0)
-                scale = 1;
-
-            Image = BitmapFontFactory.Create(Font, Text, FontSize * scale, Color.White, TextAlignment, (int)(MaxWidth * scale));
-            Size = new ScalableVector2(Image.Width / scale, Image.Height / scale);
-
-            AmountOfTextUpdatesInSecond++;
-
-            if (AmountOfTextUpdatesInSecond >= 100)
-                Logger.Warning($"Danger! Way too many text updates ({AmountOfTextUpdatesInSecond}) happening per second for {Text}",
-                    LogType.Runtime, false);
-
-            oldTexture?.Dispose();
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// </summary>
-        public override void Destroy()
-        {
-            Image.Dispose();
-            base.Destroy();
-        }
-
-
-        /// <summary>
-        ///     Fades the sprite to a given color.
-        /// </summary>
-        /// <param name="color"></param>
-        /// <param name="dt"></param>
-        /// <param name="scale"></param>
-        public override void FadeToColor(Color color, double dt, float scale)
-        {
-            var r = MathHelper.Lerp(Tint.R, color.R, (float)Math.Min(dt / scale, 1));
-            var g = MathHelper.Lerp(Tint.G, color.G, (float)Math.Min(dt / scale, 1));
-            var b = MathHelper.Lerp(Tint.B, color.B, (float)Math.Min(dt / scale, 1));
-
-            Tint = new Color((int)r, (int)g, (int)b);
-        }
-
-        /// <summary>
-        ///     Keeps track of how many times the text on this object has been changed.
-        ///     This can be a major performance hit, so it's just good to track.
-        /// </summary>
-        /// <param name="gameTime"></param>
-        private void MonitorPerformance(GameTime gameTime)
-        {
-            TimeSinceLastSecond += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            if (TimeSinceLastSecond < 1000)
-                return;
-
-            TimeSinceLastSecond = 0;
-            AmountOfTextUpdatesInSecond = 0;
         }
     }
 }

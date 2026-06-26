@@ -1,4 +1,6 @@
+using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Sprites;
@@ -23,7 +25,10 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
                 Size = new ScalableVector2(500, 200)
             };
 
-            var textSprite = new SpriteText("exo2-bold", "This is masked!", 16);
+            var textSprite = new SpriteText("exo2-bold", "This is masked!", 16)
+            {
+                IsCached = false
+            };
 
             var maskedText = new SpriteAlphaMaskBlend()
             {
@@ -35,7 +40,9 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
 
             // Perform the blend between the Sprite and the Mask
             maskedSprite.Image = maskedSprite.PerformBlend(WobbleAssets.Wallpaper, Textures.CircleAlphaMask);
-            maskedText.Image = maskedText.PerformBlend(textSprite.Image, Textures.RectangleAlphaMask);
+            var textTexture = RenderTextToTexture(textSprite);
+            maskedText.Image = maskedText.PerformBlend(textTexture, Textures.RectangleAlphaMask);
+            textTexture.Dispose();
         }
 
         /// <inheritdoc />
@@ -58,5 +65,30 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
         /// <summary>
         /// </summary>
         public override void Destroy() => Container?.Destroy();
+
+        private static Texture2D RenderTextToTexture(SpriteText text)
+        {
+            var width = Math.Max(1, (int)Math.Ceiling(text.Width));
+            var height = Math.Max(1, (int)Math.Ceiling(text.Height));
+            var renderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, width, height, false,
+                GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
+
+            text.Alignment = Alignment.TopLeft;
+            text.Position = new ScalableVector2(0, 0);
+
+            var oldRenderTargets = GameBase.Game.GraphicsDevice.GetRenderTargets();
+            _ = GameBase.Game.TryEndBatch();
+
+            GameBase.Game.GraphicsDevice.SetRenderTarget(renderTarget);
+            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
+
+            GameBase.Game.SpriteBatch.Begin();
+            text.DrawToSpriteBatch();
+            GameBase.Game.SpriteBatch.End();
+
+            GameBase.Game.GraphicsDevice.SetRenderTargets(oldRenderTargets);
+
+            return renderTarget;
+        }
     }
 }

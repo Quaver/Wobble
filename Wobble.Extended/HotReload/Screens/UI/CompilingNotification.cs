@@ -9,7 +9,7 @@ namespace Wobble.Extended.HotReload.Screens.UI
     {
         /// <summary>
         /// </summary>
-        public SpriteTextBitmap Text { get; }
+        public SpriteText Text { get; }
 
         /// <summary>
         /// </summary>
@@ -23,11 +23,10 @@ namespace Wobble.Extended.HotReload.Screens.UI
             Size = new ScalableVector2(WindowManager.Width, 75);
             SetChildrenAlpha = true;
 
-            Text = new SpriteTextBitmap(HotLoaderGame.Font, "", false)
+            Text = new SpriteText("exo2-semibold", "", 16)
             {
                 Parent = this,
-                Alignment = Alignment.MidCenter,
-                FontSize = 16
+                Alignment = Alignment.MidCenter
             };
 
             SetCompilingText();

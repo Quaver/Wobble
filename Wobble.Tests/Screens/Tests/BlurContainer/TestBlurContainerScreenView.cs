@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Input;
 using Wobble.Assets;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI;
 using Wobble.Input;

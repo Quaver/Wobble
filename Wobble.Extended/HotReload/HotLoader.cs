@@ -2,19 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 using Wobble.Logging;
 
 namespace Wobble.Extended.HotReload
 {
-    public class HotLoader : IDisposable, IUpdate
+    public class HotLoader : IDisposable, IHotLoaderUpdate
     {
         /// <summary>
         ///     The directory that will be watched for changes
         /// </summary>
         protected string ProjectDirectory { get; }
+
+        /// <summary>
+        ///     The project file that will be built and hotloaded.
+        /// </summary>
+        private string ProjectFilePath => Path.Combine(ProjectDirectory, $"{ProjectName}.csproj");
 
         /// <summary>
         ///     Watches the directory for changes
@@ -63,7 +69,7 @@ namespace Wobble.Extended.HotReload
         /// <param name="filter"></param>
         public HotLoader(string projectDirectory, Action afterCompiling = null, string filter = "*.cs")
         {
-            ProjectDirectory = projectDirectory;
+            ProjectDirectory = Path.GetFullPath(projectDirectory);
             AfterCompiling = afterCompiling;
 
             Watcher = new FileSystemWatcher
@@ -87,7 +93,7 @@ namespace Wobble.Extended.HotReload
         /// </summary>
         public void LoadDll()
         {
-            var path = $@"../../../../{ProjectName}/bin/Debug/netstandard2.1/{ProjectName}.dll";
+            var path = GetCompiledAssemblyPath();
 
             Asm = Assembly.Load(File.ReadAllBytes(path));
 
@@ -137,7 +143,7 @@ namespace Wobble.Extended.HotReload
             }
 
             const string command = "dotnet";
-            var args = $"build {ProjectDirectory}/{new DirectoryInfo(ProjectDirectory).Name}.csproj";
+            var args = $"build \"{ProjectFilePath}\"";
 
             Compiler = new ProcessStartInfo(command, args)
             {
@@ -179,6 +185,45 @@ namespace Wobble.Extended.HotReload
             Compiler = null;
             Watcher.EnableRaisingEvents = true;
             Logger.Debug(output, LogType.Runtime);
+        }
+
+        private string GetCompiledAssemblyPath()
+        {
+            var assemblyName = GetProjectProperty("AssemblyName") ?? ProjectName;
+            var targetFramework = GetProjectProperty("TargetFramework") ?? GetProjectProperty("TargetFrameworks")?.Split(';').FirstOrDefault();
+
+            if (!string.IsNullOrWhiteSpace(targetFramework))
+            {
+                var path = Path.Combine(ProjectDirectory, "bin", "Debug", targetFramework, $"{assemblyName}.dll");
+
+                if (File.Exists(path))
+                    return path;
+            }
+
+            var debugOutputDirectory = Path.Combine(ProjectDirectory, "bin", "Debug");
+            var fallbackPath = Directory.Exists(debugOutputDirectory)
+                ? Directory
+                    .EnumerateFiles(debugOutputDirectory, $"{assemblyName}.dll", SearchOption.AllDirectories)
+                    .OrderByDescending(File.GetLastWriteTimeUtc)
+                    .FirstOrDefault()
+                : null;
+
+            if (fallbackPath != null)
+                return fallbackPath;
+
+            throw new FileNotFoundException($"Could not find compiled assembly for project '{ProjectName}'.", $"{assemblyName}.dll");
+        }
+
+        private string GetProjectProperty(string propertyName)
+        {
+            if (!File.Exists(ProjectFilePath))
+                return null;
+
+            return XDocument
+                .Load(ProjectFilePath)
+                .Descendants(propertyName)
+                .Select(x => x.Value.Trim())
+                .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
         }
 
         /// <summary>

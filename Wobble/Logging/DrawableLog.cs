@@ -4,7 +4,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Window;
 
