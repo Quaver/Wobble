@@ -12,10 +12,11 @@ namespace Wobble.Graphics.Sprites.Text
 
         static WobbleFontStore()
         {
-            FontSystemDefaults.FontResolutionFactor = 2;
+            FontSystemDefaults.FontResolutionFactor = 1f;
             FontSystemDefaults.StbTrueTypeUseOldRasterizer = false;
-            FontSystemDefaults.KernelWidth = 2;
-            FontSystemDefaults.KernelHeight = 2;
+            FontSystemDefaults.KernelWidth = 0;
+            FontSystemDefaults.KernelHeight = 0;
+            FontSystemDefaults.GlyphRenderResult = GlyphRenderResult.NonPremultiplied;
         }
 
         /// <summary>
