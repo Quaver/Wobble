@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MonoGame.Extended.BitmapFonts;
+using System.Linq;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Logging;
 
@@ -10,27 +10,7 @@ namespace Wobble.Managers
     {
         /// <summary>
         /// </summary>
-        public static Dictionary<string, BitmapFont> BitmapFonts { get; } = new Dictionary<string, BitmapFont>();
-
-        /// <summary>
-        /// </summary>
         public static Dictionary<string, WobbleFontStore> WobbleFonts { get; } = new Dictionary<string, WobbleFontStore>();
-
-        /// <summary>
-        ///     Loads and caches a bitmap font
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static BitmapFont LoadBitmapFont(string name)
-        {
-            if (BitmapFonts.ContainsKey(name))
-                return BitmapFonts[name];
-
-            var font = GameBase.Game.Content.Load<BitmapFont>(name);
-            BitmapFonts.Add(name, font);
-
-            return font;
-        }
 
         /// <summary>
         ///     Loads and caches a WobbleFont
@@ -49,10 +29,44 @@ namespace Wobble.Managers
         }
 
         /// <summary>
-        ///     Retrieves a WobbleFont if cached
+        ///     Loads and caches a WobbleFont from raw font bytes.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="fontBytes"></param>
+        /// <param name="defaultSize"></param>
+        public static void AddFont(string name, byte[] fontBytes, int defaultSize = 20)
+        {
+            CacheWobbleFont(name, new WobbleFontStore(defaultSize, fontBytes));
+        }
+
+        /// <summary>
+        ///     Loads and caches a WobbleFont from a font file.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="filePath"></param>
+        /// <param name="defaultSize"></param>
+        public static void AddFont(string name, string filePath, int defaultSize = 20)
+        {
+            AddFont(name, System.IO.File.ReadAllBytes(filePath), defaultSize);
+        }
+
+        /// <summary>
+        ///     Retrieves a WobbleFont if cached.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static WobbleFontStore GetWobbleFont(string name) => WobbleFonts[name];
+        /// <exception cref="ArgumentException"></exception>
+        public static WobbleFontStore GetWobbleFont(string name)
+        {
+            if (WobbleFonts.ContainsKey(name))
+                return WobbleFonts[name];
+
+            var fallback = WobbleFonts.Values.FirstOrDefault();
+
+            if (fallback != null)
+                return fallback;
+
+            throw new ArgumentException($"Font '{name}' has not been cached in FontManager.");
+        }
     }
 }

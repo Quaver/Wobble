@@ -2,7 +2,6 @@
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Screens;
 using Wobble.Tests.Assets;

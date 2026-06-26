@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.BitmapFonts;
 using Wobble.Assets;
 using Wobble.Extended.HotReload.Screens;
 using Wobble.Screens;
@@ -19,8 +18,6 @@ namespace Wobble.Extended.HotReload
         /// <summary>
         /// </summary>
         public HotLoaderScreen HotLoaderScreen { get; protected set; }
-
-        public static BitmapFont Font { get; set; }
 
         public HotLoaderGame(HotLoader hl, bool preferWayland = false) : base(preferWayland)
         {

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Wobble.Extended.HotReload;
 using Wobble.Extended.HotReload.Screens;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.IO;
+using Wobble.Managers;
 using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Tests.Audio;
 using Wobble.Tests.Screens.Tests.Background;
-using Wobble.Tests.Screens.Tests.BitmapFont;
 using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
@@ -36,9 +37,11 @@ namespace Wobble.Tests.Hotload
 
         protected override void LoadContent()
         {
+            Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
+            CacheFonts();
+
             base.LoadContent();
 
-            Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
             IsReadyToUpdate = true;
         }
 
@@ -64,7 +67,6 @@ namespace Wobble.Tests.Hotload
             {"ImGUI", typeof(TestImGuiScreen)},
             {"Audio", typeof(TestAudioScreen)},
             {"Background", typeof(TestBackgroundImageScreen)},
-            {"BitmapFont", typeof(TestBitmapFontScreen)},
             {"Blurred BG Image", typeof(TestBlurredBackgroundImageScreen)},
             {"Discord", typeof(TestDiscordScreen)},
             {"Primitives", typeof(TestPrimitivesScreen)},
@@ -73,5 +75,18 @@ namespace Wobble.Tests.Hotload
             {"Sprite Masking", typeof(TestSpriteMaskingScreen)},
             {"TextSizes", typeof(TestTextSizesScreen)}
         });
+
+        private static void CacheFonts()
+        {
+            var fonts = new List<string> { "exo2-bold", "exo2-regular", "exo2-semibold", "exo2-medium" };
+            foreach (var fontName in fonts)
+            {
+                if (FontManager.WobbleFonts.ContainsKey(fontName))
+                    continue;
+
+                FontManager.CacheWobbleFont(fontName,
+                    new WobbleFontStore(20, GameBase.Game.Resources.Get($"Wobble.Tests.Resources/Fonts/{fontName}.ttf")));
+            }
+        }
     }
 }

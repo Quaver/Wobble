@@ -13,7 +13,6 @@ using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Discord;
 using Wobble.Graphics;
-using Wobble.Graphics.BitmapFonts;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
@@ -247,7 +246,6 @@ namespace Wobble
             WindowManager.UnHookEvents();
             AudioManager.Dispose();
             DiscordManager.Dispose();
-            BitmapFontFactory.Dispose();
         }
 
         /// <summary>

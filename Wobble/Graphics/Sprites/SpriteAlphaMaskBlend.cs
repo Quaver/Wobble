@@ -17,6 +17,12 @@ namespace Wobble.Graphics.Sprites
 
         public Texture2D PerformBlend(Texture2D srcTexture, Texture2D srcMask)
         {
+            if (srcTexture == null)
+                throw new ArgumentNullException(nameof(srcTexture));
+
+            if (srcMask == null)
+                throw new ArgumentNullException(nameof(srcMask));
+
             if (RenderTarget != null && !RenderTarget.IsDisposed)
             {
                 RenderTarget.Dispose();

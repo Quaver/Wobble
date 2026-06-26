@@ -66,12 +66,11 @@ namespace Wobble.Extended.HotReload.Screens.UI
             };
 
             // ReSharper disable once ObjectCreationAsStatement
-            new SpriteTextBitmap(HotLoaderGame.Font, name, false)
+            new SpriteText("exo2-semibold", name, 16)
             {
                 Parent = btn,
                 UsePreviousSpriteBatchOptions = true,
-                Alignment = Alignment.MidCenter,
-                FontSize = 16
+                Alignment = Alignment.MidCenter
             };
 
             Buttons.Add(btn);
