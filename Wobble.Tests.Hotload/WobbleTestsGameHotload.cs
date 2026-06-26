@@ -32,14 +32,16 @@ namespace Wobble.Tests.Hotload
 
         protected override void Initialize()
         {
+            Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
+            CacheFonts();
+
             base.Initialize();
+
+            Window.AllowUserResizing = true;
         }
 
         protected override void LoadContent()
         {
-            Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
-            CacheFonts();
-
             base.LoadContent();
 
             IsReadyToUpdate = true;
