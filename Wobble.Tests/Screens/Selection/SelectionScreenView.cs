@@ -17,6 +17,7 @@ using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawableScaling;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
+using Wobble.Tests.Screens.Tests.GlobalUiScale;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Primitives;
@@ -163,6 +164,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.Joystick:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestJoystickScreen());
+                        break;
+                    case ScreenType.GlobalUiScale:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestGlobalUiScaleScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

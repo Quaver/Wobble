@@ -57,6 +57,45 @@ namespace Wobble.Window
         public static Vector2 ScreenScale { get; private set; }
 
         /// <summary>
+        ///     The minimum allowed global UI scale.
+        /// </summary>
+        public const float MinUiScale = 0.5f;
+
+        /// <summary>
+        ///     The maximum allowed global UI scale.
+        /// </summary>
+        public const float MaxUiScale = 2.0f;
+
+        private static float _uiScale = 1.0f;
+
+        /// <summary>
+        ///     Global UI layout scale applied on top of normal drawable dimensions.
+        /// </summary>
+        public static float UiScale
+        {
+            get => _uiScale;
+            set
+            {
+                var previousScale = _uiScale;
+                _uiScale = MathHelper.Clamp(value, MinUiScale, MaxUiScale);
+                UpdateEffectiveScale();
+
+                if (_uiScale != previousScale)
+                    UiScaleChanged?.Invoke(typeof(WindowManager), EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        ///     The scale used for UI-size-dependent render targets after applying <see cref="UiScale"/>.
+        /// </summary>
+        public static Vector2 EffectiveScreenScale { get; private set; } = Vector2.One;
+
+        /// <summary>
+        ///     Event raised when <see cref="UiScale"/> has been changed.
+        /// </summary>
+        public static event EventHandler UiScaleChanged;
+
+        /// <summary>
         ///     The aspect ratio of the screen.
         /// </summary>
         public static Vector2 ScreenAspectRatio { get; private set; }
@@ -96,11 +135,23 @@ namespace Wobble.Window
             ScreenScale = new Vector2(PreferredBackBufferWidth / VirtualScreen.X, PreferredBackBufferHeight / VirtualScreen.Y);
             ScreenAspectRatio = new Vector2(ScreenScale.X / ScreenScale.Y);
 
-            // Create the matrix at which we'll be drawing sprites.
-            ScalingFactor = new Vector3(ScreenScale.X, ScreenScale.Y, 1);
-            Scale = Matrix.CreateScale(ScalingFactor);
+            UpdateEffectiveScale();
 
             gdm.ApplyChanges();
+        }
+
+        private static void UpdateEffectiveScale()
+        {
+            var rawScale = ScreenScale;
+
+            if (rawScale.X <= 0 || rawScale.Y <= 0)
+                rawScale = Vector2.One;
+
+            EffectiveScreenScale = rawScale * UiScale;
+
+            // Create the matrix at which we'll be drawing sprites.
+            ScalingFactor = new Vector3(rawScale.X, rawScale.Y, 1);
+            Scale = Matrix.CreateScale(ScalingFactor);
         }
 
         /// <summary>
@@ -109,6 +160,7 @@ namespace Wobble.Window
         public static void UnHookEvents()
         {
             ResolutionChanged = null;
+            UiScaleChanged = null;
             VirtualScreenSizeChanged = null;
         }
 

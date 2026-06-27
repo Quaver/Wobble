@@ -36,7 +36,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.TaskHandler, "Task Handler"},
             {ScreenType.SpriteTextPlus, "SpriteTextPlus"},
             {ScreenType.ScheduledUpdates, "Scheduled Updates"},
-            {ScreenType.Joystick, "Joystick"}
+            {ScreenType.Joystick, "Joystick"},
+            {ScreenType.GlobalUiScale, "Global UI Scale"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -68,6 +69,7 @@ namespace Wobble.Tests.Screens.Selection
         TaskHandler,
         SpriteTextPlus,
         ScheduledUpdates,
-        Joystick
+        Joystick,
+        GlobalUiScale
     }
 }

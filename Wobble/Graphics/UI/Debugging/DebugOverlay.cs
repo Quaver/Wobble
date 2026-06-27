@@ -150,6 +150,8 @@ namespace Wobble.Graphics.UI.Debugging
             ImGui.Text($"Backbuffer: {PerformanceStats.BackBufferDescription}");
             ImGui.Text($"Virtual: {PerformanceStats.VirtualResolutionDescription}");
             ImGui.Text($"Scale: {PerformanceStats.ScreenScaleDescription}");
+            ImGui.Text($"UI Scale: {PerformanceStats.UiScaleDescription}");
+            ImGui.Text($"Text Scale: {PerformanceStats.EffectiveScreenScaleDescription}");
         }
 
         private void RenderImGuiStats()

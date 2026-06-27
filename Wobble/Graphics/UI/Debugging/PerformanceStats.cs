@@ -159,6 +159,12 @@ namespace Wobble.Graphics.UI.Debugging
         public static string ScreenScaleDescription =>
             $"{WindowManager.ScreenScale.X:0.00}x{WindowManager.ScreenScale.Y:0.00}";
 
+        public static string UiScaleDescription =>
+            $"{WindowManager.UiScale:0.00}x";
+
+        public static string EffectiveScreenScaleDescription =>
+            $"{WindowManager.EffectiveScreenScale.X:0.00}x{WindowManager.EffectiveScreenScale.Y:0.00}";
+
         private static double Smooth(double previous, double current) => previous == 0 ? current : previous * 0.9 + current * 0.1;
 
         private static void UpdateGcStats()

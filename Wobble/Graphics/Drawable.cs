@@ -27,6 +27,7 @@ namespace Wobble.Graphics
 #if DEBUG
             DebugId = global::Wobble.Graphics.UI.Debugging.DrawableDebugRegistry.Register(this);
 #endif
+            WindowManager.UiScaleChanged += OnGlobalUiScaleChanged;
         }
 
         /// <summary>
@@ -112,13 +113,15 @@ namespace Wobble.Graphics
         ///     The total width of the drawable, considering the width scale
         /// </summary>
         private float RelativeWidth =>
-            _size.X.Value + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * _size.X.Scale;
+            _size.X.Value * GlobalUiScale + (Parent?.ScreenRectangle.Width ?? WindowManager.VirtualScreen.X) * _size.X.Scale;
 
         /// <summary>
         ///     The total height of the drawable, considering the height scale
         /// </summary>
         private float RelativeHeight =>
-            _size.Y.Value + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * _size.Y.Scale;
+            _size.Y.Value * GlobalUiScale + (Parent?.ScreenRectangle.Height ?? WindowManager.VirtualScreen.Y) * _size.Y.Scale;
+
+        private float GlobalUiScale => Parent != null && UseGlobalUiScale ? WindowManager.UiScale : 1.0f;
 
 
         private RectangleF _alignedRelativeRectangle;
@@ -455,6 +458,23 @@ namespace Wobble.Graphics
         public bool UsePreviousSpriteBatchOptions { get; set; }
 
         /// <summary>
+        ///     Whether this drawable's fixed size and position should be affected by <see cref="WindowManager.UiScale"/>.
+        /// </summary>
+        private bool _useGlobalUiScale = true;
+        public bool UseGlobalUiScale
+        {
+            get => _useGlobalUiScale;
+            set
+            {
+                if (_useGlobalUiScale == value)
+                    return;
+
+                _useGlobalUiScale = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
         ///     The list of animations to perform on this drawable.
         /// </summary>
         public List<Animation> Animations { get; } = new List<Animation>();
@@ -613,9 +633,16 @@ namespace Wobble.Graphics
         public virtual void Dispose()
         {
             IsDisposed = true;
+            WindowManager.UiScaleChanged -= OnGlobalUiScaleChanged;
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.DrawableDebugRegistry.Unregister(this);
 #endif
+        }
+
+        private void OnGlobalUiScaleChanged(object sender, EventArgs e)
+        {
+            if (!IsDisposed)
+                RecalculateRectangles();
         }
 
 
@@ -641,8 +668,8 @@ namespace Wobble.Graphics
             // Make it relative to the parent.
             var width = RelativeWidth;
             var height = RelativeHeight;
-            var x = Position.X.Value;
-            var y = Position.Y.Value;
+            var x = Position.X.Value * GlobalUiScale;
+            var y = Position.Y.Value * GlobalUiScale;
 
             RelativeRectangle = new RectangleF(x, y, width, height);
             if (Parent != null)
