@@ -1,4 +1,0 @@
-﻿[Strings]
-Greeting=Hello
-Bye=Goodbye
-Results_Found={0} Results Found

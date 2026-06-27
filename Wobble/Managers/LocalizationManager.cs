@@ -1,61 +1,66 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using IniFileParser.Model;
+using System.Globalization;
+using System.Resources;
+using SmartFormat;
 
 namespace Wobble.Managers
 {
     public static class LocalizationManager
     {
         /// <summary>
-        ///     The default/fallback language for localization
+        ///     The resource manager used for localized strings.
         /// </summary>
-        public static IniData DefaultLanguage { get; private set; }
+        public static ResourceManager ResourceManager { get; private set; }
 
         /// <summary>
-        ///     The current language to use for strings
+        ///     The default/fallback culture for localization.
         /// </summary>
-        public static IniData CurrentLanguage { get; private set; }
+        public static CultureInfo DefaultCulture { get; private set; }
 
         /// <summary>
-        ///     Sets the default/fallback language. You'd typically only want to do this once at the start
-        ///     of the game
+        ///     The current culture used for localized strings.
         /// </summary>
-        public static void SetDefaultLanguageFile(string resource)
+        public static CultureInfo CurrentCulture { get; private set; }
+
+        /// <summary>
+        ///     Configures localization resources and cultures.
+        /// </summary>
+        public static void Configure(ResourceManager resourceManager, CultureInfo defaultCulture, CultureInfo currentCulture = null)
         {
-            if (DefaultLanguage != null)
-                throw new InvalidOperationException("Default language file was already specified!");
-
-            DefaultLanguage = ParseLanguageFile(GameBase.Game.Resources.GetStream(resource));
+            ResourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
+            DefaultCulture = defaultCulture ?? throw new ArgumentNullException(nameof(defaultCulture));
+            CurrentCulture = currentCulture ?? DefaultCulture;
         }
 
         /// <summary>
-        ///     Sets the current language resource to use for strings
+        ///     Sets the current culture used for strings.
         /// </summary>
-        /// <param name="resource"></param>
-        public static void SetCurrentLanguage(string resource) => CurrentLanguage = ParseLanguageFile(GameBase.Game.Resources.GetStream(resource));
+        public static void SetCurrentCulture(CultureInfo culture) => CurrentCulture = culture ?? throw new ArgumentNullException(nameof(culture));
 
         /// <summary>
-        ///     Gets a localized string. Checks <see cref="CurrentLanguage"/>  for the string first. Then it will
-        ///     check <see cref="DefaultLanguage"/> as a fallback. If it cannot find either, then it will throw
-        ///     an exception
+        ///     Gets a localized string. Checks <see cref="CurrentCulture"/> first, then checks
+        ///     <see cref="DefaultCulture"/> as a fallback.
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="interpolated"></param>
+        /// <param name="args"></param>
         /// <returns></returns>
-        public static string Get(string key, params object[] interpolated)
+        public static string Get(string key, params object[] args)
         {
-            const string header = "Strings";
+            if (ResourceManager == null || DefaultCulture == null || CurrentCulture == null)
+                throw new InvalidOperationException("LocalizationManager must be configured before strings can be retrieved.");
 
-            if (CurrentLanguage[header].ContainsKey(key))
-                return string.Format(CurrentLanguage[header][key], interpolated);
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentException("Localization key cannot be empty.", nameof(key));
 
-            if (DefaultLanguage[header].ContainsKey(key))
-                return string.Format(DefaultLanguage[header][key], interpolated);
+            var value = ResourceManager.GetString(key, CurrentCulture);
 
-            throw new ArgumentException($"Cannot find localized string for key: {key}");
+            if (value == null && !Equals(CurrentCulture, DefaultCulture))
+                value = ResourceManager.GetString(key, DefaultCulture);
+
+            if (value == null)
+                throw new ArgumentException($"Cannot find localized string for key: {key}", nameof(key));
+
+            return Smart.Format(CurrentCulture, value, args);
         }
 
         /// <summary>
@@ -64,25 +69,9 @@ namespace Wobble.Managers
         ///     Useful if you want to define all of your possible keys in an enum rather than using strings everywhere
         /// </summary>
         /// <param name="value"></param>
-        /// <param name="interpolated"></param>
+        /// <param name="args"></param>
         /// <typeparam name="TEnum"></typeparam>
         /// <returns></returns>
-        public static string Get<TEnum>(TEnum value, params object[] interpolated) => Get(value.ToString(), interpolated);
-
-        /// <summary>
-        ///     Language files should be setup similar to ini.
-        ///
-        ///     Key=Value
-        ///
-        ///     Examples:
-        ///         * (in en.txt) - Greeting=Hello
-        ///         * (in es.txt) - Greeting=¡Hola!
-        /// </summary>
-        /// <returns></returns>
-        private static IniData ParseLanguageFile(Stream file)
-        {
-            var parser = new IniFileParser.IniFileParser();
-            return parser.ReadData(new StreamReader(file));
-        }
+        public static string Get<TEnum>(TEnum value, params object[] args) => Get(value.ToString(), args);
     }
 }

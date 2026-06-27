@@ -1,2 +1,0 @@
-﻿[Strings]
-Greeting=مرحبا كيف حالك

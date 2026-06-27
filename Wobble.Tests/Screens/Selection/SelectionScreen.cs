@@ -16,27 +16,27 @@ namespace Wobble.Tests.Screens.Selection
         /// </summary>
         public Dictionary<ScreenType, string> TestCasesScreens { get; } = new Dictionary<ScreenType, string>
         {
-            {ScreenType.DrawingSprites, "Drawing Sprites"},
-            {ScreenType.Rotation, "Rotation"},
-            {ScreenType.DrawableScaling, "Drawable Scaling"},
-            {ScreenType.EasingAnimations, "Easing Animations"},
-            {ScreenType.Audio, "Audio"},
-            {ScreenType.Discord, "Discord Rich Pr."},
-            {ScreenType.Background, "Background Sprite"},
-            {ScreenType.Scrolling, "Scroll Container"},
-            {ScreenType.BlurContainer, "Blur Container"},
-            {ScreenType.BlurredBackgroundImage, "Blurred BG Image"},
-            {ScreenType.TextInput, "Text Input"},
-            {ScreenType.SpriteMaskContainer, "Sprite Masking"},
-            {ScreenType.SpriteAlphaMaskingBlend, "Sprite Alpha Mask"},
-            {ScreenType.Primitives, "Primitives"},
-            {ScreenType.ImGui, "Imgui"},
-            {ScreenType.Scaling, "Scaling"},
-            {ScreenType.TextSizes, "Text Sizes"},
-            {ScreenType.TaskHandler, "Task Handler"},
-            {ScreenType.SpriteTextPlus, "SpriteTextPlus"},
-            {ScreenType.ScheduledUpdates, "Scheduled Updates"},
-            {ScreenType.Joystick, "Joystick"}
+            {ScreenType.DrawingSprites, "Screen_DrawingSprites"},
+            {ScreenType.Rotation, "Screen_Rotation"},
+            {ScreenType.DrawableScaling, "Screen_DrawableScaling"},
+            {ScreenType.EasingAnimations, "Screen_EasingAnimations"},
+            {ScreenType.Audio, "Screen_Audio"},
+            {ScreenType.Discord, "Screen_Discord"},
+            {ScreenType.Background, "Screen_Background"},
+            {ScreenType.Scrolling, "Screen_Scrolling"},
+            {ScreenType.BlurContainer, "Screen_BlurContainer"},
+            {ScreenType.BlurredBackgroundImage, "Screen_BlurredBackgroundImage"},
+            {ScreenType.TextInput, "Screen_TextInput"},
+            {ScreenType.SpriteMaskContainer, "Screen_SpriteMaskContainer"},
+            {ScreenType.SpriteAlphaMaskingBlend, "Screen_SpriteAlphaMaskingBlend"},
+            {ScreenType.Primitives, "Screen_Primitives"},
+            {ScreenType.ImGui, "Screen_ImGui"},
+            {ScreenType.Scaling, "Screen_Scaling"},
+            {ScreenType.TextSizes, "Screen_TextSizes"},
+            {ScreenType.TaskHandler, "Screen_TaskHandler"},
+            {ScreenType.SpriteTextPlus, "Screen_SpriteTextPlus"},
+            {ScreenType.ScheduledUpdates, "Screen_ScheduledUpdates"},
+            {ScreenType.Joystick, "Screen_Joystick"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);

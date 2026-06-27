@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Bulgarian" xml:space="preserve">
+    <value>Bulgarian</value>
+  </data>
+  <data name="Screen_Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="Screen_Background" xml:space="preserve">
+    <value>Background Sprite</value>
+  </data>
+  <data name="Screen_BlurContainer" xml:space="preserve">
+    <value>Blur Container</value>
+  </data>
+  <data name="Screen_BlurredBackgroundImage" xml:space="preserve">
+    <value>Blurred BG Image</value>
+  </data>
+  <data name="Screen_Discord" xml:space="preserve">
+    <value>Discord Rich Pr.</value>
+  </data>
+  <data name="Screen_DrawableScaling" xml:space="preserve">
+    <value>Drawable Scaling</value>
+  </data>
+  <data name="Screen_DrawingSprites" xml:space="preserve">
+    <value>Drawing Sprites</value>
+  </data>
+  <data name="Screen_EasingAnimations" xml:space="preserve">
+    <value>Easing Animations</value>
+  </data>
+  <data name="Screen_ImGui" xml:space="preserve">
+    <value>Imgui</value>
+  </data>
+  <data name="Screen_Joystick" xml:space="preserve">
+    <value>Joystick</value>
+  </data>
+  <data name="Screen_Primitives" xml:space="preserve">
+    <value>Primitives</value>
+  </data>
+  <data name="Screen_Rotation" xml:space="preserve">
+    <value>Rotation</value>
+  </data>
+  <data name="Screen_Scaling" xml:space="preserve">
+    <value>Scaling</value>
+  </data>
+  <data name="Screen_ScheduledUpdates" xml:space="preserve">
+    <value>Scheduled Updates</value>
+  </data>
+  <data name="Screen_Scrolling" xml:space="preserve">
+    <value>Scroll Container</value>
+  </data>
+  <data name="Screen_SpriteAlphaMaskingBlend" xml:space="preserve">
+    <value>Sprite Alpha Mask</value>
+  </data>
+  <data name="Screen_SpriteMaskContainer" xml:space="preserve">
+    <value>Sprite Masking</value>
+  </data>
+  <data name="Screen_SpriteTextPlus" xml:space="preserve">
+    <value>SpriteTextPlus</value>
+  </data>
+  <data name="Screen_TaskHandler" xml:space="preserve">
+    <value>Task Handler</value>
+  </data>
+  <data name="Screen_TextInput" xml:space="preserve">
+    <value>Text Input</value>
+  </data>
+  <data name="Screen_TextSizes" xml:space="preserve">
+    <value>Text Sizes</value>
+  </data>
+  <data name="Selection_LanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Selection_Title" xml:space="preserve">
+    <value>Wobble Tests</value>
+  </data>
+</root>
