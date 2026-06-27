@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
+using Wobble.Graphics.UI.Form;
+using Wobble.Managers;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
 using Wobble.Tests.Screens.Tests.Audio;
@@ -38,6 +42,25 @@ namespace Wobble.Tests.Screens.Selection
     {
         private static readonly ScalableVector2 ButtonSize = new ScalableVector2(150, 50);
         private static readonly float ButtonGap = 5;
+        private static readonly float ButtonStartY = 60;
+        private static readonly CultureInfo[] LanguageCultures =
+        {
+            CultureInfo.GetCultureInfo("en"),
+            CultureInfo.GetCultureInfo("bg")
+        };
+        private static readonly string[] LanguageNameKeys =
+        {
+            "Language_English",
+            "Language_Bulgarian"
+        };
+
+        private SpriteTextPlus TitleText { get; set; }
+
+        private SpriteTextPlus LanguageLabel { get; set; }
+
+        private HorizontalSelector LanguageSelector { get; set; }
+
+        private List<KeyValuePair<TextButton, string>> ScreenButtons { get; } = new List<KeyValuePair<TextButton, string>>();
 
         /// <inheritdoc />
         /// <summary>
@@ -81,13 +104,42 @@ namespace Wobble.Tests.Screens.Selection
         private void CreateSelectionButtons()
         {
             var screen = (SelectionScreen)Screen;
-            var buttonsInColumn = (int)((WindowManager.VirtualScreen.Y - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
+            var buttonsInColumn = (int)((WindowManager.VirtualScreen.Y - ButtonStartY - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
+
+            TitleText = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"), LocalizationManager.Get("Selection_Title"), 26)
+            {
+                Parent = Container,
+                X = ButtonGap,
+                Y = 12
+            };
+
+            LanguageLabel = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"), LocalizationManager.Get("Selection_LanguageLabel"), 18)
+            {
+                Parent = Container,
+                Alignment = Alignment.TopRight,
+                X = -235,
+                Y = 17
+            };
+
+            LanguageSelector = new HorizontalSelector(CreateLanguageOptions(),
+                new ScalableVector2(130, 35), FontManager.GetWobbleFont("exo2-semibold"), 18, Textures.LeftButtonSquare,
+                Textures.RightButtonSquare, new ScalableVector2(30, 30), 5, (value, index) =>
+                {
+                    LocalizationManager.SetCurrentCulture(LanguageCultures[index]);
+                    RefreshLocalizedText();
+                })
+            {
+                Parent = Container,
+                Alignment = Alignment.TopRight,
+                X = -55,
+                Y = 10
+            };
 
             var i = 0;
             foreach (var testScreens in screen.TestCasesScreens)
             {
                 // Create a generic text button.
-                var button = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", testScreens.Value, 12)
+                var button = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", LocalizationManager.Get(testScreens.Value), 12)
                 {
                     Parent = Container,
                     Size = ButtonSize,
@@ -96,8 +148,10 @@ namespace Wobble.Tests.Screens.Selection
                         Tint = Color.Black,
                     },
                     X = (i / buttonsInColumn) * (ButtonGap + ButtonSize.X.Value) + ButtonGap,
-                    Y = (i % buttonsInColumn) * (ButtonGap + ButtonSize.Y.Value) + ButtonGap,
+                    Y = (i % buttonsInColumn) * (ButtonGap + ButtonSize.Y.Value) + ButtonStartY,
                 };
+
+                ScreenButtons.Add(new KeyValuePair<TextButton, string>(button, testScreens.Value));
 
                 switch (testScreens.Key)
                 {
@@ -170,6 +224,41 @@ namespace Wobble.Tests.Screens.Selection
 
                 i++;
             }
+        }
+
+        private void RefreshLocalizedText()
+        {
+            TitleText.Text = LocalizationManager.Get("Selection_Title");
+            LanguageLabel.Text = LocalizationManager.Get("Selection_LanguageLabel");
+
+            for (var i = 0; i < LanguageSelector.Options.Count; i++)
+                LanguageSelector.Options[i] = LocalizationManager.Get(LanguageNameKeys[i]);
+
+            LanguageSelector.SelectIndex(GetCurrentLanguageIndex());
+
+            foreach (var button in ScreenButtons)
+                button.Key.Text.Text = LocalizationManager.Get(button.Value);
+        }
+
+        private static List<string> CreateLanguageOptions()
+        {
+            var options = new List<string>();
+
+            foreach (var key in LanguageNameKeys)
+                options.Add(LocalizationManager.Get(key));
+
+            return options;
+        }
+
+        private static int GetCurrentLanguageIndex()
+        {
+            for (var i = 0; i < LanguageCultures.Length; i++)
+            {
+                if (LanguageCultures[i].Name == LocalizationManager.CurrentCulture.Name)
+                    return i;
+            }
+
+            return 0;
         }
     }
 }

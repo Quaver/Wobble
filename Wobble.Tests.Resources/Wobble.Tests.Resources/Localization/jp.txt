@@ -1,2 +1,0 @@
-﻿[Strings]
-Greeting=こんにちは こんにちは こんにちは

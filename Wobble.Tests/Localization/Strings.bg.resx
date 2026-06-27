@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+    <data name="Language_English" xml:space="preserve">
+        <value>Английски</value>
+    </data>
+    <data name="Language_Bulgarian" xml:space="preserve">
+        <value>Български</value>
+    </data>
+    <data name="Screen_Audio" xml:space="preserve">
+        <value>Звук</value>
+    </data>
+    <data name="Screen_Background" xml:space="preserve">
+        <value>Фонов спрайт</value>
+    </data>
+    <data name="Screen_BlurContainer" xml:space="preserve">
+        <value>Размазан контейнер</value>
+    </data>
+    <data name="Screen_BlurredBackgroundImage" xml:space="preserve">
+        <value>Размазана фонова снимка</value>
+    </data>
+  <data name="Screen_Discord" xml:space="preserve">
+    <value>Discord Rich Pr.</value>
+  </data>
+    <data name="Screen_DrawableScaling" xml:space="preserve">
+        <value>Мащабиране</value>
+    </data>
+    <data name="Screen_DrawingSprites" xml:space="preserve">
+        <value>Рисуване на спрайтове</value>
+    </data>
+    <data name="Screen_EasingAnimations" xml:space="preserve">
+        <value>Анимации за ускоряване</value>
+    </data>
+  <data name="Screen_ImGui" xml:space="preserve">
+    <value>Imgui</value>
+  </data>
+    <data name="Screen_Joystick" xml:space="preserve">
+        <value>Джойстик</value>
+    </data>
+    <data name="Screen_Primitives" xml:space="preserve">
+        <value>Примитивни</value>
+    </data>
+    <data name="Screen_Rotation" xml:space="preserve">
+        <value>Ротация</value>
+    </data>
+    <data name="Screen_Scaling" xml:space="preserve">
+        <value>Мащабиране</value>
+    </data>
+    <data name="Screen_ScheduledUpdates" xml:space="preserve">
+        <value>Планирани актуализации</value>
+    </data>
+    <data name="Screen_Scrolling" xml:space="preserve">
+        <value>Контейнер за превъртане</value>
+    </data>
+    <data name="Screen_SpriteAlphaMaskingBlend" xml:space="preserve">
+        <value>Маска на спрайт алфа</value>
+    </data>
+    <data name="Screen_SpriteMaskContainer" xml:space="preserve">
+        <value>Маскиране на спрайтове</value>
+    </data>
+  <data name="Screen_SpriteTextPlus" xml:space="preserve">
+    <value>SpriteTextPlus</value>
+  </data>
+    <data name="Screen_TaskHandler" xml:space="preserve">
+        <value>Манипулятор на задачи</value>
+    </data>
+    <data name="Screen_TextInput" xml:space="preserve">
+        <value>Въвеждане на текст</value>
+    </data>
+    <data name="Screen_TextSizes" xml:space="preserve">
+        <value>Размери на текста</value>
+    </data>
+    <data name="Selection_LanguageLabel" xml:space="preserve">
+        <value>Език</value>
+    </data>
+    <data name="Selection_Title" xml:space="preserve">
+        <value>Wobble Тестове</value>
+    </data>
+</root>

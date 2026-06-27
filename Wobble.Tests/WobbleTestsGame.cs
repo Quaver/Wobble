@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics;
@@ -72,6 +74,9 @@ namespace Wobble.Tests
         protected override void LoadContent()
         {
             base.LoadContent();
+
+            LocalizationManager.Configure(new ResourceManager("Wobble.Tests.Localization.Strings", typeof(WobbleTestsGame).Assembly),
+                CultureInfo.GetCultureInfo("en"));
 
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
 
