@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Wobble.Graphics.Animations;
 
 namespace Wobble.Graphics.Sprites.Text
 {
