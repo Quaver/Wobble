@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Resources;
-using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Logging;
@@ -18,21 +14,6 @@ namespace Wobble.Assets
     /// </summary>
     public static class AssetLoader
     {
-        /// <summary>
-        ///     Loads a texture of a given format from an embedded resource store.
-        /// </summary>
-        /// <param name="image"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public static Texture2D LoadTexture2D(Bitmap image, ImageFormat format)
-        {
-            using (var stream = new MemoryStream())
-            {
-                image.Save(stream, format);
-                return Texture2D.FromStream(GameBase.Game.GraphicsDevice, stream);
-            }
-        }
-
         /// <summary>
         ///     Loads a Texture2D from a byte array.
         /// </summary>
