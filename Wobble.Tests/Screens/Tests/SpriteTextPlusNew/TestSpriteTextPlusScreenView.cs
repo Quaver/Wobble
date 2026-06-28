@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Graphics;
 using Wobble.Graphics.Animations;
+using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Managers;
@@ -91,6 +92,44 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
                 Alignment = Alignment.TopLeft,
                 TextAlignment = TextAlignment.Left,
                 MaxWidth = 100
+            };
+
+            CreateWrapSample(
+                "Binary search wrap: every line should stay inside this box even as the dynamic sample moves.",
+                20,
+                500,
+                260,
+                Color.DeepSkyBlue
+            );
+
+            CreateWrapSample(
+                "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                320,
+                500,
+                80,
+                Color.Orange
+            );
+        }
+
+        private void CreateWrapSample(string text, int x, int y, int maxWidth, Color borderColor)
+        {
+            new RectangleSprite(2)
+            {
+                Parent = Container,
+                X = x,
+                Y = y,
+                Width = maxWidth,
+                Height = 145,
+                Tint = borderColor
+            };
+
+            new SpriteTextPlus(Font, text, 20)
+            {
+                Parent = Container,
+                X = x,
+                Y = y,
+                MaxWidth = maxWidth,
+                Tint = Color.White
             };
         }
 

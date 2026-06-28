@@ -194,19 +194,9 @@ namespace Wobble.Graphics.Sprites.Text
                             spaces.Add(i);
                     }
 
-                    // Binary search would be great for the next two (as long as we're assuming that
-                    // more characters == longer lines, which will not hold for complex scripts,
-                    // which aren't supported yet anyway), but C# doesn't have a built-in method
-                    // for binary search by an arbitrary predicate. So I guess we'll just go with a regular find-last,
-                    // which can be slower, but has a bonus of not making any of the aforementioned assumptions.
-                    var splitOnIndex = spaces.FindLastIndex(spacePosition =>
-                    {
-                        var lineBeforeSpace = line.Substring(0, spacePosition);
-                        var sprite = new SpriteTextPlusLine(Font, lineBeforeSpace, FontSize);
-                        var lineWidth = sprite.Width;
-                        sprite.Destroy();
-                        return lineWidth <= MaxWidth;
-                    });
+                    // Assumes wider substrings are produced by appending more characters. That matches the current
+                    // supported text path and avoids measuring every possible line cut while wrapping.
+                    var splitOnIndex = FindLastFittingIndex(spaces, line);
 
                     // It's always initialized, but the C# compiler isn't smart enough to figure that out.
                     int? nextLineStart = null;
@@ -225,23 +215,10 @@ namespace Wobble.Graphics.Sprites.Text
                         if (spaces.Count > 0)
                             lastIndex = spaces[0];
 
-                        for (var i = lastIndex; i != 0; i--)
-                        {
-                            var lineCut = line.Substring(0, i);
-                            var sprite = new SpriteTextPlusLine(Font, lineCut, FontSize);
-
-                            // If we're left with 1 character, just go with it even if we're over MaxWidth.
-                            if (sprite.Width > MaxWidth && i > 1)
-                            {
-                                sprite.Destroy();
-                                continue;
-                            }
-
-                            lineSprite.Destroy();
-                            lineSprite = sprite;
-                            nextLineStart = i;
-                            break;
-                        }
+                        nextLineStart = FindLastFittingCharacterIndex(line, lastIndex);
+                        var lineCut = line.Substring(0, nextLineStart.Value);
+                        lineSprite.Destroy();
+                        lineSprite = new SpriteTextPlusLine(Font, lineCut, FontSize);
                     }
                     else
                     {
@@ -271,6 +248,59 @@ namespace Wobble.Graphics.Sprites.Text
             }
 
             Size = new ScalableVector2(width, height);
+        }
+
+        private int FindLastFittingIndex(IReadOnlyList<int> indexes, string line)
+        {
+            var result = -1;
+            var lo = 0;
+            var hi = indexes.Count - 1;
+
+            while (lo <= hi)
+            {
+                var mid = lo + (hi - lo) / 2;
+                var index = indexes[mid];
+
+                if (MeasureLineWidth(line.Substring(0, index)) <= MaxWidth)
+                {
+                    result = mid;
+                    lo = mid + 1;
+                }
+                else
+                    hi = mid - 1;
+            }
+
+            return result;
+        }
+
+        private int FindLastFittingCharacterIndex(string line, int lastIndex)
+        {
+            var result = 1;
+            var lo = 1;
+            var hi = lastIndex;
+
+            while (lo <= hi)
+            {
+                var mid = lo + (hi - lo) / 2;
+
+                // If we're left with 1 character, just go with it even if we're over MaxWidth.
+                if (mid == 1 || MeasureLineWidth(line.Substring(0, mid)) <= MaxWidth)
+                {
+                    result = mid;
+                    lo = mid + 1;
+                }
+                else
+                    hi = mid - 1;
+            }
+
+            return result;
+        }
+
+        private float MeasureLineWidth(string line)
+        {
+            var scale = SpriteTextPlusLine.GetRenderScale();
+            Font.FontSize = FontSize * scale;
+            return (float) Math.Ceiling(Font.Store.MeasureString(line).X) / scale;
         }
 
         /// <summary>
