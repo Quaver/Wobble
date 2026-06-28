@@ -35,84 +35,97 @@ These are the following steps that we find to be particularly handy when using W
 **5.** Create a class that derives from `WobbleGame`. In this case, we'll call it `MyGame`. It should look similar to this:
 
 ```cs
-public class MyGame : WobbleGame
+using GreenBox.Screens;
+using Microsoft.Xna.Framework;
+using Wobble;
+using Wobble.Screens;
+
+namespace GreenBox
 {
-    /// <inheritdoc />
-    /// <summary>
-    /// </summary>
-    protected override bool IsReadyToUpdate { get; set; }
-
-    /// <inheritdoc />
-    /// <summary>
-    ///     Allows the game to perform any initialization it needs to before starting to run.
-    ///     This is where it can query for any required services and load any non-graphic
-    ///     related content.  Calling base.Initialize will enumerate through any components
-    ///     and initialize them as well.
-    /// </summary>
-    protected override void Initialize()
+    public class MyGame : WobbleGame
     {
-        base.Initialize();
-        
-        // TODO: Your initialization code goes here.
-    }
+        /// <inheritdoc />
+        /// <summary>
+        /// </summary>
+        protected override bool IsReadyToUpdate { get; set; }
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     LoadContent will be called once per game and is the place to load
-    ///     all of your content.
-    /// </summary>
-    protected override void LoadContent()
-    {
-        base.LoadContent();
+        /// <inheritdoc />
+        /// <summary>
+        ///     Allows the game to perform any initialization it needs to before starting to run.
+        ///     This is where it can query for any required services and load any non-graphic
+        ///     related content.  Calling base.Initialize will enumerate through any components
+        ///     and initialize them as well.
+        /// </summary>
+        protected override void Initialize()
+        {
+            base.Initialize();
 
-        // TODO: Your asset loading code goes here.
+            // TODO: Your initialization code goes here.
 
-        // Tell the game that it should start updating now
-        IsReadyToUpdate = true;
+            // Hide global game cursor from showing.
+            GlobalUserInterface.Cursor.Hide(0);
 
-        // TODO: Change to the first screen via ScreenManager
-        // ScreenManager.ChangeScreen(new MainMenuScreen()); - Example
-    }
+            // Show the real mouse cursor.
+            IsMouseVisible = true;
+        }
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     UnloadContent will be called once per game and is the place to unload
-    ///     game-specific content.
-    /// </summary>
-    protected override void UnloadContent()
-    {
-        base.UnloadContent();
+        /// <inheritdoc />
+        /// <summary>
+        ///     LoadContent will be called once per game and is the place to load
+        ///     all of your content.
+        /// </summary>
+        protected override void LoadContent()
+        {
+            base.LoadContent();
 
-        // TODO: Your disposing logic goes here.
-    }
+            // TODO: Your asset loading code goes here.
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     Allows the game to run logic such as updating the world,
-    ///     checking for collisions, gathering input, and playing audio.
-    /// </summary>
-    protected override void Update(GameTime gameTime)
-    {
-        if (!IsReadyToUpdate)
-            return;
+            IsReadyToUpdate = true;
 
-        base.Update(gameTime);
+            // Change to the GreenBox screen
+            ScreenManager.ChangeScreen(new GreenBoxScreen());
+        }
 
-        // TODO: Your global update logic goes here. Anything updated here will be updated on every screen.
-    }
+        /// <inheritdoc />
+        /// <summary>
+        ///     UnloadContent will be called once per game and is the place to unload
+        ///     game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            base.UnloadContent();
 
-    /// <inheritdoc />
-    /// <summary>
-    ///     This is called when the game should draw itself.
-    /// </summary>
-    protected override void Draw(GameTime gameTime)
-    {
-        if (!IsReadyToUpdate)
-            return;
+            // TODO: Your disposing logic goes here.
+        }
 
-        base.Draw(gameTime);
+        /// <inheritdoc />
+        /// <summary>
+        ///     Allows the game to run logic such as updating the world,
+        ///     checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        protected override void Update(GameTime gameTime)
+        {
+            if (!IsReadyToUpdate)
+                return;
 
-        // TODO: Your global draw logic goes here. Anything drawn here will be drawn on top of every screen.
+            base.Update(gameTime);
+
+            // TODO: Your global update logic goes here. Anything updated here will be updated on every screen.
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     This is called when the game should draw itself.
+        /// </summary>
+        protected override void Draw(GameTime gameTime)
+        {
+            if (!IsReadyToUpdate)
+                return;
+
+            base.Draw(gameTime);
+
+            // TODO: Your global draw logic goes here. Anything drawn here will be drawn on top of every screen.
+        }
     }
 }
 ```
@@ -120,14 +133,17 @@ public class MyGame : WobbleGame
 **6.** The **main method** *(usually in Program.cs)* of your application should look very straight forward. 
 
 ```cs
-internal static class Program
+using System;
+
+namespace GreenBox
 {
-    [STAThread]
-    internal static void Main(string[] args)
+    internal class Program
     {
-        using (var game = new MyGame())
+        [STAThread]
+        internal static void Main(string[] args)
         {
-            game.Run();
+            using (var game = new MyGame())
+                game.Run();
         }
     }
 }
