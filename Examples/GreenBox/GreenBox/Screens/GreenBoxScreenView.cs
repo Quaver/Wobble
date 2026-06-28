@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Wobble;
 using Wobble.Assets;
 using Wobble.Graphics;
-using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Animations;
+using Wobble.Graphics.Sprites;
 using Wobble.Screens;
 
 namespace GreenBox.Screens
@@ -45,7 +41,7 @@ namespace GreenBox.Screens
                     // In this case we're changing the X property to 500 in 2 seconds (2000 milliseconds).
                     // Animations use easing functions, you can learn more about this
                     // at the following resource: https://easings.net/
-                    new Animation(AnimationProperty.X, Easing.InElastic, 0, 500, 2000) 
+                    new Animation(AnimationProperty.X, Easing.InElastic, 0, 500, 2000)
                 }
             };
 
