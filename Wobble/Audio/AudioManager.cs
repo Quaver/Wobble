@@ -17,6 +17,7 @@ namespace Wobble.Audio
     /// </summary>
     public static class AudioManager
     {
+        private static double LastOutputDeviceCheckTime = 0;
         /// <summary>
         ///     The audio tracks that are currently loaded and available.
         /// </summary>
@@ -92,8 +93,21 @@ namespace Wobble.Audio
         /// </summary>
         internal static void Update(GameTime gameTime)
         {
-            CheckForLostOutputDevice();
+            if (ShouldCheckForLostOutputDevice(gameTime))
+                CheckForLostOutputDevice();
+
             UpdateTracks(gameTime);
+        }
+
+        private static bool ShouldCheckForLostOutputDevice(GameTime gameTime)
+        {
+            var currentTime = gameTime.TotalGameTime.TotalMilliseconds;
+
+            if (currentTime - LastOutputDeviceCheckTime < 5000)
+                return false;
+
+            LastOutputDeviceCheckTime = currentTime;
+            return true;
         }
 
         /// <summary>
