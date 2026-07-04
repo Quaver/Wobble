@@ -102,6 +102,7 @@ namespace Wobble.Graphics.Sprites.Text
             SetSize();
 
             Image = WobbleAssets.WhiteBox;
+            Visible = false;
             _dirty = true;
         }
 
@@ -222,8 +223,6 @@ namespace Wobble.Graphics.Sprites.Text
                 return;
             }
 
-            Visible = true;
-
             if (RenderTarget != null && !RenderTarget.IsDisposed)
                 RenderTarget?.Dispose();
 
@@ -238,6 +237,7 @@ namespace Wobble.Graphics.Sprites.Text
             GameBase.Game.GraphicsDevice.SetRenderTarget(null);
 
             Image = RenderTarget;
+            Visible = true;
         }
     }
 }
