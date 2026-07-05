@@ -25,12 +25,11 @@ namespace Wobble.Graphics.Sprites.Text
     {
         private float _fontSize;
         private readonly FontSystem _fontSystem;
-        private readonly IndexedStbTrueTypeFontLoader _fontLoader;
+        private readonly FreeTypeFontLoader _fontLoader;
 
         static WobbleFontStore()
         {
             FontSystemDefaults.FontResolutionFactor = 1f;
-            FontSystemDefaults.StbTrueTypeUseOldRasterizer = false;
             FontSystemDefaults.KernelWidth = 0;
             FontSystemDefaults.KernelHeight = 0;
             FontSystemDefaults.GlyphRenderResult = GlyphRenderResult.NonPremultiplied;
@@ -75,7 +74,7 @@ namespace Wobble.Graphics.Sprites.Text
         {
             DefaultSize = size;
 
-            _fontLoader = new IndexedStbTrueTypeFontLoader();
+            _fontLoader = new FreeTypeFontLoader();
             _fontSystem = new FontSystem(new FontSystemSettings { FontLoader = _fontLoader });
             AddFont(string.Empty, font.Data, font.Index, font.Weight);
             Store = _fontSystem.GetFont(size);
