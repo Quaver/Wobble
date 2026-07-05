@@ -11,10 +11,13 @@ namespace Wobble.Graphics.Sprites.Text
 
         public int Index { get; }
 
-        public WobbleFontFace(byte[] data, int index = 0)
+        public int Weight { get; }
+
+        public WobbleFontFace(byte[] data, int index = 0, int weight = 400)
         {
             Data = data ?? throw new ArgumentNullException(nameof(data));
             Index = index;
+            Weight = weight;
         }
     }
 
@@ -74,7 +77,7 @@ namespace Wobble.Graphics.Sprites.Text
 
             _fontLoader = new IndexedStbTrueTypeFontLoader();
             _fontSystem = new FontSystem(new FontSystemSettings { FontLoader = _fontLoader });
-            AddFont(string.Empty, font.Data, font.Index);
+            AddFont(string.Empty, font.Data, font.Index, font.Weight);
             Store = _fontSystem.GetFont(size);
 
             if (addedFonts == null)
@@ -84,7 +87,7 @@ namespace Wobble.Graphics.Sprites.Text
             }
 
             foreach (var f in addedFonts)
-                AddFont(f.Key, f.Value.Data, f.Value.Index);
+                AddFont(f.Key, f.Value.Data, f.Value.Index, f.Value.Weight);
             FontSize = size;
         }
 
@@ -93,9 +96,9 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <param name="name"></param>
         /// <param name="font"></param>
-        public void AddFont(string name, byte[] font, int index = 0)
+        public void AddFont(string name, byte[] font, int index = 0, int weight = 400)
         {
-            _fontLoader.Register(font, index);
+            _fontLoader.Register(font, index, weight);
             _fontSystem.AddFont(font);
         }
 
