@@ -102,16 +102,16 @@ namespace Wobble.Graphics.Sprites.Text
         {
             lock (_lock)
             {
-                LoadAndRenderGlyph(glyphId, fontSize);
+                LoadGlyph(glyphId, fontSize);
 
                 var glyph = _face->glyph;
-                var bitmap = glyph->bitmap;
+                var metrics = glyph->metrics;
 
                 advance = ToPixels(glyph->advance.x);
-                x0 = glyph->bitmap_left;
-                y0 = -glyph->bitmap_top;
-                x1 = x0 + (int)bitmap.width;
-                y1 = y0 + (int)bitmap.rows;
+                x0 = FloorToPixels(metrics.horiBearingX);
+                y0 = -CeilToPixels(metrics.horiBearingY);
+                x1 = CeilToPixels(metrics.horiBearingX + metrics.width);
+                y1 = -FloorToPixels(metrics.horiBearingY - metrics.height);
             }
         }
 
@@ -197,9 +197,14 @@ namespace Wobble.Graphics.Sprites.Text
 
         private void LoadAndRenderGlyph(int glyphId, float fontSize)
         {
+            LoadGlyph(glyphId, fontSize);
+            ThrowOnError(FT_Render_Glyph(_face->glyph, FT_Render_Mode_.FT_RENDER_MODE_NORMAL), "Unable to render glyph.");
+        }
+
+        private void LoadGlyph(int glyphId, float fontSize)
+        {
             SetSize(fontSize);
             ThrowOnError(FT_Load_Glyph(_face, (uint)glyphId, FT_LOAD.FT_LOAD_NO_BITMAP), "Unable to load glyph.");
-            ThrowOnError(FT_Render_Glyph(_face->glyph, FT_Render_Mode_.FT_RENDER_MODE_NORMAL), "Unable to render glyph.");
         }
 
         private void SetSize(float fontSize)
@@ -225,6 +230,16 @@ namespace Wobble.Graphics.Sprites.Text
         private static int ToPixels(IntPtr value)
         {
             return (int)Math.Round(value.ToInt64() / 64f);
+        }
+
+        private static int FloorToPixels(IntPtr value)
+        {
+            return (int)Math.Floor(value.ToInt64() / 64f);
+        }
+
+        private static int CeilToPixels(IntPtr value)
+        {
+            return (int)Math.Ceiling(value.ToInt64() / 64f);
         }
 
         private static IntPtr ToFixed(int value)
