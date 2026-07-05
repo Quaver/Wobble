@@ -5,10 +5,24 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wobble.Graphics.Sprites.Text
 {
+    public class WobbleFontFace
+    {
+        public byte[] Data { get; }
+
+        public int Index { get; }
+
+        public WobbleFontFace(byte[] data, int index = 0)
+        {
+            Data = data ?? throw new ArgumentNullException(nameof(data));
+            Index = index;
+        }
+    }
+
     public class WobbleFontStore
     {
         private float _fontSize;
         private readonly FontSystem _fontSystem;
+        private readonly IndexedStbTrueTypeFontLoader _fontLoader;
 
         static WobbleFontStore()
         {
@@ -45,11 +59,22 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="font"></param>
         /// <param name="addedFonts"></param>
         public WobbleFontStore(int size, byte[] font, Dictionary<string, byte[]> addedFonts = null)
+            : this(size, new WobbleFontFace(font), ToFontFaces(addedFonts))
+        {
+        }
+
+        public WobbleFontStore(int size, byte[] font, Dictionary<string, WobbleFontFace> addedFonts)
+            : this(size, new WobbleFontFace(font), addedFonts)
+        {
+        }
+
+        public WobbleFontStore(int size, WobbleFontFace font, Dictionary<string, WobbleFontFace> addedFonts = null)
         {
             DefaultSize = size;
 
-            _fontSystem = new FontSystem();
-            _fontSystem.AddFont(font);
+            _fontLoader = new IndexedStbTrueTypeFontLoader();
+            _fontSystem = new FontSystem(new FontSystemSettings { FontLoader = _fontLoader });
+            AddFont(string.Empty, font.Data, font.Index);
             Store = _fontSystem.GetFont(size);
 
             if (addedFonts == null)
@@ -59,7 +84,7 @@ namespace Wobble.Graphics.Sprites.Text
             }
 
             foreach (var f in addedFonts)
-                AddFont(f.Key, f.Value);
+                AddFont(f.Key, f.Value.Data, f.Value.Index);
             FontSize = size;
         }
 
@@ -68,6 +93,23 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <param name="name"></param>
         /// <param name="font"></param>
-        public void AddFont(string name, byte[] font) => _fontSystem.AddFont(font);
+        public void AddFont(string name, byte[] font, int index = 0)
+        {
+            _fontLoader.Register(font, index);
+            _fontSystem.AddFont(font);
+        }
+
+        private static Dictionary<string, WobbleFontFace> ToFontFaces(Dictionary<string, byte[]> fonts)
+        {
+            if (fonts == null)
+                return null;
+
+            var result = new Dictionary<string, WobbleFontFace>();
+
+            foreach (var font in fonts)
+                result.Add(font.Key, new WobbleFontFace(font.Value));
+
+            return result;
+        }
     }
 }
