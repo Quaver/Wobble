@@ -13,7 +13,7 @@ namespace Wobble.Graphics.Sprites.Text
 
         public int Weight { get; }
 
-        public WobbleFontFace(byte[] data, int index = 0, int weight = 400)
+        public WobbleFontFace(byte[] data, int index = 0, int weight = FontWeight.Regular)
         {
             Data = data ?? throw new ArgumentNullException(nameof(data));
             Index = index;
@@ -96,7 +96,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <param name="name"></param>
         /// <param name="font"></param>
-        public void AddFont(string name, byte[] font, int index = 0, int weight = 400)
+        public void AddFont(string name, byte[] font, int index = 0, int weight = FontWeight.Regular)
         {
             _fontLoader.Register(font, index, weight);
             _fontSystem.AddFont(font);

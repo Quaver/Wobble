@@ -22,9 +22,9 @@ namespace Wobble.Graphics.Sprites.Text
         {
             IndexedFontSettings settings;
             if (!_settings.TryGetValue(data, out settings))
-                settings = new IndexedFontSettings(0, 400);
+                settings = new IndexedFontSettings(0, FontWeight.Regular);
 
-            if (settings.Weight != 400 || settings.Index > ushort.MaxValue)
+            if (settings.Weight != FontWeight.Regular || settings.Index > ushort.MaxValue)
                 return new FreeTypeFontSource(data, settings);
 
             return new IndexedStbTrueTypeFontSource(data, settings);
@@ -272,7 +272,7 @@ namespace Wobble.Graphics.Sprites.Text
 
         private void SetWeight(int weight)
         {
-            if (weight == 400 || !HasFlag(FT_FACE_FLAG.FT_FACE_FLAG_MULTIPLE_MASTERS))
+            if (weight == FontWeight.Regular || !HasFlag(FT_FACE_FLAG.FT_FACE_FLAG_MULTIPLE_MASTERS))
                 return;
 
             FT_MM_Var_* variation;
