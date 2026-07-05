@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.4" />
+    <PackageReference Include="FreeTypeSharp" Version="3.0.1" />
     <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
