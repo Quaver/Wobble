@@ -69,8 +69,10 @@ namespace Wobble.Graphics.Sprites.Text
 
             var (x, y) = Font.Store.MeasureString(Text);
             var padding = Math.Max(2f, FontSize * 0.25f);
-            var height = Math.Max(y, Font.Store.LineHeight) + padding;
-            Size = new ScalableVector2(x, height);
+            var height = Math.Max(y, Font.Store.LineHeight);
+
+            Y = padding / 2f;
+            Size = new ScalableVector2(x, height + padding);
         }
     }
 }
