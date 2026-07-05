@@ -13,7 +13,8 @@ namespace Wobble.Graphics.Sprites.Text
 
         public int Weight { get; }
 
-        public WobbleFontFace(byte[] data, int index = 0, int weight = FontWeight.Regular)
+        public WobbleFontFace(byte[] data, int index = 0,
+            int weight = FontWeight.Regular)
         {
             Data = data ?? throw new ArgumentNullException(nameof(data));
             Index = index;
@@ -61,22 +62,48 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="font"></param>
         /// <param name="addedFonts"></param>
         public WobbleFontStore(int size, byte[] font, Dictionary<string, byte[]> addedFonts = null)
-            : this(size, new WobbleFontFace(font), ToFontFaces(addedFonts))
+            : this(size, font, 0, addedFonts)
+        {
+        }
+
+        public WobbleFontStore(int size, byte[] font,
+            int implicitFontSizeReduction, Dictionary<string, byte[]> addedFonts = null)
+            : this(size,
+                new WobbleFontFace(font),
+                implicitFontSizeReduction,
+                ToFontFaces(addedFonts))
         {
         }
 
         public WobbleFontStore(int size, byte[] font, Dictionary<string, WobbleFontFace> addedFonts)
-            : this(size, new WobbleFontFace(font), addedFonts)
+            : this(size, font, addedFonts, 0)
         {
         }
 
-        public WobbleFontStore(int size, WobbleFontFace font, Dictionary<string, WobbleFontFace> addedFonts = null)
+        public WobbleFontStore(int size, byte[] font, Dictionary<string, WobbleFontFace> addedFonts,
+            int implicitFontSizeReduction)
+            : this(size,
+                new WobbleFontFace(font),
+                implicitFontSizeReduction,
+                addedFonts)
+        {
+        }
+
+        public WobbleFontStore(int size, WobbleFontFace font,
+            Dictionary<string, WobbleFontFace> addedFonts = null)
+            : this(size, font, 0, addedFonts)
+        {
+        }
+
+        public WobbleFontStore(int size, WobbleFontFace font,
+            int implicitFontSizeReduction,
+            Dictionary<string, WobbleFontFace> addedFonts = null)
         {
             DefaultSize = size;
 
             _fontLoader = new FreeTypeFontLoader();
             _fontSystem = new FontSystem(new FontSystemSettings { FontLoader = _fontLoader });
-            AddFont(string.Empty, font.Data, font.Index, font.Weight);
+            AddFont(string.Empty, font.Data, font.Index, font.Weight, implicitFontSizeReduction);
             Store = _fontSystem.GetFont(size);
 
             if (addedFonts == null)
@@ -86,7 +113,7 @@ namespace Wobble.Graphics.Sprites.Text
             }
 
             foreach (var f in addedFonts)
-                AddFont(f.Key, f.Value.Data, f.Value.Index, f.Value.Weight);
+                AddFont(f.Key, f.Value.Data, f.Value.Index, f.Value.Weight, implicitFontSizeReduction);
             FontSize = size;
         }
 
@@ -95,9 +122,10 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <param name="name"></param>
         /// <param name="font"></param>
-        public void AddFont(string name, byte[] font, int index = 0, int weight = FontWeight.Regular)
+        public void AddFont(string name, byte[] font, int index = 0,
+            int weight = FontWeight.Regular, int implicitFontSizeReduction = 0)
         {
-            _fontLoader.Register(font, index, weight);
+            _fontLoader.Register(font, index, weight, implicitFontSizeReduction);
             _fontSystem.AddFont(font);
         }
 
@@ -109,7 +137,8 @@ namespace Wobble.Graphics.Sprites.Text
             var result = new Dictionary<string, WobbleFontFace>();
 
             foreach (var font in fonts)
-                result.Add(font.Key, new WobbleFontFace(font.Value));
+                result.Add(font.Key,
+                    new WobbleFontFace(font.Value));
 
             return result;
         }

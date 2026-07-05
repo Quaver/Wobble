@@ -11,16 +11,16 @@ namespace Wobble.Graphics.Sprites.Text
     {
         private readonly Dictionary<byte[], IndexedFontSettings> _settings = new Dictionary<byte[], IndexedFontSettings>();
 
-        public void Register(byte[] data, int index, int weight)
+        public void Register(byte[] data, int index, int weight, int implicitFontSizeReduction)
         {
-            _settings[data] = new IndexedFontSettings(index, weight);
+            _settings[data] = new IndexedFontSettings(index, weight, implicitFontSizeReduction);
         }
 
         public IFontSource Load(byte[] data)
         {
             IndexedFontSettings settings;
             if (!_settings.TryGetValue(data, out settings))
-                settings = new IndexedFontSettings(0, FontWeight.Regular);
+                settings = new IndexedFontSettings(0, FontWeight.Regular, 0);
 
             return new FreeTypeFontSource(data, settings);
         }
@@ -32,10 +32,13 @@ namespace Wobble.Graphics.Sprites.Text
 
         public int Weight { get; }
 
-        public IndexedFontSettings(int index, int weight)
+        public int ImplicitFontSizeReduction { get; }
+
+        public IndexedFontSettings(int index, int weight, int implicitFontSizeReduction)
         {
             Index = index;
             Weight = weight;
+            ImplicitFontSizeReduction = implicitFontSizeReduction;
         }
     }
 
@@ -44,6 +47,7 @@ namespace Wobble.Graphics.Sprites.Text
         private const uint WeightAxisTag = 0x77676874;
 
         private readonly object _lock = new object();
+        private readonly int _implicitFontSizeReduction;
         private readonly FreeTypeLibrary _library;
         private readonly GCHandle _dataHandle;
         private readonly FT_FaceRec_* _face;
@@ -69,6 +73,7 @@ namespace Wobble.Graphics.Sprites.Text
             _ascent = _face->ascender;
             _descent = _face->descender;
             _height = _face->height;
+            _implicitFontSizeReduction = settings.ImplicitFontSizeReduction;
         }
 
         ~FreeTypeFontSource()
@@ -199,12 +204,17 @@ namespace Wobble.Graphics.Sprites.Text
 
         private void SetSize(float fontSize)
         {
-            ThrowOnError(FT_Set_Pixel_Sizes(_face, 0, (uint)Math.Max(1, (int)Math.Ceiling(fontSize))), "Unable to set font size.");
+            ThrowOnError(FT_Set_Pixel_Sizes(_face, 0, (uint)Math.Ceiling(ReduceFontSize(fontSize))), "Unable to set font size.");
         }
 
         private float CalculateScale(float fontSize)
         {
             return fontSize / (_ascent - _descent);
+        }
+
+        private float ReduceFontSize(float fontSize)
+        {
+            return Math.Max(1, fontSize - _implicitFontSizeReduction);
         }
 
         private bool HasFlag(FT_FACE_FLAG flag)
