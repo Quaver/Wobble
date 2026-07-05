@@ -20,7 +20,14 @@ namespace Wobble.Graphics.Sprites.Text
                 if (value == _font)
                     return;
 
+                if (_font != null)
+                    _font.Changed -= OnFontChanged;
+
                 _font = value;
+
+                if (_font != null)
+                    _font.Changed += OnFontChanged;
+
                 RefreshText();
             }
         }
@@ -143,6 +150,7 @@ namespace Wobble.Graphics.Sprites.Text
         public SpriteTextPlus(WobbleFontStore font, string text, int size = 0, bool cache = true)
         {
             _font = font;
+            _font.Changed += OnFontChanged;
             _text = text;
             _isCached = cache;
 
@@ -250,6 +258,8 @@ namespace Wobble.Graphics.Sprites.Text
             Size = new ScalableVector2(width, height);
         }
 
+        private void OnFontChanged(object sender, EventArgs e) => RefreshText();
+
         private int FindLastFittingIndex(IReadOnlyList<int> indexes, string line)
         {
             var result = -1;
@@ -355,6 +365,9 @@ namespace Wobble.Graphics.Sprites.Text
 
         public override void Destroy()
         {
+            if (_font != null)
+                _font.Changed -= OnFontChanged;
+
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.SpriteTextPlusDebugRegistry.Unregister(this);
 #endif

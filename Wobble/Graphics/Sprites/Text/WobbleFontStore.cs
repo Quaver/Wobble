@@ -5,15 +5,34 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Wobble.Graphics.Sprites.Text
 {
+    public class WobbleFontFace
+    {
+        public byte[] Data { get; }
+
+        public int Index { get; }
+
+        public int Weight { get; }
+
+        public WobbleFontFace(byte[] data, int index = 0,
+            int weight = FontWeight.Regular)
+        {
+            Data = data ?? throw new ArgumentNullException(nameof(data));
+            Index = index;
+            Weight = weight;
+        }
+    }
+
     public class WobbleFontStore
     {
         private float _fontSize;
-        private readonly FontSystem _fontSystem;
+        private FontSystem _fontSystem;
+        private FreeTypeFontLoader _fontLoader;
+
+        public event EventHandler Changed;
 
         static WobbleFontStore()
         {
             FontSystemDefaults.FontResolutionFactor = 1f;
-            FontSystemDefaults.StbTrueTypeUseOldRasterizer = false;
             FontSystemDefaults.KernelWidth = 0;
             FontSystemDefaults.KernelHeight = 0;
             FontSystemDefaults.GlyphRenderResult = GlyphRenderResult.NonPremultiplied;
@@ -45,22 +64,46 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="font"></param>
         /// <param name="addedFonts"></param>
         public WobbleFontStore(int size, byte[] font, Dictionary<string, byte[]> addedFonts = null)
+            : this(size, font, 0, addedFonts)
+        {
+        }
+
+        public WobbleFontStore(int size, byte[] font,
+            int implicitFontSizeReduction, Dictionary<string, byte[]> addedFonts = null)
+            : this(size,
+                new WobbleFontFace(font),
+                implicitFontSizeReduction,
+                ToFontFaces(addedFonts))
+        {
+        }
+
+        public WobbleFontStore(int size, byte[] font, Dictionary<string, WobbleFontFace> addedFonts)
+            : this(size, font, addedFonts, 0)
+        {
+        }
+
+        public WobbleFontStore(int size, byte[] font, Dictionary<string, WobbleFontFace> addedFonts,
+            int implicitFontSizeReduction)
+            : this(size,
+                new WobbleFontFace(font),
+                implicitFontSizeReduction,
+                addedFonts)
+        {
+        }
+
+        public WobbleFontStore(int size, WobbleFontFace font,
+            Dictionary<string, WobbleFontFace> addedFonts = null)
+            : this(size, font, 0, addedFonts)
+        {
+        }
+
+        public WobbleFontStore(int size, WobbleFontFace font,
+            int implicitFontSizeReduction,
+            Dictionary<string, WobbleFontFace> addedFonts = null)
         {
             DefaultSize = size;
 
-            _fontSystem = new FontSystem();
-            _fontSystem.AddFont(font);
-            Store = _fontSystem.GetFont(size);
-
-            if (addedFonts == null)
-            {
-                FontSize = size;
-                return;
-            }
-
-            foreach (var f in addedFonts)
-                AddFont(f.Key, f.Value);
-            FontSize = size;
+            Load(font, implicitFontSizeReduction, addedFonts);
         }
 
         /// <summary>
@@ -68,6 +111,49 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <param name="name"></param>
         /// <param name="font"></param>
-        public void AddFont(string name, byte[] font) => _fontSystem.AddFont(font);
+        public void AddFont(string name, byte[] font, int index = 0,
+            int weight = FontWeight.Regular, int implicitFontSizeReduction = 0)
+        {
+            _fontLoader.Register(font, index, weight, implicitFontSizeReduction);
+            _fontSystem.AddFont(font);
+        }
+
+        public void Reload(WobbleFontFace font, int implicitFontSizeReduction,
+            Dictionary<string, WobbleFontFace> addedFonts = null)
+        {
+            Load(font, implicitFontSizeReduction, addedFonts);
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Load(WobbleFontFace font, int implicitFontSizeReduction,
+            Dictionary<string, WobbleFontFace> addedFonts)
+        {
+            _fontLoader = new FreeTypeFontLoader();
+            _fontSystem = new FontSystem(new FontSystemSettings { FontLoader = _fontLoader });
+
+            AddFont(string.Empty, font.Data, font.Index, font.Weight, implicitFontSizeReduction);
+
+            if (addedFonts != null)
+            {
+                foreach (var f in addedFonts)
+                    AddFont(f.Key, f.Value.Data, f.Value.Index, f.Value.Weight, implicitFontSizeReduction);
+            }
+
+            FontSize = _fontSize == 0 ? DefaultSize : _fontSize;
+        }
+
+        private static Dictionary<string, WobbleFontFace> ToFontFaces(Dictionary<string, byte[]> fonts)
+        {
+            if (fonts == null)
+                return null;
+
+            var result = new Dictionary<string, WobbleFontFace>();
+
+            foreach (var font in fonts)
+                result.Add(font.Key,
+                    new WobbleFontFace(font.Value));
+
+            return result;
+        }
     }
 }
