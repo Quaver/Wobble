@@ -252,6 +252,7 @@ namespace Wobble.Graphics.Sprites.Text
             public uint AxisCount;
             public uint DesignsCount;
             public uint NamedStylesCount;
+            private uint _padding;
             public FT_Var_Axis_* Axis;
             public IntPtr NamedStyle;
         }
@@ -265,6 +266,7 @@ namespace Wobble.Graphics.Sprites.Text
             public IntPtr Maximum;
             public uint Tag;
             public uint StringId;
+            private IntPtr _padding;
         }
 
         private void Dispose(bool disposing)
