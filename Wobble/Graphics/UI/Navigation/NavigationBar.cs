@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
 using Wobble.Graphics.Buttons;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
@@ -16,6 +17,35 @@ namespace Wobble.Graphics.UI.Navigation
         Left,
         Center,
         Right
+    }
+
+    public enum NavigationBarBorderPosition
+    {
+        Top,
+        Bottom
+    }
+
+    /// <summary>
+    ///     Options for the animated line drawn along an edge of a <see cref="NavigationBar"/>.
+    /// </summary>
+    public class NavigationBarBorderOptions
+    {
+        public bool Enabled { get; set; }
+
+        public NavigationBarBorderPosition Position { get; set; } = NavigationBarBorderPosition.Bottom;
+
+        public Color BorderColor { get; set; } = Color.White;
+
+        public Color AnimatedBorderColor { get; set; } = Color.White;
+
+        public float Thickness { get; set; } = 2;
+
+        public float AnimatedBorderWidth { get; set; } = 150;
+
+        /// <summary>
+        ///     Time in milliseconds for the smaller line to travel from one side to the other.
+        /// </summary>
+        public int AnimationDuration { get; set; } = 15000;
     }
 
     /// <summary>
@@ -76,6 +106,12 @@ namespace Wobble.Graphics.UI.Navigation
         private float _layoutWidth;
         private float _layoutHeight;
 
+        private NavigationBarBorderOptions BorderOptions { get; }
+
+        public Sprite BorderLine { get; private set; }
+
+        public Sprite AnimatedBorderLine { get; private set; }
+
         public Color BackgroundColor
         {
             get => Tint;
@@ -112,14 +148,23 @@ namespace Wobble.Graphics.UI.Navigation
             }
         }
 
-        public NavigationBar(float width, float height, Color? backgroundColor = null)
+        public NavigationBar(float width, float height, Color? backgroundColor = null,
+            NavigationBarBorderOptions borderOptions = null)
         {
             Image = WobbleAssets.WhiteBox;
             Size = new ScalableVector2(width, height);
             Tint = backgroundColor ?? Color.Transparent;
             _layoutWidth = Width;
             _layoutHeight = Height;
+            BorderOptions = borderOptions;
+            CreateAnimatedBorder();
             _initialized = true;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            PerformBorderAnimation();
+            base.Update(gameTime);
         }
 
         public void Add(NavigationBarRegion region, Drawable drawable)
@@ -229,7 +274,59 @@ namespace Wobble.Graphics.UI.Navigation
 
             _layoutWidth = Width;
             _layoutHeight = Height;
+            RefreshBorderLayout();
             RefreshLayout();
+        }
+
+        private void CreateAnimatedBorder()
+        {
+            if (BorderOptions?.Enabled != true)
+                return;
+
+            var thickness = Math.Max(0, BorderOptions.Thickness);
+            var animatedWidth = Math.Min(Width, Math.Max(0, BorderOptions.AnimatedBorderWidth));
+            var alignment = BorderOptions.Position == NavigationBarBorderPosition.Top
+                ? Alignment.TopLeft
+                : Alignment.BotLeft;
+
+            BorderLine = new Sprite
+            {
+                Parent = this,
+                Image = WobbleAssets.WhiteBox,
+                Size = new ScalableVector2(Width, thickness),
+                Alignment = alignment,
+                Tint = BorderOptions.BorderColor
+            };
+
+            AnimatedBorderLine = new Sprite
+            {
+                Parent = BorderLine,
+                Image = WobbleAssets.WhiteBox,
+                Size = new ScalableVector2(animatedWidth, thickness),
+                Tint = BorderOptions.AnimatedBorderColor,
+                X = BorderOptions.Position == NavigationBarBorderPosition.Bottom ? Width - animatedWidth : 0
+            };
+        }
+
+        private void RefreshBorderLayout()
+        {
+            if (BorderLine == null)
+                return;
+
+            BorderLine.Width = Width;
+            AnimatedBorderLine.ClearAnimations();
+            AnimatedBorderLine.Width = Math.Min(Width, Math.Max(0, BorderOptions.AnimatedBorderWidth));
+            AnimatedBorderLine.X = Math.Min(Math.Max(0, AnimatedBorderLine.X), Width - AnimatedBorderLine.Width);
+        }
+
+        private void PerformBorderAnimation()
+        {
+            if (AnimatedBorderLine == null || AnimatedBorderLine.Animations.Count != 0)
+                return;
+
+            var rightEdge = Width - AnimatedBorderLine.Width;
+            var target = AnimatedBorderLine.X > rightEdge / 2f ? 0 : rightEdge;
+            AnimatedBorderLine.MoveToX(target, Easing.Linear, Math.Max(1, BorderOptions.AnimationDuration));
         }
 
         private void LayoutLeftItems()

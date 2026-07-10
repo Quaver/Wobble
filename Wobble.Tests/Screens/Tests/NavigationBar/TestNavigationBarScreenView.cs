@@ -41,7 +41,15 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
             var bold = FontManager.GetWobbleFont("inter-bold");
             var regular = FontManager.GetWobbleFont("inter-regular");
 
-            TopBar = new NavigationBar(WindowManager.Width, 40, BarBackground)
+            TopBar = new NavigationBar(WindowManager.Width, 40, BarBackground,
+                new NavigationBarBorderOptions
+                {
+                    Enabled = true,
+                    Position = NavigationBarBorderPosition.Bottom,
+                    BorderColor = Blue,
+                    AnimatedBorderColor = Color.White,
+                    AnimationDuration = 3000
+                })
             {
                 Parent = Container,
                 Alignment = Alignment.TopLeft,
@@ -79,7 +87,14 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
             };
             TopBar.Add(NavigationBarRegion.Right, ManualItem);
 
-            BottomBar = new NavigationBar(WindowManager.Width, 40)
+            BottomBar = new NavigationBar(WindowManager.Width, 40, borderOptions: new NavigationBarBorderOptions
+            {
+                Enabled = true,
+                Position = NavigationBarBorderPosition.Top,
+                BorderColor = Purple,
+                AnimatedBorderColor = Green,
+                AnimationDuration = 5000
+            })
             {
                 Parent = Container,
                 Alignment = Alignment.BotLeft,
