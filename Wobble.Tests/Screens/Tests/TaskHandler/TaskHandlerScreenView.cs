@@ -48,7 +48,7 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
             RandomNumbersTask.OnCompleted += OnTaskComplete;
             RandomNumbersTask.OnCancelled += OnTaskCancelled;
 
-            TestButton = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", "Start Task", 16)
+            TestButton = new TextButton(WobbleAssets.WhiteBox, "inter-medium", "Start Task", 16)
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
@@ -61,7 +61,7 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
             };
             TestButton.Clicked += ButtonPressed;
 
-            ProgressionText = new SpriteText("exo2-medium", "", 14)
+            ProgressionText = new SpriteText("inter-medium", "", 14)
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,
@@ -69,7 +69,7 @@ namespace Wobble.Tests.Screens.Tests.TaskHandler
                 Y = 10
             };
 
-            ResultText = new SpriteText("exo2-medium", "", 14)
+            ResultText = new SpriteText("inter-medium", "", 14)
             {
                 Parent = Container,
                 Alignment = Alignment.MidCenter,

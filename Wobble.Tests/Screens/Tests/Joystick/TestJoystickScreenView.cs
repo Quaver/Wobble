@@ -26,7 +26,7 @@ namespace Wobble.Tests.Screens.Tests.Joystick
                     text.Destroy();
                 State.Clear();
 
-                var font = FontManager.GetWobbleFont("exo2-semibold");
+                var font = FontManager.GetWobbleFont("inter-semibold");
                 float y = 0;
                 for (var key = 0; key < JoystickManager.CurrentState.Buttons.Length; ++key)
                 {

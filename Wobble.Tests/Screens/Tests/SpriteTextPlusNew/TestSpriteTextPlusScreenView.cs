@@ -27,7 +27,7 @@ namespace Wobble.Tests.Screens.Tests.SpriteTextPlusNew
         /// <param name="screen"></param>
         public TestSpriteTextPlusScreenView(Screen screen) : base(screen)
         {
-            Font = FontManager.GetWobbleFont("exo2-semibold");
+            Font = FontManager.GetWobbleFont("inter-semibold");
 
             var text = new SpriteTextPlus(Font, "Hello, World! いろはにほへど\nthis should be on a new line\n🍆😀 😁 😂 🤣😃 😄 😅 😆 😉 😊 😋 😎\nhi",
                 48)

@@ -26,7 +26,7 @@ namespace Wobble.Tests.Screens.Tests.TextInput
         public TestTextInputScreenView(Screen screen) : base(screen)
         {
             // Simple text box that when submitted, will send the text flying across the screen.
-            var textbox = new Textbox(new ScalableVector2(500, 36), FontManager.GetWobbleFont("exo2-semibold"),
+            var textbox = new Textbox(new ScalableVector2(500, 36), FontManager.GetWobbleFont("inter-semibold"),
                 24, "", "Type to see a cool effect!")
             {
                 Parent = Container,
@@ -41,7 +41,7 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 // Just create a new SpriteText and move it across the screen.
                 // Not recommended in production, as you'll have a random SpriteText floating around still
                 // a child to the container.
-                new SpriteText("exo2-bold", text, 18)
+                new SpriteText("inter-bold", text, 18)
                 {
                     Parent = Container,
                     X = -100,
@@ -53,7 +53,7 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 };
             };
 
-            var regexpTextbox = new Textbox(new ScalableVector2(500, 30), FontManager.GetWobbleFont("exo2-semibold"),
+            var regexpTextbox = new Textbox(new ScalableVector2(500, 30), FontManager.GetWobbleFont("inter-semibold"),
                 14, "", "This should only allow you to type numbers")
             {
                 Parent = Container,
@@ -65,7 +65,7 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 AllowedCharacters = new Regex("^[0-9]*$")
             };
 
-            var smallTextbox = new Textbox(new ScalableVector2(40, 40), FontManager.GetWobbleFont("exo2-semibold"),
+            var smallTextbox = new Textbox(new ScalableVector2(40, 40), FontManager.GetWobbleFont("inter-semibold"),
                 22, "", "smol")
             {
                 Parent = Container,
@@ -76,7 +76,7 @@ namespace Wobble.Tests.Screens.Tests.TextInput
                 Focused = false
             };
 
-            var noCursorMoveTextbox = new Textbox(new ScalableVector2(500, 36), FontManager.GetWobbleFont("exo2-semibold"),
+            var noCursorMoveTextbox = new Textbox(new ScalableVector2(500, 36), FontManager.GetWobbleFont("inter-semibold"),
                 24, "", "This textbox doesn't allow cursor movement")
             {
                 Parent = Container,

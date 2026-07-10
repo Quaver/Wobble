@@ -82,7 +82,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region HELLO_WORLD_TEXT
-            HelloWorldText = new SpriteText("exo2-bold", "Hello, World!", 18)
+            HelloWorldText = new SpriteText("inter-bold", "Hello, World!", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -91,7 +91,7 @@ namespace Wobble.Tests.Screens.Tests.DrawingSprites
 #endregion
 
 #region CLICK_ME_BUTTON
-            ClickMeButton = new TextButton(WobbleAssets.WhiteBox, "exo2-bold", "Click me!", 18, (sender, args) =>
+            ClickMeButton = new TextButton(WobbleAssets.WhiteBox, "inter-bold", "Click me!", 18, (sender, args) =>
                 {
                     // Click event handler method goes here.
                     // Choose a random background color!

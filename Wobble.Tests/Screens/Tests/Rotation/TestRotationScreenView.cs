@@ -107,7 +107,7 @@ namespace Wobble.Tests.Screens.Tests.Rotation
 
             #endregion
 
-            DebugText = new SpriteText("exo2-bold", "Hello, World!", 18)
+            DebugText = new SpriteText("inter-bold", "Hello, World!", 18)
             {
                 Parent = Container, Alignment = Alignment.TopRight
             };

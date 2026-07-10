@@ -52,7 +52,7 @@ namespace Wobble.Tests.Screens.Tests.BlurContainer
                 Size = new ScalableVector2(100, 100)
             };
 
-            BlurStrengthText = new SpriteText("exo2-bold", $"Blur Strength: {Blur.Strength}", 18)
+            BlurStrengthText = new SpriteText("inter-bold", $"Blur Strength: {Blur.Strength}", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,

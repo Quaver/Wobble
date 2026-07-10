@@ -37,7 +37,8 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.SpriteTextPlus, "Screen_SpriteTextPlus"},
             {ScreenType.ScheduledUpdates, "Screen_ScheduledUpdates"},
             {ScreenType.Joystick, "Screen_Joystick"},
-            {ScreenType.ButtonPerformance, "Screen_ButtonPerformance"}
+            {ScreenType.ButtonPerformance, "Screen_ButtonPerformance"},
+            {ScreenType.NavigationBar, "Screen_NavigationBar"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -70,6 +71,7 @@ namespace Wobble.Tests.Screens.Selection
         SpriteTextPlus,
         ScheduledUpdates,
         Joystick,
-        ButtonPerformance
+        ButtonPerformance,
+        NavigationBar
     }
 }

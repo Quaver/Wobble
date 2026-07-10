@@ -26,7 +26,7 @@ namespace Wobble.Tests.Screens.Tests.ScheduledUpdates
 
         public TestScheduledUpdatesScreenView(Screen screen) : base(screen)
         {
-            Scheduled = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"),
+            Scheduled = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"),
                 "", 36)
             {
                 Parent = Container,
@@ -49,7 +49,7 @@ namespace Wobble.Tests.Screens.Tests.ScheduledUpdates
                 }
             }, token);
 
-            new SpriteText("exo2-semibold", "Press 1 to toggle between scheduled & unscheduled", 32)
+            new SpriteText("inter-semibold", "Press 1 to toggle between scheduled & unscheduled", 32)
             {
                 Parent = Container,
                 Alignment = Alignment.BotCenter

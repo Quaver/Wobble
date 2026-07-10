@@ -30,7 +30,7 @@ namespace Wobble.Tests.Screens.Tests.TextSizes
             float y = 0;
             for (int i = 1; i < 30; i++)
             {
-                var line = new SpriteText("exo2-regular", "The quick brown fox jumps over the lazy dog", i)
+                var line = new SpriteText("inter-regular", "The quick brown fox jumps over the lazy dog", i)
                 {
                     Parent = Container,
                     Y = y,

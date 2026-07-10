@@ -67,7 +67,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
         private void CreateHeader()
         {
-            new SpriteTextPlus(FontManager.GetWobbleFont("exo2-bold"), "BUTTON PERFORMANCE", 26)
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"), "BUTTON PERFORMANCE", 26)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -75,7 +75,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
                 Tint = Color.White
             };
 
-            new SpriteTextPlus(FontManager.GetWobbleFont("exo2-regular"), "1: new buttons  |  2: old image buttons  |  R: reset both", 18)
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-regular"), "1: new buttons  |  2: old image buttons  |  R: reset both", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -103,7 +103,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
                 Tint = ControlColor
             };
 
-            new SpriteTextPlus(FontManager.GetWobbleFont("exo2-bold"), text, 15)
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"), text, 15)
             {
                 Parent = button,
                 Alignment = Alignment.MidCenter,
@@ -123,7 +123,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
                 SetChildrenVisibility = true
             };
 
-            new SpriteTextPlus(FontManager.GetWobbleFont("exo2-bold"), title, 17)
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"), title, 17)
             {
                 Parent = group,
                 Alignment = Alignment.TopCenter,
@@ -168,7 +168,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
                 PerformHoverFade = false
             };
 
-            button.SetLabel(FontManager.GetWobbleFont("exo2-bold"), $"NEW BUTTON {index + 1}", 16, Color.White);
+            button.SetLabel(FontManager.GetWobbleFont("inter-bold"), $"NEW BUTTON {index + 1}", 16, Color.White);
             button.Clicked += (sender, args) => { };
 
             return button;
@@ -182,7 +182,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
                 Tint = index % 2 == 0 ? BlueButtonColor : PurpleButtonColor
             };
 
-            new SpriteTextPlus(FontManager.GetWobbleFont("exo2-bold"), $"OLD BUTTON {index + 1}", 16)
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"), $"OLD BUTTON {index + 1}", 16)
             {
                 Parent = button,
                 Alignment = Alignment.MidCenter,
@@ -194,7 +194,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
             return button;
         }
 
-        private SpriteTextPlus CreateGroupStateText(string text, float x) => new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"), text, 18)
+        private SpriteTextPlus CreateGroupStateText(string text, float x) => new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), text, 18)
         {
             Parent = Container,
             Alignment = Alignment.TopCenter,
@@ -214,7 +214,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
                 Size = new ScalableVector2(320, 210)
             };
 
-            new SpriteTextPlus(FontManager.GetWobbleFont("exo2-bold"), "LIVE STATS", 18)
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"), "LIVE STATS", 18)
             {
                 Parent = panel,
                 Alignment = Alignment.TopLeft,
@@ -223,7 +223,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
             for (var i = 0; i < 8; i++)
             {
-                StatLines.Add(new SpriteTextPlus(FontManager.GetWobbleFont("exo2-regular"), string.Empty, 16)
+                StatLines.Add(new SpriteTextPlus(FontManager.GetWobbleFont("inter-regular"), string.Empty, 16)
                 {
                     Parent = panel,
                     Alignment = Alignment.TopLeft,
