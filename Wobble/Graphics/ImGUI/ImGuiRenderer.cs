@@ -689,7 +689,6 @@ namespace Wobble.Graphics.ImGUI
 
                 Atlas.SetTexID(TextureId);
                 Atlas.ClearTexData();
-                Atlas.ClearInputData();
             }
 
             public unsafe void Dispose()
