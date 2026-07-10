@@ -81,6 +81,16 @@ namespace Wobble.Graphics.UI.Navigation
 
         public bool PerformHoverFade { get; set; } = true;
 
+        public bool AntiAliasedEdges { get; set; } = true;
+
+        public bool ExpandLabelOnHover { get; set; }
+
+        public bool AlwaysShowLabel { get; set; }
+
+        public int HoverExpansionDuration { get; set; } = 150;
+
+        public float ExpandedLabelRightPadding { get; set; }
+
         public EventHandler ClickAction { get; set; }
     }
 
@@ -99,6 +109,8 @@ namespace Wobble.Graphics.UI.Navigation
 
         private readonly Dictionary<Drawable, NavigationBarRegion> _items =
             new Dictionary<Drawable, NavigationBarRegion>();
+
+        private readonly Dictionary<Drawable, Vector2> _itemSizes = new Dictionary<Drawable, Vector2>();
 
         private bool _initialized;
         private float _edgePadding = 24;
@@ -165,6 +177,9 @@ namespace Wobble.Graphics.UI.Navigation
         {
             PerformBorderAnimation();
             base.Update(gameTime);
+
+            if (HaveItemSizesChanged())
+                RefreshLayout();
         }
 
         public void Add(NavigationBarRegion region, Drawable drawable)
@@ -199,6 +214,7 @@ namespace Wobble.Graphics.UI.Navigation
             (drawable as Button)?.ResetInteractionState();
             _regions[region].Remove(drawable);
             _items.Remove(drawable);
+            _itemSizes.Remove(drawable);
             DetachWithoutDestroying(drawable);
             RefreshLayout();
             return true;
@@ -233,6 +249,11 @@ namespace Wobble.Graphics.UI.Navigation
                 AutoSizePadding = options.AutoSizePadding,
                 CornerRadius = options.CornerRadius,
                 PerformHoverFade = options.PerformHoverFade,
+                AntiAliasedEdges = options.AntiAliasedEdges,
+                ExpandLabelOnHover = options.ExpandLabelOnHover,
+                AlwaysShowLabel = options.AlwaysShowLabel,
+                HoverExpansionDuration = options.HoverExpansionDuration,
+                ExpandedLabelRightPadding = options.ExpandedLabelRightPadding,
                 Tint = options.BackgroundColor
             };
 
@@ -259,6 +280,7 @@ namespace Wobble.Graphics.UI.Navigation
             LayoutLeftItems();
             LayoutCenterItems();
             LayoutRightItems();
+            CaptureItemSizes();
         }
 
         protected override void OnRectangleRecalculated()
@@ -387,7 +409,27 @@ namespace Wobble.Graphics.UI.Navigation
                 var region = _items[drawable];
                 _regions[region].Remove(drawable);
                 _items.Remove(drawable);
+                _itemSizes.Remove(drawable);
             }
+        }
+
+        private bool HaveItemSizesChanged()
+        {
+            foreach (var drawable in _items.Keys)
+            {
+                if (!_itemSizes.TryGetValue(drawable, out var size) ||
+                    Math.Abs(size.X - drawable.Width) > float.Epsilon ||
+                    Math.Abs(size.Y - drawable.Height) > float.Epsilon)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void CaptureItemSizes()
+        {
+            foreach (var drawable in _items.Keys)
+                _itemSizes[drawable] = new Vector2(drawable.Width, drawable.Height);
         }
 
         private static void DetachWithoutDestroying(Drawable drawable)

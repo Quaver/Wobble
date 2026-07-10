@@ -13,8 +13,8 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
     {
         private const float BarHeight = 40;
 
-        private static readonly Color PageBackground = new Color(250, 250, 250);
-        private static readonly Color ButtonBackground = new Color(80, 80, 80);
+        private static readonly Color PageBackground = new Color(10, 13, 18);
+        private static readonly Color ButtonBackground = new Color(39, 48, 56);
 
         private NavigationBar TopBar { get; }
 
@@ -27,10 +27,10 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
             TopBar = CreateBar(Alignment.TopLeft);
             BottomBar = CreateBar(Alignment.BotLeft);
 
-            AddIconButton(TopBar, NavigationBarRegion.Left, "Play");
-            AddIconButton(TopBar, NavigationBarRegion.Left, "Tools");
-            AddIconButton(TopBar, NavigationBarRegion.Left, "Chat");
-            AddIconButton(TopBar, NavigationBarRegion.Left, "Favorite");
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Play", true, true);
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Tools", true);
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Chat", true);
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Favorite", true);
 
             var profileButton = TopBar.AddRoundedButton(NavigationBarRegion.Right, new NavigationBarButtonOptions
             {
@@ -38,19 +38,20 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
                 IconSize = new Vector2(16, 16),
                 Text = "[WWWW] Nickname",
                 Font = FontManager.GetWobbleFont("inter-bold"),
-                FontSize = 11,
+                FontSize = 12,
                 WidthMode = ButtonSizeMode.Auto,
                 Height = 26,
                 AutoSizePadding = new Vector2(12, 0),
                 CornerRadius = 3,
                 BackgroundColor = ButtonBackground,
+                AntiAliasedEdges = false,
                 ClickAction = (sender, args) => Status = "Profile"
             });
 
-            const float profileRightPadding = 12;
-            profileButton.Width += profileRightPadding;
-            profileButton.Icon.X -= profileRightPadding / 2;
-            profileButton.Label.X -= profileRightPadding / 2;
+            // const float profileRightPadding = 12;
+            // profileButton.Width += profileRightPadding;
+            // profileButton.Icon.X -= profileRightPadding / 2;
+            // profileButton.Label.X -= profileRightPadding / 2;
             TopBar.RefreshLayout();
 
             AddIconButton(TopBar, NavigationBarRegion.Right, "Menu");
@@ -87,16 +88,26 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
             ItemSpacing = 7
         };
 
-        private void AddIconButton(NavigationBar bar, NavigationBarRegion region, string action)
+        private void AddIconButton(NavigationBar bar, NavigationBarRegion region, string action,
+            bool expandLabelOnHover = false, bool alwaysShowLabel = false)
         {
             bar.AddRoundedButton(region, new NavigationBarButtonOptions
             {
                 Icon = Textures.Home,
                 IconSize = new Vector2(16, 16),
+                Text = expandLabelOnHover ? action : null,
+                Font = expandLabelOnHover ? FontManager.GetWobbleFont("inter-bold") : null,
+                FontSize = 12,
                 Width = 26,
                 Height = 26,
+                AutoSizePadding = new Vector2(12, 0),
                 CornerRadius = 3,
                 BackgroundColor = ButtonBackground,
+                AntiAliasedEdges = false,
+                ExpandLabelOnHover = expandLabelOnHover,
+                AlwaysShowLabel = alwaysShowLabel,
+                HoverExpansionDuration = 150,
+                ExpandedLabelRightPadding = 0,
                 ClickAction = (sender, args) => Status = action
             });
         }

@@ -14,7 +14,7 @@ namespace Wobble.Graphics.Shaders
     {
         private static Dictionary<TextureKey, Texture2D> Textures { get; } = new Dictionary<TextureKey, Texture2D>();
 
-        public static Texture2D Get(float width, float height, float radius)
+        public static Texture2D Get(float width, float height, float radius, bool antiAliased = true)
         {
             var textureWidth = Math.Max(1, (int) Math.Ceiling(width));
             var textureHeight = Math.Max(1, (int) Math.Ceiling(height));
@@ -22,17 +22,17 @@ namespace Wobble.Graphics.Shaders
                 radius * Math.Min(textureWidth / width, textureHeight / height),
                 0,
                 Math.Min(textureWidth, textureHeight) / 2f);
-            var key = new TextureKey(textureWidth, textureHeight, scaledRadius);
+            var key = new TextureKey(textureWidth, textureHeight, scaledRadius, antiAliased);
 
             if (Textures.TryGetValue(key, out var texture) && !texture.IsDisposed)
                 return texture;
 
-            texture = Create(textureWidth, textureHeight, scaledRadius);
+            texture = Create(textureWidth, textureHeight, scaledRadius, antiAliased);
             Textures[key] = texture;
             return texture;
         }
 
-        private static Texture2D Create(int width, int height, float radius)
+        private static Texture2D Create(int width, int height, float radius, bool antiAliased)
         {
             var texture = new Texture2D(GameBase.Game.GraphicsDevice, width, height, false, SurfaceFormat.Color);
             var pixels = new Color[width * height];
@@ -49,8 +49,7 @@ namespace Wobble.Graphics.Shaders
                                                             Math.Max(qy, 0) * Math.Max(qy, 0));
                     var distance = outsideDistance + Math.Min(Math.Max(qx, qy), 0) - radius;
 
-                    // Match the shader's one-pixel, inward-only anti-aliasing interval.
-                    var coverage = 1 - SmoothStep(-1, 0, distance);
+                    var coverage = antiAliased ? 1 - SmoothStep(-1, 0, distance) : distance < 0 ? 1 : 0;
                     pixels[y * width + x] = new Color((byte) 255, (byte) 255, (byte) 255, (byte) (coverage * 255));
                 }
             }
@@ -73,15 +72,19 @@ namespace Wobble.Graphics.Shaders
 
             private int RadiusBits { get; }
 
-            public TextureKey(int width, int height, float radius)
+            private bool AntiAliased { get; }
+
+            public TextureKey(int width, int height, float radius, bool antiAliased)
             {
                 Width = width;
                 Height = height;
                 RadiusBits = BitConverter.SingleToInt32Bits(radius);
+                AntiAliased = antiAliased;
             }
 
             public bool Equals(TextureKey other) =>
-                Width == other.Width && Height == other.Height && RadiusBits == other.RadiusBits;
+                Width == other.Width && Height == other.Height && RadiusBits == other.RadiusBits &&
+                AntiAliased == other.AntiAliased;
 
             public override bool Equals(object obj) => obj is TextureKey other && Equals(other);
 
@@ -91,7 +94,8 @@ namespace Wobble.Graphics.Shaders
                 {
                     var hashCode = Width;
                     hashCode = (hashCode * 397) ^ Height;
-                    return (hashCode * 397) ^ RadiusBits;
+                    hashCode = (hashCode * 397) ^ RadiusBits;
+                    return (hashCode * 397) ^ AntiAliased.GetHashCode();
                 }
             }
         }
