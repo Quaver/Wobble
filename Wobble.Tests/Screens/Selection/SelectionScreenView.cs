@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Wobble.Assets;
 using Wobble.Graphics;
+using Wobble.Graphics.Buttons;
 using Wobble.Graphics.Sprites.Text;
-using Wobble.Graphics.UI.Buttons;
 using Wobble.Graphics.UI.Form;
 using Wobble.Managers;
 using Wobble.Screens;
@@ -17,11 +16,13 @@ using Wobble.Tests.Screens.Tests.Audio;
 using Wobble.Tests.Screens.Tests.Background;
 using Wobble.Tests.Screens.Tests.BlurContainer;
 using Wobble.Tests.Screens.Tests.BlurredBgImage;
+using Wobble.Tests.Screens.Tests.ButtonPerformance;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawableScaling;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
+using Wobble.Tests.Screens.Tests.NavigationBars;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Rotation;
@@ -60,7 +61,7 @@ namespace Wobble.Tests.Screens.Selection
 
         private HorizontalSelector LanguageSelector { get; set; }
 
-        private List<KeyValuePair<TextButton, string>> ScreenButtons { get; } = new List<KeyValuePair<TextButton, string>>();
+        private List<KeyValuePair<RoundedButton, string>> ScreenButtons { get; } = new List<KeyValuePair<RoundedButton, string>>();
 
         /// <inheritdoc />
         /// <summary>
@@ -106,14 +107,14 @@ namespace Wobble.Tests.Screens.Selection
             var screen = (SelectionScreen)Screen;
             var buttonsInColumn = (int)((WindowManager.VirtualScreen.Y - ButtonStartY - ButtonGap) / (ButtonSize.Y.Value + ButtonGap));
 
-            TitleText = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"), LocalizationManager.Get("Selection_Title"), 26)
+            TitleText = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), LocalizationManager.Get("Selection_Title"), 26)
             {
                 Parent = Container,
                 X = ButtonGap,
                 Y = 12
             };
 
-            LanguageLabel = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"), LocalizationManager.Get("Selection_LanguageLabel"), 18)
+            LanguageLabel = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), LocalizationManager.Get("Selection_LanguageLabel"), 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopRight,
@@ -122,12 +123,12 @@ namespace Wobble.Tests.Screens.Selection
             };
 
             LanguageSelector = new HorizontalSelector(CreateLanguageOptions(),
-                new ScalableVector2(130, 35), FontManager.GetWobbleFont("exo2-semibold"), 18, Textures.LeftButtonSquare,
+                new ScalableVector2(130, 35), FontManager.GetWobbleFont("inter-semibold"), 18, Textures.LeftButtonSquare,
                 Textures.RightButtonSquare, new ScalableVector2(30, 30), 5, (value, index) =>
                 {
                     LocalizationManager.SetCurrentCulture(LanguageCultures[index]);
                     RefreshLocalizedText();
-                })
+                }, useRoundedButtons: true)
             {
                 Parent = Container,
                 Alignment = Alignment.TopRight,
@@ -138,20 +139,18 @@ namespace Wobble.Tests.Screens.Selection
             var i = 0;
             foreach (var testScreens in screen.TestCasesScreens)
             {
-                // Create a generic text button.
-                var button = new TextButton(WobbleAssets.WhiteBox, "exo2-medium", LocalizationManager.Get(testScreens.Value), 12)
+                var button = new RoundedButton
                 {
                     Parent = Container,
                     Size = ButtonSize,
-                    Text =
-                    {
-                        Tint = Color.Black,
-                    },
+                    Tint = Color.White,
                     X = (i / buttonsInColumn) * (ButtonGap + ButtonSize.X.Value) + ButtonGap,
                     Y = (i % buttonsInColumn) * (ButtonGap + ButtonSize.Y.Value) + ButtonStartY,
                 };
+                button.SetLabel(FontManager.GetWobbleFont("inter-medium"), LocalizationManager.Get(testScreens.Value), 12,
+                    Color.Black);
 
-                ScreenButtons.Add(new KeyValuePair<TextButton, string>(button, testScreens.Value));
+                ScreenButtons.Add(new KeyValuePair<RoundedButton, string>(button, testScreens.Value));
 
                 switch (testScreens.Key)
                 {
@@ -218,6 +217,12 @@ namespace Wobble.Tests.Screens.Selection
                     case ScreenType.Joystick:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestJoystickScreen());
                         break;
+                    case ScreenType.ButtonPerformance:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestButtonPerformanceScreen());
+                        break;
+                    case ScreenType.NavigationBar:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestNavigationBarScreen());
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -237,7 +242,8 @@ namespace Wobble.Tests.Screens.Selection
             LanguageSelector.SelectIndex(GetCurrentLanguageIndex());
 
             foreach (var button in ScreenButtons)
-                button.Key.Text.Text = LocalizationManager.Get(button.Value);
+                button.Key.SetLabel(FontManager.GetWobbleFont("inter-medium"), LocalizationManager.Get(button.Value), 12,
+                    Color.Black);
         }
 
         private static List<string> CreateLanguageOptions()

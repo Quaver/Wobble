@@ -16,6 +16,8 @@ namespace Wobble.Tests.Assets
 
         public static Texture2D RightButtonSquare => TextureManager.Load($"Wobble.Tests.Resources/Textures/right_button_square.png");
 
+        public static Texture2D Home => TextureManager.Load("Wobble.Tests.Resources/Textures/home.png");
+
         public static List<Texture2D> TestSpriteSheet => TextureManager.LoadAtlas($"Wobble.Tests.Resources/Textures/test_spritesheet.png", 1, 12);
     }
 }

@@ -80,15 +80,26 @@ namespace Wobble.Tests.Hotload
 
         private static void CacheFonts()
         {
-            var fonts = new List<string> { "exo2-bold", "exo2-regular", "exo2-semibold", "exo2-medium" };
-            foreach (var fontName in fonts)
-            {
-                if (FontManager.WobbleFonts.ContainsKey(fontName))
-                    continue;
+            if (FontManager.WobbleFonts.ContainsKey("inter-regular"))
+                return;
 
-                FontManager.CacheWobbleFont(fontName,
-                    new WobbleFontStore(20, GameBase.Game.Resources.Get($"Wobble.Tests.Resources/Fonts/{fontName}.ttf")));
-            }
+            var interFont = GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/Inter/Inter.ttf");
+            var emojiFont = GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/NotoColorEmoji/NotoColorEmoji.ttf");
+
+            CacheInterFont("inter-regular", FontWeight.Regular, interFont, emojiFont);
+            CacheInterFont("inter-medium", FontWeight.Medium, interFont, emojiFont);
+            CacheInterFont("inter-semibold", FontWeight.SemiBold, interFont, emojiFont);
+            CacheInterFont("inter-bold", FontWeight.Bold, interFont, emojiFont);
+        }
+
+        private static void CacheInterFont(string name, int weight, byte[] interFont, byte[] emojiFont)
+        {
+            FontManager.CacheWobbleFont(name, new WobbleFontStore(20,
+                new WobbleFontFace(interFont, weight: weight),
+                new Dictionary<string, WobbleFontFace>()
+                {
+                    {"Emoji", new WobbleFontFace(emojiFont)}
+                }));
         }
     }
 }

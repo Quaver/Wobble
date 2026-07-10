@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Graphics.Buttons;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
@@ -40,12 +41,16 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     The button to select the option to the left.
         /// </summary>
-        public ImageButton ButtonSelectLeft { get; }
+        public ImageButton ButtonSelectLeft { get; private set; }
+
+        public RoundedButton RoundedButtonSelectLeft { get; private set; }
 
         /// <summary>
         ///     The button to select the option to the right.
         /// </summary>
-        public ImageButton ButtonSelectRight { get; }
+        public ImageButton ButtonSelectRight { get; private set; }
+
+        public RoundedButton RoundedButtonSelectRight { get; private set; }
 
         /// <inheritdoc />
         /// <summary>
@@ -62,7 +67,7 @@ namespace Wobble.Graphics.UI.Form
         /// <param name="selectedIndex"></param>
         public HorizontalSelector(List<string> options, ScalableVector2 selectorSize, WobbleFontStore font, int fontSize, Texture2D leftButtonImage,
                                     Texture2D rightButtonImage, ScalableVector2 buttonSize, int buttonSpacing, Action<string, int> onChange,
-                                    int selectedIndex = 0)
+                                    int selectedIndex = 0, bool useRoundedButtons = false)
         {
             if (options.Count == 0)
                 throw new ArgumentException("HorizontalSelector must be initialized with more than one option.");
@@ -85,24 +90,43 @@ namespace Wobble.Graphics.UI.Form
             };
 
             // Create the left selection button.
-            ButtonSelectLeft = new ImageButton(leftButtonImage, (sender, e) => HandleSelection(Direction.Backward))
-            {
-                Parent = this,
-                Alignment = Alignment.MidLeft,
-                Size = buttonSize,
-                Image = leftButtonImage,
-                X = -buttonSize.X.Value - buttonSpacing
-            };
+            var leftButton = CreateSelectionButton(leftButtonImage, "‹", font, fontSize, buttonSize,
+                (sender, e) => HandleSelection(Direction.Backward), useRoundedButtons);
+            ButtonSelectLeft = leftButton as ImageButton;
+            RoundedButtonSelectLeft = leftButton as RoundedButton;
+            leftButton.Parent = this;
+            leftButton.Alignment = Alignment.MidLeft;
+            leftButton.X = -buttonSize.X.Value - buttonSpacing;
 
             // Create the right selection button.
-            ButtonSelectRight = new ImageButton(rightButtonImage, (sender, e) => HandleSelection(Direction.Forward))
+            var rightButton = CreateSelectionButton(rightButtonImage, "›", font, fontSize, buttonSize,
+                (sender, e) => HandleSelection(Direction.Forward), useRoundedButtons);
+            ButtonSelectRight = rightButton as ImageButton;
+            RoundedButtonSelectRight = rightButton as RoundedButton;
+            rightButton.Parent = this;
+            rightButton.Alignment = Alignment.MidRight;
+            rightButton.X = buttonSize.X.Value + buttonSpacing;
+        }
+
+        private static Button CreateSelectionButton(Texture2D image, string label, WobbleFontStore font, int fontSize,
+            ScalableVector2 size, EventHandler clickAction, bool useRoundedButton)
+        {
+            if (!useRoundedButton)
             {
-                Parent = this,
-                Alignment = Alignment.MidRight,
-                Size = buttonSize,
-                Image = rightButtonImage,
-                X = buttonSize.X.Value + buttonSpacing
+                return new ImageButton(image, clickAction)
+                {
+                    Size = size,
+                    Image = image
+                };
+            }
+
+            var button = new RoundedButton(clickAction)
+            {
+                Size = size,
+                Tint = Color.White
             };
+            button.SetLabel(font, label, fontSize, Color.Black);
+            return button;
         }
 
         /// <summary>

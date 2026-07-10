@@ -80,30 +80,24 @@ namespace Wobble.Tests
 
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
 
-            var fonts = new List<string> { "exo2-bold", "exo2-regular", "exo2-semibold", "exo2-medium" };
-            foreach (var fontName in fonts)
-            {
-                FontManager.CacheWobbleFont(fontName, new WobbleFontStore(20, GameBase.Game.Resources.Get($"Wobble.Tests.Resources/Fonts/{fontName}.ttf")));
-            }
+            var interFont = GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/Inter/Inter.ttf");
+            var emojiFont = GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/NotoColorEmoji/NotoColorEmoji.ttf");
 
-            var japaneseFont = new WobbleFontStore(20, GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/exo2-semibold.ttf"), new Dictionary<string, byte[]>()
-                {
-                    {"Emoji", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/symbola-emoji.ttf")},
-                    {"Japanese", GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/droid-sans-japanese.ttf")}
-                });
-
-            FontManager.CacheWobbleFont("exo2-semibold-japanese", japaneseFont);
+            CacheInterFont("inter-regular", FontWeight.Regular, interFont, emojiFont);
+            CacheInterFont("inter-medium", FontWeight.Medium, interFont, emojiFont);
+            CacheInterFont("inter-semibold", FontWeight.SemiBold, interFont, emojiFont);
+            CacheInterFont("inter-bold", FontWeight.Bold, interFont, emojiFont);
 
             IsReadyToUpdate = true;
 
-            FpsCounter = new FpsCounter(FontManager.GetWobbleFont("exo2-semibold"), 18)
+            FpsCounter = new FpsCounter(FontManager.GetWobbleFont("inter-semibold"), 18)
             {
                 Parent = GlobalUserInterface,
                 Alignment = Alignment.BotRight,
                 Size = new ScalableVector2(70, 30),
             };
 
-            WaylandState = new SpriteTextPlus(FontManager.GetWobbleFont("exo2-semibold"), $"Wayland: {WaylandVsync}", 18)
+            WaylandState = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), $"Wayland: {WaylandVsync}", 18)
             {
                 Parent = GlobalUserInterface,
                 Alignment = Alignment.BotRight,
@@ -113,6 +107,16 @@ namespace Wobble.Tests
 
             // Once the assets load, we'll start the main screen
             ScreenManager.ChangeScreen(new SelectionScreen());
+        }
+
+        private static void CacheInterFont(string name, int weight, byte[] interFont, byte[] emojiFont)
+        {
+            FontManager.CacheWobbleFont(name, new WobbleFontStore(20,
+                new WobbleFontFace(interFont, weight: weight),
+                new Dictionary<string, WobbleFontFace>()
+                {
+                    {"Emoji", new WobbleFontFace(emojiFont)}
+                }));
         }
 
         /// <inheritdoc />

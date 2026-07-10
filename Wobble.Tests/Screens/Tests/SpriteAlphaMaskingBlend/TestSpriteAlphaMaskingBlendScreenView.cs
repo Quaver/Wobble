@@ -25,7 +25,7 @@ namespace Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend
                 Size = new ScalableVector2(500, 200)
             };
 
-            var textSprite = new SpriteText("exo2-bold", "This is masked!", 16)
+            var textSprite = new SpriteText("inter-bold", "This is masked!", 16)
             {
                 IsCached = false
             };

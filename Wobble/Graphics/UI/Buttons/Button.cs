@@ -274,6 +274,22 @@ namespace Wobble.Graphics.UI.Buttons
         public void RemoveClickHandlers() => Clicked = null;
 
         /// <summary>
+        ///     Clears transient interaction state when a parent detaches this button without destroying it.
+        /// </summary>
+        internal void ResetInteractionState()
+        {
+            var wasHovered = IsHovered;
+            IsHoveredWithoutDrawOrder = false;
+            IsHovered = false;
+            WaitingForClickRelease = false;
+            IsHeld = false;
+            MouseButtonClicked = null;
+
+            if (wasHovered)
+                LeftHover?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
         ///     Checks if the mouse is in the click area of the button.
         ///
         ///     This is marked as virtual because some buttons may want to increase/decrease

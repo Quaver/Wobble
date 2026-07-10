@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Wobble.Assets;
 using Wobble.Graphics.Sprites;
 using Wobble.Input;
 using Wobble.Window;
@@ -11,12 +10,22 @@ namespace Wobble.Graphics.UI
     public class BackgroundImage : Sprite
     {
         /// <summary>
-        ///     This sprite is overlayed on top of the actual background image
-        ///     to give it a brightness effect.
-        ///
-        ///     TODO: Use a shader for this instead of drawing a new child sprite.
+        ///     Animation controller for the background brightness.
+        ///     Its alpha is applied by multiplying the background tint instead of drawing an overlay.
         /// </summary>
         public Sprite BrightnessSprite { get; }
+
+        private Color _tint = Color.White;
+
+        public override Color Tint
+        {
+            get => _tint;
+            set
+            {
+                _tint = value;
+                ApplyBrightnessTint();
+            }
+        }
 
         /// <summary>
         ///      This is to keep the image centered; calculated when the background is resized.
@@ -37,6 +46,7 @@ namespace Wobble.Graphics.UI
                 _dim = value;
 
                 BrightnessSprite.Alpha = Dim / 100f;
+                ApplyBrightnessTint();
             }
         }
 
@@ -79,10 +89,8 @@ namespace Wobble.Graphics.UI
 
             BrightnessSprite = new Sprite
             {
-                Image = WobbleAssets.WhiteBox,
-                Tint = Color.Black,
                 Parent = this,
-                Size = Size,
+                Visible = false
             };
 
             Dim = dim;
@@ -100,6 +108,7 @@ namespace Wobble.Graphics.UI
         {
             PerformParallaxEffect();
             base.Update(gameTime);
+            ApplyBrightnessTint();
         }
 
         /// <inheritdoc />
@@ -141,9 +150,16 @@ namespace Wobble.Graphics.UI
             X = Offset.X;
             Y = Offset.Y;
 
-            // Given this can be called at construction time, we must check null.
-            if (BrightnessSprite != null)
-                BrightnessSprite.Size = Size;
+        }
+
+        private void ApplyBrightnessTint()
+        {
+            var color = _tint.ToVector4();
+            var brightness = 1 - (BrightnessSprite?.Alpha ?? 0);
+            color.X *= brightness;
+            color.Y *= brightness;
+            color.Z *= brightness;
+            base.Tint = new Color(color);
         }
 
         /// <summary>

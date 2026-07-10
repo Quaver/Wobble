@@ -40,7 +40,7 @@ namespace Wobble.Tests.Screens.Tests.SpriteMasking
                 Image = WobbleAssets.Wallpaper,
             });
 
-            maskContainer.AddContainedSprite(new SpriteText("exo2-bold", "This is masked!", 16)
+            maskContainer.AddContainedSprite(new SpriteText("inter-bold", "This is masked!", 16)
             {
                 Parent = maskContainer,
                 Alignment = Alignment.MidCenter,

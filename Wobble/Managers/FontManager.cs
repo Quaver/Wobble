@@ -35,7 +35,7 @@ namespace Wobble.Managers
         /// <param name="fontBytes"></param>
         /// <param name="implicitFontSizeReduction"></param>
         /// <param name="defaultSize"></param>
-        public static void AddFont(string name, byte[] fontBytes, int implicitFontSizeReduction, int defaultSize = 20)
+        public static void AddFont(string name, byte[] fontBytes, int implicitFontSizeReduction, int defaultSize = 18)
         {
             CacheWobbleFont(name, new WobbleFontStore(defaultSize, fontBytes, implicitFontSizeReduction));
         }

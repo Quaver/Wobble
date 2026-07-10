@@ -93,7 +93,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
                 Alignment = Alignment.MidCenter,
             };
 
-            SpriteText = new SpriteText("exo2-bold", "ABC", 20)
+            SpriteText = new SpriteText("inter-bold", "ABC", 20)
             {
                 Parent = BottomRight,
                 Size = new ScalableVector2(50, 50),
@@ -110,7 +110,7 @@ namespace Wobble.Tests.Screens.Tests.DrawableScaling
 
             #endregion
 
-            DebugText = new SpriteText("exo2-bold", "Hello, World!", 18)
+            DebugText = new SpriteText("inter-bold", "Hello, World!", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopRight

@@ -41,7 +41,7 @@ namespace Wobble.Tests.Screens.Tests.Audio
                 Alignment = Alignment.BotLeft
             };
 
-            new SpriteText("exo2-regular",
+            new SpriteText("inter-regular",
                 "Press Space to pause or resume the song.\nUse the mouse wheel to adjust the song volume.\nPress T and Y to play a hitsound.", 10)
             {
                 Parent = Container,

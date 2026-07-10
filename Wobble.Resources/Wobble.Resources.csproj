@@ -12,4 +12,8 @@
     <EmbeddedResource Include="Wobble.Resources/**/*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ClCompile Include="Wobble.Resources\Shaders\rounded-rect.fx" />
+  </ItemGroup>
+
 </Project>
