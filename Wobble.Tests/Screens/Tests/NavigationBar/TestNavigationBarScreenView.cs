@@ -1,174 +1,73 @@
-using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Buttons;
-using Wobble.Graphics.Sprites;
-using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Navigation;
-using Wobble.Input;
 using Wobble.Managers;
 using Wobble.Screens;
+using Wobble.Tests.Assets;
 using Wobble.Window;
 
 namespace Wobble.Tests.Screens.Tests.NavigationBars
 {
     public class TestNavigationBarScreenView : ScreenView
     {
-        private static readonly Color PageBackground = new Color(17, 24, 32);
-        private static readonly Color BarBackground = new Color(31, 41, 51);
-        private static readonly Color Blue = new Color(15, 186, 229);
-        private static readonly Color Purple = new Color(117, 92, 222);
-        private static readonly Color Green = new Color(105, 230, 166);
+        private const float BarHeight = 40;
+
+        private static readonly Color PageBackground = new Color(250, 250, 250);
+        private static readonly Color ButtonBackground = new Color(80, 80, 80);
 
         private NavigationBar TopBar { get; }
 
         private NavigationBar BottomBar { get; }
 
-        private SpriteTextPlus ManualItem { get; }
-
-        private SpriteTextPlus Status { get; }
-
-        private RoundedButton RuntimeButton { get; set; }
-
-        private bool RuntimeButtonAttached { get; set; }
-
-        private int ManualUpdateCount { get; set; }
+        private string Status { get; set; } = "Ready";
 
         public TestNavigationBarScreenView(Screen screen) : base(screen)
         {
-            var bold = FontManager.GetWobbleFont("inter-bold");
-            var regular = FontManager.GetWobbleFont("inter-regular");
+            TopBar = CreateBar(Alignment.TopLeft);
+            BottomBar = CreateBar(Alignment.BotLeft);
 
-            TopBar = new NavigationBar(WindowManager.Width, 40, BarBackground,
-                new NavigationBarBorderOptions
-                {
-                    Enabled = true,
-                    Position = NavigationBarBorderPosition.Bottom,
-                    BorderColor = Blue,
-                    AnimatedBorderColor = Color.White,
-                    AnimationDuration = 3000
-                })
-            {
-                Parent = Container,
-                Alignment = Alignment.TopLeft,
-                EdgePadding = 18,
-                ItemSpacing = 10
-            };
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Play");
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Tools");
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Chat");
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Favorite");
 
-            TopBar.AddRoundedButton(NavigationBarRegion.Left, new NavigationBarButtonOptions
+            var profileButton = TopBar.AddRoundedButton(NavigationBarRegion.Right, new NavigationBarButtonOptions
             {
-                Icon = WobbleAssets.WhiteBox,
-                IconSize = new Vector2(12, 12),
-                Text = "FIXED",
-                Font = bold,
-                Height = 28,
-                BackgroundColor = Blue,
-                ClickAction = (sender, args) => Status.Text = "Fixed left button clicked"
-            });
-
-            TopBar.AddRoundedButton(NavigationBarRegion.Center, new NavigationBarButtonOptions
-            {
-                Icon = WobbleAssets.WhiteBox,
-                IconSize = new Vector2(14, 14),
-                Text = "AUTO-SIZED CENTER",
-                Font = bold,
+                Icon = Textures.Home,
+                IconSize = new Vector2(16, 16),
+                Text = "[WWWW] Nickname",
+                Font = FontManager.GetWobbleFont("inter-bold"),
+                FontSize = 11,
                 WidthMode = ButtonSizeMode.Auto,
-                HeightMode = ButtonSizeMode.Auto,
-                AutoSizePadding = new Vector2(34, 16),
-                BackgroundColor = Purple,
-                ClickAction = (sender, args) => Status.Text = "Auto-sized center button clicked"
+                Height = 26,
+                AutoSizePadding = new Vector2(12, 0),
+                CornerRadius = 3,
+                BackgroundColor = ButtonBackground,
+                ClickAction = (sender, args) => Status = "Profile"
             });
 
-            ManualItem = new SpriteTextPlus(regular, "MANUAL 0", 17, false)
-            {
-                Tint = Green
-            };
-            TopBar.Add(NavigationBarRegion.Right, ManualItem);
+            const float profileRightPadding = 12;
+            profileButton.Width += profileRightPadding;
+            profileButton.Icon.X -= profileRightPadding / 2;
+            profileButton.Label.X -= profileRightPadding / 2;
+            TopBar.RefreshLayout();
 
-            BottomBar = new NavigationBar(WindowManager.Width, 40, borderOptions: new NavigationBarBorderOptions
-            {
-                Enabled = true,
-                Position = NavigationBarBorderPosition.Top,
-                BorderColor = Purple,
-                AnimatedBorderColor = Green,
-                AnimationDuration = 5000
-            })
-            {
-                Parent = Container,
-                Alignment = Alignment.BotLeft,
-                EdgePadding = 18,
-                ItemSpacing = 10
-            };
+            AddIconButton(TopBar, NavigationBarRegion.Right, "Menu");
 
-            BottomBar.AddRoundedButton(NavigationBarRegion.Left, new NavigationBarButtonOptions
-            {
-                Text = "TRANSPARENT FOOTER",
-                Font = bold,
-                WidthMode = ButtonSizeMode.Auto,
-                Height = 28,
-                AutoSizePadding = new Vector2(28, 12),
-                BackgroundColor = new Color(58, 69, 80)
-            });
+            AddIconButton(BottomBar, NavigationBarRegion.Left, "Website");
+            AddIconButton(BottomBar, NavigationBarRegion.Left, "Discord");
+            AddIconButton(BottomBar, NavigationBarRegion.Left, "GitHub");
 
-            BottomBar.Add(NavigationBarRegion.Center, new PulsingSprite
-            {
-                Image = WobbleAssets.WhiteBox,
-                Size = new ScalableVector2(28, 28),
-                Tint = Green
-            });
-
-            BottomBar.AddRoundedButton(NavigationBarRegion.Right, new NavigationBarButtonOptions
-            {
-                Text = "RIGHT",
-                Font = bold,
-                Height = 28,
-                BackgroundColor = Blue
-            });
-
-            new SpriteTextPlus(bold, "NAVIGATION BAR", 28)
-            {
-                Parent = Container,
-                Alignment = Alignment.TopCenter,
-                Y = 135,
-                Tint = Color.White
-            };
-
-            new SpriteTextPlus(regular,
-                "M: update custom item  |  A: add/remove button  |  R: clear/restore right region", 17)
-            {
-                Parent = Container,
-                Alignment = Alignment.TopCenter,
-                Y = 180,
-                Tint = new Color(190, 200, 210)
-            };
-
-            Status = new SpriteTextPlus(regular, "Navbar and footer use normal Wobble update/draw behavior.", 18, false)
-            {
-                Parent = Container,
-                Alignment = Alignment.MidCenter,
-                Tint = Green
-            };
+            AddIconButton(BottomBar, NavigationBarRegion.Right, "Volume");
+            AddIconButton(BottomBar, NavigationBarRegion.Right, "Settings");
+            AddIconButton(BottomBar, NavigationBarRegion.Right, "Power");
         }
 
         public override void Update(GameTime gameTime)
         {
+            RefreshViewportLayout();
             Container.Update(gameTime);
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.M))
-            {
-                ManualUpdateCount++;
-                ManualItem.Text = $"MANUAL {ManualUpdateCount}";
-                TopBar.RefreshLayout();
-                Status.Text = "Custom item updated and layout refreshed";
-            }
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.A))
-                ToggleRuntimeButton(bold: FontManager.GetWobbleFont("inter-bold"));
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.R))
-                ToggleRightRegion();
         }
 
         public override void Draw(GameTime gameTime)
@@ -177,72 +76,35 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
             Container.Draw(gameTime);
         }
 
-        public override void Destroy()
+        public override void Destroy() => Container.Destroy();
+
+        private NavigationBar CreateBar(Alignment alignment) => new NavigationBar(
+            WindowManager.Width, BarHeight)
         {
-            Container.Destroy();
+            Parent = Container,
+            Alignment = alignment,
+            EdgePadding = 10,
+            ItemSpacing = 7
+        };
 
-            if (RuntimeButton != null && !RuntimeButton.IsDisposed)
-                RuntimeButton.Destroy();
-
-            if (!ManualItem.IsDisposed)
-                ManualItem.Destroy();
+        private void AddIconButton(NavigationBar bar, NavigationBarRegion region, string action)
+        {
+            bar.AddRoundedButton(region, new NavigationBarButtonOptions
+            {
+                Icon = Textures.Home,
+                IconSize = new Vector2(16, 16),
+                Width = 26,
+                Height = 26,
+                CornerRadius = 3,
+                BackgroundColor = ButtonBackground,
+                ClickAction = (sender, args) => Status = action
+            });
         }
 
-        private void ToggleRuntimeButton(WobbleFontStore bold)
+        private void RefreshViewportLayout()
         {
-            if (RuntimeButtonAttached)
-            {
-                TopBar.Remove(RuntimeButton);
-                RuntimeButtonAttached = false;
-                Status.Text = "Runtime button removed without being destroyed";
-                return;
-            }
-
-            if (RuntimeButton == null)
-            {
-                RuntimeButton = TopBar.AddRoundedButton(NavigationBarRegion.Left, new NavigationBarButtonOptions
-                {
-                    Text = "ADDED",
-                    Font = bold,
-                    WidthMode = ButtonSizeMode.Auto,
-                    Height = 42,
-                    BackgroundColor = Green,
-                    ForegroundColor = PageBackground
-                });
-                RuntimeButtonAttached = true;
-                Status.Text = "Runtime button added";
-                return;
-            }
-
-            TopBar.Add(NavigationBarRegion.Left, RuntimeButton);
-            RuntimeButtonAttached = true;
-            Status.Text = "Existing runtime button restored";
-        }
-
-        private void ToggleRightRegion()
-        {
-            if (ManualItem.Parent == TopBar)
-            {
-                TopBar.Clear(NavigationBarRegion.Right);
-                Status.Text = "Right region cleared";
-            }
-            else
-            {
-                TopBar.Add(NavigationBarRegion.Right, ManualItem);
-                Status.Text = "Right region restored";
-            }
-        }
-
-        private class PulsingSprite : Sprite
-        {
-            private double Elapsed { get; set; }
-
-            public override void Update(GameTime gameTime)
-            {
-                Elapsed += gameTime.ElapsedGameTime.TotalMilliseconds;
-                Alpha = 0.55f + 0.45f * (float)Math.Sin(Elapsed / 250);
-                base.Update(gameTime);
-            }
+            TopBar.Width = WindowManager.Width;
+            BottomBar.Width = WindowManager.Width;
         }
     }
 }
