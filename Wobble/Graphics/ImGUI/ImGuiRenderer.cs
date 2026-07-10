@@ -135,7 +135,21 @@ namespace Wobble.Graphics.ImGUI
                     DefaultFontPtr = io.Fonts.AddFontDefault();
 
                 foreach (var font in Options.Fonts)
+                {
                     font.Context = io.Fonts.AddFontFromFileTTF(font.Path, font.Size * Scale);
+
+                    foreach (var fallback in font.Fallbacks)
+                    {
+                        var config = new ImFontConfigPtr(ImGuiNative.ImFontConfig_ImFontConfig());
+                        config.MergeMode = true;
+                        config.FontNo = fallback.Index;
+
+                        io.Fonts.AddFontFromFileTTF(fallback.Path, font.Size * Scale, config,
+                            GetGlyphRanges(io.Fonts, fallback.GlyphRanges));
+
+                        config.Destroy();
+                    }
+                }
             }
 
             io.Fonts.GetTexDataAsRGBA32(out byte* pixelData, out var width, out var height, out var bytesPerPixel);
@@ -158,6 +172,31 @@ namespace Wobble.Graphics.ImGUI
             // Let ImGui know where to find the texture
             io.Fonts.SetTexID(FontTextureId.Value);
             io.Fonts.ClearTexData(); // Clears CPU side texture data
+        }
+
+        private static IntPtr GetGlyphRanges(ImFontAtlasPtr fonts, ImGuiGlyphRanges ranges)
+        {
+            switch (ranges)
+            {
+                case ImGuiGlyphRanges.ChineseFull:
+                    return fonts.GetGlyphRangesChineseFull();
+                case ImGuiGlyphRanges.ChineseSimplifiedCommon:
+                    return fonts.GetGlyphRangesChineseSimplifiedCommon();
+                case ImGuiGlyphRanges.Japanese:
+                    return fonts.GetGlyphRangesJapanese();
+                case ImGuiGlyphRanges.Korean:
+                    return fonts.GetGlyphRangesKorean();
+                case ImGuiGlyphRanges.Cyrillic:
+                    return fonts.GetGlyphRangesCyrillic();
+                case ImGuiGlyphRanges.Greek:
+                    return fonts.GetGlyphRangesGreek();
+                case ImGuiGlyphRanges.Thai:
+                    return fonts.GetGlyphRangesThai();
+                case ImGuiGlyphRanges.Vietnamese:
+                    return fonts.GetGlyphRangesVietnamese();
+                default:
+                    return fonts.GetGlyphRangesDefault();
+            }
         }
 
         /// <summary>

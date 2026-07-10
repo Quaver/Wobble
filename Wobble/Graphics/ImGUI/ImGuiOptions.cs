@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using ImGuiNET;
 
 namespace Wobble.Graphics.ImGUI
@@ -25,10 +24,42 @@ namespace Wobble.Graphics.ImGUI
 
         public int Size { get; }
 
-        public ImGuiFont(string path, int size = 15)
+        public List<ImGuiFontFallback> Fallbacks { get; }
+
+        public ImGuiFont(string path, int size = 15, List<ImGuiFontFallback> fallbacks = null)
         {
             Path = path;
             Size = size;
+            Fallbacks = fallbacks ?? new List<ImGuiFontFallback>();
         }
+    }
+
+    public class ImGuiFontFallback
+    {
+        public string Path { get; }
+
+        public int Index { get; }
+
+        public ImGuiGlyphRanges GlyphRanges { get; }
+
+        public ImGuiFontFallback(string path, int index = 0, ImGuiGlyphRanges glyphRanges = ImGuiGlyphRanges.Default)
+        {
+            Path = path;
+            Index = index;
+            GlyphRanges = glyphRanges;
+        }
+    }
+
+    public enum ImGuiGlyphRanges
+    {
+        Default,
+        ChineseFull,
+        ChineseSimplifiedCommon,
+        Japanese,
+        Korean,
+        Cyrillic,
+        Greek,
+        Thai,
+        Vietnamese
     }
 }
