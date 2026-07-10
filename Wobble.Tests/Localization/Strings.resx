@@ -30,6 +30,9 @@
   <data name="Screen_BlurredBackgroundImage" xml:space="preserve">
     <value>Blurred BG Image</value>
   </data>
+  <data name="Screen_ButtonPerformance" xml:space="preserve">
+    <value>Button Performance</value>
+  </data>
   <data name="Screen_Discord" xml:space="preserve">
     <value>Discord Rich Pr.</value>
   </data>
