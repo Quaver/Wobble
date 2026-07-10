@@ -147,7 +147,7 @@ namespace Wobble.Graphics.Sprites.Text
             if (_dirty)
             {
                 _dirty = false;
-                GameBase.Game.ScheduledRenderTargetDraws.Add(() => Cache(gameTime));
+                GameBase.Game.ScheduleRenderTargetDraw(() => Cache(gameTime));
             }
 
             base.Update(gameTime);

@@ -93,7 +93,15 @@ namespace Wobble
 
         /// <summary>
         /// </summary>
-        public List<Action> ScheduledRenderTargetDraws { get; } = new List<Action>();
+        private object ScheduledRenderTargetDrawsLock { get; } = new object();
+
+        /// <summary>
+        /// </summary>
+        private List<Action> ScheduledRenderTargetDraws { get; } = new List<Action>();
+
+        /// <summary>
+        /// </summary>
+        private List<Action> ScheduledRenderTargetDrawsToRun { get; } = new List<Action>();
 
         /// <summary>
         ///     The sprite used for clearing the alpha channel. Its alpha must be 1 (fully opaque) and its color does not matter.
@@ -128,6 +136,19 @@ namespace Wobble
             il.Emit(OpCodes.Ret);
 
             _beginCalled = (Predicate<SpriteBatch>)getter.CreateDelegate(typeof(Predicate<SpriteBatch>));
+        }
+
+        /// <summary>
+        ///     Schedules work that must run during the draw phase.
+        /// </summary>
+        /// <param name="action"></param>
+        public void ScheduleRenderTargetDraw(Action action)
+        {
+            if (action == null)
+                return;
+
+            lock (ScheduledRenderTargetDrawsLock)
+                ScheduledRenderTargetDraws.Add(action);
         }
 
         /// <summary>
@@ -333,15 +354,26 @@ namespace Wobble
 #if DEBUG
             DebugDrawStopwatch.Restart();
             var phaseStopwatch = Stopwatch.StartNew();
-            var scheduledRenderTargetDrawCount = ScheduledRenderTargetDraws.Count;
+#endif
+
+            ScheduledRenderTargetDrawsToRun.Clear();
+
+            lock (ScheduledRenderTargetDrawsLock)
+            {
+                ScheduledRenderTargetDrawsToRun.AddRange(ScheduledRenderTargetDraws);
+                ScheduledRenderTargetDraws.Clear();
+            }
+
+            var scheduledRenderTargetDrawCount = ScheduledRenderTargetDrawsToRun.Count;
+
+#if DEBUG
             PerformanceStats.BeginDraw(scheduledRenderTargetDrawCount, ScreenManager.CurrentScreenName);
 #endif
 
-            for (var i = ScheduledRenderTargetDraws.Count - 1; i >= 0; i--)
-            {
-                ScheduledRenderTargetDraws[i]?.Invoke();
-                ScheduledRenderTargetDraws.Remove(ScheduledRenderTargetDraws[i]);
-            }
+            for (var i = scheduledRenderTargetDrawCount - 1; i >= 0; i--)
+                ScheduledRenderTargetDrawsToRun[i]?.Invoke();
+
+            ScheduledRenderTargetDrawsToRun.Clear();
 
 #if DEBUG
             DebugScheduledRenderTargetDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
