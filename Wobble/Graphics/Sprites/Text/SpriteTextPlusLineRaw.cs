@@ -39,6 +39,11 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         /// <summary>
+        ///     The measured glyph width before render-target padding is applied.
+        /// </summary>
+        public float MeasuredWidth { get; private set; }
+
+        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
@@ -68,6 +73,7 @@ namespace Wobble.Graphics.Sprites.Text
             Font.FontSize = FontSize;
 
             var (x, y) = Font.Store.MeasureString(Text);
+            MeasuredWidth = x;
             var padding = Math.Max(2f, FontSize * 0.25f);
             var height = Math.Max(y, Font.Store.LineHeight);
 

@@ -183,6 +183,7 @@ namespace Wobble.Graphics.Sprites.Text
             }
 
             float width = 0, height = 0;
+            var lineSprites = new List<SpriteTextPlusLine>();
 
             var lines = Text?.Split('\n').ToList() ?? new List<string>();
             for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
@@ -193,7 +194,7 @@ namespace Wobble.Graphics.Sprites.Text
                 // Empty lines are valid (for example, consecutive newlines). Some font/render-scale
                 // combinations give their empty sprite a small non-zero width, but there is nothing
                 // that can be wrapped in that case.
-                if (line.Length > 0 && MaxWidth != null && lineSprite.Width > MaxWidth)
+                if (line.Length > 0 && MaxWidth != null && lineSprite.LayoutWidth > MaxWidth)
                 {
                     // Try to split the line on spaces to fit it into MaxWidth.
                     var spaces = new List<int>();
@@ -250,19 +251,25 @@ namespace Wobble.Graphics.Sprites.Text
                 }
 
                 lineSprite.Parent = this;
-                lineSprite.Alignment = ConvertTextAlignment();
                 lineSprite.Y = height;
                 lineSprite.UsePreviousSpriteBatchOptions = true;
                 lineSprite.Tint = Tint;
                 lineSprite.Alpha = Alpha;
+                lineSprites.Add(lineSprite);
 
-                width = Math.Max(width, lineSprite.Width);
+                width = Math.Max(width, lineSprite.LayoutWidth);
 
                 Font.FontSize = FontSize;
                 height += Font.Store.LineHeight;
             }
 
             Size = new ScalableVector2(width, height);
+
+            foreach (var lineSprite in lineSprites)
+            {
+                lineSprite.Alignment = Alignment.TopLeft;
+                lineSprite.X = GetLineX(width, lineSprite.LayoutWidth);
+            }
         }
 
         private void OnFontChanged(object sender, EventArgs e) => RefreshText();
@@ -393,16 +400,16 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private Alignment ConvertTextAlignment()
+        private float GetLineX(float availableWidth, float lineWidth)
         {
             switch (TextAlignment)
             {
                 case TextAlignment.Left:
-                    return Alignment.TopLeft;
+                    return 0;
                 case TextAlignment.Center:
-                    return Alignment.TopCenter;
+                    return (availableWidth - lineWidth) / 2f;
                 case TextAlignment.Right:
-                    return Alignment.TopRight;
+                    return availableWidth - lineWidth;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
