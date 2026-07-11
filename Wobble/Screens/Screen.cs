@@ -7,9 +7,8 @@ namespace Wobble.Screens
     public abstract class Screen : IDrawable
     {
         /// <summary>
-        ///     If set to true, the screen will be automatically destroyed when calling
-        ///     <see cref="ScreenManager.RemoveScreen"/>. It would be useful to set this to false
-        ///     if you want to keep the same instance of a screen around
+        ///     Whether the screen view should be destroyed when another screen becomes current.
+        ///     Set this to false only when the caller keeps and later reuses the screen instance.
         /// </summary>
         public bool AutomaticallyDestroyOnScreenSwitch { get; set; } = true;
 
@@ -29,6 +28,14 @@ namespace Wobble.Screens
         /// </summary>
         /// <param name="gameTime"></param>
         public virtual void Draw(GameTime gameTime) => View.Draw(gameTime);
+
+        /// <summary>
+        ///     Called after this screen becomes current and retained elements have been attached
+        ///     to its view container.
+        /// </summary>
+        public virtual void OnActivated()
+        {
+        }
 
         /// <inheritdoc />
         /// <summary>

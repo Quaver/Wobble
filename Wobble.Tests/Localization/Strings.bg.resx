@@ -93,4 +93,25 @@
     <data name="Selection_Title" xml:space="preserve">
         <value>Wobble Тестове</value>
     </data>
+    <data name="Selection_WelcomeHelp" xml:space="preserve">
+        <value>Изберете категория от навигационната лента, за да отворите тестов екран.</value>
+    </data>
+    <data name="Category_Rendering" xml:space="preserve">
+        <value>Изобразяване</value>
+    </data>
+    <data name="Category_LayoutMotion" xml:space="preserve">
+        <value>Оформление и движение</value>
+    </data>
+    <data name="Category_TextControls" xml:space="preserve">
+        <value>Текст и контроли</value>
+    </data>
+    <data name="Category_InputIntegration" xml:space="preserve">
+        <value>Вход и интеграция</value>
+    </data>
+    <data name="Category_RuntimeFramework" xml:space="preserve">
+        <value>Среда и рамка</value>
+    </data>
+    <data name="Navigation_BackToTests" xml:space="preserve">
+        <value>Назад към Wobble Тестове</value>
+    </data>
 </root>

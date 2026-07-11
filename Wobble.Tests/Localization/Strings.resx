@@ -48,6 +48,9 @@
   <data name="Screen_NavigationBar" xml:space="preserve">
     <value>Navigation Bar</value>
   </data>
+  <data name="Screen_PersistentElements" xml:space="preserve">
+    <value>Persistent Elements</value>
+  </data>
   <data name="Screen_Discord" xml:space="preserve">
     <value>Discord Rich Pr.</value>
   </data>
@@ -104,5 +107,26 @@
   </data>
   <data name="Selection_Title" xml:space="preserve">
     <value>Wobble Tests</value>
+  </data>
+  <data name="Selection_WelcomeHelp" xml:space="preserve">
+    <value>Choose a category from the navigation bar to open a test screen.</value>
+  </data>
+  <data name="Category_Rendering" xml:space="preserve">
+    <value>Rendering</value>
+  </data>
+  <data name="Category_LayoutMotion" xml:space="preserve">
+    <value>Layout &amp; Motion</value>
+  </data>
+  <data name="Category_TextControls" xml:space="preserve">
+    <value>Text &amp; Controls</value>
+  </data>
+  <data name="Category_InputIntegration" xml:space="preserve">
+    <value>Input &amp; Integration</value>
+  </data>
+  <data name="Category_RuntimeFramework" xml:space="preserve">
+    <value>Runtime &amp; Framework</value>
+  </data>
+  <data name="Navigation_BackToTests" xml:space="preserve">
+    <value>Back to Wobble Tests</value>
   </data>
 </root>

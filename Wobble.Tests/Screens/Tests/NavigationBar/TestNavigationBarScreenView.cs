@@ -1,10 +1,12 @@
 using Microsoft.Xna.Framework;
 using Wobble.Graphics;
 using Wobble.Graphics.Buttons;
+using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Navigation;
 using Wobble.Managers;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
+using Wobble.Tests.Screens.Selection;
 using Wobble.Window;
 
 namespace Wobble.Tests.Screens.Tests.NavigationBars
@@ -20,15 +22,28 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
 
         private NavigationBar BottomBar { get; }
 
-        private string Status { get; set; } = "Ready";
+        private SpriteTextPlus StatusText { get; }
+
+        private string Status
+        {
+            get => StatusText.Text;
+            set => StatusText.Text = value;
+        }
 
         public TestNavigationBarScreenView(Screen screen) : base(screen)
         {
             TopBar = CreateBar(Alignment.TopLeft);
             BottomBar = CreateBar(Alignment.BotLeft);
 
+            StatusText = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), "Ready", 20)
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter
+            };
+
             AddIconButton(TopBar, NavigationBarRegion.Left, "Play", true, true);
-            AddIconButton(TopBar, NavigationBarRegion.Left, "Tools", true);
+            AddIconButton(TopBar, NavigationBarRegion.Left, "Tools", true, false,
+                CreateDropdownOptions("Editor", "Import", "Export"));
             AddIconButton(TopBar, NavigationBarRegion.Left, "Chat", true);
             AddIconButton(TopBar, NavigationBarRegion.Left, "Favorite", true);
 
@@ -56,12 +71,27 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
 
             AddIconButton(TopBar, NavigationBarRegion.Right, "Menu");
 
+            TopBar.AddRoundedButton(NavigationBarRegion.Right, new NavigationBarButtonOptions
+            {
+                Text = LocalizationManager.Get("Navigation_BackToTests"),
+                Font = FontManager.GetWobbleFont("inter-bold"),
+                FontSize = 12,
+                WidthMode = ButtonSizeMode.Auto,
+                Height = 26,
+                AutoSizePadding = new Vector2(12, 0),
+                CornerRadius = 3,
+                BackgroundColor = ButtonBackground,
+                AntiAliasedEdges = false,
+                ClickAction = (sender, args) => ScreenManager.ChangeScreen(new SelectionScreen())
+            });
+
             AddIconButton(BottomBar, NavigationBarRegion.Left, "Website");
             AddIconButton(BottomBar, NavigationBarRegion.Left, "Discord");
             AddIconButton(BottomBar, NavigationBarRegion.Left, "GitHub");
 
             AddIconButton(BottomBar, NavigationBarRegion.Right, "Volume");
-            AddIconButton(BottomBar, NavigationBarRegion.Right, "Settings");
+            AddIconButton(BottomBar, NavigationBarRegion.Right, "Settings", false, false,
+                CreateDropdownOptions("Graphics", "Audio", "Input"));
             AddIconButton(BottomBar, NavigationBarRegion.Right, "Power");
         }
 
@@ -89,14 +119,17 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
         };
 
         private void AddIconButton(NavigationBar bar, NavigationBarRegion region, string action,
-            bool expandLabelOnHover = false, bool alwaysShowLabel = false)
+            bool expandLabelOnHover = false, bool alwaysShowLabel = false,
+            NavigationBarDropdownOption[] dropdownOptions = null)
         {
             bar.AddRoundedButton(region, new NavigationBarButtonOptions
             {
                 Icon = Textures.Home,
                 IconSize = new Vector2(16, 16),
                 Text = expandLabelOnHover ? action : null,
-                Font = expandLabelOnHover ? FontManager.GetWobbleFont("inter-bold") : null,
+                Font = expandLabelOnHover || dropdownOptions != null
+                    ? FontManager.GetWobbleFont("inter-bold")
+                    : null,
                 FontSize = 12,
                 Width = 26,
                 Height = 26,
@@ -108,8 +141,26 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
                 AlwaysShowLabel = alwaysShowLabel,
                 HoverExpansionDuration = 150,
                 ExpandedLabelRightPadding = 0,
-                ClickAction = (sender, args) => Status = action
+                ClickAction = (sender, args) => Status = action,
+                DropdownOptions = dropdownOptions
             });
+        }
+
+        private NavigationBarDropdownOption[] CreateDropdownOptions(params string[] actions)
+        {
+            var options = new NavigationBarDropdownOption[actions.Length];
+
+            for (var i = 0; i < actions.Length; i++)
+            {
+                var action = actions[i];
+                options[i] = new NavigationBarDropdownOption
+                {
+                    Text = action,
+                    ClickAction = (sender, args) => Status = action
+                };
+            }
+
+            return options;
         }
 
         private void RefreshViewportLayout()

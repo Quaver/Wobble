@@ -9,6 +9,7 @@ using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
+using Wobble.Input;
 
 namespace Wobble.Graphics.UI.Navigation
 {
@@ -92,6 +93,32 @@ namespace Wobble.Graphics.UI.Navigation
         public float ExpandedLabelRightPadding { get; set; }
 
         public EventHandler ClickAction { get; set; }
+
+        public IReadOnlyList<NavigationBarDropdownOption> DropdownOptions { get; set; }
+
+        public Color? DropdownBackgroundColor { get; set; }
+
+        public Color? DropdownItemBackgroundColor { get; set; }
+
+        public Color? DropdownForegroundColor { get; set; }
+
+        public float DropdownItemHeight { get; set; } = 32;
+
+        public Vector2 DropdownItemPadding { get; set; } = new Vector2(20, 0);
+
+        public float DropdownPadding { get; set; } = 4;
+
+        public float DropdownItemSpacing { get; set; } = 2;
+    }
+
+    /// <summary>
+    ///     A text option displayed in a navigation bar button's dropdown.
+    /// </summary>
+    public class NavigationBarDropdownOption
+    {
+        public string Text { get; set; }
+
+        public EventHandler ClickAction { get; set; }
     }
 
     /// <summary>
@@ -117,6 +144,8 @@ namespace Wobble.Graphics.UI.Navigation
         private float _itemSpacing = 12;
         private float _layoutWidth;
         private float _layoutHeight;
+
+        private DropdownState _openDropdown;
 
         private NavigationBarBorderOptions BorderOptions { get; }
 
@@ -178,6 +207,15 @@ namespace Wobble.Graphics.UI.Navigation
             PerformBorderAnimation();
             base.Update(gameTime);
 
+            if (_openDropdown != null)
+            {
+                PositionDropdown(_openDropdown);
+
+                if (MouseManager.IsUniqueClick(MouseButton.Left) &&
+                    !_openDropdown.Trigger.IsHovered() && !_openDropdown.Menu.IsHovered())
+                    CloseDropdown();
+            }
+
             if (HaveItemSizesChanged())
                 RefreshLayout();
         }
@@ -206,28 +244,35 @@ namespace Wobble.Graphics.UI.Navigation
             RefreshLayout();
         }
 
-        public bool Remove(Drawable drawable)
+        public bool Remove(Drawable drawable, bool destroy = false)
         {
             if (drawable == null || !_items.TryGetValue(drawable, out var region))
                 return false;
+
+            if (_openDropdown?.Trigger == drawable)
+                CloseDropdown();
 
             (drawable as Button)?.ResetInteractionState();
             _regions[region].Remove(drawable);
             _items.Remove(drawable);
             _itemSizes.Remove(drawable);
             DetachWithoutDestroying(drawable);
+
+            if (destroy)
+                drawable.Destroy();
+
             RefreshLayout();
             return true;
         }
 
-        public void Clear(NavigationBarRegion? region = null)
+        public void Clear(NavigationBarRegion? region = null, bool destroy = false)
         {
             var drawables = region == null
                 ? _items.Keys.ToArray()
                 : _regions[region.Value].ToArray();
 
             foreach (var drawable in drawables)
-                Remove(drawable);
+                Remove(drawable, destroy);
         }
 
         public RoundedButton AddRoundedButton(NavigationBarRegion region, NavigationBarButtonOptions options)
@@ -240,6 +285,10 @@ namespace Wobble.Graphics.UI.Navigation
 
             if (!string.IsNullOrEmpty(options.Text) && options.FontSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(options), "Font size must be greater than zero.");
+
+            if (options.DropdownOptions?.Any(x => x != null && !string.IsNullOrEmpty(x.Text)) == true &&
+                options.Font == null)
+                throw new ArgumentException("A font is required when dropdown text is supplied.", nameof(options));
 
             var button = new RoundedButton(options.ClickAction)
             {
@@ -268,7 +317,17 @@ namespace Wobble.Graphics.UI.Navigation
 
             button.RecalculateAutoSize();
             Add(region, button);
+
+            if (options.DropdownOptions?.Count > 0)
+                button.Clicked += (sender, args) => ToggleDropdown(button, options);
+
             return button;
+        }
+
+        public override void Destroy()
+        {
+            CloseDropdown();
+            base.Destroy();
         }
 
         public void RefreshLayout()
@@ -391,6 +450,128 @@ namespace Wobble.Graphics.UI.Navigation
                 drawable.X = -EdgePadding - totalWidth + offset + drawable.Width;
                 drawable.Y = 0;
                 offset += drawable.Width + ItemSpacing;
+            }
+        }
+
+        private void ToggleDropdown(RoundedButton trigger, NavigationBarButtonOptions options)
+        {
+            if (_openDropdown?.Trigger == trigger)
+            {
+                CloseDropdown();
+                return;
+            }
+
+            CloseDropdown();
+
+            var padding = Math.Max(0, options.DropdownPadding);
+            var spacing = Math.Max(0, options.DropdownItemSpacing);
+            var itemHeight = Math.Max(1, options.DropdownItemHeight);
+            var rows = new List<RoundedButton>();
+            var menu = new Sprite
+            {
+                Parent = this,
+                Alignment = Alignment.TopLeft,
+                Image = WobbleAssets.WhiteBox,
+                Tint = options.DropdownBackgroundColor ?? options.BackgroundColor
+            };
+
+            var width = trigger.Width;
+
+            foreach (var dropdownOption in options.DropdownOptions)
+            {
+                if (dropdownOption == null || string.IsNullOrEmpty(dropdownOption.Text))
+                    continue;
+
+                var row = new RoundedButton
+                {
+                    Parent = menu,
+                    Alignment = Alignment.TopLeft,
+                    Height = itemHeight,
+                    WidthMode = ButtonSizeMode.Auto,
+                    HeightMode = ButtonSizeMode.Fixed,
+                    AutoSizePadding = options.DropdownItemPadding,
+                    CornerRadius = options.CornerRadius,
+                    PerformHoverFade = options.PerformHoverFade,
+                    AntiAliasedEdges = options.AntiAliasedEdges,
+                    Tint = options.DropdownItemBackgroundColor ?? options.BackgroundColor
+                };
+
+                row.SetLabel(options.Font, dropdownOption.Text, options.FontSize,
+                    options.DropdownForegroundColor ?? options.ForegroundColor);
+                row.RecalculateAutoSize();
+                width = Math.Max(width, row.Width);
+                row.Clicked += (sender, args) =>
+                {
+                    dropdownOption.ClickAction?.Invoke(sender, args);
+                    CloseDropdown();
+                };
+                rows.Add(row);
+            }
+
+            if (rows.Count == 0)
+            {
+                menu.Destroy();
+                return;
+            }
+
+            for (var i = 0; i < rows.Count; i++)
+            {
+                rows[i].WidthMode = ButtonSizeMode.Fixed;
+                rows[i].Width = width;
+                rows[i].X = padding;
+                rows[i].Y = padding + i * (itemHeight + spacing);
+            }
+
+            menu.Size = new ScalableVector2(width + padding * 2,
+                padding * 2 + rows.Count * itemHeight + (rows.Count - 1) * spacing);
+            _openDropdown = new DropdownState(trigger, menu, _items[trigger]);
+            PositionDropdown(_openDropdown);
+        }
+
+        private void PositionDropdown(DropdownState dropdown)
+        {
+            var opensDown = ScreenRectangle.Y + Height / 2f <= Window.WindowManager.Height / 2f;
+            var triggerLeft = dropdown.Trigger.ScreenRectangle.X - ScreenRectangle.X;
+
+            switch (dropdown.Region)
+            {
+                case NavigationBarRegion.Center:
+                    dropdown.Menu.X = triggerLeft + (dropdown.Trigger.Width - dropdown.Menu.Width) / 2f;
+                    break;
+                case NavigationBarRegion.Right:
+                    dropdown.Menu.X = triggerLeft + dropdown.Trigger.Width - dropdown.Menu.Width;
+                    break;
+                default:
+                    dropdown.Menu.X = triggerLeft;
+                    break;
+            }
+
+            dropdown.Menu.Y = opensDown ? Height : -dropdown.Menu.Height;
+        }
+
+        private void CloseDropdown()
+        {
+            if (_openDropdown == null)
+                return;
+
+            var menu = _openDropdown.Menu;
+            _openDropdown = null;
+            menu.Destroy();
+        }
+
+        private sealed class DropdownState
+        {
+            public RoundedButton Trigger { get; }
+
+            public Sprite Menu { get; }
+
+            public NavigationBarRegion Region { get; }
+
+            public DropdownState(RoundedButton trigger, Sprite menu, NavigationBarRegion region)
+            {
+                Trigger = trigger;
+                Menu = menu;
+                Region = region;
             }
         }
 
