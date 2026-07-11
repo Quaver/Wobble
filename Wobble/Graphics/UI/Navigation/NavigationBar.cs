@@ -206,7 +206,7 @@ namespace Wobble.Graphics.UI.Navigation
             RefreshLayout();
         }
 
-        public bool Remove(Drawable drawable)
+        public bool Remove(Drawable drawable, bool destroy = false)
         {
             if (drawable == null || !_items.TryGetValue(drawable, out var region))
                 return false;
@@ -216,18 +216,22 @@ namespace Wobble.Graphics.UI.Navigation
             _items.Remove(drawable);
             _itemSizes.Remove(drawable);
             DetachWithoutDestroying(drawable);
+
+            if (destroy)
+                drawable.Destroy();
+
             RefreshLayout();
             return true;
         }
 
-        public void Clear(NavigationBarRegion? region = null)
+        public void Clear(NavigationBarRegion? region = null, bool destroy = false)
         {
             var drawables = region == null
                 ? _items.Keys.ToArray()
                 : _regions[region.Value].ToArray();
 
             foreach (var drawable in drawables)
-                Remove(drawable);
+                Remove(drawable, destroy);
         }
 
         public RoundedButton AddRoundedButton(NavigationBarRegion region, NavigationBarButtonOptions options)

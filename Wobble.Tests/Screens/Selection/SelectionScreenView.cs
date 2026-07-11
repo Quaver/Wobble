@@ -23,6 +23,7 @@ using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.NavigationBars;
+using Wobble.Tests.Screens.Tests.PersistentElements;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.HorizontalClipping;
 using Wobble.Tests.Screens.Tests.MarqueeSpriteText;
@@ -226,6 +227,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.NavigationBar:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestNavigationBarScreen());
+                        break;
+                    case ScreenType.PersistentElements:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestPersistentElementsFirstScreen());
                         break;
                     case ScreenType.Tooltips:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestTooltipsScreen());

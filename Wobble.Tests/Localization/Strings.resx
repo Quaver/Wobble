@@ -48,6 +48,9 @@
   <data name="Screen_NavigationBar" xml:space="preserve">
     <value>Navigation Bar</value>
   </data>
+  <data name="Screen_PersistentElements" xml:space="preserve">
+    <value>Persistent Elements</value>
+  </data>
   <data name="Screen_Discord" xml:space="preserve">
     <value>Discord Rich Pr.</value>
   </data>
