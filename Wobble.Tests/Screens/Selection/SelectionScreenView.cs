@@ -24,6 +24,9 @@ using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.Joystick;
 using Wobble.Tests.Screens.Tests.NavigationBars;
 using Wobble.Tests.Screens.Tests.Imgui;
+using Wobble.Tests.Screens.Tests.HorizontalClipping;
+using Wobble.Tests.Screens.Tests.MarqueeSpriteText;
+using Wobble.Tests.Screens.Tests.NineSliceSprite;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Rotation;
 using Wobble.Tests.Screens.Tests.Scaling;
@@ -226,6 +229,15 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.Tooltips:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestTooltipsScreen());
+                        break;
+                    case ScreenType.HorizontalClipping:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestHorizontalClippingScreen());
+                        break;
+                    case ScreenType.MarqueeSpriteText:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestMarqueeSpriteTextScreen());
+                        break;
+                    case ScreenType.NineSliceSprite:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestNineSliceSpriteScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

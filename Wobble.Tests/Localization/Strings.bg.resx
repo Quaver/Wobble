@@ -3,6 +3,9 @@
   <data name="Screen_Tooltips" xml:space="preserve">
     <value>Подсказки</value>
   </data>
+  <data name="Screen_NineSliceSprite" xml:space="preserve">
+    <value>Деветсегментен спрайт</value>
+  </data>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>

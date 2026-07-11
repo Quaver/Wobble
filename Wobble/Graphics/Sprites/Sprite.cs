@@ -15,7 +15,7 @@ namespace Wobble.Graphics.Sprites
         ///     the image texture of the sprite.
         /// </summary>
         private Texture2D _image;
-        public Texture2D Image
+        public virtual Texture2D Image
         {
             get => _image;
             set

@@ -229,12 +229,22 @@ namespace Wobble.Graphics.Sprites.Text
             RenderTarget = new RenderTarget2D(GameBase.Game.GraphicsDevice, pixelWidth, pixelHeight, false,
                 GameBase.Game.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
 
-            GameBase.Game.GraphicsDevice.SetRenderTarget(RenderTarget);
-            GameBase.Game.GraphicsDevice.Clear(Color.Transparent);
-            _raw.Draw(gameTime);
-            _ = GameBase.Game.TryEndBatch();
+            var graphicsDevice = GameBase.Game.GraphicsDevice;
+            var previousScissorRectangle = graphicsDevice.ScissorRectangle;
 
-            GameBase.Game.GraphicsDevice.SetRenderTarget(null);
+            try
+            {
+                graphicsDevice.SetRenderTarget(RenderTarget);
+                graphicsDevice.ScissorRectangle = new Rectangle(0, 0, pixelWidth, pixelHeight);
+                graphicsDevice.Clear(Color.Transparent);
+                _raw.Draw(gameTime);
+                _ = GameBase.Game.TryEndBatch();
+            }
+            finally
+            {
+                graphicsDevice.SetRenderTarget(null);
+                graphicsDevice.ScissorRectangle = previousScissorRectangle;
+            }
 
             Image = RenderTarget;
             Visible = true;
