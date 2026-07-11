@@ -48,8 +48,6 @@ namespace Wobble.Tests.Screens.Tests.Primitives
                 Y = 30
             };
 
-            HorizontalLine.EndPosition = new Vector2(HorizontalLine.AbsolutePosition.X + 500, HorizontalLine.AbsolutePosition.Y);
-
             Rect = new RectangleSprite(2)
             {
                 Parent = Container,
@@ -84,7 +82,12 @@ namespace Wobble.Tests.Screens.Tests.Primitives
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime) => Container?.Update(gameTime);
+        public override void Update(GameTime gameTime)
+        {
+            Container?.Update(gameTime);
+
+            HorizontalLine.EndPosition = HorizontalLine.AbsolutePosition + new Vector2(500, 0);
+        }
 
         /// <inheritdoc />
         /// <summary>
