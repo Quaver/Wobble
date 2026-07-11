@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Wobble.Graphics.Primitives;
+using Wobble.Graphics.Shaders;
+using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Input;
 using Wobble.Managers;
@@ -47,8 +49,8 @@ namespace Wobble.Graphics.UI.Tooltips
         private static readonly TooltipAnchor[] Anchors = (TooltipAnchor[]) Enum.GetValues(typeof(TooltipAnchor));
         private static Binding _active;
         private static Container _overlay;
-        private static FilledRectangleSprite _background;
-        private static RectangleSprite _border;
+        private static Sprite _background;
+        private static Sprite _border;
         private static SpriteTextPlus _text;
         private static WobbleFontStore _font;
         private static int _textSize;
@@ -131,19 +133,17 @@ namespace Wobble.Graphics.UI.Tooltips
             if (_overlay == null)
             {
                 _overlay = new Container { DrawIfOffScreen = true };
-                // Primitive rectangles treat RenderRectangle.Position as their top-left corner. Drawable's
-                // default centered pivot would offset them by half their size and separate the box from its text.
-                _background = new FilledRectangleSprite
+                // RoundedButton uses the same exact-size rounded texture cache. Keep the border behind a
+                // slightly inset background so both edges share the same anti-aliased rounding path.
+                _border = new Sprite
                 {
                     Parent = _overlay,
-                    DrawIfOffScreen = true,
-                    Pivot = Vector2.Zero
+                    DrawIfOffScreen = true
                 };
-                _border = new RectangleSprite
+                _background = new Sprite
                 {
                     Parent = _overlay,
-                    DrawIfOffScreen = true,
-                    Pivot = Vector2.Zero
+                    DrawIfOffScreen = true
                 };
             }
 
@@ -168,8 +168,7 @@ namespace Wobble.Graphics.UI.Tooltips
             _background.Tint = style?.BackgroundColor ?? Theme.BackgroundColor;
             _text.Tint = style?.TextColor ?? Theme.TextColor;
             _border.Tint = style?.BorderColor ?? Theme.BorderColor;
-            _border.Thickness = Math.Max(0, style?.BorderThickness ?? Theme.BorderThickness);
-            _border.Visible = _border.Thickness > 0;
+            _border.Visible = Math.Max(0, style?.BorderThickness ?? Theme.BorderThickness) > 0;
         }
 
         private static WobbleFontStore ResolveFont(int weight)
@@ -189,7 +188,9 @@ namespace Wobble.Graphics.UI.Tooltips
             var options = binding.Options;
             var padding = Math.Max(0, options.Padding ?? Theme.Padding);
             var offset = Math.Max(0, options.Offset ?? Theme.Offset);
-            var border = _border.Visible ? _border.Thickness : 0;
+            var border = _border.Visible
+                ? Math.Max(0, options.Style?.BorderThickness ?? Theme.BorderThickness)
+                : 0;
             var inset = padding + border;
             var viewport = new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
             var requestedMaxWidth = Math.Max(1, options.MaximumWidth ?? Theme.MaximumWidth);
@@ -240,6 +241,37 @@ namespace Wobble.Graphics.UI.Tooltips
             _border.Position = _background.Position;
             _border.Size = _background.Size;
             _text.Position = new ScalableVector2(final.X + inset, final.Y + inset);
+
+            UpdateBackgroundTextures(options, final, border);
+        }
+
+        private static void UpdateBackgroundTextures(TooltipOptions options, RectangleF rectangle,
+            float borderThickness)
+        {
+            var rounded = options.Style?.RoundedCorners ?? Theme.RoundedCorners;
+            var configuredRadius = options.Style?.CornerRadius ?? Theme.CornerRadius;
+            var outerRadius = rounded
+                ? Math.Min(configuredRadius ?? rectangle.Height / 2f,
+                    Math.Min(rectangle.Width, rectangle.Height) / 2f)
+                : 0;
+
+            _border.Image = RoundedRectTextureCache.Get(rectangle.Width, rectangle.Height, outerRadius);
+
+            if (borderThickness <= 0)
+            {
+                _background.Position = new ScalableVector2(rectangle.X, rectangle.Y);
+                _background.Size = new ScalableVector2(rectangle.Width, rectangle.Height);
+                _background.Image = _border.Image;
+                return;
+            }
+
+            var innerWidth = Math.Max(1, rectangle.Width - borderThickness * 2);
+            var innerHeight = Math.Max(1, rectangle.Height - borderThickness * 2);
+            var innerRadius = Math.Max(0, outerRadius - borderThickness);
+            _background.Position = new ScalableVector2(rectangle.X + borderThickness,
+                rectangle.Y + borderThickness);
+            _background.Size = new ScalableVector2(innerWidth, innerHeight);
+            _background.Image = RoundedRectTextureCache.Get(innerWidth, innerHeight, innerRadius);
         }
 
         private static float AvailableTextWidth(TooltipAnchor anchor, RectangleF target, RectangleF viewport,

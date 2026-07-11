@@ -60,7 +60,8 @@ namespace Wobble.Tests.Screens.Tests.Tooltips
                         TextColor = i == 4 ? Color.Yellow : (Color?) null,
                         TextSize = i == 5 ? 24 : (int?) null,
                         BorderColor = i == 6 ? Color.Orange : (Color?) null,
-                        BorderThickness = i == 7 ? 0 : (float?) null
+                        BorderThickness = i == 7 ? 0 : (float?) null,
+                        RoundedCorners = i == 7 ? false : (bool?) null
                     }
                 });
             }
