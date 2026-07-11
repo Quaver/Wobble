@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Mime;
 using System.Runtime.InteropServices;
 using ImGuiNET;
@@ -57,7 +58,7 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        private Dictionary<IntPtr, Texture2D> LoadedTextures { get; }
+        private Dictionary<IntPtr, TextureBinding> LoadedTextures { get; }
 
         /// <summary>
         /// </summary>
@@ -83,6 +84,10 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public ImFontPtr DefaultFontPtr { get; private set; }
 
+        /// <summary>
+        /// </summary>
+        private SharedFontAtlas FontAtlas { get; }
+
         public float Scale { get; }
 
         public int LastVertexCount { get; private set; }
@@ -96,11 +101,12 @@ namespace Wobble.Graphics.ImGUI
             DestroyContext = destroyContext;
             Options = options;
             Scale = scale;
+            FontAtlas = SharedFontAtlasCache.Retain(options, scale);
 
-            Context = ImGui.CreateContext();
+            Context = ImGui.CreateContext(FontAtlas.Atlas);
             ImGui.SetCurrentContext(Context);
 
-            LoadedTextures = new Dictionary<IntPtr, Texture2D>();
+            LoadedTextures = new Dictionary<IntPtr, TextureBinding>();
 
             RasterizerState = new RasterizerState
             {
@@ -126,38 +132,52 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public unsafe void RebuildFontAtlas()
         {
-            // Get font texture from ImGui
+            var previousContext = ImGui.GetCurrentContext();
+
+            if (previousContext != Context)
+                ImGui.SetCurrentContext(Context);
+
             var io = ImGui.GetIO();
+            FontAtlas.AssignFontPointers(Options, out var defaultFontPtr);
+            DefaultFontPtr = defaultFontPtr;
+            FontAtlas.EnsureTexture(GraphicsDevice);
 
-            if (Options != null)
-            {
-                if (Options.LoadDefaultFont)
-                    DefaultFontPtr = io.Fonts.AddFontDefault();
-
-                foreach (var font in Options.Fonts)
-                    font.Context = io.Fonts.AddFontFromFileTTF(font.Path, font.Size * Scale);
-            }
-
-            io.Fonts.GetTexDataAsRGBA32(out byte* pixelData, out var width, out var height, out var bytesPerPixel);
-
-            // Copy the data to a managed array
-            var pixels = new byte[width * height * bytesPerPixel];
-            Marshal.Copy(new IntPtr(pixelData), pixels, 0, pixels.Length);
-
-            // Create and register the texture as an XNA texture
-            var tex2D = new Texture2D(GraphicsDevice, width, height, false, SurfaceFormat.Color);
-            tex2D.SetData(pixels);
-
-            // Should a texture already have been build previously, unbind it first so it can be deallocated
-            if (FontTextureId.HasValue)
+            if (FontTextureId.HasValue && FontTextureId.Value != FontAtlas.TextureId)
                 UnbindTexture(FontTextureId.Value);
 
-            // Bind the new texture to an ImGui-friendly id
-            FontTextureId = BindTexture(tex2D);
+            FontTextureId = FontAtlas.TextureId;
+            LoadedTextures[FontTextureId.Value] = new TextureBinding(FontAtlas.Texture, false);
 
             // Let ImGui know where to find the texture
             io.Fonts.SetTexID(FontTextureId.Value);
-            io.Fonts.ClearTexData(); // Clears CPU side texture data
+
+            if (previousContext != Context)
+                ImGui.SetCurrentContext(previousContext);
+        }
+
+        private static IntPtr GetGlyphRanges(ImFontAtlasPtr fonts, ImGuiGlyphRanges ranges)
+        {
+            switch (ranges)
+            {
+                case ImGuiGlyphRanges.ChineseFull:
+                    return fonts.GetGlyphRangesChineseFull();
+                case ImGuiGlyphRanges.ChineseSimplifiedCommon:
+                    return fonts.GetGlyphRangesChineseSimplifiedCommon();
+                case ImGuiGlyphRanges.Japanese:
+                    return fonts.GetGlyphRangesJapanese();
+                case ImGuiGlyphRanges.Korean:
+                    return fonts.GetGlyphRangesKorean();
+                case ImGuiGlyphRanges.Cyrillic:
+                    return fonts.GetGlyphRangesCyrillic();
+                case ImGuiGlyphRanges.Greek:
+                    return fonts.GetGlyphRangesGreek();
+                case ImGuiGlyphRanges.Thai:
+                    return fonts.GetGlyphRangesThai();
+                case ImGuiGlyphRanges.Vietnamese:
+                    return fonts.GetGlyphRangesVietnamese();
+                default:
+                    return fonts.GetGlyphRangesDefault();
+            }
         }
 
         /// <summary>
@@ -168,7 +188,7 @@ namespace Wobble.Graphics.ImGUI
         {
             var id = new IntPtr(TextureId++);
 
-            LoadedTextures.Add(id, texture);
+            LoadedTextures.Add(id, new TextureBinding(texture, true));
 
             return id;
         }
@@ -178,8 +198,8 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void UnbindTexture(IntPtr textureId)
         {
-            if (LoadedTextures.TryGetValue(textureId, out var texture))
-                texture.Dispose();
+            if (LoadedTextures.TryGetValue(textureId, out var texture) && texture.DisposeWithRenderer)
+                texture.Texture.Dispose();
 
             LoadedTextures.Remove(textureId);
         }
@@ -244,8 +264,6 @@ namespace Wobble.Graphics.ImGUI
             //    ImGui.AddInputCharacter(c);
             //};
             ///////////////////////////////////////////
-
-            ImGui.GetIO().Fonts.AddFontDefault();
 
             // ImGUI provides out-of-the-box clipboard only on Windows. For other platforms, we need to set up the function pointers.
             io.SetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(SetClipboardTextFnDelegate);
@@ -528,7 +546,7 @@ namespace Wobble.Graphics.ImGUI
                         (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
                     );
 
-                    var effect = UpdateEffect(LoadedTextures[drawCmd.TextureId]);
+                    var effect = UpdateEffect(LoadedTextures[drawCmd.TextureId].Texture);
                     var vertexOffset = vtxOffset + (int)drawCmd.VtxOffset;
                     var indexOffset = idxOffset + (int)drawCmd.IdxOffset;
 
@@ -569,7 +587,10 @@ namespace Wobble.Graphics.ImGUI
                 ImGui.DestroyContext(Context);
 
             foreach (var texture in LoadedTextures.Values)
-                texture.Dispose();
+            {
+                if (texture.DisposeWithRenderer)
+                    texture.Texture.Dispose();
+            }
 
             LoadedTextures.Clear();
             Effect?.Dispose();
@@ -577,6 +598,162 @@ namespace Wobble.Graphics.ImGUI
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
             Game.Window.TextInput -= OnWindowOnTextInput;
+
+            if (DestroyContext)
+                SharedFontAtlasCache.Release(FontAtlas);
+        }
+
+        private sealed class TextureBinding
+        {
+            public Texture2D Texture { get; }
+
+            public bool DisposeWithRenderer { get; }
+
+            public TextureBinding(Texture2D texture, bool disposeWithRenderer)
+            {
+                Texture = texture;
+                DisposeWithRenderer = disposeWithRenderer;
+            }
+        }
+
+        private sealed class SharedFontAtlas
+        {
+            public string Key { get; }
+
+            public ImFontAtlasPtr Atlas { get; }
+
+            public IntPtr TextureId { get; } = new IntPtr(-1);
+
+            public Texture2D Texture { get; private set; }
+
+            public int ReferenceCount { get; set; }
+
+            private ImFontPtr DefaultFontPtr { get; set; }
+
+            private List<ImFontPtr> FontPointers { get; }
+
+            public unsafe SharedFontAtlas(string key, ImGuiOptions options, float scale)
+            {
+                Key = key;
+                Atlas = new ImFontAtlasPtr(ImGuiNative.ImFontAtlas_ImFontAtlas());
+                FontPointers = new List<ImFontPtr>();
+
+                if (options == null || options.LoadDefaultFont)
+                    DefaultFontPtr = Atlas.AddFontDefault();
+
+                if (options == null)
+                    return;
+
+                foreach (var font in options.Fonts)
+                {
+                    var fontPtr = Atlas.AddFontFromFileTTF(font.Path, font.Size * scale);
+                    FontPointers.Add(fontPtr);
+
+                    foreach (var fallback in font.Fallbacks)
+                    {
+                        var config = new ImFontConfigPtr(ImGuiNative.ImFontConfig_ImFontConfig());
+                        config.MergeMode = true;
+                        config.FontNo = fallback.Index;
+
+                        Atlas.AddFontFromFileTTF(fallback.Path, font.Size * scale, config,
+                            GetGlyphRanges(Atlas, fallback.GlyphRanges));
+
+                        config.Destroy();
+                    }
+                }
+            }
+
+            public void AssignFontPointers(ImGuiOptions options, out ImFontPtr defaultFontPtr)
+            {
+                defaultFontPtr = DefaultFontPtr;
+
+                if (options == null)
+                    return;
+
+                for (var i = 0; i < options.Fonts.Count && i < FontPointers.Count; i++)
+                    options.Fonts[i].Context = FontPointers[i];
+            }
+
+            public unsafe void EnsureTexture(GraphicsDevice graphicsDevice)
+            {
+                if (Texture != null)
+                    return;
+
+                Atlas.GetTexDataAsRGBA32(out byte* pixelData, out var width, out var height, out var bytesPerPixel);
+
+                var pixels = new byte[width * height * bytesPerPixel];
+                Marshal.Copy(new IntPtr(pixelData), pixels, 0, pixels.Length);
+
+                Texture = new Texture2D(graphicsDevice, width, height, false, SurfaceFormat.Color);
+                Texture.SetData(pixels);
+
+                Atlas.SetTexID(TextureId);
+                Atlas.ClearTexData();
+            }
+
+            public unsafe void Dispose()
+            {
+                Texture?.Dispose();
+                Texture = null;
+                ImGuiNative.ImFontAtlas_destroy(Atlas.NativePtr);
+            }
+        }
+
+        private static class SharedFontAtlasCache
+        {
+            private static readonly Dictionary<string, SharedFontAtlas> Cache = new Dictionary<string, SharedFontAtlas>();
+
+            public static SharedFontAtlas Retain(ImGuiOptions options, float scale)
+            {
+                var key = CreateKey(options, scale);
+
+                if (!Cache.TryGetValue(key, out var atlas))
+                {
+                    atlas = new SharedFontAtlas(key, options, scale);
+                    Cache.Add(key, atlas);
+                }
+
+                atlas.ReferenceCount++;
+                return atlas;
+            }
+
+            public static void Release(SharedFontAtlas atlas)
+            {
+                if (atlas == null)
+                    return;
+
+                atlas.ReferenceCount--;
+
+                if (atlas.ReferenceCount > 0)
+                    return;
+
+                Cache.Remove(atlas.Key);
+                atlas.Dispose();
+            }
+
+            private static string CreateKey(ImGuiOptions options, float scale)
+            {
+                var key = "scale=" + scale.ToString("R", CultureInfo.InvariantCulture);
+
+                if (options == null)
+                    return key + ";default";
+
+                key += ";loadDefault=" + options.LoadDefaultFont;
+
+                foreach (var font in options.Fonts)
+                {
+                    key += ";font=" + font.Path + "," + font.Size.ToString(CultureInfo.InvariantCulture);
+
+                    foreach (var fallback in font.Fallbacks)
+                    {
+                        key += ";fallback=" + fallback.Path + "," +
+                               fallback.Index.ToString(CultureInfo.InvariantCulture) + "," +
+                               fallback.GlyphRanges;
+                    }
+                }
+
+                return key;
+            }
         }
     }
 }
