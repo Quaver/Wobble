@@ -3,6 +3,15 @@
   <data name="Screen_Tooltips" xml:space="preserve">
     <value>Tooltips</value>
   </data>
+  <data name="Screen_HorizontalClipping" xml:space="preserve">
+    <value>Horizontal Clipping</value>
+  </data>
+  <data name="Screen_MarqueeSpriteText" xml:space="preserve">
+    <value>Marquee SpriteText</value>
+  </data>
+  <data name="Screen_NineSliceSprite" xml:space="preserve">
+    <value>Nine-Slice Sprite</value>
+  </data>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>

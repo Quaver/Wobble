@@ -39,7 +39,10 @@ namespace Wobble.Tests.Screens.Selection
             {ScreenType.Joystick, "Screen_Joystick"},
             {ScreenType.ButtonPerformance, "Screen_ButtonPerformance"},
             {ScreenType.NavigationBar, "Screen_NavigationBar"},
-            {ScreenType.Tooltips, "Screen_Tooltips"}
+            {ScreenType.Tooltips, "Screen_Tooltips"},
+            {ScreenType.HorizontalClipping, "Screen_HorizontalClipping"},
+            {ScreenType.MarqueeSpriteText, "Screen_MarqueeSpriteText"},
+            {ScreenType.NineSliceSprite, "Screen_NineSliceSprite"}
         };
 
         public SelectionScreen() => View = new SelectionScreenView(this);
@@ -74,6 +77,9 @@ namespace Wobble.Tests.Screens.Selection
         Joystick,
         ButtonPerformance,
         NavigationBar,
-        Tooltips
+        Tooltips,
+        HorizontalClipping,
+        MarqueeSpriteText,
+        NineSliceSprite
     }
 }
