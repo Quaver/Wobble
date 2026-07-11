@@ -13,6 +13,7 @@ using Wobble.Assets;
 using Wobble.Audio;
 using Wobble.Discord;
 using Wobble.Graphics;
+using Wobble.Graphics.UI.Tooltips;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.UI.Debugging;
 using Wobble.Input;
@@ -307,6 +308,8 @@ namespace Wobble
 
             ScreenManager.Update(gameTime);
 
+            TooltipManager.Update(gameTime);
+
 #if DEBUG
             screenUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
             phaseStopwatch.Restart();
@@ -386,6 +389,8 @@ namespace Wobble
 
             // Draw the current game screen.
             ScreenManager.Draw(gameTime);
+
+            TooltipManager.Draw(gameTime);
 
             // Causes issues with Quaver for FPSCounter
 // #if DEBUG
