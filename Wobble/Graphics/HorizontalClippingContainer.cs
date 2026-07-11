@@ -9,6 +9,8 @@ namespace Wobble.Graphics
     /// </summary>
     public class HorizontalClippingContainer : Container
     {
+        private static int ActiveClipDepth { get; set; }
+
         private static readonly RasterizerState ScissorRasterizer = new RasterizerState
         {
             ScissorTestEnable = true,
@@ -38,39 +40,51 @@ namespace Wobble.Graphics
             if (scissorRectangle.Width <= 0 || scissorRectangle.Height <= 0)
                 return;
 
+            // SpriteBatch applies its render state when a deferred batch is flushed. End the
+            // current batch before inspecting the device so nested scissor state is observable.
+            _ = game.TryEndBatch();
+
             var oldScissorRectangle = graphicsDevice.ScissorRectangle;
             var oldRasterizerState = graphicsDevice.RasterizerState;
-            var wasNestedScissor = oldRasterizerState?.ScissorTestEnable == true;
+            var wasNestedScissor = ActiveClipDepth > 0 || oldRasterizerState?.ScissorTestEnable == true;
 
             if (wasNestedScissor)
                 scissorRectangle = Rectangle.Intersect(scissorRectangle, oldScissorRectangle);
 
             if (scissorRectangle.Width <= 0 || scissorRectangle.Height <= 0)
+            {
+                ResumePreviousBatch(wasNestedScissor);
                 return;
-
-            _ = game.TryEndBatch();
+            }
 
             try
             {
                 graphicsDevice.ScissorRectangle = scissorRectangle;
                 BeginScissorBatch();
+                ActiveClipDepth++;
 
                 base.Draw(gameTime);
             }
             finally
             {
+                ActiveClipDepth--;
                 _ = game.TryEndBatch();
                 graphicsDevice.ScissorRectangle = oldScissorRectangle;
 
-                if (wasNestedScissor)
-                {
-                    BeginScissorBatch();
-                }
-                else
-                {
-                    GameBase.DefaultSpriteBatchOptions.Begin();
-                    GameBase.DefaultSpriteBatchInUse = true;
-                }
+                ResumePreviousBatch(wasNestedScissor);
+            }
+        }
+
+        private static void ResumePreviousBatch(bool wasNestedScissor)
+        {
+            if (wasNestedScissor)
+            {
+                BeginScissorBatch();
+            }
+            else
+            {
+                GameBase.DefaultSpriteBatchOptions.Begin();
+                GameBase.DefaultSpriteBatchInUse = true;
             }
         }
 
