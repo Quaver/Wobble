@@ -80,7 +80,7 @@ namespace Wobble.Tests.Screens.Tests.PersistentElements
                         new[] { NavbarKey }));
             }
 
-            AddButton(navbar, NavigationBarRegion.Right, "Exit (remove)",
+            AddButton(navbar, NavigationBarRegion.Right, LocalizationManager.Get("Navigation_BackToTests"),
                 () => ScreenManager.ChangeScreen(new SelectionScreen()));
 
             StatusText.Text = $"{(stage == TestPersistentElementsStage.First ? "FIRST" : "SECOND")} SCREEN\n" +

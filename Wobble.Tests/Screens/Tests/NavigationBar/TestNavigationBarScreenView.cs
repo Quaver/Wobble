@@ -6,6 +6,7 @@ using Wobble.Graphics.UI.Navigation;
 using Wobble.Managers;
 using Wobble.Screens;
 using Wobble.Tests.Assets;
+using Wobble.Tests.Screens.Selection;
 using Wobble.Window;
 
 namespace Wobble.Tests.Screens.Tests.NavigationBars
@@ -69,6 +70,20 @@ namespace Wobble.Tests.Screens.Tests.NavigationBars
             TopBar.RefreshLayout();
 
             AddIconButton(TopBar, NavigationBarRegion.Right, "Menu");
+
+            TopBar.AddRoundedButton(NavigationBarRegion.Right, new NavigationBarButtonOptions
+            {
+                Text = LocalizationManager.Get("Navigation_BackToTests"),
+                Font = FontManager.GetWobbleFont("inter-bold"),
+                FontSize = 12,
+                WidthMode = ButtonSizeMode.Auto,
+                Height = 26,
+                AutoSizePadding = new Vector2(12, 0),
+                CornerRadius = 3,
+                BackgroundColor = ButtonBackground,
+                AntiAliasedEdges = false,
+                ClickAction = (sender, args) => ScreenManager.ChangeScreen(new SelectionScreen())
+            });
 
             AddIconButton(BottomBar, NavigationBarRegion.Left, "Website");
             AddIconButton(BottomBar, NavigationBarRegion.Left, "Discord");
