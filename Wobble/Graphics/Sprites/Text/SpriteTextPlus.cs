@@ -190,10 +190,11 @@ namespace Wobble.Graphics.Sprites.Text
                 var line = lines[lineIndex];
                 var lineSprite = new SpriteTextPlusLine(Font, line, FontSize);
 
-                if (MaxWidth != null && lineSprite.Width > MaxWidth)
+                // Empty lines are valid (for example, consecutive newlines). Some font/render-scale
+                // combinations give their empty sprite a small non-zero width, but there is nothing
+                // that can be wrapped in that case.
+                if (line.Length > 0 && MaxWidth != null && lineSprite.Width > MaxWidth)
                 {
-                    Debug.Assert(line.Length > 0);
-
                     // Try to split the line on spaces to fit it into MaxWidth.
                     var spaces = new List<int>();
                     for (var i = 0; i < line.Length; i++)
@@ -238,8 +239,14 @@ namespace Wobble.Graphics.Sprites.Text
 
                     // Insert the remaining part of the line into the list to be iterated over next.
                     Debug.Assert(nextLineStart != null);
-                    var lineAfterSpace = line.Substring(nextLineStart.Value);
-                    lines.Insert(lineIndex + 1, lineAfterSpace);
+                    // Do not append an empty remainder after consuming the final character. Besides
+                    // adding a phantom line, very narrow MaxWidth values could then try to wrap that
+                    // empty line again on the next iteration.
+                    if (nextLineStart.Value < line.Length)
+                    {
+                        var lineAfterSpace = line.Substring(nextLineStart.Value);
+                        lines.Insert(lineIndex + 1, lineAfterSpace);
+                    }
                 }
 
                 lineSprite.Parent = this;

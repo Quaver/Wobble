@@ -35,6 +35,7 @@ using Wobble.Tests.Screens.Tests.SpriteTextPlusNew;
 using Wobble.Tests.Screens.Tests.TaskHandler;
 using Wobble.Tests.Screens.Tests.TextInput;
 using Wobble.Tests.Screens.Tests.TextSizes;
+using Wobble.Tests.Screens.Tests.Tooltips;
 using Wobble.Window;
 
 namespace Wobble.Tests.Screens.Selection
@@ -222,6 +223,9 @@ namespace Wobble.Tests.Screens.Selection
                         break;
                     case ScreenType.NavigationBar:
                         button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestNavigationBarScreen());
+                        break;
+                    case ScreenType.Tooltips:
+                        button.Clicked += (o, e) => ScreenManager.ChangeScreen(new TestTooltipsScreen());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

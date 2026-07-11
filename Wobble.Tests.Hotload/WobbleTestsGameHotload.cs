@@ -19,6 +19,7 @@ using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
 using Wobble.Tests.Screens.Tests.TextSizes;
+using Wobble.Tests.Screens.Tests.Tooltips;
 using Wobble.Window;
 
 namespace Wobble.Tests.Hotload
@@ -75,7 +76,8 @@ namespace Wobble.Tests.Hotload
             {"Scaling", typeof(TestScalingScreen)},
             {"Scrolling", typeof(TestScrollContainerScreen)},
             {"Sprite Masking", typeof(TestSpriteMaskingScreen)},
-            {"TextSizes", typeof(TestTextSizesScreen)}
+            {"TextSizes", typeof(TestTextSizesScreen)},
+            {"Tooltips", typeof(TestTooltipsScreen)}
         });
 
         private static void CacheFonts()
