@@ -120,6 +120,9 @@
   <data name="Screen_TextSizes" xml:space="preserve">
     <value>Text Sizes</value>
   </data>
+  <data name="Screen_TextVerticalLayout" xml:space="preserve">
+    <value>Text Vertical Layout</value>
+  </data>
   <data name="Selection_LanguageLabel" xml:space="preserve">
     <value>Language</value>
   </data>

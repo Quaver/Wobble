@@ -96,6 +96,9 @@
     <data name="Screen_TextSizes" xml:space="preserve">
         <value>Размери на текста</value>
     </data>
+    <data name="Screen_TextVerticalLayout" xml:space="preserve">
+        <value>Вертикално подравняване на текст</value>
+    </data>
     <data name="Selection_LanguageLabel" xml:space="preserve">
         <value>Език</value>
     </data>
