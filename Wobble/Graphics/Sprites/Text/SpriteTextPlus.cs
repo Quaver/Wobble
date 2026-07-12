@@ -123,7 +123,7 @@ namespace Wobble.Graphics.Sprites.Text
                     return;
 
                 _maxWidth = value;
-                RefreshText();
+                RefreshText(true);
             }
         }
 
@@ -188,89 +188,35 @@ namespace Wobble.Graphics.Sprites.Text
 
         /// <summary>
         /// </summary>
-        private void RefreshText()
+        private void RefreshText(bool reuseUnchangedLines = false)
         {
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextPlusRefresh();
 #endif
 
-            for (var i = Children.Count - 1; i >= 0; i--)
-                Children[i].Destroy();
-
             // TODO: Actually make this work to set the width/height.
             if (!IsCached)
             {
+                for (var i = Children.Count - 1; i >= 0; i--)
+                    Children[i].Destroy();
+
                 SetSize();
                 return;
             }
 
-            float width = 0, height = 0;
-            var lineSprites = new List<SpriteTextPlusLine>();
+            var lines = BuildWrappedLines();
+            if (reuseUnchangedLines && LinesMatch(lines))
+                return;
 
-            var lines = Text?.Split('\n').ToList() ?? new List<string>();
+            for (var i = Children.Count - 1; i >= 0; i--)
+                Children[i].Destroy();
+
+            float width = 0, height = 0;
+            var lineSprites = new List<SpriteTextPlusLine>(lines.Count);
             for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
             {
                 var line = lines[lineIndex];
                 var lineSprite = new SpriteTextPlusLine(Font, line, FontSize);
-
-                // Empty lines are valid (for example, consecutive newlines). Some font/render-scale
-                // combinations give their empty sprite a small non-zero width, but there is nothing
-                // that can be wrapped in that case.
-                if (line.Length > 0 && MaxWidth != null && lineSprite.LayoutWidth > MaxWidth)
-                {
-                    // Try to split the line on spaces to fit it into MaxWidth.
-                    var spaces = new List<int>();
-                    for (var i = 0; i < line.Length; i++)
-                    {
-                        if (char.IsWhiteSpace(line[i]))
-                            spaces.Add(i);
-                    }
-
-                    // Assumes wider substrings are produced by appending more characters. That matches the current
-                    // supported text path and avoids measuring every possible line cut while wrapping.
-                    var splitOnIndex = FindLastFittingIndex(spaces, line);
-
-                    // It's always initialized, but the C# compiler isn't smart enough to figure that out.
-                    int? nextLineStart = null;
-
-                    if (splitOnIndex == -1)
-                    {
-                        // Splitting even on the first whitespace gives a line that's too long (or there are no spaces at all),
-                        // so split on any character.
-                        //
-                        // Splitting on arbitrary characters like this is questionable, because while even in English
-                        // splitting mid-word can produce nonsensical results, in some complex scripts it doesn't
-                        // make any sense whatsoever to split on something that's not a space. But, once again,
-                        // we don't support complex scripts yet, and this is a decent enough fallback to make sure
-                        // the lines don't get too off max width.
-                        var lastIndex = line.Length;
-                        if (spaces.Count > 0)
-                            lastIndex = spaces[0];
-
-                        nextLineStart = FindLastFittingCharacterIndex(line, lastIndex);
-                        var lineCut = line.Substring(0, nextLineStart.Value);
-                        lineSprite.Destroy();
-                        lineSprite = new SpriteTextPlusLine(Font, lineCut, FontSize);
-                    }
-                    else
-                    {
-                        var lineBeforeSpace = line.Substring(0, spaces[splitOnIndex]);
-                        lineSprite.Destroy();
-                        lineSprite = new SpriteTextPlusLine(Font, lineBeforeSpace, FontSize);
-                        nextLineStart = spaces[splitOnIndex] + 1; // Skip over the space that we replaced.
-                    }
-
-                    // Insert the remaining part of the line into the list to be iterated over next.
-                    Debug.Assert(nextLineStart != null);
-                    // Do not append an empty remainder after consuming the final character. Besides
-                    // adding a phantom line, very narrow MaxWidth values could then try to wrap that
-                    // empty line again on the next iteration.
-                    if (nextLineStart.Value < line.Length)
-                    {
-                        var lineAfterSpace = line.Substring(nextLineStart.Value);
-                        lines.Insert(lineIndex + 1, lineAfterSpace);
-                    }
-                }
 
                 lineSprite.Parent = this;
                 lineSprite.Y = height;
@@ -292,6 +238,64 @@ namespace Wobble.Graphics.Sprites.Text
                 lineSprite.Alignment = Alignment.TopLeft;
                 lineSprite.X = GetLineX(width, lineSprite.LayoutWidth);
             }
+        }
+
+        private List<string> BuildWrappedLines()
+        {
+            var lines = Text?.Split('\n').ToList() ?? new List<string>();
+            if (MaxWidth == null)
+                return lines;
+
+            for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
+            {
+                var line = lines[lineIndex];
+
+                // Empty lines are valid (for example, consecutive newlines), and there is nothing to wrap.
+                if (line.Length == 0 || MeasureLineWidth(line) <= MaxWidth)
+                    continue;
+
+                var spaces = new List<int>();
+                for (var i = 0; i < line.Length; i++)
+                {
+                    if (char.IsWhiteSpace(line[i]))
+                        spaces.Add(i);
+                }
+
+                var splitOnIndex = FindLastFittingIndex(spaces, line);
+                int nextLineStart;
+
+                if (splitOnIndex == -1)
+                {
+                    var lastIndex = spaces.Count > 0 ? spaces[0] : line.Length;
+                    nextLineStart = FindLastFittingCharacterIndex(line, lastIndex);
+                    lines[lineIndex] = line.Substring(0, nextLineStart);
+                }
+                else
+                {
+                    lines[lineIndex] = line.Substring(0, spaces[splitOnIndex]);
+                    nextLineStart = spaces[splitOnIndex] + 1;
+                }
+
+                Debug.Assert(nextLineStart > 0);
+                if (nextLineStart < line.Length)
+                    lines.Insert(lineIndex + 1, line.Substring(nextLineStart));
+            }
+
+            return lines;
+        }
+
+        private bool LinesMatch(IReadOnlyList<string> lines)
+        {
+            if (Children.Count != lines.Count)
+                return false;
+
+            for (var i = 0; i < lines.Count; i++)
+            {
+                if (!(Children[i] is SpriteTextPlusLine lineSprite) || lineSprite.Text != lines[i])
+                    return false;
+            }
+
+            return true;
         }
 
         private void OnFontChanged(object sender, EventArgs e) => RefreshText();
