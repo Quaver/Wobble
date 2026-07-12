@@ -195,7 +195,6 @@ namespace Wobble.Tests.Screens.Tests.FlexSongSelect
                 Parent = parent,
                 Size = new ScalableVector2(width, 34),
                 Tint = color,
-                CornerRadius = 17,
                 AntiAliasedEdges = false,
                 PerformHoverFade = false,
                 IsClickable = false
@@ -217,6 +216,7 @@ namespace Wobble.Tests.Screens.Tests.FlexSongSelect
         private static void ApplySharedSpriteBatch(Drawable drawable)
         {
             drawable.UsePreviousSpriteBatchOptions = true;
+            drawable.SetChildrenVisibility = true;
             foreach (var child in drawable.Children)
                 ApplySharedSpriteBatch(child);
         }
@@ -239,9 +239,12 @@ namespace Wobble.Tests.Screens.Tests.FlexSongSelect
         private void UpdateRowVisibility()
         {
             var viewport = _scrollContainer.ScreenRectangle;
-            viewport.Inflate(0, RowHeight);
             foreach (var row in _rowShells)
-                row.Visible = RectangleF.Intersects(row.ScreenRectangle, viewport);
+            {
+                var visible = RectangleF.Intersects(row.ScreenRectangle, viewport);
+                if (row.Visible != visible)
+                    row.Visible = visible;
+            }
         }
 
         private void UpdateSelectionInput()
