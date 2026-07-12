@@ -197,7 +197,27 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public override void Destroy()
         {
-            SpriteBatchOptions?.Shader?.Dispose();
+            var shader = SpriteBatchOptions?.Shader;
+
+            if (shader != null)
+            {
+                SpriteBatchOptions.Shader = null;
+
+                if (System.Threading.Thread.CurrentThread.ManagedThreadId == GameBase.Game.MainThreadId)
+                {
+                    GameBase.Game.TryEndBatch();
+                    shader.Dispose();
+                }
+                else
+                {
+                    GameBase.Game.ScheduleRenderTargetDraw(() =>
+                    {
+                        GameBase.Game.TryEndBatch();
+                        shader.Dispose();
+                    });
+                }
+            }
+
             base.Destroy();
         }
 
