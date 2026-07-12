@@ -20,7 +20,8 @@ namespace Wobble.Graphics.UI.Tooltips
             public Drawable Target { get; }
             public TooltipOptions Options { get; }
             public double HoveredMilliseconds { get; set; }
-            public bool Disposed { get; private set; }
+            private volatile bool disposed;
+            public bool Disposed => disposed;
 
             public Binding(Drawable target, TooltipOptions options)
             {
@@ -30,7 +31,7 @@ namespace Wobble.Graphics.UI.Tooltips
 
             public void Dispose()
             {
-                Disposed = true;
+                disposed = true;
                 if (ReferenceEquals(_active, this))
                     Hide();
             }
@@ -86,22 +87,29 @@ namespace Wobble.Graphics.UI.Tooltips
                 throw new ArgumentNullException(nameof(options));
 
             var binding = new Binding(target, options);
-            Bindings.Add(binding);
+            lock (Bindings)
+                Bindings.Add(binding);
+
             return binding;
         }
 
         public static void Update(GameTime gameTime)
         {
-            Bindings.RemoveAll(x => x.Disposed || x.Target == null || x.Target.IsDisposed);
+            Binding[] bindings;
+            lock (Bindings)
+            {
+                Bindings.RemoveAll(x => x.Disposed || x.Target == null || x.Target.IsDisposed);
+                bindings = Bindings.ToArray();
+            }
 
-            var hovered = Bindings
+            var hovered = bindings
                 .Where(x => IsEligible(x.Target) &&
                             GraphicsHelper.RectangleContains(x.Target.ScreenMinimumBoundingRectangle,
                                 MouseManager.CurrentState.Position))
                 .OrderByDescending(x => x.Target.DrawOrder)
                 .FirstOrDefault();
 
-            foreach (var binding in Bindings)
+            foreach (var binding in bindings)
             {
                 if (ReferenceEquals(binding, hovered))
                     binding.HoveredMilliseconds += gameTime.ElapsedGameTime.TotalMilliseconds;
