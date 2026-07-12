@@ -36,6 +36,11 @@ namespace Wobble.Graphics.Sprites.Text
         ///     The pt. font size
         /// </summary>
         private int _fontSize;
+
+        /// <summary>
+        ///     Scale at which the cached line bounds were last calculated.
+        /// </summary>
+        private float _renderScale;
         public int FontSize
         {
             get => _fontSize;
@@ -155,6 +160,7 @@ namespace Wobble.Graphics.Sprites.Text
             _isCached = cache;
 
             _fontSize = size == 0 ? Font.DefaultSize : size;
+            _renderScale = SpriteTextPlusLine.GetRenderScale();
             SetChildrenAlpha = true;
 
             RefreshText();
@@ -162,6 +168,22 @@ namespace Wobble.Graphics.Sprites.Text
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.SpriteTextPlusDebugRegistry.Register(this);
 #endif
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (IsCached)
+            {
+                var renderScale = SpriteTextPlusLine.GetRenderScale();
+
+                if (Math.Abs(_renderScale - renderScale) > float.Epsilon)
+                {
+                    _renderScale = renderScale;
+                    RefreshText();
+                }
+            }
+
+            base.Update(gameTime);
         }
 
         /// <summary>
