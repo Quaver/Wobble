@@ -13,12 +13,15 @@ namespace Wobble.Graphics.Sprites.Text
 
         public int Weight { get; }
 
+        public bool EnableTabularNumbers { get; }
+
         public WobbleFontFace(byte[] data, int index = 0,
-            int weight = FontWeight.Regular)
+            int weight = FontWeight.Regular, bool enableTabularNumbers = false)
         {
             Data = data ?? throw new ArgumentNullException(nameof(data));
             Index = index;
             Weight = weight;
+            EnableTabularNumbers = enableTabularNumbers;
         }
     }
 
@@ -112,9 +115,10 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="name"></param>
         /// <param name="font"></param>
         public void AddFont(string name, byte[] font, int index = 0,
-            int weight = FontWeight.Regular, int implicitFontSizeReduction = 0)
+            int weight = FontWeight.Regular, int implicitFontSizeReduction = 0,
+            bool enableTabularNumbers = false)
         {
-            _fontLoader.Register(font, index, weight, implicitFontSizeReduction);
+            _fontLoader.Register(font, index, weight, implicitFontSizeReduction, enableTabularNumbers);
             _fontSystem.AddFont(font);
         }
 
@@ -131,12 +135,14 @@ namespace Wobble.Graphics.Sprites.Text
             _fontLoader = new FreeTypeFontLoader();
             _fontSystem = new FontSystem(new FontSystemSettings { FontLoader = _fontLoader });
 
-            AddFont(string.Empty, font.Data, font.Index, font.Weight, implicitFontSizeReduction);
+            AddFont(string.Empty, font.Data, font.Index, font.Weight, implicitFontSizeReduction,
+                font.EnableTabularNumbers);
 
             if (addedFonts != null)
             {
                 foreach (var f in addedFonts)
-                    AddFont(f.Key, f.Value.Data, f.Value.Index, f.Value.Weight, implicitFontSizeReduction);
+                    AddFont(f.Key, f.Value.Data, f.Value.Index, f.Value.Weight, implicitFontSizeReduction,
+                        f.Value.EnableTabularNumbers);
             }
 
             FontSize = _fontSize == 0 ? DefaultSize : _fontSize;
