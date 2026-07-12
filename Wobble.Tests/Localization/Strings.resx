@@ -105,6 +105,9 @@
   <data name="Screen_TextInput" xml:space="preserve">
     <value>Text Input</value>
   </data>
+  <data name="Screen_FormControls" xml:space="preserve">
+    <value>Form Controls Gallery</value>
+  </data>
   <data name="Screen_TextSizes" xml:space="preserve">
     <value>Text Sizes</value>
   </data>

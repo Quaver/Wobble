@@ -87,6 +87,9 @@
     <data name="Screen_TextInput" xml:space="preserve">
         <value>Въвеждане на текст</value>
     </data>
+    <data name="Screen_FormControls" xml:space="preserve">
+        <value>Галерия с контроли за формуляри</value>
+    </data>
     <data name="Screen_TextSizes" xml:space="preserve">
         <value>Размери на текста</value>
     </data>
