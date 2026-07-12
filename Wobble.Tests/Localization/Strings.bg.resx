@@ -6,6 +6,12 @@
   <data name="Screen_NineSliceSprite" xml:space="preserve">
     <value>Деветсегментен спрайт</value>
   </data>
+  <data name="Screen_FlexContainer" xml:space="preserve">
+    <value>Flex контейнер</value>
+  </data>
+  <data name="Screen_FlexSongSelect" xml:space="preserve">
+    <value>Flex избор на песен</value>
+  </data>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>

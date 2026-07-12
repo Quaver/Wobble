@@ -14,6 +14,8 @@ using Wobble.Tests.Screens.Tests.DrawableScaling;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
 using Wobble.Tests.Screens.Tests.FormControls;
+using Wobble.Tests.Screens.Tests.FlexContainer;
+using Wobble.Tests.Screens.Tests.FlexSongSelect;
 using Wobble.Tests.Screens.Tests.HorizontalClipping;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Joystick;
@@ -88,6 +90,8 @@ namespace Wobble.Tests.Screens.Selection
             new TestScreenDescriptor(LayoutMotion, "Screen_EasingAnimations", () => new TestEasingAnimationsScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_Scrolling", () => new TestScrollContainerScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_MarqueeSpriteText", () => new TestMarqueeSpriteTextScreen()),
+            new TestScreenDescriptor(LayoutMotion, "Screen_FlexContainer", () => new TestFlexContainerScreen()),
+            new TestScreenDescriptor(LayoutMotion, "Screen_FlexSongSelect", () => new TestFlexSongSelectScreen()),
 
             new TestScreenDescriptor(TextControls, "Screen_TextSizes", () => new TestTextSizesScreen()),
             new TestScreenDescriptor(TextControls, "Screen_SpriteTextPlus", () => new TestSpriteTextPlusScreen()),
