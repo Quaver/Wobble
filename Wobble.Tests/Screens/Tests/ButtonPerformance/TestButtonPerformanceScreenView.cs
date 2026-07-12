@@ -24,6 +24,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
         private const int ButtonHeight = 42;
         private const int ButtonSpacing = 10;
         private const int StatsRefreshTime = 100;
+        private const int ContentHeight = 770;
 
         private static readonly Color BackgroundColor = new Color(17, 24, 32);
         private static readonly Color SecondaryTextColor = new Color(184, 195, 204);
@@ -39,6 +40,10 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
         private Container OldButtonGroup { get; }
 
+        private ScrollContainer ScreenScrollContainer { get; }
+
+        private Container ContentContainer => ScreenScrollContainer.ContentContainer;
+
         private SpriteTextPlus NewStateText { get; }
 
         private SpriteTextPlus OldStateText { get; }
@@ -51,6 +56,19 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
         public TestButtonPerformanceScreenView(Screen screen) : base(screen)
         {
+            ScreenScrollContainer = new ScrollContainer(
+                new ScalableVector2(Container.Width, Container.Height),
+                new ScalableVector2(Container.Width, Math.Max(ContentHeight, Container.Height)))
+            {
+                Parent = Container,
+                InputEnabled = true,
+                AllowScrollbarDragging = true,
+                Tint = Color.Transparent
+            };
+
+            ScreenScrollContainer.Scrollbar.Tint = ScrollbarColor;
+            ScreenScrollContainer.Scrollbar.Width = 6;
+
             CreateHeader();
             CreateToggleControls();
 
@@ -69,7 +87,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
         {
             new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"), "BUTTON PERFORMANCE", 26)
             {
-                Parent = Container,
+                Parent = ContentContainer,
                 Alignment = Alignment.TopCenter,
                 Y = 30,
                 Tint = Color.White
@@ -77,7 +95,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
             new SpriteTextPlus(FontManager.GetWobbleFont("inter-regular"), "1: new buttons  |  2: old image buttons  |  R: reset both", 18)
             {
-                Parent = Container,
+                Parent = ContentContainer,
                 Alignment = Alignment.TopCenter,
                 Y = 66,
                 Tint = SecondaryTextColor
@@ -95,7 +113,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
         {
             var button = new ImageButton(WobbleAssets.WhiteBox, clicked)
             {
-                Parent = Container,
+                Parent = ContentContainer,
                 Alignment = Alignment.TopCenter,
                 X = x,
                 Y = 105,
@@ -115,7 +133,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
         {
             var group = new Container
             {
-                Parent = Container,
+                Parent = ContentContainer,
                 Alignment = Alignment.TopCenter,
                 X = x,
                 Y = 170,
@@ -196,7 +214,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
         private SpriteTextPlus CreateGroupStateText(string text, float x) => new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), text, 18)
         {
-            Parent = Container,
+            Parent = ContentContainer,
             Alignment = Alignment.TopCenter,
             X = x,
             Y = 715,
@@ -207,7 +225,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
         {
             var panel = new Container
             {
-                Parent = Container,
+                Parent = ContentContainer,
                 Alignment = Alignment.TopRight,
                 X = -30,
                 Y = 30,
@@ -235,6 +253,8 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
         public override void Update(GameTime gameTime)
         {
+            UpdateScreenScrollContainerSize();
+
             if (KeyboardManager.IsUniqueKeyPress(Keys.D1) || KeyboardManager.IsUniqueKeyPress(Keys.NumPad1))
                 ToggleNewButtons();
 
@@ -254,6 +274,25 @@ namespace Wobble.Tests.Screens.Tests.ButtonPerformance
 
             Container?.Update(gameTime);
             UpdateScrollButtonVisibility();
+        }
+
+        private void UpdateScreenScrollContainerSize()
+        {
+            var width = Container.Width;
+            var height = Container.Height;
+            var contentHeight = Math.Max(ContentHeight, height);
+
+            if (ScreenScrollContainer.Width != width)
+                ScreenScrollContainer.Width = width;
+
+            if (ScreenScrollContainer.Height != height)
+                ScreenScrollContainer.Height = height;
+
+            if (ContentContainer.Width != width)
+                ContentContainer.Width = width;
+
+            if (ContentContainer.Height != contentHeight)
+                ContentContainer.Height = contentHeight;
         }
 
         public override void Draw(GameTime gameTime)
