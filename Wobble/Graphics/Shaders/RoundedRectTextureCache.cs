@@ -10,7 +10,7 @@ namespace Wobble.Graphics.Shaders
     ///     Keeping the rounding in the texture lets all button backgrounds, labels, and icons use
     ///     the same SpriteBatch instead of forcing a shader batch break for every button.
     /// </summary>
-    internal static class RoundedRectTextureCache
+    public static class RoundedRectTextureCache
     {
         private static Dictionary<TextureKey, Texture2D> Textures { get; } = new Dictionary<TextureKey, Texture2D>();
 
