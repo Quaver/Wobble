@@ -60,6 +60,11 @@ namespace Wobble
         ///    Used for drawing textures
         /// </summary>
         public SpriteBatch SpriteBatch { get; private set; }
+        
+        /// <summary>
+        ///     Thread ID of the main UI thread.
+        /// </summary>
+        public int MainThreadId { get; }
 
         /// <summary>
         ///     The amount of time elapsed since the previous frame in Milliseconds.
@@ -168,6 +173,7 @@ namespace Wobble
 
             GameBase.Game = this;
             GlobalUserInterface = new GlobalUserInterface();
+            MainThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {

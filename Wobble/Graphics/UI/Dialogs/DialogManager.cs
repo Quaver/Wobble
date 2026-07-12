@@ -23,6 +23,26 @@ namespace Wobble.Graphics.UI.Dialogs
         private static List<DialogScreen> DialogsToBeAdded { get; set; } = new List<DialogScreen>();
 
         /// <summary>
+        ///     Returns whether a drawable is allowed to receive input while dialogs are open.
+        ///     Only the top-most dialog and its descendants are interactive.
+        /// </summary>
+        public static bool IsInputAllowed(Drawable drawable)
+        {
+            var topDialog = DialogsToBeAdded.LastOrDefault() ?? Dialogs.LastOrDefault();
+
+            if (topDialog == null)
+                return true;
+
+            for (var current = drawable; current != null; current = current.Parent)
+            {
+                if (current == topDialog)
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Updates the current dialogScreen.
         /// </summary>
         /// <param name="gameTime"></param>

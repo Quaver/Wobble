@@ -39,6 +39,9 @@
   <data name="Screen_Discord" xml:space="preserve">
     <value>Discord Rich Pr.</value>
   </data>
+  <data name="Screen_DialogInput" xml:space="preserve">
+    <value>Вход в диалог</value>
+  </data>
     <data name="Screen_DrawableScaling" xml:space="preserve">
         <value>Мащабиране</value>
     </data>
@@ -66,6 +69,9 @@
     <data name="Screen_ScheduledUpdates" xml:space="preserve">
         <value>Планирани актуализации</value>
     </data>
+    <data name="Screen_ScreenLifecycle" xml:space="preserve">
+        <value>Жизнен цикъл на екрана</value>
+    </data>
     <data name="Screen_Scrolling" xml:space="preserve">
         <value>Контейнер за превъртане</value>
     </data>
@@ -83,6 +89,9 @@
     </data>
     <data name="Screen_TextInput" xml:space="preserve">
         <value>Въвеждане на текст</value>
+    </data>
+    <data name="Screen_FormControls" xml:space="preserve">
+        <value>Галерия с контроли за формуляри</value>
     </data>
     <data name="Screen_TextSizes" xml:space="preserve">
         <value>Размери на текста</value>

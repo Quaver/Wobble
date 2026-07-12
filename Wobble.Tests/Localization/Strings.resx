@@ -6,6 +6,9 @@
   <data name="Screen_HorizontalClipping" xml:space="preserve">
     <value>Horizontal Clipping</value>
   </data>
+  <data name="Screen_RenderTarget" xml:space="preserve">
+    <value>Render Target</value>
+  </data>
   <data name="Screen_MarqueeSpriteText" xml:space="preserve">
     <value>Marquee SpriteText</value>
   </data>
@@ -45,14 +48,26 @@
   <data name="Screen_ButtonPerformance" xml:space="preserve">
     <value>Button Performance</value>
   </data>
+  <data name="Screen_ButtonsGallery" xml:space="preserve">
+    <value>Buttons Gallery</value>
+  </data>
+  <data name="Screen_CursorScaling" xml:space="preserve">
+    <value>Cursor Scaling</value>
+  </data>
   <data name="Screen_NavigationBar" xml:space="preserve">
     <value>Navigation Bar</value>
   </data>
   <data name="Screen_PersistentElements" xml:space="preserve">
     <value>Persistent Elements</value>
   </data>
+  <data name="Screen_ScreenLifecycle" xml:space="preserve">
+    <value>Screen Lifecycle</value>
+  </data>
   <data name="Screen_Discord" xml:space="preserve">
     <value>Discord Rich Pr.</value>
+  </data>
+  <data name="Screen_DialogInput" xml:space="preserve">
+    <value>Dialog Input</value>
   </data>
   <data name="Screen_DrawableScaling" xml:space="preserve">
     <value>Drawable Scaling</value>
@@ -98,6 +113,9 @@
   </data>
   <data name="Screen_TextInput" xml:space="preserve">
     <value>Text Input</value>
+  </data>
+  <data name="Screen_FormControls" xml:space="preserve">
+    <value>Form Controls Gallery</value>
   </data>
   <data name="Screen_TextSizes" xml:space="preserve">
     <value>Text Sizes</value>

@@ -30,8 +30,9 @@ namespace Wobble.Graphics.UI.Buttons
 
                 var x = MathHelper.Clamp(MouseManager.CurrentState.X - GrabOffset.Value.X, 0, WindowManager.Width - Width);
                 var y = MathHelper.Clamp(MouseManager.CurrentState.Y - GrabOffset.Value.Y, 0, WindowManager.Height - Height);
+                var parentPosition = Parent?.AbsolutePosition ?? Vector2.Zero;
 
-                Position = new ScalableVector2(x, y);
+                Position = new ScalableVector2(x - parentPosition.X, y - parentPosition.Y);
             }
             else
             {
