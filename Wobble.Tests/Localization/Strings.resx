@@ -45,6 +45,9 @@
   <data name="Screen_ButtonPerformance" xml:space="preserve">
     <value>Button Performance</value>
   </data>
+  <data name="Screen_ButtonsGallery" xml:space="preserve">
+    <value>Buttons Gallery</value>
+  </data>
   <data name="Screen_CursorScaling" xml:space="preserve">
     <value>Cursor Scaling</value>
   </data>

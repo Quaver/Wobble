@@ -6,6 +6,7 @@ using Wobble.Tests.Screens.Tests.Background;
 using Wobble.Tests.Screens.Tests.BlurContainer;
 using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.ButtonPerformance;
+using Wobble.Tests.Screens.Tests.ButtonsGallery;
 using Wobble.Tests.Screens.Tests.CursorScaling;
 using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DialogInput;
@@ -89,6 +90,7 @@ namespace Wobble.Tests.Screens.Selection
             new TestScreenDescriptor(TextControls, "Screen_TextInput", () => new TestTextInputScreen()),
             new TestScreenDescriptor(TextControls, "Screen_FormControls", () => new TestFormControlsScreen()),
             new TestScreenDescriptor(TextControls, "Screen_Tooltips", () => new TestTooltipsScreen()),
+            new TestScreenDescriptor(TextControls, "Screen_ButtonsGallery", () => new TestButtonsGalleryScreen()),
             new TestScreenDescriptor(TextControls, "Screen_ButtonPerformance", () => new TestButtonPerformanceScreen()),
 
             new TestScreenDescriptor(InputIntegration, "Screen_Audio", () => new TestAudioScreen()),
