@@ -130,6 +130,8 @@ namespace Wobble.Graphics.Buttons
 
         private bool HoverExpansionInitialized { get; set; }
 
+        private Vector2 LastContentSize { get; set; } = new Vector2(float.NaN, float.NaN);
+
         private SpriteBatchOptions HoverClipSpriteBatchOptions { get; } = RoundedRectShader.CreateScissorSafeOptions();
 
         /// <inheritdoc />
@@ -299,6 +301,16 @@ namespace Wobble.Graphics.Buttons
             }
 
             base.Update(gameTime);
+
+            var contentSize = new Vector2(
+                (Icon?.Width ?? 0) + (Label?.Width ?? 0),
+                Math.Max(Icon?.Height ?? 0, Label?.Height ?? 0));
+
+            if (contentSize != LastContentSize)
+            {
+                LastContentSize = contentSize;
+                LayoutContent();
+            }
 
             if (HoverExpansionInitialized && Icon != null && Label != null)
                 UpdateHoverExpansion(gameTime);

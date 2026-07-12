@@ -77,6 +77,11 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         /// <summary>
+        ///     The width of the rendered glyphs, excluding the trailing render-target padding.
+        /// </summary>
+        public float LayoutWidth { get; private set; }
+
+        /// <summary>
         ///     The rendertarget used to cache the text
         /// </summary>
         private RenderTarget2D RenderTarget { get; set; }
@@ -126,6 +131,8 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         private void SetSize()
         {
+            LayoutWidth = (float) Math.Ceiling(_raw.MeasuredWidth) / _scale;
+
             // Round the size the same way it will be rounded during rendering.
             var (width, height) = _raw.AbsoluteSize;
             var pixelWidth = Math.Ceiling(width);

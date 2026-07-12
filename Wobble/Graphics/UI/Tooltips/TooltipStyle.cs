@@ -21,7 +21,7 @@ namespace Wobble.Graphics.UI.Tooltips
         public Color BackgroundColor { get; set; } = new Color(30, 30, 34);
         public Color TextColor { get; set; } = Color.White;
         public int TextSize { get; set; } = 18;
-        public int TextWeight { get; set; } = FontWeight.Regular;
+        public int TextWeight { get; set; } = FontWeight.SemiBold;
         public Color BorderColor { get; set; } = new Color(90, 90, 98);
         public float BorderThickness { get; set; } = 1;
         public bool RoundedCorners { get; set; } = true;
