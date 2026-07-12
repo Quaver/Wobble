@@ -69,6 +69,9 @@
     <data name="Screen_ScheduledUpdates" xml:space="preserve">
         <value>Планирани актуализации</value>
     </data>
+    <data name="Screen_ScreenLifecycle" xml:space="preserve">
+        <value>Жизнен цикъл на екрана</value>
+    </data>
     <data name="Screen_Scrolling" xml:space="preserve">
         <value>Контейнер за превъртане</value>
     </data>

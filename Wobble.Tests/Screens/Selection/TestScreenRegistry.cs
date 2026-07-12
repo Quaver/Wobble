@@ -23,6 +23,7 @@ using Wobble.Tests.Screens.Tests.NineSliceSprite;
 using Wobble.Tests.Screens.Tests.PersistentElements;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Rotation;
+using Wobble.Tests.Screens.Tests.ScreenLifecycle;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
 using Wobble.Tests.Screens.Tests.Scrolling;
@@ -102,6 +103,7 @@ namespace Wobble.Tests.Screens.Selection
 
             new TestScreenDescriptor(RuntimeFramework, "Screen_TaskHandler", () => new TaskHandlerScreen()),
             new TestScreenDescriptor(RuntimeFramework, "Screen_ScheduledUpdates", () => new TestScheduledUpdatesScreen()),
+            new TestScreenDescriptor(RuntimeFramework, "Screen_ScreenLifecycle", () => TestScreenLifecycleSession.Create(), true),
             new TestScreenDescriptor(RuntimeFramework, "Screen_NavigationBar", () => new TestNavigationBarScreen(), true),
             new TestScreenDescriptor(RuntimeFramework, "Screen_PersistentElements", () => new TestPersistentElementsFirstScreen(), true)
         };

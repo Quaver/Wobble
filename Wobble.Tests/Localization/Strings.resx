@@ -57,6 +57,9 @@
   <data name="Screen_PersistentElements" xml:space="preserve">
     <value>Persistent Elements</value>
   </data>
+  <data name="Screen_ScreenLifecycle" xml:space="preserve">
+    <value>Screen Lifecycle</value>
+  </data>
   <data name="Screen_Discord" xml:space="preserve">
     <value>Discord Rich Pr.</value>
   </data>

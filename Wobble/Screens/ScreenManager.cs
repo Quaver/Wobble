@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics;
+using Wobble.Graphics.UI.Buttons;
 
 namespace Wobble.Screens
 {
@@ -176,6 +177,8 @@ namespace Wobble.Screens
 
             if (CurrentScreen?.AutomaticallyDestroyOnScreenSwitch != false)
                 CurrentScreen?.Destroy();
+            else
+                ResetInteractionState(CurrentScreen.View.Container);
 
             foreach (var element in RegisteredElements
                          .Where(x => !retainedKeys.Contains(x.Key) || x.Value.IsDisposed).ToArray())
@@ -214,6 +217,15 @@ namespace Wobble.Screens
             drawable.DestroyIfParentIsNull = false;
             drawable.Parent = null;
             drawable.DestroyIfParentIsNull = destroyIfParentIsNull;
+        }
+
+        private static void ResetInteractionState(Drawable drawable)
+        {
+            if (drawable is Button button)
+                button.ResetInteractionState();
+
+            foreach (var child in drawable.Children)
+                ResetInteractionState(child);
         }
     }
 }
