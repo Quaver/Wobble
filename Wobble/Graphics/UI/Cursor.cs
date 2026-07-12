@@ -13,6 +13,10 @@ namespace Wobble.Graphics.UI
 {
     public class Cursor : Sprite
     {
+        public const float MinimumSizeScale = 0.1f;
+        
+        public const float MaximumSizeScale = 2.0f;
+        
         /// <summary>
         ///     The original size of the cursor; set during initialization.
         /// </summary>
@@ -23,6 +27,19 @@ namespace Wobble.Graphics.UI
         ///     button is down.
         /// </summary>
         public float ExpandScale { get; set; }
+        
+        private float _sizeScale = 1f;
+        
+        public float SizeScale
+        {
+            get => _sizeScale;
+            set
+            {
+                _sizeScale = MathHelper.Clamp(value, MinimumSizeScale, MaximumSizeScale);
+                var size = OriginalSize * _sizeScale;
+                Size = new ScalableVector2(size, size);
+            }
+        }
 
         /// <summary>
         ///     Whether to center the cursor image on the cursor position.
@@ -65,16 +82,18 @@ namespace Wobble.Graphics.UI
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            var baseSize = OriginalSize * SizeScale;
+            
             if (MouseManager.CurrentState.LeftButton == ButtonState.Pressed)
             {
                 // Calculate the new size that the cursor will be when pressed.
-                var newSize = MathHelper.Lerp(Width, OriginalSize * ExpandScale, (float)Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
+                var newSize = MathHelper.Lerp(Width, baseSize * ExpandScale, (float)Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
                 Size = new ScalableVector2(newSize, newSize);
             }
             else
             {
                 // Calculate new size when not pressed.
-                var newSize = MathHelper.Lerp(Width, OriginalSize, (float)Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
+                var newSize = MathHelper.Lerp(Width, baseSize, (float)Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
                 Size = new ScalableVector2(newSize, newSize);
             }
 
