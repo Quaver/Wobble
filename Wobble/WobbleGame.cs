@@ -165,6 +165,19 @@ namespace Wobble
         }
 
         /// <summary>
+        ///     Schedules work after render-target actions that are already pending for the draw phase.
+        /// </summary>
+        public void ScheduleRenderTargetDrawAfterPending(Action action)
+        {
+            if (action == null)
+                return;
+
+            // Draw actions are consumed in reverse order, so index zero runs last.
+            lock (ScheduledRenderTargetDrawsLock)
+                ScheduledRenderTargetDraws.Insert(0, action);
+        }
+
+        /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
         protected WobbleGame(bool preferWayland = false) : base(preferWayland)
@@ -227,7 +240,10 @@ namespace Wobble
             var ret = _beginCalled(SpriteBatch);
 
             if (ret)
+            {
                 SpriteBatch.End();
+                GameBase.DefaultSpriteBatchInUse = false;
+            }
 
             return ret;
         }
