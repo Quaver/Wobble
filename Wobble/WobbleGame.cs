@@ -117,7 +117,9 @@ namespace Wobble
 #if DEBUG
         private DebugOverlay DebugOverlay { get; set; }
 
-        private Stopwatch DebugDrawStopwatch { get; } = new Stopwatch();
+        private long DebugDrawStartedTimestamp { get; set; }
+
+        private GameTime DebugDrawGameTime { get; set; }
 
         private double DebugScheduledRenderTargetDrawMs { get; set; }
 
@@ -127,6 +129,11 @@ namespace Wobble
 
         private int DebugDrawnDrawableCount { get; set; }
 #endif
+
+        /// <summary>
+        ///     Whether the base game owns drawing the global UI. Derived games that already draw it themselves should leave this disabled.
+        /// </summary>
+        protected virtual bool DrawGlobalUserInterface => false;
 
         /// <summary>
         ///     Initializes <see cref="_beginCalled"/>.
@@ -288,8 +295,8 @@ namespace Wobble
 
 #if DEBUG
             PerformanceStats.BeginUpdate(gameTime);
-            var updateStopwatch = Stopwatch.StartNew();
-            var phaseStopwatch = Stopwatch.StartNew();
+            var updateStartedTimestamp = Stopwatch.GetTimestamp();
+            var phaseStartedTimestamp = updateStartedTimestamp;
             double inputUpdateMs;
             double screenUpdateMs;
             double globalUiUpdateMs;
@@ -308,8 +315,8 @@ namespace Wobble
             JoystickManager.Update();
 
 #if DEBUG
-            inputUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-            phaseStopwatch.Restart();
+            inputUpdateMs = ElapsedMilliseconds(phaseStartedTimestamp);
+            phaseStartedTimestamp = Stopwatch.GetTimestamp();
 #endif
 
             ScreenManager.Update(gameTime);
@@ -317,15 +324,15 @@ namespace Wobble
             TooltipManager.Update(gameTime);
 
 #if DEBUG
-            screenUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-            phaseStopwatch.Restart();
+            screenUpdateMs = ElapsedMilliseconds(phaseStartedTimestamp);
+            phaseStartedTimestamp = Stopwatch.GetTimestamp();
 #endif
 
             AudioManager.Update(gameTime);
 
 #if DEBUG
-            audioUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-            phaseStopwatch.Restart();
+            audioUpdateMs = ElapsedMilliseconds(phaseStartedTimestamp);
+            phaseStartedTimestamp = Stopwatch.GetTimestamp();
 #endif
 
             // Update the global sprite container
@@ -333,8 +340,8 @@ namespace Wobble
 
 #if DEBUG
             DebugOverlay?.Update(gameTime);
-            globalUiUpdateMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-            phaseStopwatch.Restart();
+            globalUiUpdateMs = ElapsedMilliseconds(phaseStartedTimestamp);
+            phaseStartedTimestamp = Stopwatch.GetTimestamp();
 #endif
 
             // Keep the RPC client up-to-date.
@@ -343,9 +350,9 @@ namespace Wobble
             Logger.Update();
 
 #if DEBUG
-            audioLogUpdateMs = audioUpdateMs + phaseStopwatch.Elapsed.TotalMilliseconds;
+            audioLogUpdateMs = audioUpdateMs + ElapsedMilliseconds(phaseStartedTimestamp);
             PerformanceStats.RecordUpdateTimings(inputUpdateMs, screenUpdateMs, globalUiUpdateMs, audioLogUpdateMs,
-                updateStopwatch.Elapsed.TotalMilliseconds);
+                ElapsedMilliseconds(updateStartedTimestamp));
 #endif
 
             base.Update(gameTime);
@@ -361,8 +368,9 @@ namespace Wobble
                 return;
 
 #if DEBUG
-            DebugDrawStopwatch.Restart();
-            var phaseStopwatch = Stopwatch.StartNew();
+            DebugDrawStartedTimestamp = Stopwatch.GetTimestamp();
+            DebugDrawGameTime = gameTime;
+            var phaseStartedTimestamp = DebugDrawStartedTimestamp;
 #endif
 
             ScheduledRenderTargetDrawsToRun.Clear();
@@ -385,8 +393,8 @@ namespace Wobble
             ScheduledRenderTargetDrawsToRun.Clear();
 
 #if DEBUG
-            DebugScheduledRenderTargetDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-            phaseStopwatch.Restart();
+            DebugScheduledRenderTargetDrawMs = ElapsedMilliseconds(phaseStartedTimestamp);
+            phaseStartedTimestamp = Stopwatch.GetTimestamp();
 #endif
 
             base.Draw(gameTime);
@@ -398,18 +406,18 @@ namespace Wobble
 
             TooltipManager.Draw(gameTime);
 
-            // Causes issues with Quaver for FPSCounter
-// #if DEBUG
-//             DebugScreenDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-//             phaseStopwatch.Restart();
-// #endif
-//
-//             GlobalUserInterface?.Draw(gameTime);
-//
-// #if DEBUG
-//             DebugGlobalUiDrawMs = phaseStopwatch.Elapsed.TotalMilliseconds;
-//             DebugDrawnDrawableCount = Drawable.TotalDrawn;
-// #endif
+#if DEBUG
+            DebugScreenDrawMs = ElapsedMilliseconds(phaseStartedTimestamp);
+            phaseStartedTimestamp = Stopwatch.GetTimestamp();
+#endif
+
+            if (DrawGlobalUserInterface)
+                GlobalUserInterface?.Draw(gameTime);
+
+#if DEBUG
+            DebugGlobalUiDrawMs = ElapsedMilliseconds(phaseStartedTimestamp);
+            DebugDrawnDrawableCount = Drawable.TotalDrawn;
+#endif
 
 #if DEBUG
             TryEndBatch();
@@ -419,12 +427,12 @@ namespace Wobble
         {
             if (IsReadyToUpdate)
             {
-                var overlayStopwatch = Stopwatch.StartNew();
-                DebugOverlay?.Draw(new GameTime(TimeSpan.FromMilliseconds(TimeRunning), TimeSpan.FromMilliseconds(TimeSinceLastFrame)));
-                var overlayDrawMs = overlayStopwatch.Elapsed.TotalMilliseconds;
+                var overlayStartedTimestamp = Stopwatch.GetTimestamp();
+                DebugOverlay?.Draw(DebugDrawGameTime);
+                var overlayDrawMs = ElapsedMilliseconds(overlayStartedTimestamp);
 
                 PerformanceStats.RecordDrawTimings(DebugScheduledRenderTargetDrawMs, DebugScreenDrawMs, DebugGlobalUiDrawMs, overlayDrawMs,
-                    DebugDrawStopwatch.Elapsed.TotalMilliseconds, DebugDrawnDrawableCount);
+                    ElapsedMilliseconds(DebugDrawStartedTimestamp), DebugDrawnDrawableCount);
             }
 
             if (SpriteBatch != null)
@@ -433,6 +441,11 @@ namespace Wobble
             base.EndDraw();
 #endif
         }
+
+#if DEBUG
+        private static double ElapsedMilliseconds(long startedTimestamp) =>
+            Stopwatch.GetElapsedTime(startedTimestamp).TotalMilliseconds;
+#endif
 
         /// <summary>
         ///     Resets the backbuffer alpha channel to 1 (fully opaque).

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Resources;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -23,6 +25,8 @@ namespace Wobble.Tests
     {
         protected override bool IsReadyToUpdate { get; set; }
 
+        protected override bool DrawGlobalUserInterface => true;
+
         private FpsCounter FpsCounter { get; set; }
         
         private SpriteTextPlus WaylandState { get; set; }
@@ -30,6 +34,10 @@ namespace Wobble.Tests
         private bool _logGc;
         private double _gcLogTimer;
         private readonly int[] _lastGcCounts = new int[3];
+
+#if DEBUG
+        private PerformanceSweep _performanceSweep;
+#endif
 
         public WobbleTestsGame() : base(true)
         {
@@ -107,6 +115,12 @@ namespace Wobble.Tests
 
             // Once the assets load, we'll start the main screen
             ScreenManager.ChangeScreen(new SelectionScreen());
+
+#if DEBUG
+            if (string.Equals(Environment.GetEnvironmentVariable("WOBBLE_TESTS_PROFILE_ALL"), "1",
+                    StringComparison.Ordinal))
+                _performanceSweep = new PerformanceSweep(this);
+#endif
         }
 
         private static void CacheInterFont(string name, int weight, byte[] interFont, byte[] emojiFont)
@@ -135,6 +149,10 @@ namespace Wobble.Tests
                 return;
 
             base.Update(gameTime);
+
+#if DEBUG
+            _performanceSweep?.Update(gameTime);
+#endif
 
             // TODO: Your global update logic goes here.
             if (KeyboardManager.IsUniqueKeyPress(Keys.Escape))
@@ -200,5 +218,137 @@ namespace Wobble.Tests
                 $"{tag}: managed={totalBytes / (1024 * 1024)}MB gen0={gen0}(+{delta0}) gen1={gen1}(+{delta1}) gen2={gen2}(+{delta2})",
                 LogType.Runtime);
         }
+
+#if DEBUG
+        private sealed class PerformanceSweep
+        {
+            private const double WarmupMilliseconds = 750;
+            private const double SampleMilliseconds = 2000;
+
+            private readonly WobbleTestsGame game;
+            private readonly List<string> rows = new List<string>();
+            private readonly List<double> frameTimes = new List<double>();
+            private readonly List<double> updateTimes = new List<double>();
+            private readonly List<double> drawTimes = new List<double>();
+            private readonly List<double> screenDrawTimes = new List<double>();
+            private readonly List<double> globalUiDrawTimes = new List<double>();
+            private readonly List<int> drawableCounts = new List<int>();
+            private int screenIndex = -1;
+            private double elapsed;
+            private long allocatedBytesAtSampleStart;
+            private int gen0AtSampleStart;
+            private int gen1AtSampleStart;
+            private int gen2AtSampleStart;
+            private long maximumManagedBytes;
+
+            public PerformanceSweep(WobbleTestsGame game)
+            {
+                this.game = game;
+                rows.Add("screen,frames,frame_avg_ms,frame_p95_ms,update_avg_ms,update_p95_ms,draw_avg_ms,draw_p95_ms," +
+                         "screen_draw_avg_ms,global_ui_draw_avg_ms,drawables_avg,drawables_max,allocated_bytes," +
+                         "managed_peak_bytes,gen0,gen1,gen2");
+                Advance();
+            }
+
+            public void Update(GameTime gameTime)
+            {
+                elapsed += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if (elapsed < WarmupMilliseconds)
+                    return;
+
+                if (allocatedBytesAtSampleStart == 0)
+                {
+                    allocatedBytesAtSampleStart = GC.GetTotalAllocatedBytes(false);
+                    gen0AtSampleStart = GC.CollectionCount(0);
+                    gen1AtSampleStart = GC.CollectionCount(1);
+                    gen2AtSampleStart = GC.CollectionCount(2);
+                }
+
+                frameTimes.Add(PerformanceStats.FrameTimeMs);
+                updateTimes.Add(PerformanceStats.UpdateTimeMs);
+                drawTimes.Add(PerformanceStats.DrawTimeMs);
+                screenDrawTimes.Add(PerformanceStats.ScreenDrawTimeMs);
+                globalUiDrawTimes.Add(PerformanceStats.GlobalUiDrawTimeMs);
+                drawableCounts.Add(PerformanceStats.DrawnDrawableCount);
+                maximumManagedBytes = Math.Max(maximumManagedBytes, GC.GetTotalMemory(false));
+
+                if (elapsed < WarmupMilliseconds + SampleMilliseconds)
+                    return;
+
+                Record();
+                Advance();
+            }
+
+            private void Advance()
+            {
+                screenIndex++;
+                if (screenIndex >= TestScreenRegistry.Screens.Count)
+                {
+                    var outputPath = Environment.GetEnvironmentVariable("WOBBLE_TESTS_PROFILE_OUTPUT");
+                    if (string.IsNullOrWhiteSpace(outputPath))
+                        outputPath = Path.Combine(AppContext.BaseDirectory, "wobble-screen-profile.csv");
+
+                    File.WriteAllLines(outputPath, rows);
+                    Console.WriteLine($"WOBBLE_PROFILE_COMPLETE={outputPath}");
+                    game.Exit();
+                    return;
+                }
+
+                elapsed = 0;
+                allocatedBytesAtSampleStart = 0;
+                maximumManagedBytes = 0;
+                frameTimes.Clear();
+                updateTimes.Clear();
+                drawTimes.Clear();
+                screenDrawTimes.Clear();
+                globalUiDrawTimes.Clear();
+                drawableCounts.Clear();
+
+                var descriptor = TestScreenRegistry.Screens[screenIndex];
+                Console.WriteLine($"WOBBLE_PROFILE_SCREEN={descriptor.LabelKey}");
+                ScreenManager.ChangeScreen(descriptor.CreateScreen());
+            }
+
+            private void Record()
+            {
+                var descriptor = TestScreenRegistry.Screens[screenIndex];
+                rows.Add(string.Join(",",
+                    descriptor.LabelKey,
+                    frameTimes.Count,
+                    Average(frameTimes),
+                    Percentile95(frameTimes),
+                    Average(updateTimes),
+                    Percentile95(updateTimes),
+                    Average(drawTimes),
+                    Percentile95(drawTimes),
+                    Average(screenDrawTimes),
+                    Average(globalUiDrawTimes),
+                    Average(drawableCounts),
+                    drawableCounts.Count == 0 ? 0 : drawableCounts.Max(),
+                    GC.GetTotalAllocatedBytes(false) - allocatedBytesAtSampleStart,
+                    maximumManagedBytes,
+                    GC.CollectionCount(0) - gen0AtSampleStart,
+                    GC.CollectionCount(1) - gen1AtSampleStart,
+                    GC.CollectionCount(2) - gen2AtSampleStart));
+            }
+
+            private static string Average(IReadOnlyCollection<double> values) =>
+                (values.Count == 0 ? 0 : values.Average()).ToString("0.000", CultureInfo.InvariantCulture);
+
+            private static string Average(IReadOnlyCollection<int> values) =>
+                (values.Count == 0 ? 0 : values.Average()).ToString("0.0", CultureInfo.InvariantCulture);
+
+            private static string Percentile95(IEnumerable<double> values)
+            {
+                var sorted = values.OrderBy(value => value).ToArray();
+                if (sorted.Length == 0)
+                    return "0.000";
+
+                var index = Math.Min(sorted.Length - 1, (int)Math.Ceiling(sorted.Length * 0.95) - 1);
+                return sorted[index].ToString("0.000", CultureInfo.InvariantCulture);
+            }
+        }
+#endif
     }
 }
