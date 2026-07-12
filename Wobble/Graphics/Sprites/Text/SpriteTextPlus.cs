@@ -41,6 +41,22 @@ namespace Wobble.Graphics.Sprites.Text
         ///     Scale at which the cached line bounds were last calculated.
         /// </summary>
         private float _renderScale;
+
+        /// <summary>
+        ///     Applies the shared font baseline offset to uncached text.
+        /// </summary>
+        private float _verticalDrawOffset;
+
+        /// <summary>
+        ///     Height of the font's representative capital glyph.
+        /// </summary>
+        public float CapHeight { get; private set; }
+
+        /// <summary>
+        ///     Distance from the text bounds to the top of the capital glyph area.
+        /// </summary>
+        public float CapTopOffset { get; private set; }
+
         public int FontSize
         {
             get => _fontSize;
@@ -273,16 +289,21 @@ namespace Wobble.Graphics.Sprites.Text
                 }
 
                 lineSprite.Parent = this;
-                lineSprite.Y = height;
+                lineSprite.Y = height + lineSprite.VerticalLayoutOffset;
                 lineSprite.UsePreviousSpriteBatchOptions = true;
                 lineSprite.Tint = Tint;
                 lineSprite.Alpha = Alpha;
                 lineSprites.Add(lineSprite);
 
+                if (lineSprites.Count == 1)
+                {
+                    CapHeight = lineSprite.CapHeight;
+                    CapTopOffset = lineSprite.CapTopOffset;
+                }
+
                 width = Math.Max(width, lineSprite.LayoutWidth);
 
-                Font.FontSize = FontSize;
-                height += Font.Store.LineHeight;
+                height += lineSprite.LayoutHeight;
             }
 
             Size = new ScalableVector2(width, height);
@@ -396,7 +417,9 @@ namespace Wobble.Graphics.Sprites.Text
 #endif
 
             SetSize();
-            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _tint * Alpha, scale: AbsoluteScale);
+            var drawPosition = AbsolutePosition;
+            drawPosition.Y += _verticalDrawOffset * AbsoluteScale.Y;
+            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, drawPosition, _tint * Alpha, scale: AbsoluteScale);
         }
 
         public override void Destroy()
@@ -415,7 +438,11 @@ namespace Wobble.Graphics.Sprites.Text
         {
             Font.FontSize = FontSize;
             var (x, y) = Font.Store.MeasureString(Text);
-            Size = new ScalableVector2(x, y);
+            SpriteTextPlusLineRaw.GetVerticalLayout(Font, out var layoutHeight, out _verticalDrawOffset,
+                out var capHeight);
+            CapHeight = capHeight;
+            CapTopOffset = (layoutHeight - capHeight) / 2f;
+            Size = new ScalableVector2(x, Math.Max(y, layoutHeight));
         }
 
         /// <summary>
