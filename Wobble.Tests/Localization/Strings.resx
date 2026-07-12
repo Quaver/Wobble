@@ -6,6 +6,9 @@
   <data name="Screen_HorizontalClipping" xml:space="preserve">
     <value>Horizontal Clipping</value>
   </data>
+  <data name="Screen_RenderTarget" xml:space="preserve">
+    <value>Render Target</value>
+  </data>
   <data name="Screen_MarqueeSpriteText" xml:space="preserve">
     <value>Marquee SpriteText</value>
   </data>

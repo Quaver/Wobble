@@ -23,6 +23,7 @@ using Wobble.Tests.Screens.Tests.NineSliceSprite;
 using Wobble.Tests.Screens.Tests.PersistentElements;
 using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Rotation;
+using Wobble.Tests.Screens.Tests.RenderTarget;
 using Wobble.Tests.Screens.Tests.ScreenLifecycle;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
@@ -78,6 +79,7 @@ namespace Wobble.Tests.Screens.Selection
             new TestScreenDescriptor(Rendering, "Screen_Primitives", () => new TestPrimitivesScreen()),
             new TestScreenDescriptor(Rendering, "Screen_NineSliceSprite", () => new TestNineSliceSpriteScreen()),
             new TestScreenDescriptor(Rendering, "Screen_HorizontalClipping", () => new TestHorizontalClippingScreen()),
+            new TestScreenDescriptor(Rendering, "Screen_RenderTarget", () => new TestRenderTargetScreen()),
 
             new TestScreenDescriptor(LayoutMotion, "Screen_Rotation", () => new TestRotationScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_DrawableScaling", () => new TestDrawableScalingScreen()),
