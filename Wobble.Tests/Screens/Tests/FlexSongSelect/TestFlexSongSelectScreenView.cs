@@ -115,7 +115,8 @@ namespace Wobble.Tests.Screens.Tests.FlexSongSelect
                 new ScalableVector2(_mapsetArea.Width, RowHeight),
                 new ScalableVector2(0, index * (RowHeight + RowGap)))
             {
-                Parent = _mapsetArea
+                Parent = _mapsetArea,
+                UpdateWhenInvisible = false
             };
             _rowShells.Add(shell);
 
@@ -185,8 +186,35 @@ namespace Wobble.Tests.Screens.Tests.FlexSongSelect
                 Tint = index % 2 == 0 ? CoverColor : new Color(180, 187, 195)
             };
             row.SetItemOptions(cover, new FlexItemOptions { Basis = 410, Shrink = 1 });
-            shell.AddBorder(BorderColor, 2);
+            CreateSpriteBorder(shell);
         }
+
+        private static void CreateSpriteBorder(Drawable parent)
+        {
+            var top = CreateBorderEdge(parent, Alignment.TopLeft);
+            var bottom = CreateBorderEdge(parent, Alignment.BotLeft);
+            var left = CreateBorderEdge(parent, Alignment.TopLeft);
+            var right = CreateBorderEdge(parent, Alignment.TopRight);
+
+            void RefreshSize()
+            {
+                top.Size = new ScalableVector2(parent.Width, 2);
+                bottom.Size = new ScalableVector2(parent.Width, 2);
+                left.Size = new ScalableVector2(2, parent.Height);
+                right.Size = new ScalableVector2(2, parent.Height);
+            }
+
+            RefreshSize();
+            parent.SizeChanged += (sender, args) => RefreshSize();
+        }
+
+        private static Sprite CreateBorderEdge(Drawable parent, Alignment alignment) => new Sprite
+            {
+                Parent = parent,
+                Alignment = alignment,
+                Image = WobbleAssets.WhiteBox,
+                Tint = BorderColor
+            };
 
         private static RoundedButton CreateBadge(Drawable parent, string label, float width, Color color)
         {

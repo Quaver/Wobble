@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace Wobble.Graphics
@@ -120,6 +119,7 @@ namespace Wobble.Graphics
             public float NaturalHeight { get; set; }
             public float? LayoutWidth { get; set; }
             public float? LayoutHeight { get; set; }
+            public uint SeenGeneration { get; set; }
 
             public ItemState(Drawable drawable)
             {
@@ -150,7 +150,10 @@ namespace Wobble.Graphics
         private readonly Dictionary<Drawable, ItemState> _itemStates =
             new Dictionary<Drawable, ItemState>();
 
-        private readonly List<Drawable> _lastChildOrder = new List<Drawable>();
+        private readonly List<ItemState> _trackedStates = new List<ItemState>();
+        private List<Drawable> _lastChildOrder = new List<Drawable>();
+        private List<Drawable> _childOrderScratch = new List<Drawable>();
+        private static readonly FlexItemOptions DefaultItemOptions = new FlexItemOptions();
 
         private FlexDirection _direction = FlexDirection.Row;
         private FlexWrap _wrap = FlexWrap.NoWrap;
@@ -161,6 +164,7 @@ namespace Wobble.Graphics
         private float _columnGap;
         private bool _layoutDirty = true;
         private bool _isLayouting;
+        private uint _synchronizationGeneration;
 
         public FlexDirection Direction
         {
@@ -296,28 +300,55 @@ namespace Wobble.Graphics
 
             _itemStates.Clear();
             _itemOptions.Clear();
+            _trackedStates.Clear();
             _lastChildOrder.Clear();
+            _childOrderScratch.Clear();
             base.Destroy();
         }
 
         private void SynchronizeChildren()
         {
-            var orderedChildren = Children.Where(x => x != null && x != Border).ToList();
-            var current = new HashSet<Drawable>(orderedChildren);
+            _synchronizationGeneration++;
+            _childOrderScratch.Clear();
 
-            if (!_lastChildOrder.SequenceEqual(orderedChildren))
+            for (var i = 0; i < Children.Count; i++)
             {
-                _lastChildOrder.Clear();
-                _lastChildOrder.AddRange(orderedChildren);
+                var child = Children[i];
+                if (child == null || child == Border)
+                    continue;
+
+                _childOrderScratch.Add(child);
+                TrackChild(child).SeenGeneration = _synchronizationGeneration;
+            }
+
+            var orderChanged = _lastChildOrder.Count != _childOrderScratch.Count;
+            if (!orderChanged)
+            {
+                for (var i = 0; i < _lastChildOrder.Count; i++)
+                {
+                    if (ReferenceEquals(_lastChildOrder[i], _childOrderScratch[i]))
+                        continue;
+
+                    orderChanged = true;
+                    break;
+                }
+            }
+
+            if (orderChanged)
+            {
+                var previousOrder = _lastChildOrder;
+                _lastChildOrder = _childOrderScratch;
+                _childOrderScratch = previousOrder;
                 _layoutDirty = true;
             }
 
-            foreach (var child in current)
-                TrackChild(child);
-
-            foreach (var removed in _itemStates.Keys.Where(x => !current.Contains(x)).ToArray())
+            for (var i = _trackedStates.Count - 1; i >= 0; i--)
             {
-                var state = _itemStates[removed];
+                var state = _trackedStates[i];
+                if (state.SeenGeneration == _synchronizationGeneration)
+                    continue;
+
+                var removed = state.Drawable;
                 removed.SizeChanged -= OnChildSizeChanged;
 
                 if (!removed.IsDisposed && removed.Parent == null)
@@ -329,6 +360,7 @@ namespace Wobble.Graphics
                 }
 
                 _itemStates.Remove(removed);
+                _trackedStates.RemoveAt(i);
                 if (_itemOptions.TryGetValue(removed, out var options))
                 {
                     options.Changed -= OnItemOptionsChanged;
@@ -338,14 +370,17 @@ namespace Wobble.Graphics
             }
         }
 
-        private void TrackChild(Drawable child)
+        private ItemState TrackChild(Drawable child)
         {
-            if (_itemStates.ContainsKey(child))
-                return;
+            if (_itemStates.TryGetValue(child, out var existing))
+                return existing;
 
-            _itemStates[child] = new ItemState(child);
+            var state = new ItemState(child);
+            _itemStates[child] = state;
+            _trackedStates.Add(state);
             child.SizeChanged += OnChildSizeChanged;
             _layoutDirty = true;
+            return state;
         }
 
         private void LayoutChildren()
@@ -404,7 +439,7 @@ namespace Wobble.Graphics
 
                 var options = _itemOptions.TryGetValue(child, out var configured)
                     ? configured
-                    : new FlexItemOptions();
+                    : DefaultItemOptions;
                 var naturalMain = row ? state.NaturalWidth : state.NaturalHeight;
                 var naturalCross = row ? state.NaturalHeight : state.NaturalWidth;
 
@@ -418,24 +453,36 @@ namespace Wobble.Graphics
                 });
             }
 
-            return result.OrderBy(x => x.Options.Order).ThenBy(x => x.InsertionIndex).ToList();
+            result.Sort(CompareLayoutItems);
+            return result;
+        }
+
+        private static int CompareLayoutItems(LayoutItem first, LayoutItem second)
+        {
+            var orderComparison = first.Options.Order.CompareTo(second.Options.Order);
+            return orderComparison != 0 ? orderComparison : first.InsertionIndex.CompareTo(second.InsertionIndex);
         }
 
         private List<FlexLine> CreateLines(IReadOnlyList<LayoutItem> items, float availableMain, float mainGap)
         {
             var lines = new List<FlexLine>();
             var current = new FlexLine();
+            var occupied = 0f;
 
             foreach (var item in items)
             {
-                var occupied = current.Items.Sum(x => x.MainSize) + mainGap * current.Items.Count;
-                if (Wrap != FlexWrap.NoWrap && current.Items.Count > 0 && occupied + item.MainSize > availableMain)
+                var required = occupied + (current.Items.Count > 0 ? mainGap : 0) + item.MainSize;
+                if (Wrap != FlexWrap.NoWrap && current.Items.Count > 0 && required > availableMain)
                 {
                     lines.Add(current);
                     current = new FlexLine();
+                    occupied = 0;
                 }
 
+                if (current.Items.Count > 0)
+                    occupied += mainGap;
                 current.Items.Add(item);
+                occupied += item.MainSize;
                 current.CrossSize = Math.Max(current.CrossSize, item.CrossSize);
             }
 
@@ -448,11 +495,16 @@ namespace Wobble.Graphics
         private static void ResolveMainSizes(FlexLine line, float availableMain, float mainGap)
         {
             var gapTotal = mainGap * Math.Max(0, line.Items.Count - 1);
-            var free = availableMain - gapTotal - line.Items.Sum(x => x.MainSize);
+            var totalMain = 0f;
+            for (var i = 0; i < line.Items.Count; i++)
+                totalMain += line.Items[i].MainSize;
+            var free = availableMain - gapTotal - totalMain;
 
             if (free > 0)
             {
-                var totalGrow = line.Items.Sum(x => Math.Max(0, x.Options.Grow));
+                var totalGrow = 0f;
+                for (var i = 0; i < line.Items.Count; i++)
+                    totalGrow += Math.Max(0, line.Items[i].Options.Grow);
                 if (totalGrow > 0)
                 {
                     foreach (var item in line.Items)
@@ -464,9 +516,13 @@ namespace Wobble.Graphics
                 var deficit = -free;
                 for (var pass = 0; pass < line.Items.Count && deficit > 0.001f; pass++)
                 {
-                    var shrinkFactor = line.Items.Sum(x => x.MainSize > 0
-                        ? Math.Max(0, x.Options.Shrink) * x.MainSize
-                        : 0);
+                    var shrinkFactor = 0f;
+                    for (var i = 0; i < line.Items.Count; i++)
+                    {
+                        var item = line.Items[i];
+                        if (item.MainSize > 0)
+                            shrinkFactor += Math.Max(0, item.Options.Shrink) * item.MainSize;
+                    }
                     if (shrinkFactor <= 0)
                         break;
 
@@ -500,7 +556,9 @@ namespace Wobble.Graphics
                 return;
             }
 
-            var occupied = lines.Sum(x => x.CrossSize) + lineGap * Math.Max(0, lines.Count - 1);
+            var occupied = lineGap * Math.Max(0, lines.Count - 1);
+            for (var i = 0; i < lines.Count; i++)
+                occupied += lines[i].CrossSize;
             var free = Math.Max(0, availableCross - occupied);
             offset = 0;
             distributedGap = lineGap;
@@ -536,7 +594,9 @@ namespace Wobble.Graphics
         private void LayoutLine(FlexLine line, bool row, bool reverseMain, bool reverseCross,
             float availableMain, float availableCross, float mainGap, float lineCrossPosition)
         {
-            var occupied = line.Items.Sum(x => x.MainSize) + mainGap * Math.Max(0, line.Items.Count - 1);
+            var occupied = mainGap * Math.Max(0, line.Items.Count - 1);
+            for (var i = 0; i < line.Items.Count; i++)
+                occupied += line.Items[i].MainSize;
             var free = Math.Max(0, availableMain - occupied);
             GetMainDistribution(line.Items.Count, free, mainGap, out var mainOffset, out var distributedGap);
 
