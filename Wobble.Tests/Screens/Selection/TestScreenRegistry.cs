@@ -8,6 +8,7 @@ using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.ButtonPerformance;
 using Wobble.Tests.Screens.Tests.CursorScaling;
 using Wobble.Tests.Screens.Tests.Discord;
+using Wobble.Tests.Screens.Tests.DialogInput;
 using Wobble.Tests.Screens.Tests.DrawableScaling;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
@@ -92,6 +93,7 @@ namespace Wobble.Tests.Screens.Selection
             new TestScreenDescriptor(InputIntegration, "Screen_CursorScaling", () => new TestCursorScalingScreen()),
             new TestScreenDescriptor(InputIntegration, "Screen_Joystick", () => new TestJoystickScreen()),
             new TestScreenDescriptor(InputIntegration, "Screen_Discord", () => new TestDiscordScreen()),
+            new TestScreenDescriptor(InputIntegration, "Screen_DialogInput", () => new TestDialogInputScreen()),
             new TestScreenDescriptor(InputIntegration, "Screen_ImGui", () => new TestImGuiScreen()),
 
             new TestScreenDescriptor(RuntimeFramework, "Screen_TaskHandler", () => new TaskHandlerScreen()),

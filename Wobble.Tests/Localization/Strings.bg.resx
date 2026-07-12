@@ -39,6 +39,9 @@
   <data name="Screen_Discord" xml:space="preserve">
     <value>Discord Rich Pr.</value>
   </data>
+  <data name="Screen_DialogInput" xml:space="preserve">
+    <value>Вход в диалог</value>
+  </data>
     <data name="Screen_DrawableScaling" xml:space="preserve">
         <value>Мащабиране</value>
     </data>

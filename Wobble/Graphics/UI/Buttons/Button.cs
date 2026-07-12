@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics.Sprites;
+using Wobble.Graphics.UI.Dialogs;
 using Wobble.Input;
 
 namespace Wobble.Graphics.UI.Buttons
@@ -124,7 +125,8 @@ namespace Wobble.Graphics.UI.Buttons
 
                 // Get the button that is on the top layer.
                 var topLayerButton = ButtonManager.Buttons
-                    .Where(x => x != null && x.IsHoveredWithoutDrawOrder && x.IsClickable && IsGloballyClickable)
+                    .Where(x => x != null && x.IsHoveredWithoutDrawOrder && x.IsClickable && IsGloballyClickable &&
+                                DialogManager.IsInputAllowed(x))
                     .OrderBy(x => x.Depth).ThenByDescending(x => x.DrawOrder).DefaultIfEmpty(null).First();
 
                 if (topLayerButton == null)
@@ -241,7 +243,7 @@ namespace Wobble.Graphics.UI.Buttons
                 OnHeld(gameTime);
 
             // Fire an event if the user clicks outside of the button.
-            if (MouseManager.IsUniqueClick(MouseButton.Left) && !IsMouseInClickArea())
+            if (DialogManager.IsInputAllowed(this) && MouseManager.IsUniqueClick(MouseButton.Left) && !IsMouseInClickArea())
                 ClickedOutside?.Invoke(this, EventArgs.Empty);
 
             base.Update(gameTime);
