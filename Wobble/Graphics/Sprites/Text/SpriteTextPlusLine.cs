@@ -82,6 +82,26 @@ namespace Wobble.Graphics.Sprites.Text
         public float LayoutWidth { get; private set; }
 
         /// <summary>
+        ///     Content-independent height of the logical text line.
+        /// </summary>
+        public float LayoutHeight => _raw.LayoutHeight / _scale;
+
+        /// <summary>
+        ///     Height of a representative capital glyph at the logical render scale.
+        /// </summary>
+        public float CapHeight => _raw.CapHeight / _scale;
+
+        /// <summary>
+        ///     Distance from the logical bounds to the top of the capital glyph area.
+        /// </summary>
+        public float CapTopOffset => (LayoutHeight - CapHeight) / 2f;
+
+        /// <summary>
+        ///     Offsets the render-target padding so it does not affect visual alignment.
+        /// </summary>
+        internal float VerticalLayoutOffset => -_raw.RenderPadding / (2f * _scale);
+
+        /// <summary>
         ///     The rendertarget used to cache the text
         /// </summary>
         private RenderTarget2D RenderTarget { get; set; }

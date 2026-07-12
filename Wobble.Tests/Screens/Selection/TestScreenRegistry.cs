@@ -34,6 +34,7 @@ using Wobble.Tests.Screens.Tests.SpriteTextPlusNew;
 using Wobble.Tests.Screens.Tests.TaskHandler;
 using Wobble.Tests.Screens.Tests.TextInput;
 using Wobble.Tests.Screens.Tests.TextSizes;
+using Wobble.Tests.Screens.Tests.TextVerticalLayout;
 using Wobble.Tests.Screens.Tests.Tooltips;
 
 namespace Wobble.Tests.Screens.Selection
@@ -90,6 +91,7 @@ namespace Wobble.Tests.Screens.Selection
 
             new TestScreenDescriptor(TextControls, "Screen_TextSizes", () => new TestTextSizesScreen()),
             new TestScreenDescriptor(TextControls, "Screen_SpriteTextPlus", () => new TestSpriteTextPlusScreen()),
+            new TestScreenDescriptor(TextControls, "Screen_TextVerticalLayout", () => new TestTextVerticalLayoutScreen()),
             new TestScreenDescriptor(TextControls, "Screen_TextInput", () => new TestTextInputScreen()),
             new TestScreenDescriptor(TextControls, "Screen_FormControls", () => new TestFormControlsScreen()),
             new TestScreenDescriptor(TextControls, "Screen_Tooltips", () => new TestTooltipsScreen()),

@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework;
 using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites.Text
@@ -44,6 +45,26 @@ namespace Wobble.Graphics.Sprites.Text
         public float MeasuredWidth { get; private set; }
 
         /// <summary>
+        ///     Content-independent line height used for layout.
+        /// </summary>
+        internal float LayoutHeight { get; private set; }
+
+        /// <summary>
+        ///     Height of a representative capital glyph.
+        /// </summary>
+        internal float CapHeight { get; private set; }
+
+        /// <summary>
+        ///     Padding around the rendered glyphs to prevent texture clipping.
+        /// </summary>
+        internal float RenderPadding { get; private set; }
+
+        /// <summary>
+        ///     Applies a font-size-specific offset while preserving a shared baseline.
+        /// </summary>
+        internal float VerticalDrawOffset { get; private set; }
+
+        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
@@ -74,12 +95,37 @@ namespace Wobble.Graphics.Sprites.Text
 
             var (x, y) = Font.Store.MeasureString(Text);
             MeasuredWidth = x;
-            var padding = Math.Max(2f, FontSize * 0.25f);
-            var height = Math.Max(y, Font.Store.LineHeight);
+            RenderPadding = Math.Max(2f, FontSize * 0.25f);
+            GetVerticalLayout(Font, out var fontLayoutHeight, out var drawOffset, out var capHeight);
+            LayoutHeight = Math.Max(y, fontLayoutHeight);
+            CapHeight = capHeight;
+            VerticalDrawOffset = drawOffset;
 
-            // X = padding / 2f;
-            Y = padding / 2f;
-            Size = new ScalableVector2(x + padding, height + padding);
+            Y = RenderPadding / 2f + VerticalDrawOffset;
+            Size = new ScalableVector2(x + RenderPadding, LayoutHeight + RenderPadding);
+        }
+
+        internal static void GetVerticalLayout(WobbleFontStore font, out float layoutHeight,
+            out float drawOffset, out float capHeight)
+        {
+            // "H" measures cap height; "Hgj" adds descenders so every string shares centered bounds and a stable baseline.
+            var capBounds = font.Store.TextBounds("H", Vector2.Zero);
+            capHeight = capBounds.Y2 - capBounds.Y;
+
+            if (capHeight <= 0)
+            {
+                layoutHeight = font.Store.LineHeight;
+                drawOffset = 0;
+                capHeight = layoutHeight;
+                return;
+            }
+
+            var fullBounds = font.Store.TextBounds("Hgj", Vector2.Zero);
+            var fullHeight = fullBounds.Y2 - fullBounds.Y;
+            var extensionHeight = Math.Max(0, fullHeight - capHeight);
+
+            layoutHeight = Math.Max(font.Store.LineHeight, capHeight + extensionHeight * 2f);
+            drawOffset = (layoutHeight - capHeight) / 2f - capBounds.Y;
         }
     }
 }
