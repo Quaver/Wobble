@@ -53,10 +53,30 @@ namespace Wobble.Graphics.UI.Tooltips
         private static Sprite _border;
         private static SpriteTextPlus _text;
         private static WobbleFontStore _font;
+        private static int _fontWeight = int.MinValue;
         private static int _textSize;
         private static string _displayedText;
+        private static Binding _layoutBinding;
+        private static RectangleF _layoutTarget;
+        private static float _layoutViewportWidth = -1;
+        private static float _layoutViewportHeight = -1;
+        private static TooltipAnchor _layoutAnchor;
+        private static float _layoutMaximumWidth;
+        private static float _layoutPadding;
+        private static float _layoutOffset;
+        private static float _layoutBorderThickness;
+        private static bool _layoutRoundedCorners;
+        private static float? _layoutCornerRadius;
+        private static WobbleFontStore _layoutFont;
+        private static int _layoutTextSize;
+        private static string _layoutText;
 
         public static TooltipTheme Theme { get; set; } = new TooltipTheme();
+
+        /// <summary>
+        ///     Optional host-provided filter for suppressing targets occluded by global overlays.
+        /// </summary>
+        public static Func<Drawable, bool> TargetEligibilityFilter { get; set; }
 
         public static IDisposable Attach(Drawable target, TooltipOptions options)
         {
@@ -118,16 +138,24 @@ namespace Wobble.Graphics.UI.Tooltips
             {
                 if (parent.IsDisposed || !parent.Visible)
                     return false;
+
+                if (parent is ScrollContainer scrollContainer &&
+                    !GraphicsHelper.RectangleContains(scrollContainer.ScreenRectangle,
+                        MouseManager.CurrentState.Position))
+                {
+                    return false;
+                }
             }
 
-            return true;
+            return TargetEligibilityFilter?.Invoke(target) ?? true;
         }
 
         private static void EnsureVisuals(Binding binding)
         {
             var style = binding.Options.Style;
             var weight = style?.TextWeight ?? Theme.TextWeight;
-            var font = ResolveFont(weight);
+            var font = _font != null && weight == _fontWeight ? _font : ResolveFont(weight);
+            _fontWeight = weight;
             var size = style?.TextSize ?? Theme.TextSize;
 
             if (_overlay == null)
@@ -194,17 +222,31 @@ namespace Wobble.Graphics.UI.Tooltips
             var inset = padding + border;
             var viewport = new RectangleF(0, 0, WindowManager.Width, WindowManager.Height);
             var requestedMaxWidth = Math.Max(1, options.MaximumWidth ?? Theme.MaximumWidth);
+            var target = binding.Target.ScreenMinimumBoundingRectangle;
+            var rounded = options.Style?.RoundedCorners ?? Theme.RoundedCorners;
+            var cornerRadius = options.Style?.CornerRadius ?? Theme.CornerRadius;
+
+            if (ReferenceEquals(binding, _layoutBinding) && RectanglesEqual(target, _layoutTarget) &&
+                WindowManager.Width == _layoutViewportWidth && WindowManager.Height == _layoutViewportHeight &&
+                options.Anchor == _layoutAnchor && requestedMaxWidth == _layoutMaximumWidth &&
+                padding == _layoutPadding && offset == _layoutOffset && border == _layoutBorderThickness &&
+                rounded == _layoutRoundedCorners && cornerRadius == _layoutCornerRadius &&
+                ReferenceEquals(_font, _layoutFont) && _textSize == _layoutTextSize &&
+                _displayedText == _layoutText)
+            {
+                return;
+            }
+
             var candidates = new List<Candidate>(Anchors.Length);
 
             foreach (var anchor in Anchors)
             {
-                var availableWidth = AvailableTextWidth(anchor, binding.Target.ScreenMinimumBoundingRectangle,
-                    viewport, offset, inset);
+                var availableWidth = AvailableTextWidth(anchor, target, viewport, offset, inset);
                 var textWidth = Math.Max(1, Math.Min(requestedMaxWidth, availableWidth));
                 _text.MaxWidth = textWidth;
                 var width = _text.Width + inset * 2;
                 var height = _text.Height + inset * 2;
-                var rectangle = Place(anchor, binding.Target.ScreenMinimumBoundingRectangle, width, height, offset);
+                var rectangle = Place(anchor, target, width, height, offset);
                 var intersection = RectangleF.Intersection(rectangle, viewport);
                 candidates.Add(new Candidate
                 {
@@ -231,8 +273,7 @@ namespace Wobble.Graphics.UI.Tooltips
             _text.MaxWidth = selected.TextWidth;
             var finalWidth = Math.Min(viewport.Width, _text.Width + inset * 2);
             var finalHeight = Math.Min(viewport.Height, _text.Height + inset * 2);
-            var final = Place(selected.Anchor, binding.Target.ScreenMinimumBoundingRectangle, finalWidth, finalHeight,
-                offset);
+            var final = Place(selected.Anchor, target, finalWidth, finalHeight, offset);
             final.X = MathHelper.Clamp(final.X, viewport.Left, Math.Max(viewport.Left, viewport.Right - final.Width));
             final.Y = MathHelper.Clamp(final.Y, viewport.Top, Math.Max(viewport.Top, viewport.Bottom - final.Height));
 
@@ -243,7 +284,26 @@ namespace Wobble.Graphics.UI.Tooltips
             _text.Position = new ScalableVector2(final.X + inset, final.Y + inset);
 
             UpdateBackgroundTextures(options, final, border);
+
+            _layoutBinding = binding;
+            _layoutTarget = target;
+            _layoutViewportWidth = WindowManager.Width;
+            _layoutViewportHeight = WindowManager.Height;
+            _layoutAnchor = options.Anchor;
+            _layoutMaximumWidth = requestedMaxWidth;
+            _layoutPadding = padding;
+            _layoutOffset = offset;
+            _layoutBorderThickness = border;
+            _layoutRoundedCorners = rounded;
+            _layoutCornerRadius = cornerRadius;
+            _layoutFont = _font;
+            _layoutTextSize = _textSize;
+            _layoutText = _displayedText;
         }
+
+        private static bool RectanglesEqual(RectangleF first, RectangleF second) =>
+            first.X == second.X && first.Y == second.Y && first.Width == second.Width &&
+            first.Height == second.Height;
 
         private static void UpdateBackgroundTextures(TooltipOptions options, RectangleF rectangle,
             float borderThickness)
@@ -336,8 +396,14 @@ namespace Wobble.Graphics.UI.Tooltips
             _border = null;
             _text = null;
             _font = null;
+            _fontWeight = int.MinValue;
             _textSize = 0;
             _displayedText = null;
+            _layoutBinding = null;
+            _layoutViewportWidth = -1;
+            _layoutViewportHeight = -1;
+            _layoutFont = null;
+            _layoutText = null;
         }
     }
 }
