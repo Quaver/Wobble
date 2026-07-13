@@ -21,7 +21,10 @@ namespace Wobble.Tests.Screens.Tests.DialogInput
         private static readonly Color DialogButtonColor = new Color(117, 92, 222);
 
         private SpriteTextPlus BackgroundCountText { get; }
+        private SpriteTextPlus GlobalOverlayCountText { get; }
+        private Container GlobalOverlayContainer { get; } = new Container();
         private int BackgroundClickCount { get; set; }
+        private int GlobalOverlayClickCount { get; set; }
 
         public TestDialogInputScreenView(Screen screen) : base(screen)
         {
@@ -61,13 +64,36 @@ namespace Wobble.Tests.Screens.Tests.DialogInput
             CreateButton(Container, "SHOW DIALOG", 130, 20, DialogButtonColor,
                 (sender, args) => DialogManager.Show(new InputBlockingDialog()));
 
+            GlobalOverlayCountText = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"),
+                string.Empty, 18)
+            {
+                Parent = GlobalOverlayContainer,
+                Alignment = Alignment.TopLeft,
+                X = 25,
+                Y = 25,
+                Tint = Color.White
+            };
+
+            var globalOverlayButton = CreateButton(GlobalOverlayContainer, "GLOBAL OVERLAY", 0, 0, ButtonColor,
+                (sender, args) =>
+                {
+                    GlobalOverlayClickCount++;
+                    RefreshGlobalOverlayCount();
+                });
+            globalOverlayButton.Alignment = Alignment.TopLeft;
+            globalOverlayButton.X = 25;
+            globalOverlayButton.Y = 55;
+            globalOverlayButton.AllowInputWhenDialogOpen = true;
+
             RefreshBackgroundCount();
+            RefreshGlobalOverlayCount();
         }
 
         public override void Update(GameTime gameTime)
         {
             Container.Update(gameTime);
             DialogManager.Update(gameTime);
+            GlobalOverlayContainer.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -75,12 +101,20 @@ namespace Wobble.Tests.Screens.Tests.DialogInput
             GameBase.Game.GraphicsDevice.Clear(BackgroundColor);
             Container.Draw(gameTime);
             DialogManager.Draw(gameTime);
+            GlobalOverlayContainer.Draw(gameTime);
         }
 
-        public override void Destroy() => Container.Destroy();
+        public override void Destroy()
+        {
+            Container.Destroy();
+            GlobalOverlayContainer.Destroy();
+        }
 
         private void RefreshBackgroundCount() =>
             BackgroundCountText.Text = $"Background clicks: {BackgroundClickCount}";
+
+        private void RefreshGlobalOverlayCount() =>
+            GlobalOverlayCountText.Text = $"Global overlay clicks: {GlobalOverlayClickCount}";
 
         private static ImageButton CreateButton(Drawable parent, string text, float x, float y, Color color,
             EventHandler clickAction)

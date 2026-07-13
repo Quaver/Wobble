@@ -88,6 +88,12 @@ namespace Wobble.Graphics.UI.Buttons
         public bool IsInteractionEnabled { get; set; } = true;
 
         /// <summary>
+        ///     Whether this button can receive input while it is outside the currently active dialog.
+        ///     This is intended for global overlays that are drawn above dialogs.
+        /// </summary>
+        public bool AllowInputWhenDialogOpen { get; set; }
+
+        /// <summary>
         ///    Turns on or off buttons globally.
         /// </summary>
         public static bool IsGloballyClickable { get; set; } = true;
@@ -148,7 +154,7 @@ namespace Wobble.Graphics.UI.Buttons
                 // Get the button that is on the top layer.
                 var topLayerButton = ButtonManager.Buttons
                     .Where(x => x != null && x.IsHoveredWithoutDrawOrder && x.IsClickable && IsGloballyClickable &&
-                                DialogManager.IsInputAllowed(x))
+                                (x.AllowInputWhenDialogOpen || DialogManager.IsInputAllowed(x)))
                     .OrderBy(x => x.Depth).ThenByDescending(x => x.DrawOrder).DefaultIfEmpty(null).First();
 
                 if (topLayerButton == null)
@@ -265,7 +271,8 @@ namespace Wobble.Graphics.UI.Buttons
                 OnHeld(gameTime);
 
             // Fire an event if the user clicks outside of the button.
-            if (DialogManager.IsInputAllowed(this) && MouseManager.IsUniqueClick(MouseButton.Left) && !IsMouseInClickArea())
+            if ((AllowInputWhenDialogOpen || DialogManager.IsInputAllowed(this)) &&
+                MouseManager.IsUniqueClick(MouseButton.Left) && !IsMouseInClickArea())
                 ClickedOutside?.Invoke(this, EventArgs.Empty);
 
             base.Update(gameTime);
