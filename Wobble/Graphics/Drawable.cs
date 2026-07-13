@@ -49,9 +49,29 @@ namespace Wobble.Graphics
             get => _parent;
             set
             {
+                if (ReferenceEquals(_parent, value))
+                {
+                    if (value != null)
+                    {
+                        value.Children.Remove(this);
+                        value.Children.Add(this);
+                        value.OnChildOrderChanged(this);
+                    }
+                    else if (DestroyIfParentIsNull)
+                    {
+                        for (var i = Children.Count - 1; i >= 0; i--)
+                            Children[i].Destroy();
+                    }
+
+                    RecalculateRectangles();
+                    return;
+                }
+
+                var previousParent = _parent;
+
                 // If this drawable previously had a parent, remove it from the old parent's list
                 // of children.
-                _parent?.Children.Remove(this);
+                previousParent?.Children.Remove(this);
 
                 // If we do end up having a non-null value for the new parent, we'll want to
                 // add this drawable to their list of children.
@@ -68,6 +88,8 @@ namespace Wobble.Graphics
                 }
 
                 _parent = value;
+                previousParent?.OnChildRemoved(this);
+                value?.OnChildAdded(this);
                 RecalculateRectangles();
             }
         }
@@ -79,9 +101,31 @@ namespace Wobble.Graphics
 
         /// <summary>
         ///     The children of this drawable. All children objects depend on this object's position
-        ///     and size.
+        ///     and size. Change membership through <see cref="Parent"/> so parent bookkeeping and
+        ///     child-tree notifications remain synchronized.
         /// </summary>
         public List<Drawable> Children { get; } = new List<Drawable>();
+
+        /// <summary>
+        ///     Called after a drawable becomes a direct child of this drawable.
+        /// </summary>
+        protected virtual void OnChildAdded(Drawable child)
+        {
+        }
+
+        /// <summary>
+        ///     Called after a drawable stops being a direct child of this drawable.
+        /// </summary>
+        protected virtual void OnChildRemoved(Drawable child)
+        {
+        }
+
+        /// <summary>
+        ///     Called when an existing child is moved to the end of the direct child order.
+        /// </summary>
+        protected virtual void OnChildOrderChanged(Drawable child)
+        {
+        }
 
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
@@ -601,7 +645,7 @@ namespace Wobble.Graphics
             if (Border != null)
                 return;
 
-            Border = new PrimitiveLineBatch(new List<Vector2>()
+            var border = new PrimitiveLineBatch(new List<Vector2>()
             {
                 new Vector2(0, 0),
                 new Vector2(Width, 0),
@@ -611,10 +655,11 @@ namespace Wobble.Graphics
             }, thickness)
             {
                 Alignment = Alignment.TopLeft,
-                Parent = this,
                 Tint = color,
                 UsePreviousSpriteBatchOptions = true
             };
+            Border = border;
+            border.Parent = this;
         }
 
         /// <inheritdoc />

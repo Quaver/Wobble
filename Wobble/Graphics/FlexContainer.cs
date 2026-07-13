@@ -119,7 +119,6 @@ namespace Wobble.Graphics
             public float NaturalHeight { get; set; }
             public float? LayoutWidth { get; set; }
             public float? LayoutHeight { get; set; }
-            public uint SeenGeneration { get; set; }
 
             public ItemState(Drawable drawable)
             {
@@ -150,9 +149,6 @@ namespace Wobble.Graphics
         private readonly Dictionary<Drawable, ItemState> _itemStates =
             new Dictionary<Drawable, ItemState>();
 
-        private readonly List<ItemState> _trackedStates = new List<ItemState>();
-        private List<Drawable> _lastChildOrder = new List<Drawable>();
-        private List<Drawable> _childOrderScratch = new List<Drawable>();
         private static readonly FlexItemOptions DefaultItemOptions = new FlexItemOptions();
 
         private FlexDirection _direction = FlexDirection.Row;
@@ -164,7 +160,6 @@ namespace Wobble.Graphics
         private float _columnGap;
         private bool _layoutDirty = true;
         private bool _isLayouting;
-        private uint _synchronizationGeneration;
 
         public FlexDirection Direction
         {
@@ -273,19 +268,16 @@ namespace Wobble.Graphics
 
         public void RefreshLayout()
         {
-            SynchronizeChildren();
             LayoutChildren();
         }
 
         public override void Update(GameTime gameTime)
         {
-            SynchronizeChildren();
             if (_layoutDirty)
                 LayoutChildren();
 
             base.Update(gameTime);
 
-            SynchronizeChildren();
             if (_layoutDirty)
                 LayoutChildren();
         }
@@ -300,74 +292,25 @@ namespace Wobble.Graphics
 
             _itemStates.Clear();
             _itemOptions.Clear();
-            _trackedStates.Clear();
-            _lastChildOrder.Clear();
-            _childOrderScratch.Clear();
             base.Destroy();
         }
 
-        private void SynchronizeChildren()
+        protected override void OnChildAdded(Drawable child)
         {
-            _synchronizationGeneration++;
-            _childOrderScratch.Clear();
+            if (child != Border)
+                TrackChild(child);
+        }
 
-            for (var i = 0; i < Children.Count; i++)
-            {
-                var child = Children[i];
-                if (child == null || child == Border)
-                    continue;
+        protected override void OnChildRemoved(Drawable child)
+        {
+            if (child != Border)
+                UntrackChild(child);
+        }
 
-                _childOrderScratch.Add(child);
-                TrackChild(child).SeenGeneration = _synchronizationGeneration;
-            }
-
-            var orderChanged = _lastChildOrder.Count != _childOrderScratch.Count;
-            if (!orderChanged)
-            {
-                for (var i = 0; i < _lastChildOrder.Count; i++)
-                {
-                    if (ReferenceEquals(_lastChildOrder[i], _childOrderScratch[i]))
-                        continue;
-
-                    orderChanged = true;
-                    break;
-                }
-            }
-
-            if (orderChanged)
-            {
-                var previousOrder = _lastChildOrder;
-                _lastChildOrder = _childOrderScratch;
-                _childOrderScratch = previousOrder;
+        protected override void OnChildOrderChanged(Drawable child)
+        {
+            if (child != Border)
                 _layoutDirty = true;
-            }
-
-            for (var i = _trackedStates.Count - 1; i >= 0; i--)
-            {
-                var state = _trackedStates[i];
-                if (state.SeenGeneration == _synchronizationGeneration)
-                    continue;
-
-                var removed = state.Drawable;
-                removed.SizeChanged -= OnChildSizeChanged;
-
-                if (!removed.IsDisposed && removed.Parent == null)
-                {
-                    _isLayouting = true;
-                    removed.Size = new ScalableVector2(state.NaturalWidth, state.NaturalHeight,
-                        removed.Size.X.Scale, removed.Size.Y.Scale);
-                    _isLayouting = false;
-                }
-
-                _itemStates.Remove(removed);
-                _trackedStates.RemoveAt(i);
-                if (_itemOptions.TryGetValue(removed, out var options))
-                {
-                    options.Changed -= OnItemOptionsChanged;
-                    _itemOptions.Remove(removed);
-                }
-                _layoutDirty = true;
-            }
         }
 
         private ItemState TrackChild(Drawable child)
@@ -377,10 +320,34 @@ namespace Wobble.Graphics
 
             var state = new ItemState(child);
             _itemStates[child] = state;
-            _trackedStates.Add(state);
             child.SizeChanged += OnChildSizeChanged;
             _layoutDirty = true;
             return state;
+        }
+
+        private void UntrackChild(Drawable child)
+        {
+            if (!_itemStates.TryGetValue(child, out var state))
+                return;
+
+            child.SizeChanged -= OnChildSizeChanged;
+
+            if (!child.IsDisposed && child.Parent == null)
+            {
+                _isLayouting = true;
+                child.Size = new ScalableVector2(state.NaturalWidth, state.NaturalHeight,
+                    child.Size.X.Scale, child.Size.Y.Scale);
+                _isLayouting = false;
+            }
+
+            _itemStates.Remove(child);
+            if (_itemOptions.TryGetValue(child, out var options))
+            {
+                options.Changed -= OnItemOptionsChanged;
+                _itemOptions.Remove(child);
+            }
+
+            _layoutDirty = true;
         }
 
         private void LayoutChildren()
