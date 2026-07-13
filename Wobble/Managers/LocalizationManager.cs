@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Resources;
 using SmartFormat;
 
@@ -7,6 +9,9 @@ namespace Wobble.Managers
 {
     public static class LocalizationManager
     {
+        private static readonly Dictionary<string, ResourceManager> EmbeddedCultureResourceManagers =
+            new Dictionary<string, ResourceManager>(StringComparer.OrdinalIgnoreCase);
+
         /// <summary>
         ///     The resource manager used for localized strings.
         /// </summary>
@@ -25,11 +30,17 @@ namespace Wobble.Managers
         /// <summary>
         ///     Configures localization resources and cultures.
         /// </summary>
-        public static void Configure(ResourceManager resourceManager, CultureInfo defaultCulture, CultureInfo currentCulture = null)
+        public static void Configure(ResourceManager resourceManager, CultureInfo defaultCulture, CultureInfo currentCulture = null,
+            Assembly embeddedResourceAssembly = null)
         {
             ResourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
             DefaultCulture = defaultCulture ?? throw new ArgumentNullException(nameof(defaultCulture));
             CurrentCulture = currentCulture ?? DefaultCulture;
+
+            EmbeddedCultureResourceManagers.Clear();
+
+            if (embeddedResourceAssembly != null)
+                ConfigureEmbeddedCultureResources(embeddedResourceAssembly);
         }
 
         /// <summary>
@@ -52,10 +63,10 @@ namespace Wobble.Managers
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentException("Localization key cannot be empty.", nameof(key));
 
-            var value = ResourceManager.GetString(key, CurrentCulture);
+            var value = GetEmbeddedString(key, CurrentCulture) ?? ResourceManager.GetString(key, CurrentCulture);
 
             if (value == null && !Equals(CurrentCulture, DefaultCulture))
-                value = ResourceManager.GetString(key, DefaultCulture);
+                value = GetEmbeddedString(key, DefaultCulture) ?? ResourceManager.GetString(key, DefaultCulture);
 
             if (value == null)
                 throw new ArgumentException($"Cannot find localized string for key: {key}", nameof(key));
@@ -73,5 +84,44 @@ namespace Wobble.Managers
         /// <typeparam name="TEnum"></typeparam>
         /// <returns></returns>
         public static string Get<TEnum>(TEnum value, params object[] args) => Get(value.ToString(), args);
+
+        private static void ConfigureEmbeddedCultureResources(Assembly assembly)
+        {
+            var resourcePrefix = ResourceManager.BaseName + ".";
+
+            foreach (var resourceName in assembly.GetManifestResourceNames())
+            {
+                if (!resourceName.StartsWith(resourcePrefix, StringComparison.Ordinal) ||
+                    !resourceName.EndsWith(".resources", StringComparison.Ordinal) ||
+                    resourceName.Length <= resourcePrefix.Length + ".resources".Length)
+                    continue;
+
+                var cultureName = resourceName.Substring(resourcePrefix.Length,
+                    resourceName.Length - resourcePrefix.Length - ".resources".Length);
+
+                try
+                {
+                    var culture = CultureInfo.GetCultureInfo(cultureName);
+                    EmbeddedCultureResourceManagers[culture.Name] =
+                        new ResourceManager(resourceName.Substring(0, resourceName.Length - ".resources".Length), assembly);
+                }
+                catch (CultureNotFoundException)
+                {
+                    // This is another resource sharing the same base-name prefix, not a culture resource.
+                }
+            }
+        }
+
+        private static string GetEmbeddedString(string key, CultureInfo culture)
+        {
+            for (var candidate = culture; candidate != null && !candidate.Equals(CultureInfo.InvariantCulture);
+                 candidate = candidate.Parent)
+            {
+                if (EmbeddedCultureResourceManagers.TryGetValue(candidate.Name, out var resourceManager))
+                    return resourceManager.GetString(key, CultureInfo.InvariantCulture);
+            }
+
+            return null;
+        }
     }
 }

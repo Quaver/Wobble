@@ -12,4 +12,11 @@
       <HintPath>..\MonoGame.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <!-- Keep localized resources in the main assembly instead of culture subfolders. -->
+    <EmbeddedResource Update="Localization/Strings.*.resx">
+      <WithCulture>false</WithCulture>
+      <LogicalName>$(RootNamespace).Localization.%(Filename).resources</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

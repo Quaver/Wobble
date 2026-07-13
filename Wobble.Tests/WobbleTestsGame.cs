@@ -84,7 +84,7 @@ namespace Wobble.Tests
             base.LoadContent();
 
             LocalizationManager.Configure(new ResourceManager("Wobble.Tests.Localization.Strings", typeof(WobbleTestsGame).Assembly),
-                CultureInfo.GetCultureInfo("en"));
+                CultureInfo.GetCultureInfo("en"), embeddedResourceAssembly: typeof(WobbleTestsGame).Assembly);
 
             Resources.AddStore(new DllResourceStore("Wobble.Tests.Resources.dll"));
 
