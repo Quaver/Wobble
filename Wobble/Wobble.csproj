@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
@@ -13,10 +13,14 @@
     <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
     <PackageReference Include="ManagedBass" Version="3.1.1" />
     <PackageReference Include="ManagedBass.Fx" Version="3.1.1" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="MonoGame.Framework.Native" Version="3.8.5-preview.7" />
+    <PackageReference Include="MonoGame.Runtime.Linux.Vulkan" Version="3.8.5-preview.7" />
+    <PackageReference Include="MonoGame.Runtime.Mac.Vulkan" Version="3.8.5-preview.7" />
+    <PackageReference Include="MonoGame.Runtime.Windows.Vulkan" Version="3.8.5-preview.7" />
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
     <PackageReference Include="SmartFormat.NET" Version="3.6.1" />
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
+    <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Wobble.Resources/Wobble.Resources.csproj" />
@@ -31,16 +35,8 @@
     <None Update="libopenal.1.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="libSDL2-2.0.0.dylib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="x64/*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>..\MonoGame.Framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

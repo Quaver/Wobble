@@ -12,11 +12,10 @@ float2 offsets[KERNEL_SIZE];
 // Textures.
 //-----------------------------------------------------------------------------
 
-texture colorMapTexture;
+Texture2D<float4> colorMapTexture : register(t0);
 
-sampler2D colorMap = sampler_state
+SamplerState colorMap : register(s0)
 {
-    Texture = <colorMapTexture>;
     MipFilter = Linear;
     MinFilter = Linear;
     MagFilter = Linear;
@@ -26,12 +25,12 @@ sampler2D colorMap = sampler_state
 // Pixel Shaders.
 //-----------------------------------------------------------------------------
 
-float4 PS_GaussianBlur(float2 texCoord : TEXCOORD) : COLOR0
+float4 PS_GaussianBlur(float2 texCoord : TEXCOORD0) : SV_Target0
 {
     float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
     for (int i = 0; i < KERNEL_SIZE; ++i)
-        color += tex2D(colorMap, texCoord + offsets[i]) * weights[i];
+        color += colorMapTexture.Sample(colorMap, texCoord + offsets[i]) * weights[i];
 
     return color;
 }
@@ -44,6 +43,6 @@ technique GaussianBlur
 {
     pass
     {
-        PixelShader = compile ps_2_0 PS_GaussianBlur();
+        PixelShader = compile ps_6_0 PS_GaussianBlur();
     }
 }

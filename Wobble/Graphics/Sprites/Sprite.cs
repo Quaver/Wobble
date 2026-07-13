@@ -189,7 +189,8 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, SpriteOverallRotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle.Position, null, _color, SpriteOverallRotation, Origin,
+                RenderRectangle.Size / Image.Bounds.Size.ToVector2(), SpriteEffect, 0f);
         }
 
         /// <inheritdoc />
@@ -235,7 +236,7 @@ namespace Wobble.Graphics.Sprites
             Origin = new Vector2(pivot.X * Image.Width, pivot.Y * Image.Height);
 
             // The render rectangle's position will rotate around the screen rectangle's position
-            var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);
+            var rotatedScreenOrigin = Rotate(ScreenRectangle.Size * Pivot, Parent?.AbsoluteRotation ?? 0);
 
             // Update the render rectangle
             RenderRectangle = new RectangleF(
@@ -243,6 +244,13 @@ namespace Wobble.Graphics.Sprites
                 screenRectangleSize);
 
             SpriteRotation = SpriteRotation;
+        }
+
+        private static Vector2 Rotate(Vector2 vector, float angle)
+        {
+            var sin = MathF.Sin(angle);
+            var cos = MathF.Cos(angle);
+            return new Vector2(vector.X * cos - vector.Y * sin, vector.X * sin + vector.Y * cos);
         }
 
         /// <summary>

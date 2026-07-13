@@ -1,22 +1,9 @@
-﻿#if OPENGL
-	#define SV_POSITION POSITION
-	#define VS_SHADERMODEL vs_3_0
-	#define PS_SHADERMODEL ps_3_0
-#else
-	#define VS_SHADERMODEL vs_5_0
-	#define PS_SHADERMODEL ps_5_0
-#endif
-
-Texture2D SpriteTexture;
-
-sampler2D SpriteTextureSampler = sampler_state
-{
-	Texture = <SpriteTexture>;
-};
+﻿Texture2D<float4> SpriteTexture : register(t0);
+SamplerState SpriteTextureSampler : register(s0);
 
 struct VertexShaderOutput
 {
-	float4 Position : SV_POSITION;
+	float4 Position : SV_Position;
 	float4 Color : COLOR0;
 	float2 TextureCoordinates : TEXCOORD0;
 };
@@ -25,15 +12,15 @@ struct VertexShaderOutput
 float3 p_blurValues;
 
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 MainPS(VertexShaderOutput input) : SV_Target0
 {
 	const int QUALITY = 8;
 	const int DIRECTION = 16;
-	const int TAU = 6.28318530716;
+	const float TAU = 6.28318530716f;
 
 	float2 radius = p_blurValues.z / p_blurValues.xy;
 
-	float4 colour = tex2D(SpriteTextureSampler,input.TextureCoordinates);
+	float4 colour = SpriteTexture.Sample(SpriteTextureSampler, input.TextureCoordinates);
 
 	for(float d = 0.0; d <  TAU; d += TAU / (float)DIRECTION)
     {
@@ -41,7 +28,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 		for(float i = 1.0 / (float)QUALITY; i <= 1.0; i += 1.0 / (float)QUALITY)
 		{			
-			colour += tex2D(SpriteTextureSampler, input.TextureCoordinates + dir*i);
+			colour += SpriteTexture.Sample(SpriteTextureSampler, input.TextureCoordinates + dir * i);
         }
     }
 
@@ -54,6 +41,6 @@ technique SpriteDrawing
 {
 	pass P0
 	{
-		PixelShader = compile PS_SHADERMODEL MainPS();
+		PixelShader = compile ps_6_0 MainPS();
 	}
 };

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-mgfxc": {
+      "version": "3.8.5-preview.7",
+      "commands": [
+        "mgfxc"
+      ],
+      "rollForward": false
+    }
+  }
+}

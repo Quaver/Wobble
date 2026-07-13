@@ -140,6 +140,9 @@ namespace Wobble
         /// </summary>
         static WobbleGame()
         {
+            if (OperatingSystem.IsLinux() && Environment.GetEnvironmentVariable("SDL_VIDEODRIVER") == null)
+                Environment.SetEnvironmentVariable("SDL_VIDEODRIVER", "wayland,x11");
+
             var field = typeof(SpriteBatch).GetField("_beginCalled", BindingFlags.Instance | BindingFlags.NonPublic);
             var getter = new DynamicMethod(nameof(_beginCalled), typeof(bool), new[] { typeof(SpriteBatch) }, true);
             var il = getter.GetILGenerator();
@@ -180,7 +183,7 @@ namespace Wobble
         /// <summary>
         ///     Creates a game with embedded resources as a content manager.
         /// </summary>
-        protected WobbleGame(bool preferWayland = false) : base(preferWayland)
+        protected WobbleGame()
         {
             Directory.SetCurrentDirectory(WorkingDirectory);
             Environment.CurrentDirectory = WorkingDirectory;

@@ -29,8 +29,6 @@ namespace Wobble.Tests
 
         private FpsCounter FpsCounter { get; set; }
         
-        private SpriteTextPlus WaylandState { get; set; }
-
         private bool _logGc;
         private double _gcLogTimer;
         private readonly int[] _lastGcCounts = new int[3];
@@ -39,7 +37,7 @@ namespace Wobble.Tests
         private PerformanceSweep _performanceSweep;
 #endif
 
-        public WobbleTestsGame() : base(true)
+        public WobbleTestsGame()
         {
         }
 
@@ -105,14 +103,6 @@ namespace Wobble.Tests
                 Size = new ScalableVector2(70, 30),
             };
 
-            WaylandState = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), $"Wayland: {WaylandVsync}", 18)
-            {
-                Parent = GlobalUserInterface,
-                Alignment = Alignment.BotRight,
-                Position = new ScalableVector2(0, -30),
-                Visible = OperatingSystem.IsLinux()
-            };
-
             // Once the assets load, we'll start the main screen
             ScreenManager.ChangeScreen(new SelectionScreen());
 
@@ -157,12 +147,6 @@ namespace Wobble.Tests
             // TODO: Your global update logic goes here.
             if (KeyboardManager.IsUniqueKeyPress(Keys.Escape))
                 ScreenManager.ChangeScreen(new SelectionScreen());
-
-            if (KeyboardManager.IsUniqueKeyPress(Keys.W) && OperatingSystem.IsLinux())
-            {
-                WaylandVsync = !WaylandVsync;
-                WaylandState.Text = $"Wayland: {WaylandVsync}";
-            }
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.F10))
             {

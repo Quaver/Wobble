@@ -10,13 +10,14 @@ If you can master this framework, you'll have no problem jumping in on the Quave
 
 # Requirements
 
-* [.NET Core SDK 3.1](https://www.microsoft.com/net/download)
+* [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+* A Vulkan-capable GPU and Vulkan driver
 
 # Getting Started
 
-Wobble is designed to work directly with the [MonoGame.Framework.DesktopGL Nuget Package](https://www.nuget.org/packages/MonoGame.Framework.DesktopGL/). It has not been tested with the others, although it should work properly.
+Wobble uses [MonoGame.Framework.Native 3.8.5-preview.7](https://www.nuget.org/packages/MonoGame.Framework.Native/3.8.5-preview.7) with the Linux, macOS, and Windows Vulkan runtimes. Vulkan is the only supported graphics backend; Wobble does not include an OpenGL or DirectX 12 fallback.
 
-If creating a new game, it's best to start with that, as Wobble provides all the dlls needed to get up and running.
+The MonoGame runtime package provides `mgruntime`, which includes SDL. Wobble still ships its existing BASS and OpenAL native libraries for audio support.
 
 Currently there is no NuGet package for Wobble, however this may change in the future.
 
@@ -30,7 +31,7 @@ These are the following steps that we find to be particularly handy when using W
 
 **3.** Run `git submodule update --init --recursive` to install all of Wobble's dependencies.
 
-**4.** Reference both Wobble and MonoGame.Framework.DesktopGL.Core in your project.
+**4.** Reference the Wobble project. Its package references supply `MonoGame.Framework.Native` and the three Vulkan runtime packages to executable projects.
 
 **5.** Create a class that derives from `WobbleGame`. In this case, we'll call it `MyGame`. It should look similar to this:
 
@@ -152,6 +153,26 @@ namespace GreenBox
 **7.** Start building screens!
 
 **8.** Profit?
+
+## Platform behavior
+
+On Linux, Wobble automatically sets `SDL_VIDEODRIVER=wayland,x11` before MonoGame initializes when the variable is unset. This prefers Wayland and falls back to X11. An explicitly configured `SDL_VIDEODRIVER` value is left unchanged.
+
+`WobbleGame` is parameterless. Downstream games migrating from the previous API should remove the `PreferWayland` argument and any boolean return used only to pass that preference into Wobble. `HotLoaderGame` now accepts only its `HotLoader`. Platform-specific setup unrelated to Wayland, such as an optional Cocoa environment override, remains the downstream application's responsibility.
+
+## Compiling shaders
+
+The repository pins `dotnet-mgfxc` to MonoGame `3.8.5-preview.7`. Restore it and compile every effect with the Vulkan profile:
+
+```sh
+dotnet tool restore
+dotnet mgfxc Wobble.Resources/Wobble.Resources/Shaders/fast-blur.fx Wobble.Resources/Wobble.Resources/Shaders/fast-blur.mgfxo /Profile:Vulkan
+dotnet mgfxc Wobble.Resources/Wobble.Resources/Shaders/fast-gaussian-blur.fx Wobble.Resources/Wobble.Resources/Shaders/fast-gaussian-blur.mgfxo /Profile:Vulkan
+dotnet mgfxc Wobble.Resources/Wobble.Resources/Shaders/frosty-blur.fx Wobble.Resources/Wobble.Resources/Shaders/frosty-blur.mgfxo /Profile:Vulkan
+dotnet mgfxc Wobble.Resources/Wobble.Resources/Shaders/gaussian-blur.fx Wobble.Resources/Wobble.Resources/Shaders/gaussian-blur.mgfxo /Profile:Vulkan
+dotnet mgfxc Wobble.Resources/Wobble.Resources/Shaders/rounded-rect.fx Wobble.Resources/Wobble.Resources/Shaders/rounded-rect.mgfxo /Profile:Vulkan
+dotnet mgfxc Wobble.Tests.Resources/Wobble.Tests.Resources/Shaders/semi-transparent.fx Wobble.Tests.Resources/Wobble.Tests.Resources/Shaders/semi-transparent.mgfxo /Profile:Vulkan
+```
 
 ## Creating Screens
 

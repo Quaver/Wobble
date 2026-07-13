@@ -21,6 +21,16 @@ namespace Wobble.Window
         private static int PreferredBackBufferHeight { get; set; }
 
         /// <summary>
+        ///     Whether a user-driven resize needs to be applied on the next update.
+        /// </summary>
+        private static bool ApplyChangesQueued { get; set; }
+
+        /// <summary>
+        ///     Prevents an ApplyChanges-triggered resize notification from queuing another swapchain recreation.
+        /// </summary>
+        private static bool IsApplyingChanges { get; set; }
+
+        /// <summary>
         ///     The base resolution to draw at for sizes, positions, and scaling.
         /// </summary>
         public static Vector2 BaseResolution { get; private set; } = new Vector2(1366, 768);
@@ -88,6 +98,8 @@ namespace Wobble.Window
             if (gdm == null)
                 throw new ArgumentNullException($"GraphicsDeviceManager");
 
+            ApplyQueuedChanges(gdm);
+
             // Grab the back buffer's dimensions.
             PreferredBackBufferWidth = gdm.PreferredBackBufferWidth;
             PreferredBackBufferHeight = gdm.PreferredBackBufferHeight;
@@ -100,7 +112,6 @@ namespace Wobble.Window
             ScalingFactor = new Vector3(ScreenScale.X, ScreenScale.Y, 1);
             Scale = Matrix.CreateScale(ScalingFactor);
 
-            gdm.ApplyChanges();
         }
 
         /// <summary>
@@ -110,6 +121,8 @@ namespace Wobble.Window
         {
             ResolutionChanged = null;
             VirtualScreenSizeChanged = null;
+            ApplyChangesQueued = false;
+            IsApplyingChanges = false;
         }
 
         /// <summary>
@@ -155,7 +168,8 @@ namespace Wobble.Window
 
             gdm.PreferredBackBufferWidth = resolution.X;
             gdm.PreferredBackBufferHeight = resolution.Y;
-            gdm.ApplyChanges();
+            ApplyChangesQueued = false;
+            ApplyChanges(gdm);
 
             // Raise an event to let everyone know that the window has changed.
             ResolutionChanged?.Invoke(typeof(WindowManager), new WindowResolutionChangedEventArgs(resolution, oldResolution));
@@ -166,15 +180,62 @@ namespace Wobble.Window
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public static void OnClientSizeChanged(object sender, EventArgs e) => UpdateBackBufferSize();
+        public static void OnClientSizeChanged(object sender, EventArgs e)
+        {
+            if (IsApplyingChanges)
+                return;
+
+            UpdateBackBufferSize();
+        }
 
         /// <summary>
         ///     Updates the size of the back buffer to the current window's size.
         /// </summary>
         private static void UpdateBackBufferSize()
         {
-            GameBase.Game.Graphics.PreferredBackBufferWidth = GameBase.Game.Window.ClientBounds.Width;
-            GameBase.Game.Graphics.PreferredBackBufferHeight = GameBase.Game.Window.ClientBounds.Height;
+            var bounds = GameBase.Game.Window.ClientBounds;
+
+            // Minimized windows can report a zero-sized drawable. Keep the current swapchain until restored.
+            if (bounds.Width <= 0 || bounds.Height <= 0)
+                return;
+
+            var graphics = GameBase.Game.Graphics;
+
+            if (graphics.PreferredBackBufferWidth == bounds.Width &&
+                graphics.PreferredBackBufferHeight == bounds.Height)
+                return;
+
+            graphics.PreferredBackBufferWidth = bounds.Width;
+            graphics.PreferredBackBufferHeight = bounds.Height;
+            ApplyChangesQueued = true;
+        }
+
+        private static void ApplyQueuedChanges(GraphicsDeviceManager graphics)
+        {
+            if (!ApplyChangesQueued)
+                return;
+
+            if (graphics.PreferredBackBufferWidth <= 0 || graphics.PreferredBackBufferHeight <= 0)
+                return;
+
+            ApplyChangesQueued = false;
+            ApplyChanges(graphics);
+        }
+
+        private static void ApplyChanges(GraphicsDeviceManager graphics)
+        {
+            if (IsApplyingChanges)
+                return;
+
+            try
+            {
+                IsApplyingChanges = true;
+                graphics.ApplyChanges();
+            }
+            finally
+            {
+                IsApplyingChanges = false;
+            }
         }
     }
 }
