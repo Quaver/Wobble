@@ -82,6 +82,12 @@ namespace Wobble.Graphics.UI.Buttons
         public bool IsClickable { get; set; } = true;
 
         /// <summary>
+        ///     Whether this button should perform hover/click hit testing and input-state processing.
+        ///     Disable this for passive button-styled elements that only need the visual and child layout.
+        /// </summary>
+        public bool IsInteractionEnabled { get; set; } = true;
+
+        /// <summary>
         ///    Turns on or off buttons globally.
         /// </summary>
         public static bool IsGloballyClickable { get; set; } = true;
@@ -117,6 +123,22 @@ namespace Wobble.Graphics.UI.Buttons
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            if (!IsInteractionEnabled)
+            {
+                var wasHovered = IsHovered;
+                IsHoveredWithoutDrawOrder = false;
+                IsHovered = false;
+                WaitingForClickRelease = false;
+                IsHeld = false;
+                MouseButtonClicked = null;
+
+                if (wasHovered)
+                    LeftHover?.Invoke(this, EventArgs.Empty);
+
+                base.Update(gameTime);
+                return;
+            }
+
             // Check if the mouse is in the click area, as well as if the game window is actually the active window.
             if (GameBase.Game.IsActive && Visible && IsMouseInClickArea())
             {

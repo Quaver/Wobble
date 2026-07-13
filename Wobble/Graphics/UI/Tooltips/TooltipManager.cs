@@ -47,6 +47,7 @@ namespace Wobble.Graphics.UI.Tooltips
         }
 
         private static readonly List<Binding> Bindings = new List<Binding>();
+        private static readonly List<Binding> BindingSnapshot = new List<Binding>(64);
         private static readonly TooltipAnchor[] Anchors = (TooltipAnchor[]) Enum.GetValues(typeof(TooltipAnchor));
         private static Binding _active;
         private static Container _overlay;
@@ -95,22 +96,35 @@ namespace Wobble.Graphics.UI.Tooltips
 
         public static void Update(GameTime gameTime)
         {
-            Binding[] bindings;
             lock (Bindings)
             {
-                Bindings.RemoveAll(x => x.Disposed || x.Target == null || x.Target.IsDisposed);
-                bindings = Bindings.ToArray();
+                for (var i = Bindings.Count - 1; i >= 0; i--)
+                {
+                    var binding = Bindings[i];
+                    if (binding.Disposed || binding.Target == null || binding.Target.IsDisposed)
+                        Bindings.RemoveAt(i);
+                }
+
+                BindingSnapshot.Clear();
+                BindingSnapshot.AddRange(Bindings);
             }
 
-            var hovered = bindings
-                .Where(x => IsEligible(x.Target) &&
-                            GraphicsHelper.RectangleContains(x.Target.ScreenMinimumBoundingRectangle,
-                                MouseManager.CurrentState.Position))
-                .OrderByDescending(x => x.Target.DrawOrder)
-                .FirstOrDefault();
-
-            foreach (var binding in bindings)
+            Binding hovered = null;
+            for (var i = 0; i < BindingSnapshot.Count; i++)
             {
+                var binding = BindingSnapshot[i];
+                if (binding.Disposed || !IsEligible(binding.Target) ||
+                    !GraphicsHelper.RectangleContains(binding.Target.ScreenMinimumBoundingRectangle,
+                        MouseManager.CurrentState.Position))
+                    continue;
+
+                if (hovered == null || binding.Target.DrawOrder > hovered.Target.DrawOrder)
+                    hovered = binding;
+            }
+
+            for (var i = 0; i < BindingSnapshot.Count; i++)
+            {
+                var binding = BindingSnapshot[i];
                 if (ReferenceEquals(binding, hovered))
                     binding.HoveredMilliseconds += gameTime.ElapsedGameTime.TotalMilliseconds;
                 else
