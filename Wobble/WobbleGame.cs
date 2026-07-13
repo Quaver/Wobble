@@ -435,10 +435,10 @@ namespace Wobble
             DebugDrawnDrawableCount = Drawable.TotalDrawn;
 #endif
 
-#if DEBUG
             TryEndBatch();
         }
 
+#if DEBUG
         protected override void EndDraw()
         {
             if (IsReadyToUpdate)
@@ -455,10 +455,8 @@ namespace Wobble
                 TryEndBatch();
 
             base.EndDraw();
-#endif
         }
 
-#if DEBUG
         private static double ElapsedMilliseconds(long startedTimestamp) =>
             Stopwatch.GetElapsedTime(startedTimestamp).TotalMilliseconds;
 #endif

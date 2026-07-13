@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Wobble.Graphics.Animations;
@@ -48,9 +49,29 @@ namespace Wobble.Graphics
             get => _parent;
             set
             {
+                if (ReferenceEquals(_parent, value))
+                {
+                    if (value != null)
+                    {
+                        value.Children.Remove(this);
+                        value.Children.Add(this);
+                        value.OnChildOrderChanged(this);
+                    }
+                    else if (DestroyIfParentIsNull)
+                    {
+                        for (var i = Children.Count - 1; i >= 0; i--)
+                            Children[i].Destroy();
+                    }
+
+                    RecalculateRectangles();
+                    return;
+                }
+
+                var previousParent = _parent;
+
                 // If this drawable previously had a parent, remove it from the old parent's list
                 // of children.
-                _parent?.Children.Remove(this);
+                previousParent?.Children.Remove(this);
 
                 // If we do end up having a non-null value for the new parent, we'll want to
                 // add this drawable to their list of children.
@@ -67,6 +88,8 @@ namespace Wobble.Graphics
                 }
 
                 _parent = value;
+                previousParent?.OnChildRemoved(this);
+                value?.OnChildAdded(this);
                 RecalculateRectangles();
             }
         }
@@ -78,9 +101,31 @@ namespace Wobble.Graphics
 
         /// <summary>
         ///     The children of this drawable. All children objects depend on this object's position
-        ///     and size.
+        ///     and size. Change membership through <see cref="Parent"/> so parent bookkeeping and
+        ///     child-tree notifications remain synchronized.
         /// </summary>
         public List<Drawable> Children { get; } = new List<Drawable>();
+
+        /// <summary>
+        ///     Called after a drawable becomes a direct child of this drawable.
+        /// </summary>
+        protected virtual void OnChildAdded(Drawable child)
+        {
+        }
+
+        /// <summary>
+        ///     Called after a drawable stops being a direct child of this drawable.
+        /// </summary>
+        protected virtual void OnChildRemoved(Drawable child)
+        {
+        }
+
+        /// <summary>
+        ///     Called when an existing child is moved to the end of the direct child order.
+        /// </summary>
+        protected virtual void OnChildOrderChanged(Drawable child)
+        {
+        }
 
         /// <summary>
         ///     The drawable's rectangle relative to the entire screen.
@@ -425,6 +470,11 @@ namespace Wobble.Graphics
         public bool SetChildrenVisibility { get; set; }
 
         /// <summary>
+        ///     Whether this drawable and its subtree should continue updating while hidden.
+        /// </summary>
+        public bool UpdateWhenInvisible { get; set; } = true;
+
+        /// <summary>
         ///     If the drawable will still draw even if it is off-screen
         /// </summary>
         public bool DrawIfOffScreen { get; set; }
@@ -474,6 +524,7 @@ namespace Wobble.Graphics
         ///    Should be used for scheduling UI updates from a separate thread.
         /// </summary>
         private List<Action> ScheduledUpdates { get; } = new List<Action>();
+        private int _scheduledUpdateCount;
 
         protected virtual void RecalculateTransformMatrix()
         {
@@ -500,6 +551,9 @@ namespace Wobble.Graphics
         /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
+            if (!Visible && !UpdateWhenInvisible)
+                return;
+
             RunScheduledUpdates();
             PerformTransformations(gameTime);
 
@@ -591,7 +645,7 @@ namespace Wobble.Graphics
             if (Border != null)
                 return;
 
-            Border = new PrimitiveLineBatch(new List<Vector2>()
+            var border = new PrimitiveLineBatch(new List<Vector2>()
             {
                 new Vector2(0, 0),
                 new Vector2(Width, 0),
@@ -601,10 +655,11 @@ namespace Wobble.Graphics
             }, thickness)
             {
                 Alignment = Alignment.TopLeft,
-                Parent = this,
                 Tint = color,
                 UsePreviousSpriteBatchOptions = true
             };
+            Border = border;
+            border.Parent = this;
         }
 
         /// <inheritdoc />
@@ -889,6 +944,7 @@ namespace Wobble.Graphics
             {
                 ScheduledUpdates.Clear();
                 ScheduledUpdates.Add(action);
+                Volatile.Write(ref _scheduledUpdateCount, ScheduledUpdates.Count);
             }
         }
 
@@ -899,7 +955,10 @@ namespace Wobble.Graphics
         public void AddScheduledUpdate(Action action)
         {
             lock (ScheduledUpdates)
+            {
                 ScheduledUpdates.Add(action);
+                Volatile.Write(ref _scheduledUpdateCount, ScheduledUpdates.Count);
+            }
         }
 
         /// <summary>
@@ -908,7 +967,10 @@ namespace Wobble.Graphics
         public void RemoveScheduledUpdates()
         {
             lock (ScheduledUpdates)
+            {
                 ScheduledUpdates.Clear();
+                Volatile.Write(ref _scheduledUpdateCount, 0);
+            }
         }
 
         /// <summary>
@@ -916,13 +978,20 @@ namespace Wobble.Graphics
         /// </summary>
         protected void RunScheduledUpdates()
         {
+            if (Volatile.Read(ref _scheduledUpdateCount) == 0)
+                return;
+
             lock (ScheduledUpdates)
             {
                 if (ScheduledUpdates.Count == 0)
+                {
+                    Volatile.Write(ref _scheduledUpdateCount, 0);
                     return;
+                }
 
                 var updates = new List<Action>(ScheduledUpdates);
                 ScheduledUpdates.Clear();
+                Volatile.Write(ref _scheduledUpdateCount, 0);
 
                 foreach (var update in updates)
                     update.Invoke();

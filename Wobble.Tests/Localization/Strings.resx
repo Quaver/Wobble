@@ -12,6 +12,12 @@
   <data name="Screen_MarqueeSpriteText" xml:space="preserve">
     <value>Marquee SpriteText</value>
   </data>
+  <data name="Screen_FlexContainer" xml:space="preserve">
+    <value>Flex Container</value>
+  </data>
+  <data name="Screen_FlexSongSelect" xml:space="preserve">
+    <value>Flex Song Select</value>
+  </data>
   <data name="Screen_NineSliceSprite" xml:space="preserve">
     <value>Nine-Slice Sprite</value>
   </data>
