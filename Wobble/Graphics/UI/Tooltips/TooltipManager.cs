@@ -7,6 +7,7 @@ using Wobble.Graphics.Primitives;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
+using Wobble.Graphics.UI.Dialogs;
 using Wobble.Input;
 using Wobble.Managers;
 using Wobble.Window;
@@ -153,7 +154,7 @@ namespace Wobble.Graphics.UI.Tooltips
         private static bool IsEligible(Drawable target)
         {
             if (target.IsDisposed || !target.Visible || target.ScreenMinimumBoundingRectangle.Width <= 0 ||
-                target.ScreenMinimumBoundingRectangle.Height <= 0)
+                target.ScreenMinimumBoundingRectangle.Height <= 0 || !DialogManager.IsInputAllowed(target))
                 return false;
 
             for (var parent = target.Parent; parent != null; parent = parent.Parent)

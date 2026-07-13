@@ -7,6 +7,7 @@ using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
 using Wobble.Graphics.UI.Dialogs;
+using Wobble.Graphics.UI.Tooltips;
 using Wobble.Input;
 using Wobble.Managers;
 using Wobble.Screens;
@@ -33,7 +34,7 @@ namespace Wobble.Tests.Screens.Tests.DialogInput
             };
 
             new SpriteTextPlus(FontManager.GetWobbleFont("inter-regular"),
-                "Open the dialog, then try clicking the dimmed background button.", 18)
+                "Open the dialog, then try clicking or hovering the dimmed background button.", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -49,12 +50,13 @@ namespace Wobble.Tests.Screens.Tests.DialogInput
                 Tint = Color.White
             };
 
-            CreateButton(Container, "CLICK BACKGROUND", -130, 20, ButtonColor,
+            var backgroundButton = CreateButton(Container, "CLICK BACKGROUND", -130, 20, ButtonColor,
                 (sender, args) =>
                 {
                     BackgroundClickCount++;
                     RefreshBackgroundCount();
                 });
+            backgroundButton.AddTooltip(new TooltipOptions("Background tooltip") { HoverDelayMilliseconds = 0 });
 
             CreateButton(Container, "SHOW DIALOG", 130, 20, DialogButtonColor,
                 (sender, args) => DialogManager.Show(new InputBlockingDialog()));
@@ -142,12 +144,13 @@ namespace Wobble.Tests.Screens.Tests.DialogInput
                     Tint = Color.White
                 };
 
-                CreateButton(Panel, "CLICK DIALOG", -120, 55, DialogButtonColor,
+                var dialogButton = CreateButton(Panel, "CLICK DIALOG", -120, 55, DialogButtonColor,
                     (sender, args) =>
                     {
                         DialogClickCount++;
                         DialogCountText.Text = $"Dialog clicks: {DialogClickCount}";
                     });
+                dialogButton.AddTooltip(new TooltipOptions("Dialog tooltip") { HoverDelayMilliseconds = 0 });
 
                 CreateButton(Panel, "DISMISS", 120, 55, ButtonColor,
                     (sender, args) => DialogManager.Dismiss(this));
