@@ -12,6 +12,12 @@ namespace Wobble.Graphics.Sprites.Text
         ///     The font to be used
         /// </summary>
         private WobbleFontStore _font;
+
+        /// <summary>
+        ///     Whether this drawable should refresh itself when the font store changes.
+        /// </summary>
+        private readonly bool _subscribesToFontChanges;
+
         public WobbleFontStore Font
         {
             get => _font;
@@ -20,12 +26,12 @@ namespace Wobble.Graphics.Sprites.Text
                 if (value == _font)
                     return;
 
-                if (_font != null)
+                if (_font != null && _subscribesToFontChanges)
                     _font.Changed -= OnFontChanged;
 
                 _font = value;
 
-                if (_font != null)
+                if (_font != null && _subscribesToFontChanges)
                     _font.Changed += OnFontChanged;
 
                 RefreshText();
@@ -168,10 +174,16 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="text"></param>
         /// <param name="size"></param>
         /// <param name="cache"></param>
-        public SpriteTextPlus(WobbleFontStore font, string text, int size = 0, bool cache = true)
+        /// <param name="subscribeToFontChanges"></param>
+        public SpriteTextPlus(WobbleFontStore font, string text, int size = 0, bool cache = true,
+            bool subscribeToFontChanges = true)
         {
+            _subscribesToFontChanges = subscribeToFontChanges;
             _font = font;
-            _font.Changed += OnFontChanged;
+
+            if (_subscribesToFontChanges)
+                _font.Changed += OnFontChanged;
+
             _text = text;
             _isCached = cache;
 
@@ -428,7 +440,7 @@ namespace Wobble.Graphics.Sprites.Text
 
         public override void Destroy()
         {
-            if (_font != null)
+            if (_font != null && _subscribesToFontChanges)
                 _font.Changed -= OnFontChanged;
 
 #if DEBUG
