@@ -13,6 +13,12 @@ namespace Wobble.Graphics.Sprites
     public class AnimatableSprite : Sprite
     {
         /// <summary>
+        ///     Prevents a large elapsed time or an unreasonable frame rate from monopolizing an update.
+        ///     Any remaining elapsed time is retained and processed by later updates.
+        /// </summary>
+        private const int MaximumFrameAdvancesPerUpdate = 256;
+
+        /// <summary>
         ///     The animation frames
         /// </summary>
         public List<Texture2D> Frames { get; private set; }
@@ -210,10 +216,13 @@ namespace Wobble.Graphics.Sprites
 
             TimeSinceLastAnimFrame += gameTime.ElapsedGameTime.TotalMilliseconds;
             var frameTime = 1000f / LoopFramesPerSecond;
+            var framesAdvanced = 0;
 
-            while (IsLooping && TimeSinceLastAnimFrame >= frameTime)
+            while (IsLooping && Frames.Count > 1 && LoopFramesPerSecond > 0 &&
+                   TimeSinceLastAnimFrame >= frameTime && framesAdvanced < MaximumFrameAdvancesPerUpdate)
             {
                 TimeSinceLastAnimFrame -= frameTime;
+                framesAdvanced++;
 
                 switch (Direction)
                 {
@@ -236,7 +245,15 @@ namespace Wobble.Graphics.Sprites
 
                 // Automatically stop the loop if we've looped the specified amount of times.
                 if (TimesToLoop != 0 && TimesLooped == TimesToLoop)
+                {
+                    // Elapsed time after a finite loop's end must not carry into a later StartLoop call.
+                    TimeSinceLastAnimFrame = 0;
                     StopLoop();
+                    continue;
+                }
+
+                // FinishedLooping handlers may restart the animation with a different frame rate.
+                frameTime = 1000f / LoopFramesPerSecond;
             }
         }
     }
