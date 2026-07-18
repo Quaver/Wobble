@@ -9,6 +9,7 @@ using ManagedBass;
 using Microsoft.Xna.Framework;
 using Wobble.Audio.Tracks;
 using Wobble.Logging;
+using BassConfiguration = ManagedBass.Configuration;
 
 namespace Wobble.Audio
 {
@@ -45,18 +46,18 @@ namespace Wobble.Audio
                 //
                 // Without this setting samples are played with lower latency when there's nothing else playing,
                 // resulting in inconsistent hitsound and keysound latency.
-                Bass.Configure(Configuration.DevNonStop, true);
+                Bass.Configure(BassConfiguration.DevNonStop, true);
             }
 
             // Follow system default audio source
-            Bass.Configure(Configuration.IncludeDefaultDevice, true);
+            Bass.Configure(BassConfiguration.IncludeDefaultDevice, true);
 
             if (devicePeriod.HasValue)
-                Bass.Configure(Configuration.DevicePeriod, devicePeriod.Value);
+                Bass.Configure(BassConfiguration.DevicePeriod, devicePeriod.Value);
             if (deviceBufferLength.HasValue)
-                Bass.Configure(Configuration.DeviceBufferLength, deviceBufferLength.Value);
+                Bass.Configure(BassConfiguration.DeviceBufferLength, deviceBufferLength.Value);
 
-            Logger.Debug($"BASS options: DevicePeriod = {Bass.GetConfig(Configuration.DevicePeriod)}, DeviceBufferLength = {Bass.GetConfig(Configuration.DeviceBufferLength)}", LogType.Runtime);
+            Logger.Debug($"BASS options: DevicePeriod = {Bass.GetConfig(BassConfiguration.DevicePeriod)}, DeviceBufferLength = {Bass.GetConfig(BassConfiguration.DeviceBufferLength)}", LogType.Runtime);
 
             if (!Bass.Init(device.Value))
             {
