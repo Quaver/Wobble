@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Wobble.Screens;
+using Wobble.Tests.Screens.Tests.AnimationTiming;
 using Wobble.Tests.Screens.Tests.Audio;
 using Wobble.Tests.Screens.Tests.Background;
 using Wobble.Tests.Screens.Tests.BlurContainer;
@@ -88,6 +89,7 @@ namespace Wobble.Tests.Screens.Selection
             new TestScreenDescriptor(LayoutMotion, "Screen_DrawableScaling", () => new TestDrawableScalingScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_Scaling", () => new TestScalingScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_EasingAnimations", () => new TestEasingAnimationsScreen()),
+            new TestScreenDescriptor(LayoutMotion, "Screen_AnimationTiming", () => new TestAnimationTimingScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_Scrolling", () => new TestScrollContainerScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_MarqueeSpriteText", () => new TestMarqueeSpriteTextScreen()),
             new TestScreenDescriptor(LayoutMotion, "Screen_FlexContainer", () => new TestFlexContainerScreen()),

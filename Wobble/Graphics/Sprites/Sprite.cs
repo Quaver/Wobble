@@ -50,6 +50,8 @@ namespace Wobble.Graphics.Sprites
         ///     The tint this QuaverSprite will inherit.
         /// </summary>
         private Color _tint = Color.White;
+        private Vector3 _preciseTint = Vector3.One;
+        private bool _isApplyingPreciseTint;
         public Color _color = Color.White;
         public virtual Color Tint
         {
@@ -57,6 +59,10 @@ namespace Wobble.Graphics.Sprites
             set
             {
                 _tint = value;
+
+                if (!_isApplyingPreciseTint)
+                    _preciseTint = value.ToVector3();
+
                 _color = _tint * _alpha;
             }
         }
@@ -253,11 +259,27 @@ namespace Wobble.Graphics.Sprites
         /// <param name="scale"></param>
         public virtual void FadeToColor(Color color, double dt, float scale)
         {
-            var r = MathHelper.Lerp(Tint.R, color.R, (float)Math.Min(dt / scale, 1));
-            var g = MathHelper.Lerp(Tint.G, color.G, (float)Math.Min(dt / scale, 1));
-            var b = MathHelper.Lerp(Tint.B, color.B, (float)Math.Min(dt / scale, 1));
+            var target = color.ToVector3();
 
-            Tint = new Color((int)r, (int)g, (int)b);
+            _preciseTint.X = AnimationMath.Damp(_preciseTint.X, target.X, dt, scale);
+            _preciseTint.Y = AnimationMath.Damp(_preciseTint.Y, target.Y, dt, scale);
+            _preciseTint.Z = AnimationMath.Damp(_preciseTint.Z, target.Z, dt, scale);
+
+            var renderedTint = new Color(
+                (int) Math.Round(_preciseTint.X * byte.MaxValue),
+                (int) Math.Round(_preciseTint.Y * byte.MaxValue),
+                (int) Math.Round(_preciseTint.Z * byte.MaxValue));
+
+            _isApplyingPreciseTint = true;
+
+            try
+            {
+                Tint = renderedTint;
+            }
+            finally
+            {
+                _isApplyingPreciseTint = false;
+            }
         }
 
         /// <summary>

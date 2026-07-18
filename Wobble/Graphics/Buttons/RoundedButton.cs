@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
@@ -288,19 +289,20 @@ namespace Wobble.Graphics.Buttons
         /// <inheritdoc />
         public override void Update(GameTime gameTime)
         {
-            if (PerformHoverFade)
+            base.Update(gameTime);
+
+            if (PerformHoverFade &&
+                !Animations.Exists(animation => animation.Properties == AnimationProperty.Alpha))
             {
                 var dt = gameTime.ElapsedGameTime.TotalMilliseconds;
                 var targetAlpha = IsHovered ? 0.75f : 1f;
 
                 if (Alpha != targetAlpha)
                 {
-                    var alpha = MathHelper.Lerp(Alpha, targetAlpha, (float) Math.Min(dt / 60, 1));
+                    var alpha = AnimationMath.Damp(Alpha, targetAlpha, dt, 60);
                     Alpha = Math.Abs(alpha - targetAlpha) < 0.001f ? targetAlpha : alpha;
                 }
             }
-
-            base.Update(gameTime);
 
             var contentSize = new Vector2(
                 (Icon?.Width ?? 0) + (Label?.Width ?? 0),

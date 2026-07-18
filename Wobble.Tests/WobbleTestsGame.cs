@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Resources;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics;
@@ -34,6 +35,16 @@ namespace Wobble.Tests
         private bool _logGc;
         private double _gcLogTimer;
         private readonly int[] _lastGcCounts = new int[3];
+
+        private int? _testTargetFps;
+        private int? _testTargetUps;
+        private double _nextTestDrawTimestamp;
+        private double _nextTestUpdateTimestamp;
+        private TimeSpan _pendingTestUpdateElapsed;
+
+        internal int? TestTargetFps => _testTargetFps;
+
+        internal int? TestTargetUps => _testTargetUps;
 
 #if DEBUG
         private PerformanceSweep _performanceSweep;
@@ -148,10 +159,13 @@ namespace Wobble.Tests
             if (!IsReadyToUpdate)
                 return;
 
-            base.Update(gameTime);
+            if (!TryCreateTestUpdateTime(gameTime, out var updateTime))
+                return;
+
+            base.Update(updateTime);
 
 #if DEBUG
-            _performanceSweep?.Update(gameTime);
+            _performanceSweep?.Update(updateTime);
 #endif
 
             // TODO: Your global update logic goes here.
@@ -182,7 +196,7 @@ namespace Wobble.Tests
 
             if (_logGc)
             {
-                _gcLogTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+                _gcLogTimer += updateTime.ElapsedGameTime.TotalMilliseconds;
                 if (_gcLogTimer >= 1000)
                 {
                     _gcLogTimer = 0;
@@ -191,12 +205,96 @@ namespace Wobble.Tests
             }
         }
 
+        protected override bool BeginDraw()
+        {
+            if (!ShouldRunTestDraw())
+                return false;
+
+            return base.BeginDraw();
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             if (!IsReadyToUpdate)
                 return;
 
             base.Draw(gameTime);
+        }
+
+        /// <summary>
+        ///     Applies independent update and draw limits for the animation timing test screen.
+        ///     A null value leaves that side of the loop unlimited.
+        /// </summary>
+        internal void SetTestFrameRates(int? targetFps, int? targetUps)
+        {
+            ValidateTestFrameRate(targetFps, nameof(targetFps));
+            ValidateTestFrameRate(targetUps, nameof(targetUps));
+
+            _testTargetFps = targetFps;
+            _testTargetUps = targetUps;
+            _pendingTestUpdateElapsed = TimeSpan.Zero;
+
+            var now = Stopwatch.GetTimestamp();
+            _nextTestDrawTimestamp = targetFps.HasValue
+                ? now + Stopwatch.Frequency / (double) targetFps.Value
+                : 0;
+            _nextTestUpdateTimestamp = targetUps.HasValue
+                ? now + Stopwatch.Frequency / (double) targetUps.Value
+                : 0;
+        }
+
+        internal void ResetTestFrameRates() => SetTestFrameRates(null, null);
+
+        private bool TryCreateTestUpdateTime(GameTime gameTime, out GameTime updateTime)
+        {
+            if (!_testTargetUps.HasValue)
+            {
+                _pendingTestUpdateElapsed = TimeSpan.Zero;
+                updateTime = gameTime;
+                return true;
+            }
+
+            _pendingTestUpdateElapsed += gameTime.ElapsedGameTime;
+
+            var now = Stopwatch.GetTimestamp();
+            if (now < _nextTestUpdateTimestamp)
+            {
+                updateTime = null;
+                return false;
+            }
+
+            AdvanceTestDeadline(ref _nextTestUpdateTimestamp, _testTargetUps.Value, now);
+            updateTime = new GameTime(gameTime.TotalGameTime, _pendingTestUpdateElapsed,
+                gameTime.IsRunningSlowly);
+            _pendingTestUpdateElapsed = TimeSpan.Zero;
+            return true;
+        }
+
+        private bool ShouldRunTestDraw()
+        {
+            if (!_testTargetFps.HasValue)
+                return true;
+
+            var now = Stopwatch.GetTimestamp();
+            if (now < _nextTestDrawTimestamp)
+                return false;
+
+            AdvanceTestDeadline(ref _nextTestDrawTimestamp, _testTargetFps.Value, now);
+            return true;
+        }
+
+        private static void AdvanceTestDeadline(ref double deadline, int rate, long now)
+        {
+            var interval = Stopwatch.Frequency / (double) rate;
+            var elapsedIntervals = Math.Floor((now - deadline) / interval) + 1;
+            deadline += Math.Max(1, elapsedIntervals) * interval;
+        }
+
+        private static void ValidateTestFrameRate(int? rate, string parameterName)
+        {
+            if (rate <= 0)
+                throw new ArgumentOutOfRangeException(parameterName, rate,
+                    "A test frame rate must be greater than zero or null for unlimited.");
         }
 
         private void LogGc(string tag)

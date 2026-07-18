@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Audio.Samples;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
@@ -321,8 +322,8 @@ namespace Wobble.Graphics.UI.Form
             CalculateContainerX();
 
             // Change the alpha of the selected sprite depending on if we're currently in a CTRL+A operation.
-            SelectedSprite.Alpha = MathHelper.Lerp(SelectedSprite.Alpha, Selected ? 0.5f : 0,
-                (float)Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
+            SelectedSprite.Alpha = AnimationMath.Damp(SelectedSprite.Alpha, Selected ? 0.5f : 0,
+                gameTime.ElapsedGameTime.TotalMilliseconds, 60);
 
             PerformCursorBlinking(gameTime);
 

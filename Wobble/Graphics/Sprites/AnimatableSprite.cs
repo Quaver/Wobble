@@ -205,38 +205,39 @@ namespace Wobble.Graphics.Sprites
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         private void PerformLoopAnimation(GameTime gameTime)
         {
-            if (!IsLooping || Frames.Count <= 1)
+            if (!IsLooping || Frames.Count <= 1 || LoopFramesPerSecond <= 0)
                 return;
 
             TimeSinceLastAnimFrame += gameTime.ElapsedGameTime.TotalMilliseconds;
+            var frameTime = 1000f / LoopFramesPerSecond;
 
-            if (!(TimeSinceLastAnimFrame >= 1000f / LoopFramesPerSecond))
-                return;
-
-            switch (Direction)
+            while (IsLooping && TimeSinceLastAnimFrame >= frameTime)
             {
-                case Direction.Forward:
-                    ChangeToNext();
-                    break;
-                case Direction.Backward:
-                    ChangeToPrevious();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                TimeSinceLastAnimFrame -= frameTime;
+
+                switch (Direction)
+                {
+                    case Direction.Forward:
+                        ChangeToNext();
+                        break;
+                    case Direction.Backward:
+                        ChangeToPrevious();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                // If we're back on the frame we've started on, then we need to increment our counter.
+                if (FrameLoopStartedOn != CurrentFrame)
+                    continue;
+
+                TimesLooped++;
+                FinishedLooping?.Invoke(this, null);
+
+                // Automatically stop the loop if we've looped the specified amount of times.
+                if (TimesToLoop != 0 && TimesLooped == TimesToLoop)
+                    StopLoop();
             }
-
-            TimeSinceLastAnimFrame = 0;
-
-            // If we're back on the frame we've started on, then we need to increment our counter.
-            if (FrameLoopStartedOn != CurrentFrame)
-                return;
-
-            TimesLooped++;
-            FinishedLooping?.Invoke(this, null);
-
-            // Automatically stop the loop if we've looped the specified amount of times.
-            if (TimesToLoop != 0 && TimesLooped == TimesToLoop)
-                StopLoop();
         }
     }
 }
