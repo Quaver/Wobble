@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Net.Mime;
 using System.Runtime.InteropServices;
-using ImGuiNET;
+using System.Threading;
+using Hexa.NET.ImGui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Wobble.Graphics.ImGUI
 {
-    public sealed class ImGuiRenderer : IDisposable
+    public sealed unsafe class ImGuiRenderer : IDisposable
     {
         /// <summary>
         ///     ImGui renderers use separate contexts, so ImGui cannot arbitrate input between overlapping windows itself.
@@ -30,7 +30,7 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        public IntPtr Context { get; }
+        public ImGuiContextPtr Context { get; }
 
         /// <summary>
         /// </summary>
@@ -78,11 +78,14 @@ namespace Wobble.Graphics.ImGUI
 
         /// <summary>
         /// </summary>
-        private int TextureId { get; set; }
+        private static long NextTextureId;
 
-        /// <summary>
-        /// </summary>
-        private IntPtr? FontTextureId { get; set; }
+        private static readonly ImGuiErrorCallback RecoveredPluginErrorCallback = IgnoreRecoveredPluginError;
+
+        private static unsafe void IgnoreRecoveredPluginError(ImGuiContext* context, void* userData, byte* message)
+        {
+            // Recovery is expected for legacy Lua plugins that scoped style pushes to End().
+        }
 
         /// <summary>
         /// </summary>
@@ -127,10 +130,9 @@ namespace Wobble.Graphics.ImGUI
             DestroyContext = destroyContext;
             Options = options;
             Scale = scale;
-            FontAtlas = SharedFontAtlasCache.Retain(options, scale);
-
-            Context = ImGui.CreateContext(FontAtlas.Atlas);
+            Context = ImGui.CreateContext();
             ImGui.SetCurrentContext(Context);
+            FontAtlas = new SharedFontAtlas(options, scale, ImGui.GetIO().Fonts);
 
             LoadedTextures = new Dictionary<IntPtr, TextureBinding>();
 
@@ -163,47 +165,16 @@ namespace Wobble.Graphics.ImGUI
             if (previousContext != Context)
                 ImGui.SetCurrentContext(Context);
 
-            var io = ImGui.GetIO();
             FontAtlas.AssignFontPointers(Options, out var defaultFontPtr);
             DefaultFontPtr = defaultFontPtr;
-            FontAtlas.EnsureTexture(GraphicsDevice);
+            var io = ImGui.GetIO();
+            io.FontDefault = defaultFontPtr;
 
-            if (FontTextureId.HasValue && FontTextureId.Value != FontAtlas.TextureId)
-                UnbindTexture(FontTextureId.Value);
-
-            FontTextureId = FontAtlas.TextureId;
-            LoadedTextures[FontTextureId.Value] = new TextureBinding(FontAtlas.Texture, false);
-
-            // Let ImGui know where to find the texture
-            io.Fonts.SetTexID(FontTextureId.Value);
+            if (Options?.Fonts.Count > 0)
+                ImGui.GetStyle().FontSizeBase = Options.Fonts[0].Size * Scale;
 
             if (previousContext != Context)
                 ImGui.SetCurrentContext(previousContext);
-        }
-
-        private static IntPtr GetGlyphRanges(ImFontAtlasPtr fonts, ImGuiGlyphRanges ranges)
-        {
-            switch (ranges)
-            {
-                case ImGuiGlyphRanges.ChineseFull:
-                    return fonts.GetGlyphRangesChineseFull();
-                case ImGuiGlyphRanges.ChineseSimplifiedCommon:
-                    return fonts.GetGlyphRangesChineseSimplifiedCommon();
-                case ImGuiGlyphRanges.Japanese:
-                    return fonts.GetGlyphRangesJapanese();
-                case ImGuiGlyphRanges.Korean:
-                    return fonts.GetGlyphRangesKorean();
-                case ImGuiGlyphRanges.Cyrillic:
-                    return fonts.GetGlyphRangesCyrillic();
-                case ImGuiGlyphRanges.Greek:
-                    return fonts.GetGlyphRangesGreek();
-                case ImGuiGlyphRanges.Thai:
-                    return fonts.GetGlyphRangesThai();
-                case ImGuiGlyphRanges.Vietnamese:
-                    return fonts.GetGlyphRangesVietnamese();
-                default:
-                    return fonts.GetGlyphRangesDefault();
-            }
         }
 
         /// <summary>
@@ -212,7 +183,7 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public IntPtr BindTexture(Texture2D texture)
         {
-            var id = new IntPtr(TextureId++);
+            var id = new IntPtr(Interlocked.Increment(ref NextTextureId));
 
             LoadedTextures.Add(id, new TextureBinding(texture, true));
 
@@ -277,9 +248,23 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         ///     Maps ImGui keys to XNA keys. We use this later on to tell ImGui what keys were pressed
         /// </summary>
-        private void SetupInput()
+        private unsafe void SetupInput()
         {
             var io = ImGui.GetIO();
+            io.BackendFlags |= ImGuiBackendFlags.RendererHasTextures | ImGuiBackendFlags.RendererHasVtxOffset;
+            io.ConfigErrorRecovery = true;
+            io.ConfigErrorRecoveryEnableAssert = false;
+            // Plugins written against pre-1.92 ImGui commonly scoped style pushes to a whole
+            // window and relied on End() to recover the stack. Keep that safe recovery behavior,
+            // but don't flood the editor UI or logs with a diagnostic for every recovered item.
+            io.ConfigErrorRecoveryEnableDebugLog = false;
+            io.ConfigErrorRecoveryEnableTooltip = false;
+            var context = Context;
+            context.ErrorCallback = (void*)Marshal.GetFunctionPointerForDelegate(RecoveredPluginErrorCallback);
+
+            var platformIo = ImGui.GetPlatformIO();
+            platformIo.RendererTextureMaxWidth = GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef ? 16384 : 4096;
+            platformIo.RendererTextureMaxHeight = GraphicsDevice.GraphicsProfile == GraphicsProfile.HiDef ? 16384 : 4096;
 
             // MonoGame-specific //////////////////////
 
@@ -296,8 +281,8 @@ namespace Wobble.Graphics.ImGUI
             ///////////////////////////////////////////
 
             // ImGUI provides out-of-the-box clipboard only on Windows. For other platforms, we need to set up the function pointers.
-            io.SetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(SetClipboardTextFnDelegate);
-            io.GetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(GetClipboardTextFnDelegate);
+            platformIo.PlatformSetClipboardTextFn = (void*)Marshal.GetFunctionPointerForDelegate(SetClipboardTextFnDelegate);
+            platformIo.PlatformGetClipboardTextFn = (void*)Marshal.GetFunctionPointerForDelegate(GetClipboardTextFnDelegate);
         }
 
         /*
@@ -461,6 +446,8 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         private void RenderDrawData(ImDrawDataPtr drawData)
         {
+            UpdateDynamicTextures(drawData);
+
             LastVertexCount = drawData.TotalVtxCount;
             LastIndexCount = drawData.TotalIdxCount;
 
@@ -471,6 +458,7 @@ namespace Wobble.Graphics.ImGUI
             var lastBlendState = GraphicsDevice.BlendState;
             var lastRasterizerState = GraphicsDevice.RasterizerState;
             var lastDepthStencilState = GraphicsDevice.DepthStencilState;
+            var lastSamplerState = GraphicsDevice.SamplerStates[0];
 
             // We are submitting vertex and index buffers without using SpriteBatch.
             // We need to end the batch so we are drawing on top of those that are not flushed
@@ -479,6 +467,7 @@ namespace Wobble.Graphics.ImGUI
             GraphicsDevice.BlendState = BlendState.NonPremultiplied;
             GraphicsDevice.RasterizerState = RasterizerState;
             GraphicsDevice.DepthStencilState = DepthStencilState.None;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
 
             // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
             drawData.ScaleClipRects(ImGui.GetIO().DisplayFramebufferScale);
@@ -502,6 +491,28 @@ namespace Wobble.Graphics.ImGUI
             GraphicsDevice.BlendState = lastBlendState;
             GraphicsDevice.RasterizerState = lastRasterizerState;
             GraphicsDevice.DepthStencilState = lastDepthStencilState;
+            GraphicsDevice.SamplerStates[0] = lastSamplerState;
+        }
+
+        private unsafe void UpdateDynamicTextures(ImDrawDataPtr drawData)
+        {
+            for (var i = 0; i < drawData.Textures.Size; i++)
+            {
+                var textureData = drawData.Textures[i];
+
+                switch (textureData.Status)
+                {
+                    case ImTextureStatus.WantCreate:
+                        FontAtlas.CreateTexture(GraphicsDevice, textureData);
+                        break;
+                    case ImTextureStatus.WantUpdates:
+                        FontAtlas.UpdateTexture(textureData);
+                        break;
+                    case ImTextureStatus.WantDestroy:
+                        FontAtlas.DestroyTexture(textureData);
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -603,9 +614,11 @@ namespace Wobble.Graphics.ImGUI
                 {
                     var drawCmd = cmdList.CmdBuffer[cmdi];
 
-                    if (!LoadedTextures.ContainsKey(drawCmd.TextureId))
+                    var textureId = (IntPtr)drawCmd.GetTexID();
+
+                    if (!TryGetTexture(textureId, out var texture))
                         throw new InvalidOperationException(
-                            $"Could not find a texture with id '{drawCmd.TextureId}', please check your bindings"
+                            $"Could not find a texture with id '{textureId}', please check your bindings"
                         );
 
                     GraphicsDevice.ScissorRectangle = new Rectangle(
@@ -615,7 +628,7 @@ namespace Wobble.Graphics.ImGUI
                         (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
                     );
 
-                    var effect = UpdateEffect(LoadedTextures[drawCmd.TextureId].Texture);
+                    var effect = UpdateEffect(texture);
                     var vertexOffset = vtxOffset + (int)drawCmd.VtxOffset;
                     var indexOffset = idxOffset + (int)drawCmd.IdxOffset;
 
@@ -645,6 +658,17 @@ namespace Wobble.Graphics.ImGUI
             GraphicsDevice.ScissorRectangle = lastScissorRectangle;
         }
 
+        private bool TryGetTexture(IntPtr textureId, out Texture2D texture)
+        {
+            if (LoadedTextures.TryGetValue(textureId, out var binding))
+            {
+                texture = binding.Texture;
+                return true;
+            }
+
+            return FontAtlas.TryGetTexture(textureId, out texture);
+        }
+
 #endregion Internals
 
         /// <inheritdoc />
@@ -661,7 +685,10 @@ namespace Wobble.Graphics.ImGUI
                 KeyboardInputOwner = null;
 
             if (DestroyContext)
+            {
+                FontAtlas.Dispose();
                 ImGui.DestroyContext(Context);
+            }
 
             foreach (var texture in LoadedTextures.Values)
             {
@@ -676,8 +703,6 @@ namespace Wobble.Graphics.ImGUI
             IndexBuffer?.Dispose();
             Game.Window.TextInput -= OnWindowOnTextInput;
 
-            if (DestroyContext)
-                SharedFontAtlasCache.Release(FontAtlas);
         }
 
         private sealed class TextureBinding
@@ -695,25 +720,20 @@ namespace Wobble.Graphics.ImGUI
 
         private sealed class SharedFontAtlas
         {
-            public string Key { get; }
-
             public ImFontAtlasPtr Atlas { get; }
-
-            public IntPtr TextureId { get; } = new IntPtr(-1);
-
-            public Texture2D Texture { get; private set; }
-
-            public int ReferenceCount { get; set; }
 
             private ImFontPtr DefaultFontPtr { get; set; }
 
             private List<ImFontPtr> FontPointers { get; }
 
-            public unsafe SharedFontAtlas(string key, ImGuiOptions options, float scale)
+            private Dictionary<IntPtr, Texture2D> Textures { get; }
+
+            public unsafe SharedFontAtlas(ImGuiOptions options, float scale, ImFontAtlasPtr atlas)
             {
-                Key = key;
-                Atlas = new ImFontAtlasPtr(ImGuiNative.ImFontAtlas_ImFontAtlas());
+                Atlas = atlas;
+                Atlas.TexDesiredFormat = ImTextureFormat.Rgba32;
                 FontPointers = new List<ImFontPtr>();
+                Textures = new Dictionary<IntPtr, Texture2D>();
 
                 if (options == null || options.LoadDefaultFont)
                     DefaultFontPtr = Atlas.AddFontDefault();
@@ -728,12 +748,11 @@ namespace Wobble.Graphics.ImGUI
 
                     foreach (var fallback in font.Fallbacks)
                     {
-                        var config = new ImFontConfigPtr(ImGuiNative.ImFontConfig_ImFontConfig());
+                        var config = ImGui.ImFontConfig();
                         config.MergeMode = true;
-                        config.FontNo = fallback.Index;
+                        config.FontNo = (uint)fallback.Index;
 
-                        Atlas.AddFontFromFileTTF(fallback.Path, font.Size * scale, config,
-                            GetGlyphRanges(Atlas, fallback.GlyphRanges));
+                        Atlas.AddFontFromFileTTF(fallback.Path, font.Size * scale, config);
 
                         config.Destroy();
                     }
@@ -744,6 +763,9 @@ namespace Wobble.Graphics.ImGUI
             {
                 defaultFontPtr = DefaultFontPtr;
 
+                if (defaultFontPtr.IsNull && FontPointers.Count > 0)
+                    defaultFontPtr = FontPointers[0];
+
                 if (options == null)
                     return;
 
@@ -751,85 +773,57 @@ namespace Wobble.Graphics.ImGUI
                     options.Fonts[i].Context = FontPointers[i];
             }
 
-            public unsafe void EnsureTexture(GraphicsDevice graphicsDevice)
+            public bool TryGetTexture(IntPtr textureId, out Texture2D texture) =>
+                Textures.TryGetValue(textureId, out texture);
+
+            public unsafe void CreateTexture(GraphicsDevice graphicsDevice, ImTextureDataPtr textureData)
             {
-                if (Texture != null)
-                    return;
+                if (textureData.Format != ImTextureFormat.Rgba32)
+                    throw new NotSupportedException($"Unsupported ImGui texture format: {textureData.Format}");
 
-                Atlas.GetTexDataAsRGBA32(out byte* pixelData, out var width, out var height, out var bytesPerPixel);
-
-                var pixels = new byte[width * height * bytesPerPixel];
-                Marshal.Copy(new IntPtr(pixelData), pixels, 0, pixels.Length);
-
-                Texture = new Texture2D(graphicsDevice, width, height, false, SurfaceFormat.Color);
-                Texture.SetData(pixels);
-
-                Atlas.SetTexID(TextureId);
-                Atlas.ClearTexData();
+                var id = new IntPtr(Interlocked.Increment(ref NextTextureId));
+                var texture = new Texture2D(graphicsDevice, textureData.Width, textureData.Height, false, SurfaceFormat.Color);
+                Textures.Add(id, texture);
+                UploadTexture(texture, textureData);
+                textureData.SetTexID(id);
+                textureData.SetStatus(ImTextureStatus.Ok);
             }
 
-            public unsafe void Dispose()
+            public unsafe void UpdateTexture(ImTextureDataPtr textureData)
             {
-                Texture?.Dispose();
-                Texture = null;
-                ImGuiNative.ImFontAtlas_destroy(Atlas.NativePtr);
-            }
-        }
+                var id = (IntPtr)textureData.TexID;
 
-        private static class SharedFontAtlasCache
-        {
-            private static readonly Dictionary<string, SharedFontAtlas> Cache = new Dictionary<string, SharedFontAtlas>();
+                if (!Textures.TryGetValue(id, out var texture))
+                    throw new InvalidOperationException($"Could not update ImGui texture with id '{id}'");
 
-            public static SharedFontAtlas Retain(ImGuiOptions options, float scale)
-            {
-                var key = CreateKey(options, scale);
-
-                if (!Cache.TryGetValue(key, out var atlas))
-                {
-                    atlas = new SharedFontAtlas(key, options, scale);
-                    Cache.Add(key, atlas);
-                }
-
-                atlas.ReferenceCount++;
-                return atlas;
+                UploadTexture(texture, textureData);
+                textureData.SetStatus(ImTextureStatus.Ok);
             }
 
-            public static void Release(SharedFontAtlas atlas)
+            public void DestroyTexture(ImTextureDataPtr textureData)
             {
-                if (atlas == null)
-                    return;
+                var id = (IntPtr)textureData.TexID;
 
-                atlas.ReferenceCount--;
+                if (Textures.Remove(id, out var texture))
+                    texture.Dispose();
 
-                if (atlas.ReferenceCount > 0)
-                    return;
-
-                Cache.Remove(atlas.Key);
-                atlas.Dispose();
+                textureData.SetTexID(IntPtr.Zero);
+                textureData.SetStatus(ImTextureStatus.Destroyed);
             }
 
-            private static string CreateKey(ImGuiOptions options, float scale)
+            private static unsafe void UploadTexture(Texture2D texture, ImTextureDataPtr textureData)
             {
-                var key = "scale=" + scale.ToString("R", CultureInfo.InvariantCulture);
+                var pixels = new byte[textureData.Width * textureData.Height * textureData.BytesPerPixel];
+                Marshal.Copy((IntPtr)textureData.GetPixels(), pixels, 0, pixels.Length);
+                texture.SetData(pixels);
+            }
 
-                if (options == null)
-                    return key + ";default";
+            public void Dispose()
+            {
+                foreach (var texture in Textures.Values)
+                    texture.Dispose();
 
-                key += ";loadDefault=" + options.LoadDefaultFont;
-
-                foreach (var font in options.Fonts)
-                {
-                    key += ";font=" + font.Path + "," + font.Size.ToString(CultureInfo.InvariantCulture);
-
-                    foreach (var fallback in font.Fallbacks)
-                    {
-                        key += ";fallback=" + fallback.Path + "," +
-                               fallback.Index.ToString(CultureInfo.InvariantCulture) + "," +
-                               fallback.GlyphRanges;
-                    }
-                }
-
-                return key;
+                Textures.Clear();
             }
         }
     }
