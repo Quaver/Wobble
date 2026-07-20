@@ -16,6 +16,11 @@ namespace Wobble.Graphics.ImGUI
         protected ImGuiOptions Options { get; }
 
         /// <summary>
+        ///     Whether this ImGui context received the mouse press that started on the current frame.
+        /// </summary>
+        public bool WasActivatedByMouse => Renderer.WasActivatedByMouse;
+
+        /// <summary>
         /// </summary>
         protected SpriteImGui(bool destroyContext = true, ImGuiOptions options = null, float scale = 1.0f)
         {
