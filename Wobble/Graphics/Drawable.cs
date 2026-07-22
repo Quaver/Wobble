@@ -59,8 +59,8 @@ namespace Wobble.Graphics
                     }
                     else if (DestroyIfParentIsNull)
                     {
-                        for (var i = Children.Count - 1; i >= 0; i--)
-                            Children[i].Destroy();
+                        while (Children.Count > 0)
+                            Children[Children.Count - 1].Destroy();
                     }
 
                     RecalculateRectangles();
@@ -83,8 +83,8 @@ namespace Wobble.Graphics
                 {
                     // If we've received null for the parent however, that must mean we want to FULLY
                     // destroy and dispose of the object.
-                    for (var i = Children.Count - 1; i >= 0; i--)
-                        Children[i].Destroy();
+                    while (Children.Count > 0)
+                        Children[Children.Count - 1].Destroy();
                 }
 
                 _parent = value;
