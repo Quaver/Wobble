@@ -1,16 +1,21 @@
 using System.Collections.Generic;
+using Wobble.Configuration;
 using Wobble.Graphics.UI.Navigation;
 
 namespace Wobble.Tests.Screens.Tests.NavigationBars
 {
     public sealed class NavigationBarTestConfiguration
     {
+        [ConfigEditable]
         public NavigationBarBackgroundType BackgroundType { get; set; } = NavigationBarBackgroundType.SolidColor;
 
+        [ConfigEditable]
         public NavigationBarTestColor SolidColor { get; set; } = new NavigationBarTestColor(28, 49, 68);
 
+        [ConfigEditable]
         public NavigationBarTestImageConfiguration Image { get; set; } = new NavigationBarTestImageConfiguration();
 
+        [ConfigEditable]
         public NavigationBarTestGradientConfiguration Gradient { get; set; } =
             new NavigationBarTestGradientConfiguration();
     }

@@ -72,7 +72,7 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
             };
 
             new SpriteTextPlus(FontManager.GetWobbleFont("inter-regular"),
-                "Typed snapshots • sparse player overrides • locked defaults", 16)
+                "Typed snapshots • sparse player overrides • opt-in editing", 16)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -87,7 +87,8 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
             CreateButton(panel, "Reset only accent", 108, PurpleColor, context.ResetAccent);
             CreateButton(panel, "Reset panel subtree", 158, PurpleColor, context.ResetPanel);
             CreateButton(panel, "Reset all overrides", 208, PurpleColor, context.ResetAll);
-            CreateButton(panel, "Attempt locked SkinId", 258, FailureColor, context.AttemptLockedSet);
+            CreateButton(panel, "Attempt non-editable SkinId", 258, FailureColor,
+                context.AttemptNonEditableSet);
             CreateButton(panel, "Reload from disk", 308, AccentColor, context.Reload);
         }
 

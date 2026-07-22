@@ -11,7 +11,8 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace Wobble.Configuration
 {
     /// <summary>
-    ///     Loads a trusted main YAML document and applies a sparse player override.
+    ///     Loads a trusted main YAML document and applies a sparse player override. Properties are immutable by
+    ///     default and must opt into player editing with <see cref="ConfigEditableAttribute"/>.
     /// </summary>
     public sealed class YamlConfig<T> where T : class, new()
     {
@@ -84,14 +85,14 @@ namespace Wobble.Configuration
         public T GetMainSnapshot() => Clone(mainValue);
 
         /// <summary>
-        ///     Saves the unlocked differences between an edited model and the main configuration.
+        ///     Saves differences for editable properties between an edited model and the main configuration.
         /// </summary>
         public void SaveOverrides(T editedValue)
         {
             if (editedValue == null)
                 throw new ArgumentNullException(nameof(editedValue));
 
-            var overrides = BuildDifferences(typeof(T), mainValue, editedValue);
+            var overrides = BuildDifferences(typeof(T), mainValue, editedValue, false);
             if (overrides.Children.Count == 0)
             {
                 if (File.Exists(overridePath))
@@ -188,7 +189,7 @@ namespace Wobble.Configuration
                     if (yaml.Documents.Count != 1 || !(yaml.Documents[0].RootNode is YamlMappingNode root))
                         throw new InvalidDataException("The document must contain one mapping.");
 
-                    return SanitizeMapping(root, typeof(T), string.Empty, warnings);
+                    return SanitizeMapping(root, typeof(T), string.Empty, warnings, false);
                 }
             }
             catch (Exception e)
@@ -199,7 +200,7 @@ namespace Wobble.Configuration
         }
 
         private YamlMappingNode SanitizeMapping(YamlMappingNode source, Type modelType, string parentPath,
-            ICollection<string> warnings)
+            ICollection<string> warnings, bool parentIsEditable)
         {
             var result = new YamlMappingNode();
             var properties = GetPropertyMap(modelType);
@@ -219,17 +220,20 @@ namespace Wobble.Configuration
                     continue;
                 }
 
-                if (property.GetCustomAttribute<ConfigLockedAttribute>() != null)
-                {
-                    warnings.Add($"Locked player configuration value '{path}' was ignored.");
-                    continue;
-                }
+                var isEditable = parentIsEditable ||
+                                 property.GetCustomAttribute<ConfigEditableAttribute>() != null;
 
                 if (pair.Value is YamlMappingNode nested && IsNestedObjectType(property.PropertyType))
                 {
-                    var sanitized = SanitizeMapping(nested, property.PropertyType, path, warnings);
+                    var sanitized = SanitizeMapping(nested, property.PropertyType, path, warnings, isEditable);
                     if (sanitized.Children.Count > 0)
                         result.Add(new YamlScalarNode(GetYamlName(property)), sanitized);
+                    continue;
+                }
+
+                if (!isEditable)
+                {
+                    warnings.Add($"Non-editable player configuration value '{path}' was ignored.");
                     continue;
                 }
 
@@ -267,25 +271,26 @@ namespace Wobble.Configuration
             }
         }
 
-        private YamlMappingNode BuildDifferences(Type modelType, object main, object edited)
+        private YamlMappingNode BuildDifferences(Type modelType, object main, object edited,
+            bool parentIsEditable)
         {
             var result = new YamlMappingNode();
             foreach (var pair in GetPropertyMap(modelType))
             {
                 var property = pair.Value;
-                if (property.GetCustomAttribute<ConfigLockedAttribute>() != null)
-                    continue;
+                var isEditable = parentIsEditable ||
+                                 property.GetCustomAttribute<ConfigEditableAttribute>() != null;
 
                 var mainProperty = main == null ? null : property.GetValue(main);
                 var editedProperty = edited == null ? null : property.GetValue(edited);
 
                 if (IsNestedObjectType(property.PropertyType) && mainProperty != null && editedProperty != null)
                 {
-                    var nested = BuildDifferences(property.PropertyType, mainProperty, editedProperty);
+                    var nested = BuildDifferences(property.PropertyType, mainProperty, editedProperty, isEditable);
                     if (nested.Children.Count > 0)
                         result.Add(new YamlScalarNode(pair.Key), nested);
                 }
-                else if (!ValuesEqual(mainProperty, editedProperty))
+                else if (isEditable && !ValuesEqual(mainProperty, editedProperty))
                     result.Add(new YamlScalarNode(pair.Key), SerializeToNode(editedProperty));
             }
 

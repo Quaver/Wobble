@@ -8,14 +8,14 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
 {
     public sealed class DemoSkinConfig
     {
-        [ConfigLocked]
         public string SkinId { get; set; } = "wobble-default";
 
-        [ConfigLocked]
         public DemoSkinIdentity Identity { get; set; } = new DemoSkinIdentity();
 
+        [ConfigEditable]
         public DemoSkinPanel Panel { get; set; } = new DemoSkinPanel();
 
+        [ConfigEditable]
         public List<string> Fonts { get; set; } = new List<string> { "Inter", "Noto" };
     }
 
@@ -100,14 +100,14 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
             LastAction = "Reset all overrides";
         }
 
-        public void AttemptLockedSet()
+        public void AttemptNonEditableSet()
         {
             var edited = Config.GetSnapshot();
             edited.SkinId = "player-hacked";
             Config.SaveOverrides(edited);
             LastAction = Config.GetSnapshot().SkinId == "player-hacked"
-                ? "ERROR: changed locked SkinId"
-                : "Ignored locked SkinId edit";
+                ? "ERROR: changed non-editable SkinId"
+                : "Ignored non-editable SkinId edit";
         }
 
         public void Reload()
@@ -135,15 +135,15 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
             Check("APPLIES VALID NESTED VALUE", () => Config.GetSnapshot().Panel.AccentColor == "#FF3366");
             Check("IGNORES INVALID VALUE", () => Math.Abs(Config.GetSnapshot().Panel.Opacity - MainOpacity) < 0.001);
             Check("REPLACES COLLECTION", () => Config.GetSnapshot().Fonts.SequenceEqual(new[] { "PlayerFont" }));
-            Check("REPORTS LOCKED + UNKNOWN", () =>
-                Config.Warnings.Any(x => x.Contains("Locked")) &&
+            Check("REPORTS NON-EDITABLE + UNKNOWN", () =>
+                Config.Warnings.Any(x => x.Contains("Non-editable")) &&
                 Config.Warnings.Any(x => x.Contains("Unknown")) &&
                 Config.Warnings.Any(x => x.Contains("Invalid")));
 
-            var lockedEdit = Config.GetSnapshot();
-            lockedEdit.SkinId = "player-hacked";
-            Config.SaveOverrides(lockedEdit);
-            Check("REJECTS LOCKED EDIT", () => Config.GetSnapshot().SkinId == "wobble-default");
+            var nonEditableEdit = Config.GetSnapshot();
+            nonEditableEdit.SkinId = "player-hacked";
+            Config.SaveOverrides(nonEditableEdit);
+            Check("REJECTS NON-EDITABLE EDIT", () => Config.GetSnapshot().SkinId == "wobble-default");
 
             var detached = Config.GetSnapshot();
             detached.SkinId = "snapshot-change";
@@ -204,7 +204,7 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
             var validMain = File.ReadAllText(MainPath);
             File.WriteAllText(MainPath, validMain.Replace("wobble-default", "main-file-value"));
             var changedMain = Config.Reload();
-            Check("LOCKED VALUE FOLLOWS MAIN", () => changedMain &&
+            Check("NON-EDITABLE VALUE FOLLOWS MAIN", () => changedMain &&
                                                         Config.GetSnapshot().SkinId == "main-file-value" &&
                                                         Config.GetMainSnapshot().SkinId == "main-file-value");
             File.WriteAllText(MainPath, validMain);
