@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using Wobble.Assets;
 using Wobble.Graphics.Buttons;
 using Wobble.Graphics.Animations;
@@ -24,6 +25,70 @@ namespace Wobble.Graphics.UI.Navigation
     {
         Top,
         Bottom
+    }
+
+    public enum NavigationBarBackgroundType
+    {
+        SolidColor,
+        Image,
+        Gradient
+    }
+
+    public enum NavigationBarImageFit
+    {
+        Stretch,
+        Cover,
+        Contain,
+        Tile
+    }
+
+    public enum NavigationBarGradientType
+    {
+        Linear,
+        Radial
+    }
+
+    public class NavigationBarGradientStop
+    {
+        public float Position { get; set; }
+
+        public Color Color { get; set; } = Color.White;
+    }
+
+    public class NavigationBarGradientOptions
+    {
+        public NavigationBarGradientType Type { get; set; } = NavigationBarGradientType.Linear;
+
+        public IReadOnlyList<NavigationBarGradientStop> Stops { get; set; }
+
+        /// <summary>
+        ///     The direction of a linear gradient in degrees. Zero points from left to right and 90 points
+        ///     from top to bottom.
+        /// </summary>
+        public float AngleDegrees { get; set; }
+
+        /// <summary>
+        ///     The normalized origin of a radial gradient.
+        /// </summary>
+        public Vector2 RadialOrigin { get; set; } = new Vector2(0.5f, 0.5f);
+
+        /// <summary>
+        ///     The radius of a radial gradient relative to the distance from its origin to the farthest corner.
+        /// </summary>
+        public float RadialRadius { get; set; } = 1;
+    }
+
+    public class NavigationBarBackgroundOptions
+    {
+        public NavigationBarBackgroundType Type { get; set; } = NavigationBarBackgroundType.SolidColor;
+
+        public Color SolidColor { get; set; } = Color.Transparent;
+
+        public Texture2D Image { get; set; }
+
+        public NavigationBarImageFit ImageFit { get; set; } = NavigationBarImageFit.Stretch;
+
+        public NavigationBarGradientOptions Gradient { get; set; }
     }
 
     /// <summary>
@@ -140,12 +205,15 @@ namespace Wobble.Graphics.UI.Navigation
         private readonly Dictionary<Drawable, Vector2> _itemSizes = new Dictionary<Drawable, Vector2>();
 
         private bool _initialized;
+        private bool _refreshingBackground;
         private float _edgePadding = 24;
         private float _itemSpacing = 12;
         private float _layoutWidth;
         private float _layoutHeight;
 
         private DropdownState _openDropdown;
+        private NavigationBarBackgroundOptions _background;
+        private Texture2D _generatedGradientTexture;
 
         private NavigationBarBorderOptions BorderOptions { get; }
 
@@ -155,8 +223,24 @@ namespace Wobble.Graphics.UI.Navigation
 
         public Color BackgroundColor
         {
-            get => Tint;
-            set => Tint = value;
+            get => Background?.Type == NavigationBarBackgroundType.SolidColor
+                ? Background.SolidColor
+                : Color.Transparent;
+            set => Background = new NavigationBarBackgroundOptions
+            {
+                Type = NavigationBarBackgroundType.SolidColor,
+                SolidColor = value
+            };
+        }
+
+        public NavigationBarBackgroundOptions Background
+        {
+            get => _background;
+            set
+            {
+                _background = value ?? CreateTransparentBackground();
+                RefreshBackground();
+            }
         }
 
         public float EdgePadding
@@ -194,12 +278,69 @@ namespace Wobble.Graphics.UI.Navigation
         {
             Image = WobbleAssets.WhiteBox;
             Size = new ScalableVector2(width, height);
-            Tint = backgroundColor ?? Color.Transparent;
+            Background = new NavigationBarBackgroundOptions
+            {
+                Type = NavigationBarBackgroundType.SolidColor,
+                SolidColor = backgroundColor ?? Color.Transparent
+            };
             _layoutWidth = Width;
             _layoutHeight = Height;
             BorderOptions = borderOptions;
             CreateAnimatedBorder();
             _initialized = true;
+        }
+
+        /// <summary>
+        ///     Reapplies the current background options after they have been changed in place.
+        /// </summary>
+        public void RefreshBackground()
+        {
+            if (_refreshingBackground)
+                return;
+
+            _refreshingBackground = true;
+
+            try
+            {
+                DisposeGeneratedGradient();
+
+                switch (Background.Type)
+                {
+                    case NavigationBarBackgroundType.SolidColor:
+                        Image = WobbleAssets.WhiteBox;
+                        Tint = Background.SolidColor;
+                        break;
+                    case NavigationBarBackgroundType.Image:
+                        if (Background.Image == null || Background.Image.IsDisposed ||
+                            !Enum.IsDefined(typeof(NavigationBarImageFit), Background.ImageFit))
+                        {
+                            ApplyTransparentBackground();
+                            break;
+                        }
+
+                        Image = Background.Image;
+                        Tint = Color.White;
+                        break;
+                    case NavigationBarBackgroundType.Gradient:
+                        if (!TryCreateGradientTexture(Background.Gradient, out var texture))
+                        {
+                            ApplyTransparentBackground();
+                            break;
+                        }
+
+                        _generatedGradientTexture = texture;
+                        Image = texture;
+                        Tint = Color.White;
+                        break;
+                    default:
+                        ApplyTransparentBackground();
+                        break;
+                }
+            }
+            finally
+            {
+                _refreshingBackground = false;
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -327,7 +468,45 @@ namespace Wobble.Graphics.UI.Navigation
         public override void Destroy()
         {
             CloseDropdown();
+            DisposeGeneratedGradient();
             base.Destroy();
+        }
+
+        public override void DrawToSpriteBatch()
+        {
+            if (Background?.Type != NavigationBarBackgroundType.Image)
+            {
+                base.DrawToSpriteBatch();
+                return;
+            }
+
+            if (Background.Image == null || Background.Image.IsDisposed)
+                return;
+
+            if (Background.ImageFit == NavigationBarImageFit.Stretch)
+            {
+                base.DrawToSpriteBatch();
+                return;
+            }
+
+            if (!Visible)
+                return;
+
+            switch (Background.ImageFit)
+            {
+                case NavigationBarImageFit.Cover:
+                    DrawCoverImage();
+                    break;
+                case NavigationBarImageFit.Contain:
+                    DrawContainImage();
+                    break;
+                case NavigationBarImageFit.Tile:
+                    DrawTiledImage();
+                    break;
+                default:
+                    base.DrawToSpriteBatch();
+                    break;
+            }
         }
 
         public void RefreshLayout()
@@ -346,8 +525,12 @@ namespace Wobble.Graphics.UI.Navigation
         {
             base.OnRectangleRecalculated();
 
-            if (!_initialized)
+            if (!_initialized || _refreshingBackground)
                 return;
+
+            if (Background?.Type == NavigationBarBackgroundType.Gradient &&
+                !GradientTextureMatchesRenderSize())
+                RefreshBackground();
 
             if (Math.Abs(_layoutWidth - Width) < float.Epsilon &&
                 Math.Abs(_layoutHeight - Height) < float.Epsilon)
@@ -358,6 +541,209 @@ namespace Wobble.Graphics.UI.Navigation
             RefreshBorderLayout();
             RefreshLayout();
         }
+
+        private void DrawCoverImage()
+        {
+            if (Width <= 0 || Height <= 0)
+                return;
+
+            var barAspect = Width / Height;
+            var imageAspect = Image.Width / (float) Image.Height;
+            Rectangle source;
+
+            if (imageAspect > barAspect)
+            {
+                var sourceWidth = Math.Max(1, Math.Min(Image.Width, (int) Math.Round(Image.Height * barAspect)));
+                source = new Rectangle((Image.Width - sourceWidth) / 2, 0, sourceWidth, Image.Height);
+            }
+            else
+            {
+                var sourceHeight = Math.Max(1, Math.Min(Image.Height, (int) Math.Round(Image.Width / barAspect)));
+                source = new Rectangle(0, (Image.Height - sourceHeight) / 2, Image.Width, sourceHeight);
+            }
+
+            DrawImageRegion(new RectangleF(0, 0, Width, Height), source);
+        }
+
+        private void DrawContainImage()
+        {
+            if (Width <= 0 || Height <= 0)
+                return;
+
+            var scale = Math.Min(Width / Image.Width, Height / Image.Height);
+            var imageWidth = Image.Width * scale;
+            var imageHeight = Image.Height * scale;
+            DrawImageRegion(new RectangleF((Width - imageWidth) / 2f, (Height - imageHeight) / 2f,
+                imageWidth, imageHeight), null);
+        }
+
+        private void DrawTiledImage()
+        {
+            if (Width <= 0 || Height <= 0)
+                return;
+
+            for (var y = 0f; y < Height; y += Image.Height)
+            {
+                var tileHeight = Math.Min(Image.Height, Height - y);
+                var sourceHeight = Math.Max(1, Math.Min(Image.Height, (int) Math.Ceiling(tileHeight)));
+
+                for (var x = 0f; x < Width; x += Image.Width)
+                {
+                    var tileWidth = Math.Min(Image.Width, Width - x);
+                    var sourceWidth = Math.Max(1, Math.Min(Image.Width, (int) Math.Ceiling(tileWidth)));
+                    DrawImageRegion(new RectangleF(x, y, tileWidth, tileHeight),
+                        new Rectangle(0, 0, sourceWidth, sourceHeight));
+                }
+            }
+        }
+
+        private void DrawImageRegion(RectangleF localBounds, Rectangle? source)
+        {
+            if (localBounds.Width <= 0 || localBounds.Height <= 0 || Width == 0 || Height == 0)
+                return;
+
+            var sourceWidth = source?.Width ?? Image.Width;
+            var sourceHeight = source?.Height ?? Image.Height;
+            var pivotPosition = new Vector2(Width * Pivot.X, Height * Pivot.Y);
+            var origin = new Vector2(
+                sourceWidth * (pivotPosition.X - localBounds.X) / localBounds.Width,
+                sourceHeight * (pivotPosition.Y - localBounds.Y) / localBounds.Height);
+            var destination = new RectangleF(RenderRectangle.Position,
+                new Size2(localBounds.Width * RenderRectangle.Width / Width,
+                    localBounds.Height * RenderRectangle.Height / Height));
+
+            GameBase.Game.SpriteBatch.Draw(Image, destination, source, _color, SpriteOverallRotation, origin,
+                SpriteEffect, 0f);
+        }
+
+        private bool TryCreateGradientTexture(NavigationBarGradientOptions options, out Texture2D texture)
+        {
+            texture = null;
+
+            if (!IsValidGradient(options))
+                return false;
+
+            var width = GetGradientTextureWidth();
+            var height = GetGradientTextureHeight();
+            var pixels = new Color[width * height];
+            var angle = MathHelper.ToRadians(options.AngleDegrees);
+            var direction = new Vector2((float) Math.Cos(angle), (float) Math.Sin(angle));
+            var projectionMinimum = Math.Min(0, direction.X) + Math.Min(0, direction.Y);
+            var projectionMaximum = Math.Max(0, direction.X) + Math.Max(0, direction.Y);
+            var projectionRange = projectionMaximum - projectionMinimum;
+            var farthestCornerDistance = GetFarthestCornerDistance(options.RadialOrigin);
+
+            for (var y = 0; y < height; y++)
+            {
+                var v = height == 1 ? 0.5f : y / (float) (height - 1);
+
+                for (var x = 0; x < width; x++)
+                {
+                    var u = width == 1 ? 0.5f : x / (float) (width - 1);
+                    float amount;
+
+                    if (options.Type == NavigationBarGradientType.Linear)
+                    {
+                        amount = (Vector2.Dot(new Vector2(u, v), direction) - projectionMinimum) /
+                                 projectionRange;
+                    }
+                    else
+                    {
+                        amount = Vector2.Distance(new Vector2(u, v), options.RadialOrigin) /
+                                 (farthestCornerDistance * options.RadialRadius);
+                    }
+
+                    pixels[y * width + x] = SampleGradient(options.Stops, amount);
+                }
+            }
+
+            texture = new Texture2D(GameBase.Game.GraphicsDevice, width, height, false, SurfaceFormat.Color);
+            texture.SetData(pixels);
+            return true;
+        }
+
+        private static bool IsValidGradient(NavigationBarGradientOptions options)
+        {
+            if (options == null || options.Stops == null || options.Stops.Count < 2 ||
+                !Enum.IsDefined(typeof(NavigationBarGradientType), options.Type) ||
+                !IsFinite(options.AngleDegrees) || !IsFinite(options.RadialOrigin.X) ||
+                !IsFinite(options.RadialOrigin.Y) || !IsFinite(options.RadialRadius) ||
+                options.RadialOrigin.X < 0 || options.RadialOrigin.X > 1 ||
+                options.RadialOrigin.Y < 0 || options.RadialOrigin.Y > 1 || options.RadialRadius <= 0)
+                return false;
+
+            var previousPosition = float.NegativeInfinity;
+
+            foreach (var stop in options.Stops)
+            {
+                if (stop == null || !IsFinite(stop.Position) || stop.Position < 0 || stop.Position > 1 ||
+                    stop.Position <= previousPosition)
+                    return false;
+
+                previousPosition = stop.Position;
+            }
+
+            return true;
+        }
+
+        private static Color SampleGradient(IReadOnlyList<NavigationBarGradientStop> stops, float amount)
+        {
+            if (amount <= stops[0].Position)
+                return stops[0].Color;
+
+            for (var i = 1; i < stops.Count; i++)
+            {
+                if (amount > stops[i].Position)
+                    continue;
+
+                var previous = stops[i - 1];
+                var current = stops[i];
+                var interpolation = (amount - previous.Position) / (current.Position - previous.Position);
+                return Color.Lerp(previous.Color, current.Color, interpolation);
+            }
+
+            return stops[stops.Count - 1].Color;
+        }
+
+        private static float GetFarthestCornerDistance(Vector2 origin)
+        {
+            var farthestX = Math.Max(origin.X, 1 - origin.X);
+            var farthestY = Math.Max(origin.Y, 1 - origin.Y);
+            return (float) Math.Sqrt(farthestX * farthestX + farthestY * farthestY);
+        }
+
+        private bool GradientTextureMatchesRenderSize() => _generatedGradientTexture != null &&
+                                                           !_generatedGradientTexture.IsDisposed &&
+                                                           _generatedGradientTexture.Width == GetGradientTextureWidth() &&
+                                                           _generatedGradientTexture.Height == GetGradientTextureHeight();
+
+        private int GetGradientTextureWidth() => Math.Max(1, (int) Math.Ceiling(Math.Abs(RenderRectangle.Width)));
+
+        private int GetGradientTextureHeight() => Math.Max(1, (int) Math.Ceiling(Math.Abs(RenderRectangle.Height)));
+
+        private void ApplyTransparentBackground()
+        {
+            Image = WobbleAssets.WhiteBox;
+            Tint = Color.Transparent;
+        }
+
+        private void DisposeGeneratedGradient()
+        {
+            if (_generatedGradientTexture == null)
+                return;
+
+            _generatedGradientTexture.Dispose();
+            _generatedGradientTexture = null;
+        }
+
+        private static NavigationBarBackgroundOptions CreateTransparentBackground() =>
+            new NavigationBarBackgroundOptions
+            {
+                Type = NavigationBarBackgroundType.SolidColor,
+                SolidColor = Color.Transparent
+            };
+
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
 
         private void CreateAnimatedBorder()
         {
