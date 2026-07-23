@@ -191,6 +191,12 @@ namespace Wobble.Graphics.UI.Navigation
     /// </summary>
     public class NavigationBar : Sprite
     {
+        // Gradients are sampled in normalized coordinates, so a capped texture can be stretched to
+        // the render rectangle without changing its geometry. Bucketing also avoids regeneration for
+        // every individual pixel while a window is being resized.
+        private const int GradientTextureMaximumDimension = 512;
+        private const int GradientTextureSizeBucket = 8;
+
         private readonly Dictionary<NavigationBarRegion, List<Drawable>> _regions =
             new Dictionary<NavigationBarRegion, List<Drawable>>
             {
@@ -717,9 +723,20 @@ namespace Wobble.Graphics.UI.Navigation
                                                            _generatedGradientTexture.Width == GetGradientTextureWidth() &&
                                                            _generatedGradientTexture.Height == GetGradientTextureHeight();
 
-        private int GetGradientTextureWidth() => Math.Max(1, (int) Math.Ceiling(Math.Abs(RenderRectangle.Width)));
+        private int GetGradientTextureWidth() => GetGradientTextureDimension(RenderRectangle.Width);
 
-        private int GetGradientTextureHeight() => Math.Max(1, (int) Math.Ceiling(Math.Abs(RenderRectangle.Height)));
+        private int GetGradientTextureHeight() => GetGradientTextureDimension(RenderRectangle.Height);
+
+        private static int GetGradientTextureDimension(float renderSize)
+        {
+            var pixels = Math.Max(1, (int) Math.Ceiling(Math.Abs(renderSize)));
+            if (pixels >= GradientTextureMaximumDimension)
+                return GradientTextureMaximumDimension;
+
+            return Math.Min(GradientTextureMaximumDimension,
+                (pixels + GradientTextureSizeBucket - 1) / GradientTextureSizeBucket *
+                GradientTextureSizeBucket);
+        }
 
         private void ApplyTransparentBackground()
         {
