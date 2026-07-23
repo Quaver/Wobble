@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ImGuiNET;
+using Hexa.NET.ImGui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics.ImGUI;
@@ -179,7 +179,7 @@ namespace Wobble.Graphics.UI.Debugging
 
             highlightedTextObjectId = selectedTextObjectId;
 
-            if (ImGui.BeginChild("SpriteTextPlusObjectList", new Vector2(0, 180), ImGuiChildFlags.Border))
+            if (ImGui.BeginChild("SpriteTextPlusObjectList", new Vector2(0, 180), ImGuiChildFlags.Borders))
             {
                 for (var i = 0; i < objects.Count; i++)
                 {
@@ -228,7 +228,7 @@ namespace Wobble.Graphics.UI.Debugging
 
             highlightedDrawableId = selectedDrawableId;
 
-            if (ImGui.BeginChild("DrawableTypeList", new Vector2(0, 260), ImGuiChildFlags.Border))
+            if (ImGui.BeginChild("DrawableTypeList", new Vector2(0, 260), ImGuiChildFlags.Borders))
             {
                 for (var i = 0; i < groups.Count; i++)
                     RenderDrawableTypeGroup(groups[i]);
