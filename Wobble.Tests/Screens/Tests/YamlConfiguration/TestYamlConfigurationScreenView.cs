@@ -132,13 +132,13 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
             valuesText.Text =
                 "MAIN DEFAULT\n" +
                 $"  accent: {main.Panel.AccentColor}\n" +
-                $"  opacity: {main.Panel.Opacity:0.00}\n" +
-                $"  skinId: {main.SkinId} (LOCKED)\n\n" +
+                $"  Opacity: {main.Panel.Opacity:0.00}\n" +
+                $"  SkinId: {main.SkinId} (LOCKED)\n\n" +
                 "EFFECTIVE\n" +
                 $"  accent: {snapshot.Panel.AccentColor}\n" +
-                $"  opacity: {snapshot.Panel.Opacity:0.00}\n" +
-                $"  skinId: {snapshot.SkinId}\n" +
-                $"  fonts: {string.Join(", ", snapshot.Fonts)}";
+                $"  Opacity: {snapshot.Panel.Opacity:0.00}\n" +
+                $"  SkinId: {snapshot.SkinId}\n" +
+                $"  Fonts: {string.Join(", ", snapshot.Fonts)}";
 
             yamlText.Text = "PLAYER YAML (ON DISK)\n" + context.ReadPlayerYaml();
             actionText.Text = context.LastAction;

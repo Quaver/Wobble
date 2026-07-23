@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using YamlDotNet.RepresentationModel;
@@ -11,16 +13,18 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace Wobble.Configuration
 {
     /// <summary>
-    ///     Loads a trusted main YAML document and applies a sparse player override. Properties are immutable by
-    ///     default and must opt into player editing with <see cref="ConfigEditableAttribute"/>.
+    ///     Loads a main YAML document and optionally applies a sparse override. Restricted main documents and
+    ///     overrides are immutable by default and opt into external editing with <see cref="ConfigEditableAttribute"/>.
     /// </summary>
     public sealed class YamlConfig<T> where T : class, new()
     {
-        private static readonly INamingConvention NamingConvention = new CamelCaseNamingConvention();
+        private static readonly INamingConvention NamingConvention = new PascalCaseNamingConvention();
 
         private readonly string mainPath;
         private readonly Func<Stream> mainSource;
         private readonly string overridePath;
+        private readonly bool optionalMain;
+        private readonly bool restrictMainToEditable;
         private readonly ISerializer serializer;
         private readonly IDeserializer deserializer;
 
@@ -32,18 +36,23 @@ namespace Wobble.Configuration
         /// </summary>
         public IReadOnlyList<string> Warnings { get; private set; } = Array.Empty<string>();
 
-        private YamlConfig(string mainPath, Func<Stream> mainSource, string overridePath)
+        private YamlConfig(string mainPath, Func<Stream> mainSource, string overridePath, bool optionalMain = false,
+            bool restrictMainToEditable = false)
         {
-            if (string.IsNullOrWhiteSpace(overridePath))
+            if (!optionalMain && string.IsNullOrWhiteSpace(overridePath))
                 throw new ArgumentException("A player override path is required.", nameof(overridePath));
 
             this.mainPath = mainPath;
             this.mainSource = mainSource;
             this.overridePath = overridePath;
+            this.optionalMain = optionalMain;
+            this.restrictMainToEditable = restrictMainToEditable;
             serializer = new SerializerBuilder().WithNamingConvention(NamingConvention).Build();
             deserializer = new DeserializerBuilder().WithNamingConvention(NamingConvention).Build();
+            mainValue = new T();
+            currentValue = Clone(mainValue);
 
-            if (!Reload())
+            if (!Reload() && !optionalMain)
                 throw new InvalidDataException(Warnings[0]);
         }
 
@@ -75,6 +84,19 @@ namespace Wobble.Configuration
         }
 
         /// <summary>
+        ///     Loads an optional filesystem-backed author configuration without creating a missing file or loading
+        ///     an override. Only properties marked <see cref="ConfigEditableAttribute"/> and required document
+        ///     metadata are accepted.
+        /// </summary>
+        public static YamlConfig<T> LoadOptional(string mainPath)
+        {
+            if (string.IsNullOrWhiteSpace(mainPath))
+                throw new ArgumentException("A main configuration path is required.", nameof(mainPath));
+
+            return new YamlConfig<T>(mainPath, null, null, true, true);
+        }
+
+        /// <summary>
         ///     Returns a detached copy of the effective configuration for reading or editing.
         /// </summary>
         public T GetSnapshot() => Clone(currentValue);
@@ -91,6 +113,8 @@ namespace Wobble.Configuration
         {
             if (editedValue == null)
                 throw new ArgumentNullException(nameof(editedValue));
+            if (string.IsNullOrWhiteSpace(overridePath))
+                throw new InvalidOperationException("This configuration does not have a player override file.");
 
             var overrides = BuildDifferences(typeof(T), mainValue, editedValue, false);
             if (overrides.Children.Count == 0)
@@ -116,10 +140,58 @@ namespace Wobble.Configuration
         /// </summary>
         public void ResetOverrides()
         {
+            if (string.IsNullOrWhiteSpace(overridePath))
+                throw new InvalidOperationException("This configuration does not have a player override file.");
+
             if (File.Exists(overridePath))
                 File.Delete(overridePath);
 
             currentValue = Clone(mainValue);
+        }
+
+        /// <summary>
+        ///     Validates and atomically saves a filesystem-backed main configuration.
+        /// </summary>
+        public bool TrySaveMain(T editedValue, out IReadOnlyList<string> validationErrors)
+        {
+            var errors = new List<string>();
+            if (editedValue == null)
+                errors.Add("The main configuration cannot be null.");
+            else if (string.IsNullOrWhiteSpace(mainPath) || mainSource != null)
+                errors.Add("The main configuration is not filesystem-backed and cannot be saved.");
+            else
+                ValidateObjectGraph(editedValue, typeof(T), string.Empty, errors);
+
+            if (errors.Count > 0)
+            {
+                validationErrors = errors.AsReadOnly();
+                return false;
+            }
+
+            try
+            {
+                if (restrictMainToEditable)
+                {
+                    var editable = BuildEditableMapping(typeof(T), editedValue, false);
+                    using (var writer = new StringWriter())
+                    {
+                        new YamlStream(new YamlDocument(editable)).Save(writer, false);
+                        WriteTextAtomically(mainPath, writer.ToString());
+                    }
+                }
+                else
+                    WriteTextAtomically(mainPath, serializer.Serialize(editedValue));
+
+                if (!Reload())
+                    errors.AddRange(Warnings);
+            }
+            catch (Exception e)
+            {
+                errors.Add("The main YAML configuration could not be saved: " + e.Message);
+            }
+
+            validationErrors = errors.AsReadOnly();
+            return errors.Count == 0;
         }
 
         /// <summary>
@@ -128,15 +200,32 @@ namespace Wobble.Configuration
         public bool Reload()
         {
             var warnings = new List<string>();
-            T loadedMain;
+            var loadedMain = new T();
 
             try
             {
-                using (var reader = new StringReader(ReadMainYaml()))
-                    loadedMain = deserializer.Deserialize<T>(reader);
+                var contents = ReadMainYaml();
+                if (contents == null)
+                {
+                    mainValue = loadedMain;
+                    currentValue = Clone(loadedMain);
+                    Warnings = warnings.AsReadOnly();
+                    return true;
+                }
 
-                if (loadedMain == null)
-                    throw new InvalidDataException("The main YAML document produced a null model.");
+                using (var reader = new StringReader(contents))
+                {
+                    var yaml = new YamlStream();
+                    yaml.Load(reader);
+                    if (yaml.Documents.Count != 1 || !(yaml.Documents[0].RootNode is YamlMappingNode root))
+                        throw new InvalidDataException("The document must contain one mapping.");
+
+                    if (!ApplyMainMapping(loadedMain, root, typeof(T), string.Empty, warnings, false))
+                    {
+                        Warnings = warnings.AsReadOnly();
+                        return false;
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -169,6 +258,9 @@ namespace Wobble.Configuration
                 }
             }
 
+            if (!File.Exists(mainPath) && optionalMain)
+                return null;
+
             if (!File.Exists(mainPath))
                 WriteTextAtomically(mainPath, serializer.Serialize(new T()));
 
@@ -177,7 +269,7 @@ namespace Wobble.Configuration
 
         private YamlMappingNode LoadPlayerOverrides(ICollection<string> warnings)
         {
-            if (!File.Exists(overridePath))
+            if (string.IsNullOrWhiteSpace(overridePath) || !File.Exists(overridePath))
                 return new YamlMappingNode();
 
             try
@@ -197,6 +289,109 @@ namespace Wobble.Configuration
                 warnings.Add("The player override was ignored: " + e.Message);
                 return new YamlMappingNode();
             }
+        }
+
+        private bool ApplyMainMapping(object target, YamlMappingNode source, Type modelType, string parentPath,
+            ICollection<string> warnings, bool parentIsEditable)
+        {
+            var properties = GetPropertyMap(modelType);
+            var suppliedNames = new HashSet<string>(source.Children.Keys
+                .OfType<YamlScalarNode>()
+                .Where(x => !string.IsNullOrEmpty(x.Value))
+                .Select(x => x.Value), StringComparer.Ordinal);
+            var valid = true;
+
+            foreach (var property in properties.Values.Where(x =>
+                         x.GetCustomAttribute<ConfigRequiredAttribute>() != null))
+            {
+                var yamlName = GetYamlName(property);
+                if (suppliedNames.Contains(yamlName))
+                    continue;
+
+                warnings.Add($"Required main configuration value '{CombinePath(parentPath, yamlName)}' is missing.");
+                valid = false;
+            }
+
+            foreach (var pair in source.Children)
+            {
+                if (!(pair.Key is YamlScalarNode key) || string.IsNullOrEmpty(key.Value))
+                {
+                    warnings.Add("Main configuration keys must be non-empty scalar values.");
+                    continue;
+                }
+
+                var path = CombinePath(parentPath, key.Value);
+                if (!properties.TryGetValue(key.Value, out var property))
+                {
+                    warnings.Add($"Unknown main configuration value '{path}' was ignored.");
+                    continue;
+                }
+
+                var required = property.GetCustomAttribute<ConfigRequiredAttribute>() != null;
+                var explicitlyEditable = property.GetCustomAttribute<ConfigEditableAttribute>() != null;
+                var isEditable = !restrictMainToEditable || parentIsEditable || explicitlyEditable || required;
+                try
+                {
+                    if (pair.Value is YamlMappingNode nested && IsNestedObjectType(property.PropertyType))
+                    {
+                        var nestedTarget = property.GetValue(target) ?? Activator.CreateInstance(property.PropertyType);
+                        if (!ApplyMainMapping(nestedTarget, nested, property.PropertyType, path, warnings,
+                                parentIsEditable || explicitlyEditable))
+                            valid = false;
+
+                        if (!TryValidatePropertyValue(target, property, nestedTarget, out var validationMessage))
+                            throw new ValidationException(validationMessage);
+
+                        property.SetValue(target, nestedTarget);
+                        continue;
+                    }
+
+                    if (!isEditable)
+                    {
+                        warnings.Add($"Non-editable main configuration value '{path}' was ignored.");
+                        continue;
+                    }
+
+                    var value = DeserializeNode(pair.Value, property.PropertyType);
+                    if (value == null && IsNonNullableValueType(property.PropertyType))
+                        throw new InvalidDataException("A non-nullable value cannot be null.");
+                    if (!TryValidatePropertyValue(target, property, value, out var error))
+                        throw new ValidationException(error);
+
+                    property.SetValue(target, value);
+                }
+                catch (Exception e)
+                {
+                    warnings.Add($"Invalid main configuration value '{path}' was ignored: {e.Message}");
+                    if (required)
+                        valid = false;
+                }
+            }
+
+            return valid;
+        }
+
+        private YamlMappingNode BuildEditableMapping(Type modelType, object value, bool parentIsEditable)
+        {
+            var result = new YamlMappingNode();
+            foreach (var property in GetPropertyMap(modelType).Values)
+            {
+                var explicitlyEditable = property.GetCustomAttribute<ConfigEditableAttribute>() != null;
+                var required = property.GetCustomAttribute<ConfigRequiredAttribute>() != null;
+                var isEditable = parentIsEditable || explicitlyEditable;
+                var propertyValue = value == null ? null : property.GetValue(value);
+
+                if (IsNestedObjectType(property.PropertyType) && propertyValue != null)
+                {
+                    var nested = BuildEditableMapping(property.PropertyType, propertyValue, isEditable);
+                    if (nested.Children.Count > 0)
+                        result.Add(new YamlScalarNode(GetYamlName(property)), nested);
+                }
+                else if (isEditable || required)
+                    result.Add(new YamlScalarNode(GetYamlName(property)), SerializeToNode(propertyValue));
+            }
+
+            return result;
         }
 
         private YamlMappingNode SanitizeMapping(YamlMappingNode source, Type modelType, string parentPath,
@@ -242,6 +437,8 @@ namespace Wobble.Configuration
                     var value = DeserializeNode(pair.Value, property.PropertyType);
                     if (value == null && IsNonNullableValueType(property.PropertyType))
                         throw new InvalidDataException("A non-nullable value cannot be null.");
+                    if (!TryValidatePropertyValue(new object(), property, value, out var validationMessage))
+                        throw new ValidationException(validationMessage);
 
                     result.Add(new YamlScalarNode(GetYamlName(property)), pair.Value);
                 }
@@ -252,6 +449,44 @@ namespace Wobble.Configuration
             }
 
             return result;
+        }
+
+        private static bool TryValidatePropertyValue(object target, PropertyInfo property, object value,
+            out string message)
+        {
+            var results = new List<ValidationResult>();
+            var context = new ValidationContext(target ?? new object()) { MemberName = property.Name };
+            if (Validator.TryValidateValue(value, context, results,
+                    property.GetCustomAttributes<ValidationAttribute>(true)))
+            {
+                message = null;
+                return true;
+            }
+
+            message = string.Join("; ", results.Select(x => x.ErrorMessage));
+            return false;
+        }
+
+        private void ValidateObjectGraph(object value, Type modelType, string parentPath,
+            ICollection<string> errors)
+        {
+            if (value == null)
+            {
+                errors.Add($"Configuration value '{parentPath}' cannot be null.");
+                return;
+            }
+
+            foreach (var property in GetPropertyMap(modelType).Values)
+            {
+                var yamlName = GetYamlName(property);
+                var path = CombinePath(parentPath, yamlName);
+                var propertyValue = property.GetValue(value);
+                if (!TryValidatePropertyValue(value, property, propertyValue, out var message))
+                    errors.Add($"Invalid configuration value '{path}': {message}");
+
+                if (propertyValue != null && IsNestedObjectType(property.PropertyType))
+                    ValidateObjectGraph(propertyValue, property.PropertyType, path, errors);
+            }
         }
 
         private void ApplyMapping(object target, YamlMappingNode mapping, Type modelType)
@@ -313,7 +548,7 @@ namespace Wobble.Configuration
             return result;
         }
 
-        private static string GetYamlName(PropertyInfo property)
+        private string GetYamlName(PropertyInfo property)
         {
             var member = property.GetCustomAttribute<YamlMemberAttribute>();
             return member != null && !string.IsNullOrEmpty(member.Alias)
