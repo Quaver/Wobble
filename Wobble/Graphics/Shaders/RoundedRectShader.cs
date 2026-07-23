@@ -59,7 +59,7 @@ namespace Wobble.Graphics.Shaders
             return new Shader(effect, new Dictionary<string, object>
             {
                 { "p_size", Vector2.One },
-                { "p_radius", new Vector4(radius) }
+                { "p_radius", radius }
             });
         }
 
@@ -73,13 +73,6 @@ namespace Wobble.Graphics.Shaders
         ///     Updates the corner radius parameter of a shader created by <see cref="Create"/>, applying the
         ///     same radius to all four corners.
         /// </summary>
-        public static void UpdateRadius(Shader shader, float radius) => shader.SetParameter("p_radius", new Vector4(radius), true);
-
-        /// <summary>
-        ///     Updates the corner radius parameter of a shader created by <see cref="Create"/>, with each
-        ///     corner set independently - e.g. an opened dropdown header, which is only rounded on top.
-        /// </summary>
-        public static void UpdateRadius(Shader shader, float topLeft, float topRight, float bottomRight, float bottomLeft) =>
-            shader.SetParameter("p_radius", new Vector4(topLeft, topRight, bottomRight, bottomLeft), true);
+        public static void UpdateRadius(Shader shader, float radius) => shader.SetParameter("p_radius", radius, true);
     }
 }
