@@ -6,30 +6,68 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Wobble.Graphics.Shaders
 {
     /// <summary>
-    ///     Creates exact-size rounded rectangle textures once, then shares them between buttons.
-    ///     Keeping the rounding in the texture lets all button backgrounds, labels, and icons use
-    ///     the same SpriteBatch instead of forcing a shader batch break for every button.
+    ///     Creates rounded rectangle textures and shares nearby sizes between buttons. Cached textures
+    ///     are weakly held so obsolete resize variants can be collected after drawables release them.
+    ///     Keeping the rounding in the texture lets backgrounds, labels, and icons use the same
+    ///     SpriteBatch instead of forcing a shader batch break for every button.
     /// </summary>
     public static class RoundedRectTextureCache
     {
-        private static Dictionary<TextureKey, Texture2D> Textures { get; } = new Dictionary<TextureKey, Texture2D>();
+        private const int TextureSizeBucket = 4;
+        private const int CleanupInterval = 64;
+        private const float RadiusBucket = 0.125f;
+
+        private static Dictionary<TextureKey, WeakReference<Texture2D>> Textures { get; } =
+            new Dictionary<TextureKey, WeakReference<Texture2D>>();
+
+        private static int TexturesCreatedSinceCleanup { get; set; }
 
         public static Texture2D Get(float width, float height, float radius, bool antiAliased = true)
         {
-            var textureWidth = Math.Max(1, (int) Math.Ceiling(width));
-            var textureHeight = Math.Max(1, (int) Math.Ceiling(height));
-            var scaledRadius = MathHelper.Clamp(
+            var textureWidth = BucketDimension(width);
+            var textureHeight = BucketDimension(height);
+            var scaledRadius = BucketRadius(MathHelper.Clamp(
                 radius * Math.Min(textureWidth / width, textureHeight / height),
                 0,
-                Math.Min(textureWidth, textureHeight) / 2f);
+                Math.Min(textureWidth, textureHeight) / 2f));
             var key = new TextureKey(textureWidth, textureHeight, scaledRadius, antiAliased);
 
-            if (Textures.TryGetValue(key, out var texture) && !texture.IsDisposed)
+            if (Textures.TryGetValue(key, out var reference) &&
+                reference.TryGetTarget(out var texture) && !texture.IsDisposed)
                 return texture;
 
             texture = Create(textureWidth, textureHeight, scaledRadius, antiAliased);
-            Textures[key] = texture;
+            Textures[key] = new WeakReference<Texture2D>(texture);
+
+            if (++TexturesCreatedSinceCleanup >= CleanupInterval)
+            {
+                RemoveCollectedTextures();
+                TexturesCreatedSinceCleanup = 0;
+            }
+
             return texture;
+        }
+
+        private static int BucketDimension(float value)
+        {
+            var pixels = Math.Max(1, (int) Math.Ceiling(value));
+            return (pixels + TextureSizeBucket - 1) / TextureSizeBucket * TextureSizeBucket;
+        }
+
+        private static float BucketRadius(float value) =>
+            (float) Math.Round(value / RadiusBucket) * RadiusBucket;
+
+        private static void RemoveCollectedTextures()
+        {
+            var collectedKeys = new List<TextureKey>();
+            foreach (var pair in Textures)
+            {
+                if (!pair.Value.TryGetTarget(out var texture) || texture.IsDisposed)
+                    collectedKeys.Add(pair.Key);
+            }
+
+            foreach (var key in collectedKeys)
+                Textures.Remove(key);
         }
 
         private static Texture2D Create(int width, int height, float radius, bool antiAliased)
