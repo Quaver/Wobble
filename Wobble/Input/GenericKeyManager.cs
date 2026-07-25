@@ -65,7 +65,7 @@ namespace Wobble.Input
             foreach (var key in KeyboardManager.CurrentState.GetPressedKeys())
                 keys.Add(new GenericKey { KeyboardKey = key });
 
-            for (var key = 0; key < JoystickManager.CurrentState.Buttons.Length; key++)
+            for (var key = 0; key < JoystickManager.CurrentState.Buttons?.Length; key++)
                 if (JoystickManager.CurrentState.Buttons[key] == ButtonState.Pressed)
                     keys.Add(new GenericKey { JoystickKey = key });
 
