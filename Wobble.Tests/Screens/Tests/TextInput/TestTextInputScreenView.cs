@@ -25,6 +25,18 @@ namespace Wobble.Tests.Screens.Tests.TextInput
         /// <param name="screen"></param>
         public TestTextInputScreenView(Screen screen) : base(screen)
         {
+            var interactiveTextbox = new Textbox(new ScalableVector2(500, 36),
+                FontManager.GetWobbleFont("inter-semibold"), 20,
+                "Click, drag, double-click: cafe\u0301 👩‍💻 foo_bar — punctuation!!! and long scrolling text")
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                Y = -100,
+                Tint = Color.Black,
+                Alpha = 0.75f,
+                Focused = false
+            };
+
             // Simple text box that when submitted, will send the text flying across the screen.
             var textbox = new Textbox(new ScalableVector2(500, 36), FontManager.GetWobbleFont("inter-semibold"),
                 24, "", "Type to see a cool effect!")
