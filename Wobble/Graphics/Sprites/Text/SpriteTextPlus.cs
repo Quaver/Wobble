@@ -273,49 +273,14 @@ namespace Wobble.Graphics.Sprites.Text
             }
         }
 
-        private List<string> BuildWrappedLines()
-        {
-            var lines = Text?.Split('\n').ToList() ?? new List<string>();
-            if (MaxWidth == null)
-                return lines;
+        private List<string> BuildWrappedLines() => BuildWrappedLayout().Select(x => x.Text).ToList();
 
-            for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
-            {
-                var line = lines[lineIndex];
+        internal List<WrappedTextLine> BuildWrappedLayout() => BuildWrappedLayout(Text);
 
-                // Empty lines are valid (for example, consecutive newlines), and there is nothing to wrap.
-                if (line.Length == 0 || MeasureLineWidth(line) <= MaxWidth)
-                    continue;
+        internal List<WrappedTextLine> BuildWrappedLayout(string text) =>
+            WrappedTextLayout.Build(text, MaxWidth, MeasureLineWidth);
 
-                var spaces = new List<int>();
-                for (var i = 0; i < line.Length; i++)
-                {
-                    if (char.IsWhiteSpace(line[i]))
-                        spaces.Add(i);
-                }
-
-                var splitOnIndex = FindLastFittingIndex(spaces, line);
-                int nextLineStart;
-
-                if (splitOnIndex == -1)
-                {
-                    var lastIndex = spaces.Count > 0 ? spaces[0] : line.Length;
-                    nextLineStart = FindLastFittingCharacterIndex(line, lastIndex);
-                    lines[lineIndex] = line.Substring(0, nextLineStart);
-                }
-                else
-                {
-                    lines[lineIndex] = line.Substring(0, spaces[splitOnIndex]);
-                    nextLineStart = spaces[splitOnIndex] + 1;
-                }
-
-                Debug.Assert(nextLineStart > 0);
-                if (nextLineStart < line.Length)
-                    lines.Insert(lineIndex + 1, line.Substring(nextLineStart));
-            }
-
-            return lines;
-        }
+        internal float MeasureLayoutLineWidth(string text) => MeasureLineWidth(text);
 
         private bool LinesMatch(IReadOnlyList<string> lines)
         {
@@ -332,52 +297,6 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         private void OnFontChanged(object sender, EventArgs e) => RefreshText();
-
-        private int FindLastFittingIndex(IReadOnlyList<int> indexes, string line)
-        {
-            var result = -1;
-            var lo = 0;
-            var hi = indexes.Count - 1;
-
-            while (lo <= hi)
-            {
-                var mid = lo + (hi - lo) / 2;
-                var index = indexes[mid];
-
-                if (MeasureLineWidth(line.Substring(0, index)) <= MaxWidth)
-                {
-                    result = mid;
-                    lo = mid + 1;
-                }
-                else
-                    hi = mid - 1;
-            }
-
-            return result;
-        }
-
-        private int FindLastFittingCharacterIndex(string line, int lastIndex)
-        {
-            var result = 1;
-            var lo = 1;
-            var hi = lastIndex;
-
-            while (lo <= hi)
-            {
-                var mid = lo + (hi - lo) / 2;
-
-                // If we're left with 1 character, just go with it even if we're over MaxWidth.
-                if (mid == 1 || MeasureLineWidth(line.Substring(0, mid)) <= MaxWidth)
-                {
-                    result = mid;
-                    lo = mid + 1;
-                }
-                else
-                    hi = mid - 1;
-            }
-
-            return result;
-        }
 
         private float MeasureLineWidth(string line)
         {

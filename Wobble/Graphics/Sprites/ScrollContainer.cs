@@ -171,8 +171,10 @@ namespace Wobble.Graphics.Sprites
         ///  <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            var contentFits = ContentContainer.Height <= Height;
+
             // Set scrollbar height.
-            Scrollbar.Height = Height / ContentContainer.Height * Height;
+            Scrollbar.Height = contentFits ? Height : Height / ContentContainer.Height * Height;
 
             // Set min scroll height to 30.
             if (Scrollbar.Height < 30)
@@ -225,11 +227,17 @@ namespace Wobble.Graphics.Sprites
             }
 
             // Make sure content container is clamped to the viewport.
-            TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
+            TargetY = contentFits ? 0 : MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
 
             // Calculate the scrollbar's y position.
-            var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
-            Scrollbar.Y = percentage / 100 * (Scrollbar.Parent.Height - Scrollbar.Height) - (Scrollbar.Parent.Height - Scrollbar.Height);
+            if (contentFits)
+                Scrollbar.Y = 0;
+            else
+            {
+                var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
+                Scrollbar.Y = percentage / 100 * (Scrollbar.Parent.Height - Scrollbar.Height) -
+                              (Scrollbar.Parent.Height - Scrollbar.Height);
+            }
 
             if (IsMinScrollYEnabled && Scrollbar.Y < MinScrollBarY)
                 Scrollbar.Y = MinScrollBarY;
