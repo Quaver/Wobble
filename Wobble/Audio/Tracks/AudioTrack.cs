@@ -303,6 +303,21 @@ namespace Wobble.Audio.Tracks
                 Seeked?.Invoke(this, new TrackSeekedEventArgs(previous, Time));
         }
 
+        /// <summary>
+        ///     Generates initial stream data before playback so decoding and FX setup do not stall the frame that
+        ///     starts the channel.
+        /// </summary>
+        /// <returns>Whether BASS successfully prepared the playback buffer.</returns>
+        public bool PrepareForPlayback()
+        {
+            CheckIfDisposed();
+
+            if (!StreamLoaded || IsDisposed)
+                return false;
+
+            return Bass.ChannelUpdate(Stream, 0);
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
