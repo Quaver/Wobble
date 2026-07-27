@@ -269,9 +269,8 @@ namespace Wobble.Graphics.UI.Form
                 var line = lines[lineIndex];
                 var start = Math.Max(SelectedPart.start, line.Start);
                 var end = Math.Min(SelectedPart.end, line.End);
-                var hardBreakPosition = line.NextStart - 1;
-                var includesBreak = line.HasHardBreak && SelectedPart.start <= hardBreakPosition &&
-                                    SelectedPart.end > hardBreakPosition;
+                var includesBreak = line.BreakLength > 0 && SelectedPart.start < line.NextStart &&
+                                    SelectedPart.end > line.End;
 
                 if (end <= start && !includesBreak)
                     continue;
