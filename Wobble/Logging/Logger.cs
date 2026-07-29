@@ -23,7 +23,7 @@ namespace Wobble.Logging
         /// <summary>
         ///     The folder which contains all the logs.
         /// </summary>
-        public static string LogsFolder => Path.Join(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+        public static string LogsFolder => Path.Join(WobbleGame.WorkingDirectory, "Logs");
 
         /// <summary>
         ///     The minimum log level required to log messages.
