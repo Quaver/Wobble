@@ -25,6 +25,34 @@ namespace Wobble.Tests.Screens.Tests.TextInput
         /// <param name="screen"></param>
         public TestTextInputScreenView(Screen screen) : base(screen)
         {
+            new Textarea(new ScalableVector2(400, 120), FontManager.GetWobbleFont("inter-semibold"), 18,
+                "Wrap-only textarea: long text automatically flows onto additional visual lines, including " +
+                "averyveryveryveryveryverylongunbrokenword.")
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                X = -215,
+                Y = -260,
+                Tint = Color.Black,
+                Alpha = 0.75f,
+                Focused = false,
+                AllowSubmission = false
+            };
+
+            new Textarea(new ScalableVector2(400, 120), FontManager.GetWobbleFont("inter-semibold"), 18,
+                "Multiline textarea\nEnter adds lines\nCtrl+Enter submits\nMouse selection spans lines\n" +
+                "Wheel and Page keys scroll\nUnicode stays intact: cafe\u0301 👩‍💻\nOverflow keeps going")
+            {
+                Parent = Container,
+                Alignment = Alignment.MidCenter,
+                X = 215,
+                Y = -260,
+                Tint = Color.Black,
+                Alpha = 0.75f,
+                Focused = false,
+                AllowNewLines = true
+            };
+
             var interactiveTextbox = new Textbox(new ScalableVector2(500, 36),
                 FontManager.GetWobbleFont("inter-semibold"), 20,
                 "Click, drag, double-click: cafe\u0301 👩‍💻 foo_bar — punctuation!!! and long scrolling text")

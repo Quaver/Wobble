@@ -160,22 +160,22 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Determines the part of the text that is selected.
         /// </summary>
-        public (int start, int end) SelectedPart { get; private set; }
+        public (int start, int end) SelectedPart { get; protected set; }
 
         /// <summary>
         ///     The position of the cursor when the selection begins.
         /// </summary>
-        private int SelectionBegin { get; set; }
+        protected int SelectionBegin { get; set; }
 
         private string TextElementBoundaryText { get; set; }
 
-        private int[] TextElementBoundaries { get; set; } = new[] { 0 };
+        protected int[] TextElementBoundaries { get; set; } = new[] { 0 };
 
         private bool IsMouseSelecting { get; set; }
 
         private MouseSelectionMode CurrentMouseSelectionMode { get; set; }
 
-        private int MouseSelectionAnchor { get; set; }
+        protected int MouseSelectionAnchor { get; set; }
 
         private (int start, int end) MouseWordSelection { get; set; }
 
@@ -192,7 +192,7 @@ namespace Wobble.Graphics.UI.Form
         public int CursorPosition
         {
             get => _cursorPosition;
-            private set
+            protected set
             {
                 _cursorPosition = GetNearestTextElementBoundary(value);
                 ChangeCursorLocation();
@@ -207,12 +207,12 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///    The time since the cursor has last moved.
         /// </summary>
-        private double lastCursorMove { get; set; } = 0;
+        protected double LastCursorMove { get; set; } = 0;
 
         /// <summary>
         ///    The keys that are currently being held down, and for how long.
         /// </summary>
-        private Dictionary<Keys, double> keyHeldFor { get; set; } = new Dictionary<Keys, double>();
+        protected Dictionary<Keys, double> KeyHeldFor { get; set; } = new Dictionary<Keys, double>();
 
         /// <summary>
         ///     Action called when pressing enter and submitting the text box.
@@ -345,6 +345,8 @@ namespace Wobble.Graphics.UI.Form
                 Alpha = 0
             };
 
+            Scrollbar.Visible = false;
+
             // If the user clicks outside of the button, then it won't be focused anymore.
             Button.ClickedOutside += (o, e) =>
             {
@@ -407,7 +409,7 @@ namespace Wobble.Graphics.UI.Form
             base.Destroy();
         }
 
-        private int[] GetTextElementBoundaries()
+        protected int[] GetTextElementBoundaries()
         {
             var text = RawText ?? "";
 
@@ -423,7 +425,7 @@ namespace Wobble.Graphics.UI.Form
             return TextElementBoundaries;
         }
 
-        private int GetNearestTextElementBoundary(int position)
+        protected int GetNearestTextElementBoundary(int position)
         {
             var textLength = RawText?.Length ?? 0;
             position = Math.Max(0, Math.Min(position, textLength));
@@ -445,28 +447,28 @@ namespace Wobble.Graphics.UI.Form
                 : boundaries[nextIndex];
         }
 
-        private int GetBoundaryIndex(int position)
+        protected int GetBoundaryIndex(int position)
         {
             var boundaries = GetTextElementBoundaries();
             position = GetNearestTextElementBoundary(position);
             return Array.BinarySearch(boundaries, position);
         }
 
-        private int GetPreviousTextElementBoundary(int position)
+        protected int GetPreviousTextElementBoundary(int position)
         {
             var boundaries = GetTextElementBoundaries();
             var index = GetBoundaryIndex(position);
             return boundaries[Math.Max(0, index - 1)];
         }
 
-        private int GetNextTextElementBoundary(int position)
+        protected int GetNextTextElementBoundary(int position)
         {
             var boundaries = GetTextElementBoundaries();
             var index = GetBoundaryIndex(position);
             return boundaries[Math.Min(boundaries.Length - 1, index + 1)];
         }
 
-        private float MeasureTextWidth(int end)
+        protected float MeasureTextWidth(int end)
         {
             if (end <= 0)
                 return 0;
@@ -475,7 +477,7 @@ namespace Wobble.Graphics.UI.Form
             return InputText.Font.Store.MeasureString(RawText.Substring(0, end)).X;
         }
 
-        private (int caretPosition, int textElementStart) GetMouseTextPosition()
+        protected virtual (int caretPosition, int textElementStart) GetMouseTextPosition()
         {
             var boundaries = GetTextElementBoundaries();
 
@@ -544,7 +546,7 @@ namespace Wobble.Graphics.UI.Form
             }
         }
 
-        private (int start, int end) GetTextRun(int textElementStart)
+        protected (int start, int end) GetTextRun(int textElementStart)
         {
             if (string.IsNullOrEmpty(RawText))
                 return (0, 0);
@@ -635,7 +637,7 @@ namespace Wobble.Graphics.UI.Form
             return boundaries[index];
         }
 
-        private void MoveCaretTo(int position)
+        protected void MoveCaretTo(int position)
         {
             CursorPosition = position;
             SelectionBegin = CursorPosition;
@@ -646,7 +648,7 @@ namespace Wobble.Graphics.UI.Form
             CalculateContainerX();
         }
 
-        private void SetSelectionFromAnchor(int anchor, int caret)
+        protected void SetSelectionFromAnchor(int anchor, int caret)
         {
             SelectionBegin = GetNearestTextElementBoundary(anchor);
             CursorPosition = caret;
@@ -755,7 +757,7 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnTextInputEntered(object sender, TextInputEventArgs e)
+        protected virtual void OnTextInputEntered(object sender, TextInputEventArgs e)
         {
             if (!Focused)
                 return;
@@ -869,7 +871,7 @@ namespace Wobble.Graphics.UI.Form
         ///    If it's a single lined textbox, then we need to move the ContentContainer (Viewinew container),
         ///     either to the left or to the right depending on where the cursor is.
         /// </summary>
-        private void CalculateContainerX()
+        protected virtual void CalculateContainerX()
         {
             ContentContainer.Width = InputText.Width;
 
@@ -903,7 +905,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Changes the location of the cursor to the position of where the text is.
         /// </summary>
-        private void ChangeCursorLocation()
+        protected virtual void ChangeCursorLocation()
         {
             if (Cursor == null || InputText == null)
                 return;
@@ -923,7 +925,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///    Updates the selected sprite to match the selected text.
         /// </summary>
-        private void UpdateSelectedSprite()
+        protected virtual void UpdateSelectedSprite()
         {
             if (SelectedSprite == null)
                 return;
@@ -955,21 +957,21 @@ namespace Wobble.Graphics.UI.Form
         {
             if (!Focused)
             {
-                keyHeldFor.Clear();
+                KeyHeldFor.Clear();
                 return;
             }
             var keys = KeyboardManager.CurrentState.GetPressedKeys();
             foreach (var key in keys)
             {
-                if (!keyHeldFor.ContainsKey(key))
-                    keyHeldFor.Add(key, 0);
+                if (!KeyHeldFor.ContainsKey(key))
+                    KeyHeldFor.Add(key, 0);
                 else
-                    keyHeldFor[key] += gameTime.ElapsedGameTime.TotalMilliseconds;
+                    KeyHeldFor[key] += gameTime.ElapsedGameTime.TotalMilliseconds;
             }
-            foreach (var key in keyHeldFor.Keys.ToList())
+            foreach (var key in KeyHeldFor.Keys.ToList())
             {
                 if (!keys.Contains(key))
-                    keyHeldFor.Remove(key);
+                    KeyHeldFor.Remove(key);
             }
         }
 
@@ -1019,7 +1021,7 @@ namespace Wobble.Graphics.UI.Form
         ///    Handles the arrow keys for the textbox.
         /// </summary>
         /// <param name="gameTime"></param>
-        private void HandleArrowKeys(GameTime gameTime)
+        protected virtual void HandleArrowKeys(GameTime gameTime)
         {
             if (!Focused)
                 return;
@@ -1028,18 +1030,18 @@ namespace Wobble.Graphics.UI.Form
             var ctrl = KeyboardManager.IsCtrlDown();
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Left)
-            || (keyHeldFor.ContainsKey(Keys.Left) && keyHeldFor[Keys.Left] > 750
-                && gameTime.TotalGameTime.TotalMilliseconds - lastCursorMove > 75))
+            || (KeyHeldFor.ContainsKey(Keys.Left) && KeyHeldFor[Keys.Left] > 750
+                && gameTime.TotalGameTime.TotalMilliseconds - LastCursorMove > 75))
             {
                 MoveCursor(ctrl, true, shift);
-                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
+                LastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
             }
             if (KeyboardManager.IsUniqueKeyPress(Keys.Right)
-            || (keyHeldFor.ContainsKey(Keys.Right) && keyHeldFor[Keys.Right] > 750
-                && gameTime.TotalGameTime.TotalMilliseconds - lastCursorMove > 75))
+            || (KeyHeldFor.ContainsKey(Keys.Right) && KeyHeldFor[Keys.Right] > 750
+                && gameTime.TotalGameTime.TotalMilliseconds - LastCursorMove > 75))
             {
                 MoveCursor(ctrl, false, shift);
-                lastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
+                LastCursorMove = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
             if (KeyboardManager.IsUniqueKeyPress(Keys.Home))
@@ -1064,7 +1066,7 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         /// <param name="wholeWord"></param>
         /// <param name="left"></param>
-        private void MoveCursor(bool wholeWord, bool left, bool select = false)
+        protected void MoveCursor(bool wholeWord, bool left, bool select = false)
         {
             var oldCursorPosition = CursorPosition;
 
@@ -1094,7 +1096,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Deselects the text and readjusts the textbox.
         /// </summary>
-        private void DeselectAndReadjust()
+        protected void DeselectAndReadjust()
         {
             ReadjustTextbox();
             SelectionBegin = CursorPosition;
@@ -1106,7 +1108,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///     Handles control input for the textbox.
         /// </summary>
-        private void HandleCtrlInput()
+        protected virtual void HandleCtrlInput()
         {
             // Make sure the textbox is focused and that the control buttons are down before handling anything.
             if (!Focused || !KeyboardManager.IsCtrlDown())
@@ -1133,7 +1135,7 @@ namespace Wobble.Graphics.UI.Form
             // CTRL+V Paste text
             if (KeyboardManager.IsUniqueKeyPress(Keys.V))
             {
-                var clipboardText = Clipboard.GetText().Replace("\n", "").Replace("\r", "");
+                var clipboardText = PreparePastedText(Clipboard.GetText());
 
                 if (!string.IsNullOrEmpty(clipboardText))
                 {
@@ -1228,12 +1230,15 @@ namespace Wobble.Graphics.UI.Form
             }
         }
 
+        protected virtual string PreparePastedText(string text) =>
+            (text ?? "").Replace("\n", "").Replace("\r", "");
+
         /// <summary>
         ///     Handles the Enter button (both regular and numpad) for the textbox.
         /// </summary>
-        private void HandleEnter()
+        protected virtual void HandleEnter()
         {
-            if (KeyboardManager.IsUniqueKeyPress(Keys.Enter))
+            if (Focused && KeyboardManager.IsUniqueKeyPress(Keys.Enter))
             {
                 if (!AllowSubmission)
                     return;
@@ -1254,7 +1259,7 @@ namespace Wobble.Graphics.UI.Form
         /// <summary>
         ///		Plays a sound sample randomly from the KeyClickSamples list.
         ///	</summary>
-        private void PlayKeyClickSound()
+        protected void PlayKeyClickSound()
         {
             if (KeyClickSamples == null)
                 return;
