@@ -294,8 +294,6 @@ namespace Wobble.Extended.HotReload
         {
             try
             {
-                InitializeAssembly?.Invoke(Asm);
-
                 var nextScreen = Activator.CreateInstance(type);
                 var oldScreen = Screen;
                 var oldAssembly = ScreenAssembly;
