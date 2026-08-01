@@ -121,6 +121,8 @@ namespace Wobble.Graphics.UI.Navigation
     {
         public Texture2D Icon { get; set; }
 
+        public TextureRegion? IconRegion { get; set; }
+
         public Vector2? IconSize { get; set; }
 
         public string Text { get; set; }
@@ -453,7 +455,12 @@ namespace Wobble.Graphics.UI.Navigation
                 Tint = options.BackgroundColor
             };
 
-            if (options.Icon != null)
+            if (options.IconRegion != null)
+            {
+                button.SetIcon(options.IconRegion.Value, options.IconSize);
+                button.Icon.Tint = options.ForegroundColor;
+            }
+            else if (options.Icon != null)
             {
                 button.SetIcon(options.Icon, options.IconSize);
                 button.Icon.Tint = options.ForegroundColor;

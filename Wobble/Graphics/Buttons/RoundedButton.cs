@@ -161,6 +161,29 @@ namespace Wobble.Graphics.Buttons
         }
 
         /// <summary>
+        ///     Creates/updates the icon child from a texture-atlas region.
+        /// </summary>
+        public void SetIcon(TextureRegion region, Vector2? size = null)
+        {
+            var iconSize = size ?? new Vector2(16, 16);
+
+            if (Icon == null)
+            {
+                Icon = new Sprite
+                {
+                    Parent = this,
+                    Alignment = Alignment.MidCenter,
+                    UsePreviousSpriteBatchOptions = true
+                };
+            }
+
+            Icon.Region = region;
+            Icon.Size = new ScalableVector2(iconSize.X, iconSize.Y);
+
+            LayoutContent();
+        }
+
+        /// <summary>
         ///     Creates/updates the label child, laying content back out afterwards.
         /// </summary>
         public void SetLabel(WobbleFontStore font, string text, int fontSize, Color? color = null)
