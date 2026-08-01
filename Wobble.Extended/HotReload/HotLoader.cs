@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Wobble.Logging;
@@ -63,6 +64,22 @@ namespace Wobble.Extended.HotReload
         public Action AfterCompiling { get; set; }
 
         /// <summary>
+        ///     Initializes resources owned by a newly loaded assembly before its screen is constructed.
+        /// </summary>
+        public Action<Assembly> InitializeAssembly { get; set; }
+
+        /// <summary>
+        ///     Disposes resources owned by an assembly after its screen has been replaced.
+        /// </summary>
+        public Action<Assembly> DisposeAssembly { get; set; }
+
+        private readonly object CompilationLock = new object();
+
+        private int ReloadRequested;
+
+        private Assembly ScreenAssembly { get; set; }
+
+        /// <summary>
         /// </summary>
         /// <param name="projectDirectory"></param>
         /// <param name="afterCompiling"></param>
@@ -93,24 +110,33 @@ namespace Wobble.Extended.HotReload
         /// </summary>
         public void LoadDll()
         {
-            var path = GetCompiledAssemblyPath();
+            Assembly newAssembly = null;
 
-            Asm = Assembly.Load(File.ReadAllBytes(path));
-
-            foreach (var type in Asm.GetExportedTypes())
+            try
             {
+                var path = GetCompiledAssemblyPath();
+                newAssembly = Assembly.Load(File.ReadAllBytes(path));
+                InitializeAssembly?.Invoke(newAssembly);
+                Asm = newAssembly;
+
                 if (Screen == null)
-                    break;
+                    return;
 
-                if (type.FullName == Screen.GetType().ToString())
+                foreach (var type in Asm.GetExportedTypes())
                 {
-                    // We found our gamelogic type, set our dynamic types logic, and state
-                    var oldScreen = Screen;
-                    oldScreen?.Destroy();
+                    if (type.FullName != Screen.GetType().ToString())
+                        continue;
 
-                    Screen = Activator.CreateInstance(type);
+                    TryChangeScreen(type);
                     break;
                 }
+            }
+            catch (Exception e)
+            {
+                if (newAssembly != null && newAssembly != Asm)
+                    TryDisposeAssembly(newAssembly);
+
+                Logger.Error(e, LogType.Runtime);
             }
         }
 
@@ -122,8 +148,9 @@ namespace Wobble.Extended.HotReload
         protected void OnChanged(object sender, FileSystemEventArgs e)
         {
             CompileProject();
-            AfterCompiling?.Invoke();
-            LoadDll();
+
+            if (!CompilationFailed)
+                Interlocked.Exchange(ref ReloadRequested, 1);
         }
 
         /// <summary>
@@ -131,6 +158,14 @@ namespace Wobble.Extended.HotReload
         /// </summary>
         /// <returns></returns>
         public void CompileProject()
+        {
+            lock (CompilationLock)
+            {
+                CompileProjectInternal();
+            }
+        }
+
+        private void CompileProjectInternal()
         {
             Watcher.EnableRaisingEvents = false;
 
@@ -160,8 +195,8 @@ namespace Wobble.Extended.HotReload
             if (p == null)
             {
                 Compiler = null;
-                LoadDll();
                 Watcher.EnableRaisingEvents = true;
+                CompilationFailed = true;
                 return;
             }
 
@@ -176,8 +211,6 @@ namespace Wobble.Extended.HotReload
                 Logger.Debug("Compilation Success", LogType.Runtime);
                 CompilationFailed = false;
                 Watcher.EnableRaisingEvents = true;
-
-                AfterCompiling?.Invoke();
                 return;
             }
 
@@ -229,7 +262,25 @@ namespace Wobble.Extended.HotReload
         /// <summary>
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime) => Screen?.Update(gameTime);
+        public void Update(GameTime gameTime)
+        {
+            if (!IsCompiling && !CompilationFailed &&
+                Interlocked.CompareExchange(ref ReloadRequested, 0, 1) == 1)
+            {
+                try
+                {
+                    AfterCompiling?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, LogType.Runtime);
+                }
+
+                LoadDll();
+            }
+
+            Screen?.Update(gameTime);
+        }
 
         /// <summary>
         /// </summary>
@@ -239,6 +290,50 @@ namespace Wobble.Extended.HotReload
         /// <inheritdoc />
         /// <summary>
         /// </summary>
+        public bool TryChangeScreen(Type type)
+        {
+            try
+            {
+                InitializeAssembly?.Invoke(Asm);
+
+                var nextScreen = Activator.CreateInstance(type);
+                var oldScreen = Screen;
+                var oldAssembly = ScreenAssembly;
+
+                Screen = nextScreen;
+                ScreenAssembly = Asm;
+
+                try
+                {
+                    oldScreen?.Destroy();
+                }
+                finally
+                {
+                    if (oldAssembly != null && oldAssembly != ScreenAssembly)
+                        TryDisposeAssembly(oldAssembly);
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, LogType.Runtime);
+                return false;
+            }
+        }
+
         public void Dispose() => Watcher.Dispose();
+
+        private void TryDisposeAssembly(Assembly assembly)
+        {
+            try
+            {
+                DisposeAssembly?.Invoke(assembly);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, LogType.Runtime);
+            }
+        }
     }
 }
