@@ -173,11 +173,11 @@ namespace Wobble.Graphics.Sprites
         {
             var contentFits = ContentContainer.Height <= Height;
 
-            // Set scrollbar height.
-            Scrollbar.Height = contentFits ? Height : Height / ContentContainer.Height * Height;
+            // Content that fits the viewport cannot be scrolled, so it should not produce scrollbar geometry.
+            Scrollbar.Height = contentFits ? 0 : Height / ContentContainer.Height * Height;
 
             // Set min scroll height to 30.
-            if (Scrollbar.Height < 30)
+            if (!contentFits && Scrollbar.Height < 30)
                 Scrollbar.Height = 30;
 
             // Scrollbar Dragging
