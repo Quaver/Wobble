@@ -38,6 +38,8 @@ namespace Wobble.Graphics.UI.Form
             Other
         }
 
+        private static readonly HashSet<Textbox> FocusedTextboxes = new HashSet<Textbox>();
+
         private sealed class TextboxInteractionButton : ImageButton
         {
             private readonly Action<GameTime> _onPressed;
@@ -172,6 +174,8 @@ namespace Wobble.Graphics.UI.Form
         protected int[] TextElementBoundaries { get; set; } = new[] { 0 };
 
         private bool IsMouseSelecting { get; set; }
+
+        private bool WasFocusedForTextInput { get; set; }
 
         private MouseSelectionMode CurrentMouseSelectionMode { get; set; }
 
@@ -396,6 +400,7 @@ namespace Wobble.Graphics.UI.Form
                 (float)Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
 
             PerformCursorBlinking(gameTime);
+            UpdateTextInputState();
 
             base.Update(gameTime);
         }
@@ -406,7 +411,43 @@ namespace Wobble.Graphics.UI.Form
         public override void Destroy()
         {
             GameBase.Game.Window.TextInput -= OnTextInputEntered;
+            SetTextInputFocused(false);
             base.Destroy();
+        }
+
+        private void UpdateTextInputState()
+        {
+            SetTextInputFocused(Focused);
+
+            if (!Focused)
+                return;
+
+            var cursorPosition = Cursor.AbsolutePosition;
+            var cursorSize = Cursor.AbsoluteSize;
+
+            TextInputManager.SetTextInputRectangle(new Rectangle(
+                (int)Math.Round(cursorPosition.X),
+                (int)Math.Round(cursorPosition.Y),
+                Math.Max(1, (int)Math.Round(cursorSize.X)),
+                Math.Max(1, (int)Math.Round(cursorSize.Y))));
+        }
+
+        private void SetTextInputFocused(bool focused)
+        {
+            if (WasFocusedForTextInput == focused)
+                return;
+
+            WasFocusedForTextInput = focused;
+
+            if (focused)
+                FocusedTextboxes.Add(this);
+            else
+                FocusedTextboxes.Remove(this);
+
+            if (FocusedTextboxes.Count > 0)
+                TextInputManager.StartTextInput();
+            else
+                TextInputManager.StopTextInput();
         }
 
         protected int[] GetTextElementBoundaries()
