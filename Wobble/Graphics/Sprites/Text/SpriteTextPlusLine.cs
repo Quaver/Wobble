@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -160,6 +161,87 @@ namespace Wobble.Graphics.Sprites.Text
 
             var flooredSize = new ScalableVector2((float) pixelWidth, (float) pixelHeight);
             Size = flooredSize / _scale;
+        }
+
+        /// <summary>
+        ///     Applies colors to ranges of characters without splitting the text into separate draw calls.
+        /// </summary>
+        /// <param name="ranges"></param>
+        internal void SetTextColorRanges(IReadOnlyList<TextColorRange> ranges)
+        {
+            _raw.GlyphColors = CreateGlyphColors(Font, FontSize * _scale, Text, ranges);
+            _dirty = true;
+        }
+
+        /// <summary>
+        /// </summary>
+        internal void ClearTextColorRanges()
+        {
+            if (_raw.GlyphColors == null)
+                return;
+
+            _raw.GlyphColors = null;
+            _dirty = true;
+        }
+
+        /// <summary>
+        ///     Builds the per-glyph colors expected by FontStashSharp from UTF-16 character ranges.
+        /// </summary>
+        /// <param name="font"></param>
+        /// <param name="fontSize"></param>
+        /// <param name="text"></param>
+        /// <param name="ranges"></param>
+        /// <returns></returns>
+        internal static Color[] CreateGlyphColors(WobbleFontStore font, float fontSize, string text, IReadOnlyList<TextColorRange> ranges)
+        {
+            font.FontSize = fontSize;
+
+            var glyphs = font.Store.GetGlyphs(text, Vector2.Zero);
+            var colors = new List<Color>(glyphs.Count);
+            var hasColoredGlyph = false;
+
+            foreach (var glyph in glyphs)
+            {
+                // FontStashSharp only consumes a color when it draws a non-empty glyph.
+                if (glyph.Bounds.Width == 0 || glyph.Bounds.Height == 0)
+                    continue;
+
+                var textIndex = GetTextIndex(text, glyph.Index);
+                var color = Color.White;
+                var isColored = false;
+
+                for (var i = 0; i < ranges.Count; i++)
+                {
+                    var range = ranges[i];
+
+                    if (textIndex < range.StartIndex || textIndex >= range.StartIndex + range.Length)
+                        continue;
+
+                    color = range.Color;
+                    isColored = true;
+                }
+
+                colors.Add(color);
+                hasColoredGlyph |= isColored;
+            }
+
+            return hasColoredGlyph ? colors.ToArray() : null;
+        }
+
+        /// <summary>
+        ///     Converts FontStashSharp's codepoint index into a UTF-16 string index.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="codepointIndex"></param>
+        /// <returns></returns>
+        private static int GetTextIndex(string text, int codepointIndex)
+        {
+            var textIndex = 0;
+
+            for (var i = 0; i < codepointIndex && textIndex < text.Length; i++)
+                textIndex += char.IsSurrogatePair(text, textIndex) ? 2 : 1;
+
+            return textIndex;
         }
 
         /// <inheritdoc />

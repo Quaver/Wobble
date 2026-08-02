@@ -169,6 +169,11 @@ namespace Wobble.Graphics.Sprites.Text
         }
 
         /// <summary>
+        ///     Character ranges with custom colors
+        /// </summary>
+        private readonly List<TextColorRange> _textColorRanges = new List<TextColorRange>();
+
+        /// <summary>
         /// </summary>
         /// <param name="font"></param>
         /// <param name="text"></param>
@@ -196,6 +201,72 @@ namespace Wobble.Graphics.Sprites.Text
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.SpriteTextPlusDebugRegistry.Register(this);
 #endif
+        }
+
+        /// <summary>
+        ///     Applies a color to a character range
+        /// </summary>
+        /// <param name="startIndex"></param>
+        /// <param name="length"></param>
+        /// <param name="color"></param>
+        public void SetTextColorRange(int startIndex, int length, Color color)
+        {
+            if (startIndex < 0 || startIndex > Text.Length)
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+
+            if (length < 0 || length > Text.Length - startIndex)
+                throw new ArgumentOutOfRangeException(nameof(length));
+
+            _textColorRanges.Clear();
+
+            if (length != 0)
+                _textColorRanges.Add(new TextColorRange(startIndex, length, color));
+
+            ApplyTextColorRanges();
+        }
+
+        /// <summary>
+        ///     Applies colors to character ranges
+        ///     Later ranges take precedence when ranges overlap
+        /// </summary>
+        /// <param name="ranges"></param>
+        public void SetTextColorRanges(IReadOnlyList<TextColorRange> ranges)
+        {
+            if (ranges == null)
+                throw new ArgumentNullException(nameof(ranges));
+
+            for (var i = 0; i < ranges.Count; i++)
+            {
+                var range = ranges[i];
+
+                if (range.StartIndex < 0 || range.StartIndex > Text.Length)
+                    throw new ArgumentOutOfRangeException(nameof(ranges), $"The start index of range {i} is outside the text.");
+
+                if (range.Length < 0 || range.Length > Text.Length - range.StartIndex)
+                    throw new ArgumentOutOfRangeException(nameof(ranges), $"The length of range {i} is outside the text.");
+            }
+
+            _textColorRanges.Clear();
+
+            for (var i = 0; i < ranges.Count; i++)
+            {
+                if (ranges[i].Length != 0)
+                    _textColorRanges.Add(ranges[i]);
+            }
+
+            ApplyTextColorRanges();
+        }
+
+        /// <summary>
+        ///     Clears all custom character colors.
+        /// </summary>
+        public void ClearTextColorRanges()
+        {
+            if (_textColorRanges.Count == 0)
+                return;
+
+            _textColorRanges.Clear();
+            ApplyTextColorRanges();
         }
 
         public override void Update(GameTime gameTime)
@@ -270,6 +341,51 @@ namespace Wobble.Graphics.Sprites.Text
             {
                 lineSprite.Alignment = Alignment.TopLeft;
                 lineSprite.X = GetLineX(width, lineSprite.LayoutWidth);
+            }
+
+            ApplyTextColorRanges();
+        }
+
+        /// <summary>
+        ///     Maps the configured text color ranges onto each wrapped line.
+        /// </summary>
+        private void ApplyTextColorRanges()
+        {
+            if (!IsCached)
+                return;
+
+            var lines = BuildWrappedLayout();
+            var lineRanges = new List<TextColorRange>(_textColorRanges.Count);
+
+            for (var i = 0; i < Children.Count; i++)
+            {
+                if (!(Children[i] is SpriteTextPlusLine lineSprite))
+                    continue;
+
+                if (_textColorRanges.Count == 0 || i >= lines.Count)
+                {
+                    lineSprite.ClearTextColorRanges();
+                    continue;
+                }
+
+                var line = lines[i];
+                lineRanges.Clear();
+
+                for (var rangeIndex = 0; rangeIndex < _textColorRanges.Count; rangeIndex++)
+                {
+                    var range = _textColorRanges[rangeIndex];
+                    var rangeStart = Math.Max(range.StartIndex, line.Start);
+                    var rangeEnd = Math.Min(range.StartIndex + range.Length, line.End);
+
+                    if (rangeStart < rangeEnd)
+                        lineRanges.Add(new TextColorRange(rangeStart - line.Start,
+                            rangeEnd - rangeStart, range.Color));
+                }
+
+                if (lineRanges.Count == 0)
+                    lineSprite.ClearTextColorRanges();
+                else
+                    lineSprite.SetTextColorRanges(lineRanges);
             }
         }
 
@@ -354,8 +470,34 @@ namespace Wobble.Graphics.Sprites.Text
             SetSize();
             var drawPosition = AbsolutePosition;
             drawPosition.Y += _verticalDrawOffset * AbsoluteScale.Y;
-            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, drawPosition, _tint * Alpha, scale: AbsoluteScale);
+
+            var colors = _textColorRanges.Count == 0
+                ? null
+                : SpriteTextPlusLine.CreateGlyphColors(Font, FontSize, Text, _textColorRanges);
+
+            if (colors == null)
+                Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, drawPosition, _tint * Alpha,
+                    scale: AbsoluteScale);
+            else
+            {
+                for (var i = 0; i < colors.Length; i++)
+                    colors[i] = MultiplyColors(colors[i], _tint) * Alpha;
+
+                Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, drawPosition, colors,
+                    scale: AbsoluteScale);
+            }
         }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        private static Color MultiplyColors(Color first, Color second) => new Color(
+            first.R * second.R / 255,
+            first.G * second.G / 255,
+            first.B * second.B / 255,
+            first.A * second.A / 255);
 
         public override void Destroy()
         {

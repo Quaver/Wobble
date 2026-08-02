@@ -45,6 +45,11 @@ namespace Wobble.Graphics.Sprites.Text
         public float MeasuredWidth { get; private set; }
 
         /// <summary>
+        ///     Optional per-glyph colors used when drawing this line.
+        /// </summary>
+        internal Color[] GlyphColors { get; set; }
+
+        /// <summary>
         ///     Content-independent line height used for layout.
         /// </summary>
         internal float LayoutHeight { get; private set; }
@@ -86,7 +91,11 @@ namespace Wobble.Graphics.Sprites.Text
                 return;
 
             Font.FontSize = FontSize;
-            Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _color, scale: AbsoluteScale);
+
+            if (GlyphColors == null)
+                Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, _color, scale: AbsoluteScale);
+            else
+                Font.Store.DrawText(GameBase.Game.SpriteBatch, Text, AbsolutePosition, GlyphColors, scale: AbsoluteScale);
         }
 
         private void RefreshSize()
