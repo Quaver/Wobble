@@ -38,6 +38,8 @@ namespace Wobble.Graphics.UI.Form
             Other
         }
 
+        private static readonly HashSet<Textbox> FocusedTextboxes = new HashSet<Textbox>();
+
         private sealed class TextboxInteractionButton : ImageButton
         {
             private readonly Action<GameTime> _onPressed;
@@ -172,6 +174,10 @@ namespace Wobble.Graphics.UI.Form
         protected int[] TextElementBoundaries { get; set; } = new[] { 0 };
 
         private bool IsMouseSelecting { get; set; }
+
+        private bool WasFocusedForTextInput { get; set; }
+
+        private bool ReceivedTextInputThisFrame { get; set; }
 
         private MouseSelectionMode CurrentMouseSelectionMode { get; set; }
 
@@ -396,6 +402,7 @@ namespace Wobble.Graphics.UI.Form
                 (float)Math.Min(gameTime.ElapsedGameTime.TotalMilliseconds / 60, 1));
 
             PerformCursorBlinking(gameTime);
+            UpdateTextInputState();
 
             base.Update(gameTime);
         }
@@ -406,7 +413,47 @@ namespace Wobble.Graphics.UI.Form
         public override void Destroy()
         {
             GameBase.Game.Window.TextInput -= OnTextInputEntered;
+            SetTextInputFocused(false);
             base.Destroy();
+        }
+
+        private void UpdateTextInputState()
+        {
+            if (!Focused)
+            {
+                SetTextInputFocused(false);
+                return;
+            }
+
+            var cursorPosition = Cursor.AbsolutePosition;
+            var cursorSize = Cursor.AbsoluteSize;
+
+            // SDL expects the IME rectangle to be set before text input is started.
+            TextInputManager.SetTextInputRectangle(new Rectangle(
+                (int)Math.Round(cursorPosition.X),
+                (int)Math.Round(cursorPosition.Y),
+                Math.Max(1, (int)Math.Round(cursorSize.X)),
+                Math.Max(1, (int)Math.Round(cursorSize.Y))));
+
+            SetTextInputFocused(true);
+        }
+
+        private void SetTextInputFocused(bool focused)
+        {
+            if (WasFocusedForTextInput == focused)
+                return;
+
+            WasFocusedForTextInput = focused;
+
+            if (focused)
+                FocusedTextboxes.Add(this);
+            else
+                FocusedTextboxes.Remove(this);
+
+            if (FocusedTextboxes.Count > 0)
+                TextInputManager.StartTextInput();
+            else
+                TextInputManager.StopTextInput();
         }
 
         protected int[] GetTextElementBoundaries()
@@ -766,14 +813,21 @@ namespace Wobble.Graphics.UI.Form
             if (e.Character == '\0')
                 return;
 
-            // On Linux some characters (like Backspace, plus or minus) get sent here even when CTRL is down, and we
-            // don't handle that here.
-            if (KeyboardManager.IsCtrlDown())
+            // On Linux some control characters (and the plus/minus keys) get sent here even when CTRL is down, and we
+            // don't handle those here. Do not discard printable text while Command is held on macOS: paste can arrive
+            // through SDL's text input path while the Command key is still down.
+            if (KeyboardManager.IsCtrlDown() &&
+                (char.IsControl(e.Character) || e.Key == Keys.Back || e.Key == Keys.Delete ||
+                 e.Key == Keys.Add || e.Key == Keys.Subtract || e.Key == Keys.OemPlus || e.Key == Keys.OemMinus))
                 return;
 
             // Enter is handled in Update() because TextInput only receives the regular Enter and not the NumPad Enter.
-            if (e.Key == Keys.Enter)
+            // An IME can commit text while the Enter key is pressed, so only ignore an actual Enter character here.
+            if (e.Key == Keys.Enter && (e.Character == '\r' || e.Character == '\n'))
                 return;
+
+            TextInputManager.AcknowledgeTextInput();
+            ReceivedTextInputThisFrame = true;
 
             // If the text is selected
             if (Selected)
@@ -1238,6 +1292,17 @@ namespace Wobble.Graphics.UI.Form
         /// </summary>
         protected virtual void HandleEnter()
         {
+            // The Enter key first commits an active native IME composition. SDL may deliver that
+            // committed text just after the key event, so do not treat the same Enter as submit.
+            if (TextInputManager.IsTextCompositionActive)
+                return;
+
+            if (TextInputManager.ConsumeTextCompositionCommitPending())
+                return;
+
+            if (ConsumeTextInputReceivedThisFrame())
+                return;
+
             if (Focused && KeyboardManager.IsUniqueKeyPress(Keys.Enter))
             {
                 if (!AllowSubmission)
@@ -1254,6 +1319,13 @@ namespace Wobble.Graphics.UI.Form
                 CursorPosition = 0;
                 DeselectAndReadjust();
             }
+        }
+
+        protected bool ConsumeTextInputReceivedThisFrame()
+        {
+            var received = ReceivedTextInputThisFrame;
+            ReceivedTextInputThisFrame = false;
+            return received;
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Input;
+using Wobble.Platform;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace Wobble.Graphics.UI.Form
@@ -101,6 +102,15 @@ namespace Wobble.Graphics.UI.Form
 
         protected override void HandleEnter()
         {
+            if (TextInputManager.IsTextCompositionActive)
+                return;
+
+            if (TextInputManager.ConsumeTextCompositionCommitPending())
+                return;
+
+            if (ConsumeTextInputReceivedThisFrame())
+                return;
+
             if (!Focused)
                 return;
 
@@ -146,6 +156,11 @@ namespace Wobble.Graphics.UI.Form
         protected override void HandleArrowKeys(GameTime gameTime)
         {
             if (!Focused)
+                return;
+
+            // During IME composition, the native candidate picker owns the navigation keys.
+            // Letting them reach the textarea moves its caret behind the composition window.
+            if (TextInputManager.IsTextCompositionActive)
                 return;
 
             var shift = KeyboardManager.IsShiftDown();

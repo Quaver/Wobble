@@ -87,20 +87,22 @@ namespace Wobble.Tests.Hotload
 
             var interFont = GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/Inter/Inter.ttf");
             var emojiFont = GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/NotoColorEmoji/NotoColorEmoji.ttf");
+            var cjkFont = GameBase.Game.Resources.Get("Wobble.Tests.Resources/Fonts/NotoCJK/NotoSansCJK-VF.ttf.ttc");
 
-            CacheInterFont("inter-regular", FontWeight.Regular, interFont, emojiFont);
-            CacheInterFont("inter-medium", FontWeight.Medium, interFont, emojiFont);
-            CacheInterFont("inter-semibold", FontWeight.SemiBold, interFont, emojiFont);
-            CacheInterFont("inter-bold", FontWeight.Bold, interFont, emojiFont);
+            CacheInterFont("inter-regular", FontWeight.Regular, interFont, emojiFont, cjkFont);
+            CacheInterFont("inter-medium", FontWeight.Medium, interFont, emojiFont, cjkFont);
+            CacheInterFont("inter-semibold", FontWeight.SemiBold, interFont, emojiFont, cjkFont);
+            CacheInterFont("inter-bold", FontWeight.Bold, interFont, emojiFont, cjkFont);
         }
 
-        private static void CacheInterFont(string name, int weight, byte[] interFont, byte[] emojiFont)
+        private static void CacheInterFont(string name, int weight, byte[] interFont, byte[] emojiFont, byte[] cjkFont)
         {
             FontManager.CacheWobbleFont(name, new WobbleFontStore(20,
                 new WobbleFontFace(interFont, weight: weight),
                 new Dictionary<string, WobbleFontFace>()
                 {
-                    {"Emoji", new WobbleFontFace(emojiFont)}
+                    {"Emoji", new WobbleFontFace(emojiFont)},
+                    {"CJK", new WobbleFontFace(cjkFont, index: 0, weight: FontWeight.Medium)}
                 }));
         }
     }
