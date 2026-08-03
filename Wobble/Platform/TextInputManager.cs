@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -9,6 +10,36 @@ namespace Wobble.Platform
     public static class TextInputManager
     {
         private static readonly Lazy<SdlTextInput> Sdl = new Lazy<SdlTextInput>(CreateSdlTextInput);
+
+        private static readonly HashSet<object> ActiveOwners =
+            new HashSet<object>(ReferenceEqualityComparer.Instance);
+
+        private static readonly object ActiveOwnersLock = new object();
+
+        internal static void SetActive(object owner, bool active)
+        {
+            if (owner == null)
+                throw new ArgumentNullException(nameof(owner));
+
+            lock (ActiveOwnersLock)
+            {
+                var wasActive = ActiveOwners.Count != 0;
+
+                if (active)
+                    ActiveOwners.Add(owner);
+                else
+                    ActiveOwners.Remove(owner);
+
+                var isActive = ActiveOwners.Count != 0;
+                if (wasActive == isActive)
+                    return;
+
+                if (isActive)
+                    StartTextInput();
+                else
+                    StopTextInput();
+            }
+        }
 
         public static void StartTextInput()
         {

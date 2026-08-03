@@ -38,8 +38,6 @@ namespace Wobble.Graphics.UI.Form
             Other
         }
 
-        private static readonly HashSet<Textbox> FocusedTextboxes = new HashSet<Textbox>();
-
         private sealed class TextboxInteractionButton : ImageButton
         {
             private readonly Action<GameTime> _onPressed;
@@ -444,16 +442,7 @@ namespace Wobble.Graphics.UI.Form
                 return;
 
             WasFocusedForTextInput = focused;
-
-            if (focused)
-                FocusedTextboxes.Add(this);
-            else
-                FocusedTextboxes.Remove(this);
-
-            if (FocusedTextboxes.Count > 0)
-                TextInputManager.StartTextInput();
-            else
-                TextInputManager.StopTextInput();
+            TextInputManager.SetActive(this, focused);
         }
 
         protected int[] GetTextElementBoundaries()

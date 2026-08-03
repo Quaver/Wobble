@@ -7,6 +7,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Platform;
 
 namespace Wobble.Graphics.ImGUI
 {
@@ -248,6 +249,7 @@ namespace Wobble.Graphics.ImGUI
         public void AfterLayout()
         {
             IsMouseHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow);
+            TextInputManager.SetActive(this, ImGui.GetIO().WantTextInput);
             InputCandidates.Remove(this);
             InputCandidates.Add(this);
 
@@ -658,6 +660,7 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void Dispose()
         {
+            TextInputManager.SetActive(this, false);
             InputCandidates.Remove(this);
 
             if (MouseInputOwner == this)
