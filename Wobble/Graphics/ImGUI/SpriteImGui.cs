@@ -21,6 +21,36 @@ namespace Wobble.Graphics.ImGUI
         public bool WasActivatedByMouse => Renderer.WasActivatedByMouse;
 
         /// <summary>
+        ///     Whether this ImGui context has a hovered window.
+        /// </summary>
+        public bool IsMouseHovered => Renderer.IsMouseHovered;
+
+        /// <summary>
+        ///     Whether this ImGui context currently owns mouse input.
+        /// </summary>
+        public bool IsMouseInputOwner => Renderer.IsMouseInputOwner;
+
+        /// <summary>
+        ///     Whether this ImGui context currently owns keyboard input.
+        /// </summary>
+        public bool IsKeyboardInputOwner => Renderer.IsKeyboardInputOwner;
+
+        /// <summary>
+        ///     Whether ImGui requested mouse input for this context.
+        /// </summary>
+        public bool WantsMouseInput => Renderer.WantsMouseInput;
+
+        /// <summary>
+        ///     Whether ImGui requested keyboard input for this context.
+        /// </summary>
+        public bool WantsKeyboardInput => Renderer.WantsKeyboardInput;
+
+        /// <summary>
+        ///     Whether ImGui requested text input for this context.
+        /// </summary>
+        public bool WantsTextInput => Renderer.WantsTextInput;
+
+        /// <summary>
         /// </summary>
         protected SpriteImGui(bool destroyContext = true, ImGuiOptions options = null, float scale = 1.0f)
         {

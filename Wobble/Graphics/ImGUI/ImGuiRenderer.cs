@@ -108,7 +108,32 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         ///     Whether this renderer had a hovered ImGui window on its most recently completed frame.
         /// </summary>
-        private bool IsMouseHovered { get; set; }
+        public bool IsMouseHovered { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested mouse input for the most recently completed frame.
+        /// </summary>
+        public bool WantsMouseInput { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested keyboard input for the most recently completed frame.
+        /// </summary>
+        public bool WantsKeyboardInput { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested text input for the most recently completed frame.
+        /// </summary>
+        public bool WantsTextInput { get; private set; }
+
+        /// <summary>
+        ///     Whether this renderer currently owns mouse input.
+        /// </summary>
+        public bool IsMouseInputOwner => MouseInputOwner == this;
+
+        /// <summary>
+        ///     Whether this renderer currently owns keyboard input.
+        /// </summary>
+        public bool IsKeyboardInputOwner => KeyboardInputOwner == this;
 
         public float Scale { get; }
 
@@ -248,8 +273,12 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void AfterLayout()
         {
+            var io = ImGui.GetIO();
             IsMouseHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow);
-            TextInputManager.SetActive(this, ImGui.GetIO().WantTextInput);
+            WantsMouseInput = io.WantCaptureMouse;
+            WantsTextInput = io.WantTextInput;
+            WantsKeyboardInput = io.WantCaptureKeyboard || WantsTextInput;
+            TextInputManager.SetActive(this, WantsTextInput);
             InputCandidates.Remove(this);
             InputCandidates.Add(this);
 
@@ -263,7 +292,7 @@ namespace Wobble.Graphics.ImGUI
 
         private void OnWindowOnTextInput(object s, TextInputEventArgs a)
         {
-            if (a.Character == '\t' || KeyboardInputOwner != this || !IsMouseHovered) return;
+            if (a.Character == '\t' || KeyboardInputOwner != this || (!IsMouseHovered && !WantsKeyboardInput)) return;
 
             var previousContext = ImGui.GetCurrentContext();
 
@@ -373,7 +402,7 @@ namespace Wobble.Graphics.ImGUI
             var mouse = Mouse.GetState();
             UpdateInputOwners(gameTime, mouse);
 
-            var keyboard = KeyboardInputOwner == this && IsMouseHovered
+            var keyboard = KeyboardInputOwner == this && (IsMouseHovered || WantsKeyboardInput)
                 ? Keyboard.GetState()
                 : new KeyboardState();
             // Contexts the cursor is outside still need to see the mouse state. ImGui uses an
