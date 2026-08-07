@@ -69,5 +69,21 @@ namespace Wobble.Input
             ScrollWheelValue = state.ScrollWheelValue;
             Position = new Vector2(state.Position.X, state.Position.Y) / WindowManager.ScreenScale;
         }
+
+        /// <summary>
+        ///     Creates a mouse state from a logical window position and explicit button values.
+        ///     This is used by deterministic UI automation and keeps the normal mouse state shape intact.
+        /// </summary>
+        public EnhancedMouseState(Vector2 position, int scrollWheelValue, ButtonState leftButton,
+            ButtonState rightButton, ButtonState middleButton, ButtonState xButton1, ButtonState xButton2)
+        {
+            LeftButton = leftButton;
+            RightButton = rightButton;
+            MiddleButton = middleButton;
+            XButton1 = xButton1;
+            XButton2 = xButton2;
+            ScrollWheelValue = scrollWheelValue;
+            Position = position;
+        }
     }
 }

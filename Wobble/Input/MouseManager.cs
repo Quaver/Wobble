@@ -17,6 +17,13 @@ namespace Wobble.Input
         public static EnhancedMouseState PreviousState { get; private set; }
 
         /// <summary>
+        ///     Whether the normal platform mouse state is currently overridden by a synthetic state.
+        /// </summary>
+        public static bool IsSyntheticInputEnabled { get; private set; }
+
+        private static EnhancedMouseState SyntheticState { get; set; }
+
+        /// <summary>
         ///     Whether the mouse is being scrolled, in either direction
         /// </summary>
         public static bool IsScrolling => CurrentState.ScrollWheelValue != PreviousState.ScrollWheelValue;
@@ -42,7 +49,32 @@ namespace Wobble.Input
         internal static void Update()
         {
             PreviousState = CurrentState;
-            CurrentState = new EnhancedMouseState(Mouse.GetState());
+            CurrentState = IsSyntheticInputEnabled ? SyntheticState : new EnhancedMouseState(Mouse.GetState());
+        }
+
+        /// <summary>
+        ///     Enables deterministic input and sets the state that will be consumed by the next update.
+        /// </summary>
+        public static void EnableSyntheticInput(EnhancedMouseState state)
+        {
+            SyntheticState = state;
+            IsSyntheticInputEnabled = true;
+        }
+
+        /// <summary>
+        ///     Updates the deterministic state consumed by the next mouse update.
+        /// </summary>
+        public static void SetSyntheticState(EnhancedMouseState state)
+        {
+            SyntheticState = state;
+        }
+
+        /// <summary>
+        ///     Returns input handling to the platform mouse.
+        /// </summary>
+        public static void DisableSyntheticInput()
+        {
+            IsSyntheticInputEnabled = false;
         }
 
         /// <summary>
