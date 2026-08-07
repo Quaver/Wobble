@@ -20,14 +20,25 @@ namespace Wobble.Graphics.Shaders
         private static Dictionary<TextureKey, WeakReference<Texture2D>> Textures { get; } =
             new Dictionary<TextureKey, WeakReference<Texture2D>>();
 
+        private static object SyncRoot { get; } = new object();
+
         private static int TexturesCreatedSinceCleanup { get; set; }
 
         public static Texture2D Get(float width, float height, float radius, bool antiAliased = true)
         {
-            var textureWidth = BucketDimension(width);
-            var textureHeight = BucketDimension(height);
+            lock (SyncRoot)
+                return GetCached(width, height, radius, antiAliased);
+        }
+
+        private static Texture2D GetCached(float width, float height, float radius, bool antiAliased)
+        {
+            var safeWidth = NormalizeDimension(width);
+            var safeHeight = NormalizeDimension(height);
+            var safeRadius = NormalizeRadius(radius);
+            var textureWidth = BucketDimension(safeWidth);
+            var textureHeight = BucketDimension(safeHeight);
             var scaledRadius = BucketRadius(MathHelper.Clamp(
-                radius * Math.Min(textureWidth / width, textureHeight / height),
+                safeRadius * Math.Min(textureWidth / safeWidth, textureHeight / safeHeight),
                 0,
                 Math.Min(textureWidth, textureHeight) / 2f));
             var key = new TextureKey(textureWidth, textureHeight, scaledRadius, antiAliased);
@@ -47,6 +58,12 @@ namespace Wobble.Graphics.Shaders
 
             return texture;
         }
+
+        private static float NormalizeDimension(float value) =>
+            !float.IsNaN(value) && !float.IsInfinity(value) && value > 0 ? value : 1;
+
+        private static float NormalizeRadius(float value) =>
+            !float.IsNaN(value) && !float.IsInfinity(value) ? value : 0;
 
         private static int BucketDimension(float value)
         {
@@ -133,7 +150,7 @@ namespace Wobble.Graphics.Shaders
                     var hashCode = Width;
                     hashCode = (hashCode * 397) ^ Height;
                     hashCode = (hashCode * 397) ^ RadiusBits;
-                    return (hashCode * 397) ^ AntiAliased.GetHashCode();
+                    return ((hashCode * 397) ^ AntiAliased.GetHashCode()) & int.MaxValue;
                 }
             }
         }
