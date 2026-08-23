@@ -18,6 +18,8 @@ namespace Wobble.Tests.Screens.Tests.MarqueeSpriteText
 
         private SpriteTextPlus ToggleState { get; }
 
+        private SpriteTextPlus ToggleChangeState { get; }
+
         public TestMarqueeSpriteTextScreenView(Screen screen) : base(screen)
         {
             new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"), "MARQUEE SPRITE TEXT", 26)
@@ -28,7 +30,8 @@ namespace Wobble.Tests.Screens.Tests.MarqueeSpriteText
                 Tint = Color.White
             };
 
-            new SpriteTextPlus(FontManager.GetWobbleFont("inter-regular"), "Press SPACE to toggle the first marquee", 18)
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-regular"),
+                "SPACE toggles • R resizes + resets • T changes text + resets", 18)
             {
                 Parent = Container,
                 Alignment = Alignment.TopCenter,
@@ -39,6 +42,7 @@ namespace Wobble.Tests.Screens.Tests.MarqueeSpriteText
             ToggleMarquee = CreateRow("ACTIVE / TOGGLE", 130,
                 "This long marquee scrolls left, waits, and returns to its starting position", 20, 390, true);
             ToggleState = CreateStateText("Active: YES", 130);
+            ToggleChangeState = CreateStateText("Viewport: 390", 155);
 
             CreateRow("SHORT TEXT", 225, "Fits without scrolling", 20, 390, true);
             CreateRow("EXACT WIDTH", 320, "Exactly measured width", 20, 390, true, true);
@@ -126,6 +130,22 @@ namespace Wobble.Tests.Screens.Tests.MarqueeSpriteText
                 ToggleMarquee.IsActive = !ToggleMarquee.IsActive;
                 ToggleState.Text = ToggleMarquee.IsActive ? "Active: YES" : "Active: NO";
                 ToggleState.Tint = ToggleMarquee.IsActive ? Color.LightGreen : Color.IndianRed;
+            }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.R))
+            {
+                ToggleMarquee.Width = ToggleMarquee.Width > 300 ? 260 : 390;
+                ToggleMarquee.ResetPosition();
+                ToggleChangeState.Text = $"Viewport: {ToggleMarquee.Width:0} (reset)";
+            }
+
+            if (KeyboardManager.IsUniqueKeyPress(Keys.T))
+            {
+                ToggleMarquee.TextSprite.Text = ToggleMarquee.TextSprite.Text.StartsWith("This long")
+                    ? "Updated text is longer and starts from the reset position"
+                    : "This long marquee scrolls left, waits, and returns to its starting position";
+                ToggleMarquee.ResetPosition();
+                ToggleChangeState.Text = "Text changed (reset)";
             }
 
             HoverMarquee.IsActive = HoverMarquee.Parent.IsHovered();

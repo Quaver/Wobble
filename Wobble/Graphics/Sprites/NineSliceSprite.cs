@@ -120,22 +120,25 @@ namespace Wobble.Graphics.Sprites
             if (Image == null || Image.IsDisposed)
                 return;
 
-            var left = Math.Min(Math.Max(0, _margins.Left), Image.Width);
-            var right = Math.Min(Math.Max(0, _margins.Right), Image.Width - left);
-            var centerWidth = Image.Width - left - right;
-            var top = Math.Min(Math.Max(0, _margins.Top), Image.Height);
-            var bottom = Math.Min(Math.Max(0, _margins.Bottom), Image.Height - top);
-            var centerHeight = Image.Height - top - bottom;
+            var left = Math.Min(Math.Max(0, _margins.Left), ImageWidth);
+            var right = Math.Min(Math.Max(0, _margins.Right), ImageWidth - left);
+            var centerWidth = ImageWidth - left - right;
+            var top = Math.Min(Math.Max(0, _margins.Top), ImageHeight);
+            var bottom = Math.Min(Math.Max(0, _margins.Bottom), ImageHeight - top);
+            var centerHeight = ImageHeight - top - bottom;
 
-            _srcTopLeft = new Rectangle(0, 0, left, top);
-            _srcTopCenter = new Rectangle(left, 0, centerWidth, top);
-            _srcTopRight = new Rectangle(left + centerWidth, 0, right, top);
-            _srcMiddleLeft = new Rectangle(0, top, left, centerHeight);
-            _srcMiddleCenter = new Rectangle(left, top, centerWidth, centerHeight);
-            _srcMiddleRight = new Rectangle(left + centerWidth, top, right, centerHeight);
-            _srcBottomLeft = new Rectangle(0, top + centerHeight, left, bottom);
-            _srcBottomCenter = new Rectangle(left, top + centerHeight, centerWidth, bottom);
-            _srcBottomRight = new Rectangle(left + centerWidth, top + centerHeight, right, bottom);
+            var offsetX = ImageOffsetX;
+            var offsetY = ImageOffsetY;
+
+            _srcTopLeft = new Rectangle(offsetX, offsetY, left, top);
+            _srcTopCenter = new Rectangle(offsetX + left, offsetY, centerWidth, top);
+            _srcTopRight = new Rectangle(offsetX + left + centerWidth, offsetY, right, top);
+            _srcMiddleLeft = new Rectangle(offsetX, offsetY + top, left, centerHeight);
+            _srcMiddleCenter = new Rectangle(offsetX + left, offsetY + top, centerWidth, centerHeight);
+            _srcMiddleRight = new Rectangle(offsetX + left + centerWidth, offsetY + top, right, centerHeight);
+            _srcBottomLeft = new Rectangle(offsetX, offsetY + top + centerHeight, left, bottom);
+            _srcBottomCenter = new Rectangle(offsetX + left, offsetY + top + centerHeight, centerWidth, bottom);
+            _srcBottomRight = new Rectangle(offsetX + left + centerWidth, offsetY + top + centerHeight, right, bottom);
         }
     }
 }

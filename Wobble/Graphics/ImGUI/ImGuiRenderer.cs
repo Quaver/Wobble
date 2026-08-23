@@ -7,6 +7,7 @@ using Hexa.NET.ImGui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Platform;
 
 namespace Wobble.Graphics.ImGUI
 {
@@ -110,7 +111,32 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         ///     Whether this renderer had a hovered ImGui window on its most recently completed frame.
         /// </summary>
-        private bool IsMouseHovered { get; set; }
+        public bool IsMouseHovered { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested mouse input for the most recently completed frame.
+        /// </summary>
+        public bool WantsMouseInput { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested keyboard input for the most recently completed frame.
+        /// </summary>
+        public bool WantsKeyboardInput { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested text input for the most recently completed frame.
+        /// </summary>
+        public bool WantsTextInput { get; private set; }
+
+        /// <summary>
+        ///     Whether this renderer currently owns mouse input.
+        /// </summary>
+        public bool IsMouseInputOwner => MouseInputOwner == this;
+
+        /// <summary>
+        ///     Whether this renderer currently owns keyboard input.
+        /// </summary>
+        public bool IsKeyboardInputOwner => KeyboardInputOwner == this;
 
         public float Scale { get; }
 
@@ -218,7 +244,12 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void AfterLayout()
         {
+            var io = ImGui.GetIO();
             IsMouseHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow);
+            WantsMouseInput = io.WantCaptureMouse;
+            WantsTextInput = io.WantTextInput;
+            WantsKeyboardInput = io.WantCaptureKeyboard || WantsTextInput;
+            TextInputManager.SetActive(this, WantsTextInput);
             InputCandidates.Remove(this);
             InputCandidates.Add(this);
 
@@ -232,7 +263,7 @@ namespace Wobble.Graphics.ImGUI
 
         private void OnWindowOnTextInput(object s, TextInputEventArgs a)
         {
-            if (a.Character == '\t' || KeyboardInputOwner != this) return;
+            if (a.Character == '\t' || KeyboardInputOwner != this || (!IsMouseHovered && !WantsKeyboardInput)) return;
 
             var previousContext = ImGui.GetCurrentContext();
 
@@ -356,9 +387,15 @@ namespace Wobble.Graphics.ImGUI
             var mouse = Mouse.GetState();
             UpdateInputOwners(gameTime, mouse);
 
-            var keyboard = KeyboardInputOwner == this ? Keyboard.GetState() : new KeyboardState();
-            var ownsMouseInput = MouseInputOwner == this;
-            WasActivatedByMouse = ownsMouseInput && WasMouseButtonPressedThisFrame;
+            var keyboard = KeyboardInputOwner == this && (IsMouseHovered || WantsKeyboardInput)
+                ? Keyboard.GetState()
+                : new KeyboardState();
+            // Contexts the cursor is outside still need to see the mouse state. ImGui uses an
+            // outside click to dismiss open popups and combos, and forwarding it is safe because
+            // none of the context's windows can be activated at that position. Input remains
+            // exclusive when windows from multiple contexts overlap.
+            var receivesMouseInput = MouseInputOwner == this || !IsMouseHovered;
+            WasActivatedByMouse = MouseInputOwner == this && WasMouseButtonPressedThisFrame;
 
             io.AddKeyEvent(ImGuiKey.Tab, keyboard.IsKeyDown(Keys.Tab));
             io.AddKeyEvent(ImGuiKey.LeftArrow, keyboard.IsKeyDown(Keys.Left));
@@ -392,11 +429,11 @@ namespace Wobble.Graphics.ImGUI
             io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
             io.AddMousePosEvent(mouse.X, mouse.Y);
-            io.AddMouseButtonEvent(0, ownsMouseInput && mouse.LeftButton == ButtonState.Pressed);
-            io.AddMouseButtonEvent(1, ownsMouseInput && mouse.RightButton == ButtonState.Pressed);
-            io.AddMouseButtonEvent(2, ownsMouseInput && mouse.MiddleButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(0, receivesMouseInput && mouse.LeftButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(1, receivesMouseInput && mouse.RightButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(2, receivesMouseInput && mouse.MiddleButton == ButtonState.Pressed);
             var scrollDelta = mouse.ScrollWheelValue - ScrollWheelValue;
-            io.AddMouseWheelEvent(0, !ownsMouseInput ? 0 : scrollDelta > 0 ? 1 :
+            io.AddMouseWheelEvent(0, !receivesMouseInput ? 0 : scrollDelta > 0 ? 1 :
                 scrollDelta < 0 ? -1 : 0);
 
             ScrollWheelValue = mouse.ScrollWheelValue;
@@ -676,6 +713,7 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void Dispose()
         {
+            TextInputManager.SetActive(this, false);
             InputCandidates.Remove(this);
 
             if (MouseInputOwner == this)

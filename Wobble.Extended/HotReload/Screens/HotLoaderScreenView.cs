@@ -117,15 +117,14 @@ namespace Wobble.Extended.HotReload.Screens
         /// <param name="t"></param>
         public void ChangeScreen(Type t)
         {
+            if (HotLoader.Asm == null)
+                return;
+
             foreach (Type type in HotLoader.Asm.GetExportedTypes())
             {
                 if (type.FullName == t.FullName)
                 {
-                    // We found our gamelogic type, set our dynamic types logic, and state
-                    var oldScreen = HotLoader.Screen;
-                    oldScreen?.Destroy();
-
-                    HotLoader.Screen = Activator.CreateInstance(t);
+                    HotLoader.TryChangeScreen(type);
                     break;
                 }
             }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,6 +13,11 @@ namespace Wobble.Graphics.Sprites
 {
     public class ScrollContainer : Sprite
     {
+        private static List<ScrollContainer> MouseWheelInputCapturers { get; } =
+            new List<ScrollContainer>();
+
+        private bool _capturesMouseWheelInput;
+
         /// <summary>
         ///     The content that holds and is a parent of all sprites
         /// </summary>
@@ -98,6 +104,26 @@ namespace Wobble.Graphics.Sprites
         public bool InputEnabled { get; set; }
 
         /// <summary>
+        ///     Prevents other scroll containers from handling mouse wheel input while this
+        ///     container's capture is active. This is useful for nested and overlay scroll areas.
+        /// </summary>
+        public bool CapturesMouseWheelInput
+        {
+            get => _capturesMouseWheelInput;
+            set
+            {
+                if (_capturesMouseWheelInput == value)
+                    return;
+
+                _capturesMouseWheelInput = value;
+                if (value)
+                    MouseWheelInputCapturers.Add(this);
+                else
+                    MouseWheelInputCapturers.Remove(this);
+            }
+        }
+
+        /// <summary>
         ///     The minimum y the scrollbar will be clamped to
         /// </summary>
         protected int MinScrollBarY { get; set; }
@@ -171,11 +197,13 @@ namespace Wobble.Graphics.Sprites
         ///  <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            // Set scrollbar height.
-            Scrollbar.Height = Height / ContentContainer.Height * Height;
+            var contentFits = ContentContainer.Height <= Height;
+
+            // Content that fits the viewport cannot be scrolled, so it should not produce scrollbar geometry.
+            Scrollbar.Height = contentFits ? 0 : Height / ContentContainer.Height * Height;
 
             // Set min scroll height to 30.
-            if (Scrollbar.Height < 30)
+            if (!contentFits && Scrollbar.Height < 30)
                 Scrollbar.Height = 30;
 
             // Scrollbar Dragging
@@ -214,9 +242,10 @@ namespace Wobble.Graphics.Sprites
             // Scroll wheel scrolling
             if (InputEnabled && !IsScrollbarDragging && !IsMiddleMouseDragging)
             {
-                if (MouseManager.IsScrollingUp(InvertedScrolling))
+                var mouseWheelInputCaptured = IsMouseWheelInputCapturedByAnotherContainer();
+                if (!mouseWheelInputCaptured && MouseManager.IsScrollingUp(InvertedScrolling))
                     TargetY += ScrollSpeed;
-                else if (MouseManager.IsScrollingDown(InvertedScrolling))
+                else if (!mouseWheelInputCaptured && MouseManager.IsScrollingDown(InvertedScrolling))
                     TargetY -= ScrollSpeed;
                 else if (KeyboardManager.IsUniqueKeyPress(Keys.PageUp))
                     TargetY += ScrollSpeed * 5;
@@ -225,11 +254,17 @@ namespace Wobble.Graphics.Sprites
             }
 
             // Make sure content container is clamped to the viewport.
-            TargetY = MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
+            TargetY = contentFits ? 0 : MathHelper.Clamp(TargetY, -ContentContainer.Height + Height, 0);
 
             // Calculate the scrollbar's y position.
-            var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
-            Scrollbar.Y = percentage / 100 * (Scrollbar.Parent.Height - Scrollbar.Height) - (Scrollbar.Parent.Height - Scrollbar.Height);
+            if (contentFits)
+                Scrollbar.Y = 0;
+            else
+            {
+                var percentage = Math.Abs(-ContentContainer.Y / (-ContentContainer.Height + Height) * 100);
+                Scrollbar.Y = percentage / 100 * (Scrollbar.Parent.Height - Scrollbar.Height) -
+                              (Scrollbar.Parent.Height - Scrollbar.Height);
+            }
 
             if (IsMinScrollYEnabled && Scrollbar.Y < MinScrollBarY)
                 Scrollbar.Y = MinScrollBarY;
@@ -252,6 +287,27 @@ namespace Wobble.Graphics.Sprites
             base.Update(gameTime);
         }
 
+        /// <summary>
+        ///     Returns whether this container currently owns mouse wheel input. Derived overlay
+        ///     containers can evaluate their input gate here so capture does not depend on update order.
+        /// </summary>
+        protected virtual bool IsMouseWheelInputCaptureActive() =>
+            CapturesMouseWheelInput && InputEnabled && Visible && !IsDisposed && IsHovered();
+
+        private bool IsMouseWheelInputCapturedByAnotherContainer()
+        {
+            // Prefer the most recently registered active capturer. Transient overlays are
+            // typically created last, and this also keeps overlapping capturers deterministic.
+            for (var i = MouseWheelInputCapturers.Count - 1; i >= 0; i--)
+            {
+                var capturer = MouseWheelInputCapturers[i];
+                if (capturer.IsMouseWheelInputCaptureActive())
+                    return capturer != this;
+            }
+
+            return false;
+        }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -259,6 +315,13 @@ namespace Wobble.Graphics.Sprites
         {
             ContentContainer.Destroy();
             base.Destroy();
+        }
+
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            CapturesMouseWheelInput = false;
+            base.Dispose();
         }
 
         /// <inheritdoc />

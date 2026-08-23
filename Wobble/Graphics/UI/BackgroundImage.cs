@@ -131,16 +131,16 @@ namespace Wobble.Graphics.UI
             // additionally, override the image property, as the editor modifies Image after
             // the size of the image has already been fixed.
             // let's fit this into the virtual screen box across the smallest dimension.
-            var ratioX = Image.Height / WindowManager.VirtualScreen.Y;
-            var ratioY = Image.Width / WindowManager.VirtualScreen.X;
+            var ratioX = ImageHeight / WindowManager.VirtualScreen.Y;
+            var ratioY = ImageWidth / WindowManager.VirtualScreen.X;
 
             // what dimension is this image smaller in? scale against that
             var scaleRatio = 1 / Math.Min(ratioX, ratioY);
 
             var delta = (HasParallaxEffect ? 820.0f / 720.0f : 1.0f);
 
-            var width = Image.Width * scaleRatio * delta;
-            var height = Image.Height * scaleRatio * delta;
+            var width = ImageWidth * scaleRatio * delta;
+            var height = ImageHeight * scaleRatio * delta;
             Size = new ScalableVector2(width, height);
 
             // "crop off" the excess

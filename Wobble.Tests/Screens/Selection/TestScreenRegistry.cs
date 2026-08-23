@@ -38,6 +38,7 @@ using Wobble.Tests.Screens.Tests.TextInput;
 using Wobble.Tests.Screens.Tests.TextSizes;
 using Wobble.Tests.Screens.Tests.TextVerticalLayout;
 using Wobble.Tests.Screens.Tests.Tooltips;
+using Wobble.Tests.Screens.Tests.YamlConfiguration;
 
 namespace Wobble.Tests.Screens.Selection
 {
@@ -110,6 +111,7 @@ namespace Wobble.Tests.Screens.Selection
             new TestScreenDescriptor(InputIntegration, "Screen_ImGui", () => new TestImGuiScreen()),
 
             new TestScreenDescriptor(RuntimeFramework, "Screen_TaskHandler", () => new TaskHandlerScreen()),
+            new TestScreenDescriptor(RuntimeFramework, "Screen_YamlConfiguration", () => new TestYamlConfigurationScreen()),
             new TestScreenDescriptor(RuntimeFramework, "Screen_ScheduledUpdates", () => new TestScheduledUpdatesScreen()),
             new TestScreenDescriptor(RuntimeFramework, "Screen_ScreenLifecycle", () => TestScreenLifecycleSession.Create(), true),
             new TestScreenDescriptor(RuntimeFramework, "Screen_NavigationBar", () => new TestNavigationBarScreen(), true),

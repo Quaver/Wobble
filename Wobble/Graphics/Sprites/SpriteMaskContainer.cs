@@ -26,7 +26,13 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     Matrix for AlphaTestEffect
         /// </summary>
-        private Matrix Matrix { get; }
+        private Matrix Matrix { get; set; }
+
+        private float ProjectionWidth { get; set; }
+
+        private float ProjectionHeight { get; set; }
+
+        private AlphaTestEffect ContainedAlphaTestEffect { get; set; }
 
         /// <summary>
         ///
@@ -56,7 +62,7 @@ namespace Wobble.Graphics.Sprites
                 DepthBufferEnable = false,
             };
 
-            Matrix = Matrix.CreateOrthographicOffCenter(0, WindowManager.Width, WindowManager.Height, 0, 0, 1);
+            RefreshProjection();
 
             MaskAlphaTestEffect = new AlphaTestEffect(GameBase.Game.Graphics.GraphicsDevice)
             {
@@ -76,8 +82,24 @@ namespace Wobble.Graphics.Sprites
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            if (ProjectionWidth != WindowManager.Width || ProjectionHeight != WindowManager.Height)
+                RefreshProjection();
+
             MaskAlphaTestEffect.Alpha = Alpha;
             base.Update(gameTime);
+        }
+
+        private void RefreshProjection()
+        {
+            ProjectionWidth = WindowManager.Width;
+            ProjectionHeight = WindowManager.Height;
+            Matrix = Matrix.CreateOrthographicOffCenter(0, ProjectionWidth, ProjectionHeight, 0, 0, 1);
+
+            if (MaskAlphaTestEffect != null)
+                MaskAlphaTestEffect.Projection = Matrix;
+
+            if (ContainedAlphaTestEffect != null)
+                ContainedAlphaTestEffect.Projection = Matrix;
         }
 
         /// <summary>
@@ -96,10 +118,11 @@ namespace Wobble.Graphics.Sprites
                 // The first child is always the one to have the new sprite batch options.
                 if (i == 0)
                 {
+                    ContainedAlphaTestEffect = CreateAlphaTestEffect(drawable);
                     child.SpriteBatchOptions = new SpriteBatchOptions
                     {
                         DepthStencilState = ContainedDepthStencilState,
-                        Shader = new Shader(CreateAlphaTestEffect(drawable), new Dictionary<string, object>())
+                        Shader = new Shader(ContainedAlphaTestEffect, new Dictionary<string, object>())
                     };
                 }
                 // All other children need to use previous SpriteBatch options.

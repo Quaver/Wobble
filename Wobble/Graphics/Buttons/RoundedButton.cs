@@ -54,6 +54,23 @@ namespace Wobble.Graphics.Buttons
             set
             {
                 _cornerRadius = value;
+                _cornerRadii = null;
+                UpdateBackgroundTexture();
+            }
+        }
+
+        private RoundedRectCornerRadii? _cornerRadii;
+
+        /// <summary>
+        ///     Optional independent corner radii. When set, this takes precedence over
+        ///     <see cref="CornerRadius"/> while preserving the existing scalar API for all other buttons.
+        /// </summary>
+        public RoundedRectCornerRadii? CornerRadii
+        {
+            get => _cornerRadii;
+            set
+            {
+                _cornerRadii = value;
                 UpdateBackgroundTexture();
             }
         }
@@ -155,6 +172,29 @@ namespace Wobble.Graphics.Buttons
             }
 
             Icon.Image = texture;
+            Icon.Size = new ScalableVector2(iconSize.X, iconSize.Y);
+
+            LayoutContent();
+        }
+
+        /// <summary>
+        ///     Creates/updates the icon child from a texture-atlas region.
+        /// </summary>
+        public void SetIcon(TextureRegion region, Vector2? size = null)
+        {
+            var iconSize = size ?? new Vector2(16, 16);
+
+            if (Icon == null)
+            {
+                Icon = new Sprite
+                {
+                    Parent = this,
+                    Alignment = Alignment.MidCenter,
+                    UsePreviousSpriteBatchOptions = true
+                };
+            }
+
+            Icon.Region = region;
             Icon.Size = new ScalableVector2(iconSize.X, iconSize.Y);
 
             LayoutContent();
@@ -279,7 +319,8 @@ namespace Wobble.Graphics.Buttons
                 return;
 
             var radius = Math.Min(CornerRadius ?? Height / 2f, Math.Min(Width, Height) / 2f);
-            var texture = RoundedRectTextureCache.Get(Width, Height, radius, AntiAliasedEdges);
+            var radii = CornerRadii ?? RoundedRectCornerRadii.All(radius);
+            var texture = RoundedRectTextureCache.Get(Width, Height, radii, AntiAliasedEdges);
 
             if (Image != texture)
                 Image = texture;

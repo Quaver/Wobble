@@ -59,8 +59,8 @@ namespace Wobble.Graphics
                     }
                     else if (DestroyIfParentIsNull)
                     {
-                        for (var i = Children.Count - 1; i >= 0; i--)
-                            Children[i].Destroy();
+                        while (Children.Count > 0)
+                            Children[Children.Count - 1].Destroy();
                     }
 
                     RecalculateRectangles();
@@ -83,8 +83,8 @@ namespace Wobble.Graphics
                 {
                     // If we've received null for the parent however, that must mean we want to FULLY
                     // destroy and dispose of the object.
-                    for (var i = Children.Count - 1; i >= 0; i--)
-                        Children[i].Destroy();
+                    while (Children.Count > 0)
+                        Children[Children.Count - 1].Destroy();
                 }
 
                 _parent = value;
@@ -926,6 +926,15 @@ namespace Wobble.Graphics
         {
             lock (Animations)
                 Animations.Clear();
+        }
+
+        /// <summary>
+        ///     Removes only animations targeting the given property leaving animations of other properties running.
+        /// </summary>
+        public void ClearAnimations(AnimationProperty property)
+        {
+            lock (Animations)
+                Animations.RemoveAll(animation => animation.Properties == property);
         }
 
         /// <summary>

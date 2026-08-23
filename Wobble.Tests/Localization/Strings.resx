@@ -117,6 +117,9 @@
   <data name="Screen_TaskHandler" xml:space="preserve">
     <value>Task Handler</value>
   </data>
+  <data name="Screen_YamlConfiguration" xml:space="preserve">
+    <value>YAML Configuration</value>
+  </data>
   <data name="Screen_TextInput" xml:space="preserve">
     <value>Text Input</value>
   </data>

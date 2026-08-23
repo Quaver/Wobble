@@ -93,6 +93,9 @@
     <data name="Screen_TaskHandler" xml:space="preserve">
         <value>Манипулятор на задачи</value>
     </data>
+    <data name="Screen_YamlConfiguration" xml:space="preserve">
+        <value>YAML конфигурация</value>
+    </data>
     <data name="Screen_TextInput" xml:space="preserve">
         <value>Въвеждане на текст</value>
     </data>

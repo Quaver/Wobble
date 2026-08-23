@@ -3,6 +3,7 @@ using System.IO;
 using System.Resources;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Wobble.Graphics.Sprites;
 using Wobble.Logging;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -68,6 +69,34 @@ namespace Wobble.Assets
                 cropTexture.SetData(data);
 
                 frames.Add(cropTexture);
+            }
+
+            return frames;
+        }
+
+        /// <summary>
+        ///     Loads a spritesheet in from a texture 2d given the number of rows and columns.
+        /// </summary>
+        /// <param name="tex"></param>
+        /// <param name="rows"></param>
+        /// <param name="columns"></param>
+        /// <returns></returns>
+        public static List<TextureRegion> SpritesheetToRegions(Texture2D tex, int rows, int columns)
+        {
+            var frames = new List<TextureRegion>();
+
+            // Get the width and height of each individual texture.
+            var imgWidth = tex.Width / columns;
+            var imgHeight = tex.Height / rows;
+
+            for (var i = 0; i < rows * columns; i++)
+            {
+                // Get the specific row and column from the index.
+                var row = i / columns;
+                var column = i % columns;
+
+                var sourceRect = new Rectangle(imgWidth * column, imgHeight * row, imgWidth, imgHeight);
+                frames.Add(new TextureRegion(tex, sourceRect));
             }
 
             return frames;

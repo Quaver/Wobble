@@ -17,6 +17,7 @@
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
     <PackageReference Include="SmartFormat.NET" Version="3.6.1" />
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
+    <PackageReference Include="YamlDotNet" Version="5.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Wobble.Resources/Wobble.Resources.csproj" />

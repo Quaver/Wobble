@@ -146,7 +146,7 @@ namespace Wobble.Graphics.UI.Buttons
             }
 
             // Check if the mouse is in the click area, as well as if the game window is actually the active window.
-            if (GameBase.Game.IsActive && Visible && IsMouseInClickArea())
+            if ((GameBase.Game.IsActive || MouseManager.IsSyntheticInputEnabled) && Visible && IsMouseInClickArea())
             {
                 // Set this to be hovered without the draw order check.
                 IsHoveredWithoutDrawOrder = true;
@@ -307,7 +307,7 @@ namespace Wobble.Graphics.UI.Buttons
         /// <summary>
         ///     Clears transient interaction state when a parent detaches this button without destroying it.
         /// </summary>
-        internal void ResetInteractionState()
+        public void ResetInteractionState()
         {
             var wasHovered = IsHovered;
             IsHoveredWithoutDrawOrder = false;
