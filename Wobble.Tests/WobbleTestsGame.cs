@@ -249,6 +249,11 @@ namespace Wobble.Tests
 
         private bool TryCreateTestUpdateTime(GameTime gameTime, out GameTime updateTime)
         {
+            if (WaylandVsync)
+            {
+                updateTime = gameTime;
+                return true;
+            }
             if (!_testTargetUps.HasValue)
             {
                 _pendingTestUpdateElapsed = TimeSpan.Zero;
@@ -274,7 +279,7 @@ namespace Wobble.Tests
 
         private bool ShouldRunTestDraw()
         {
-            if (!_testTargetFps.HasValue)
+            if (WaylandVsync || !_testTargetFps.HasValue)
                 return true;
 
             var now = Stopwatch.GetTimestamp();
