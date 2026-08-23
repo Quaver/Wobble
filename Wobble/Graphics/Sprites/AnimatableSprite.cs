@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Assets;
@@ -21,7 +22,7 @@ namespace Wobble.Graphics.Sprites
         /// <summary>
         ///     The animation frames
         /// </summary>
-        public List<Texture2D> Frames { get; private set; }
+        public List<TextureRegion> Frames { get; private set; }
 
         /// <summary>
         ///     The current animation frame we're on.
@@ -75,10 +76,8 @@ namespace Wobble.Graphics.Sprites
         /// <param name="spritesheet"></param>
         /// <param name="rows"></param>
         /// <param name="columns"></param>
-        public AnimatableSprite(Texture2D spritesheet, int rows, int columns)
+        public AnimatableSprite(Texture2D spritesheet, int rows, int columns) : this(AssetLoader.SpritesheetToRegions(spritesheet, rows, columns))
         {
-            Frames = AssetLoader.LoadSpritesheetFromTexture(spritesheet, rows, columns);
-            Image = Frames[CurrentFrame];
         }
 
         /// <inheritdoc />
@@ -86,10 +85,21 @@ namespace Wobble.Graphics.Sprites
         ///     Ctor - If you already have the animation frames.
         /// </summary>
         /// <param name="frames"></param>
-        public AnimatableSprite(List<Texture2D> frames)
+        public AnimatableSprite(List<Texture2D> frames) : this(frames.Select(f =>
+            new TextureRegion(f, f.Bounds)).ToList())
+        {
+            
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        ///     Ctor - If you already have the animation frames.
+        /// </summary>
+        /// <param name="frames"></param>
+        public AnimatableSprite(List<TextureRegion> frames)
         {
             Frames = frames;
-            Image = Frames[CurrentFrame];
+            Region = Frames[CurrentFrame];
         }
 
         /// <inheritdoc />
@@ -112,7 +122,7 @@ namespace Wobble.Graphics.Sprites
                 throw new ArgumentOutOfRangeException();
 
             CurrentFrame = i;
-            Image = Frames[CurrentFrame];
+            Region = Frames[CurrentFrame];
         }
 
         /// <summary>
@@ -125,7 +135,7 @@ namespace Wobble.Graphics.Sprites
             else
                 CurrentFrame++;
 
-            Image = Frames[CurrentFrame];
+            Region = Frames[CurrentFrame];
         }
 
         /// <summary>
@@ -138,20 +148,8 @@ namespace Wobble.Graphics.Sprites
             else
                 CurrentFrame--;
 
-            Image = Frames[CurrentFrame];
+            Region = Frames[CurrentFrame];
         }
-
-        /// <summary>
-        ///     Adds a frame to the list
-        /// </summary>
-        /// <param name="frame"></param>
-        public void AddFrame(Texture2D frame) => Frames.Add(frame);
-
-        /// <summary>
-        ///     Removes a frame from the list.
-        /// </summary>
-        /// <param name="frame"></param>
-        public void RemoveFrame(Texture2D frame) => Frames.Remove(frame);
 
         /// <summary>
         ///     Removes a frame a given index.
@@ -195,12 +193,26 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         /// <param name="newFrames"></param>
         /// <exception cref="ArgumentException"></exception>
-        public void ReplaceFrames(List<Texture2D> newFrames)
+        public void ReplaceFrames(List<TextureRegion> newFrames)
         {
             if (newFrames.Count == 0)
                 throw new ArgumentException("The new frames added must be greater than 0.");
 
             Frames = newFrames;
+            ChangeTo(0);
+        }
+
+        /// <summary>
+        ///    Replaces all the frames with some new ones.
+        /// </summary>
+        /// <param name="newFrames"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void ReplaceFrames(List<Texture2D> newFrames)
+        {
+            if (newFrames.Count == 0)
+                throw new ArgumentException("The new frames added must be greater than 0.");
+
+            Frames = newFrames.Select(f => new TextureRegion(f, f.Bounds)).ToList();
             ChangeTo(0);
         }
 

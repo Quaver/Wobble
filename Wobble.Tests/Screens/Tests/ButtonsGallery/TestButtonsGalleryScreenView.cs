@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Wobble.Assets;
 using Wobble.Graphics;
 using Wobble.Graphics.Buttons;
+using Wobble.Graphics.Shaders;
 using Wobble.Graphics.Sprites;
 using Wobble.Graphics.Sprites.Text;
 using Wobble.Graphics.UI.Buttons;
@@ -23,7 +24,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonsGallery
         private static readonly Color FocusColor = new Color(255, 196, 87);
         private static readonly Color ScrollbarColor = new Color(86, 97, 107);
 
-        private const int ContentHeight = 780;
+        private const int ContentHeight = 1120;
 
         private ScrollContainer ScreenScrollContainer { get; }
 
@@ -31,6 +32,7 @@ namespace Wobble.Tests.Screens.Tests.ButtonsGallery
 
         private SpriteTextPlus InteractionState { get; set; }
         private SpriteTextPlus ChurnState { get; set; }
+        private SpriteTextPlus CornerRadiiState { get; set; }
         private Button FocusedButton { get; set; }
 
         public TestButtonsGalleryScreenView(Screen screen) : base(screen)
@@ -54,6 +56,9 @@ namespace Wobble.Tests.Screens.Tests.ButtonsGallery
 
             var statesPanel = CreatePanel(310, "CONTENT + BEHAVIOR");
             CreateBehaviorExamples(statesPanel);
+            CreateAsymmetricCornerExamples(statesPanel);
+
+            CreateCanonicalRadiusExamples();
         }
 
         private void CreateHeader()
@@ -308,6 +313,164 @@ namespace Wobble.Tests.Screens.Tests.ButtonsGallery
                 Y = 407,
                 Tint = MutedColor
             };
+        }
+
+        private void CreateAsymmetricCornerExamples(Container panel)
+        {
+            CreateSectionLabel(panel, "ASYMMETRIC CORNER RADII", 460);
+
+            var diagonalA = new RoundedButton
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                Position = new ScalableVector2(20, 488),
+                Size = new ScalableVector2(245, 44),
+                Tint = AccentColor,
+                CornerRadius = 4,
+                CornerRadii = new RoundedRectCornerRadii(18, 4, 18, 4)
+            };
+            diagonalA.SetLabel(FontManager.GetWobbleFont("inter-bold"), "TL + BR: 18", 15, Color.White);
+            TrackInteraction(diagonalA, "Diagonal corners A");
+
+            var diagonalB = new RoundedButton
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                Position = new ScalableVector2(285, 488),
+                Size = new ScalableVector2(245, 44),
+                Tint = PurpleColor,
+                CornerRadii = new RoundedRectCornerRadii(4, 18, 4, 18)
+            };
+            diagonalB.SetLabel(FontManager.GetWobbleFont("inter-bold"), "TR + BL: 18", 15, Color.White);
+            TrackInteraction(diagonalB, "Diagonal corners B");
+
+            var toggle = new RoundedButton
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                Position = new ScalableVector2(20, 543),
+                Size = new ScalableVector2(510, 44),
+                Tint = new Color(52, 168, 120),
+                CornerRadii = new RoundedRectCornerRadii(20, 4, 4, 20)
+            };
+            toggle.SetLabel(FontManager.GetWobbleFont("inter-bold"), "Click to swap cached corner profiles", 15, Color.White);
+            TrackInteraction(toggle, "Corner profile toggle");
+
+            var usesFirstProfile = true;
+            toggle.Clicked += (sender, args) =>
+            {
+                usesFirstProfile = !usesFirstProfile;
+                toggle.CornerRadii = usesFirstProfile
+                    ? new RoundedRectCornerRadii(20, 4, 4, 20)
+                    : new RoundedRectCornerRadii(4, 20, 20, 4);
+                CornerRadiiState.Text = usesFirstProfile
+                    ? "Profile: TL + BR rounded"
+                    : "Profile: TR + BL rounded";
+            };
+
+            CornerRadiiState = new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"),
+                "Profile: TL + BR rounded", 14)
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                X = 20,
+                Y = 598,
+                Tint = MutedColor
+            };
+        }
+
+        private void CreateCanonicalRadiusExamples()
+        {
+            var panel = new Container
+            {
+                Parent = ContentContainer,
+                Alignment = Alignment.TopCenter,
+                Y = 760,
+                Size = new ScalableVector2(1190, 310)
+            };
+
+            new Sprite
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                Size = panel.Size,
+                Image = WobbleAssets.WhiteBox,
+                Tint = PanelColor
+            };
+
+            new SpriteTextPlus(FontManager.GetWobbleFont("inter-bold"),
+                "CACHED CANONICAL RADII — COMPACT / STANDARD / LARGE", 18)
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                X = 20,
+                Y = 16,
+                Tint = Color.White
+            };
+
+            var radii = new[] {14f, 12f, 6f, 3f};
+            var colors = new[] {AccentColor, PurpleColor, new Color(52, 168, 120), FocusColor};
+            var rowWidths = new[] {96f, 240f, 240f};
+            var rowHeights = new[] {18f, 36f, 52f};
+            var rowY = new[] {76f, 112f, 166f};
+            var rowNames = new[] {"96×18", "240×36", "240×52"};
+
+            for (var column = 0; column < radii.Length; column++)
+            {
+                var columnX = 20 + column * 290;
+                var radius = radii[column];
+
+                new SpriteTextPlus(FontManager.GetWobbleFont("inter-semibold"), $"RADIUS {radius:0}", 14)
+                {
+                    Parent = panel,
+                    Alignment = Alignment.TopLeft,
+                    X = columnX,
+                    Y = 49,
+                    Tint = MutedColor
+                };
+
+                for (var row = 0; row < rowWidths.Length; row++)
+                {
+                    var button = new RoundedButton
+                    {
+                        Parent = panel,
+                        Alignment = Alignment.TopLeft,
+                        Position = new ScalableVector2(columnX, rowY[row]),
+                        Size = new ScalableVector2(rowWidths[row], rowHeights[row]),
+                        CornerRadius = radius,
+                        Tint = colors[column]
+                    };
+                    button.SetLabel(FontManager.GetWobbleFont("inter-semibold"), rowNames[row], 12,
+                        column == 3 ? PanelColor : Color.White);
+                    TrackInteraction(button, $"Radius {radius:0}, {rowNames[row]}");
+                }
+            }
+
+            var mixed = new RoundedButton
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                Position = new ScalableVector2(20, 238),
+                Size = new ScalableVector2(560, 44),
+                CornerRadii = new RoundedRectCornerRadii(14, 12, 6, 3),
+                Tint = AccentColor
+            };
+            mixed.SetLabel(FontManager.GetWobbleFont("inter-bold"), "MIXED — TL 14 / TR 12 / BR 6 / BL 3", 14,
+                Color.White);
+            TrackInteraction(mixed, "Mixed radii 14 / 12 / 6 / 3");
+
+            var mirrored = new RoundedButton
+            {
+                Parent = panel,
+                Alignment = Alignment.TopLeft,
+                Position = new ScalableVector2(610, 238),
+                Size = new ScalableVector2(560, 44),
+                CornerRadii = new RoundedRectCornerRadii(3, 6, 12, 14),
+                Tint = PurpleColor
+            };
+            mirrored.SetLabel(FontManager.GetWobbleFont("inter-bold"),
+                "MIRRORED — TL 3 / TR 6 / BR 12 / BL 14", 14, Color.White);
+            TrackInteraction(mirrored, "Mirrored radii 3 / 6 / 12 / 14");
         }
 
         private void RunChurn(Container parent)

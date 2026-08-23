@@ -9,6 +9,7 @@ using ManagedBass;
 using Microsoft.Xna.Framework;
 using Wobble.Audio.Tracks;
 using Wobble.Logging;
+using BassConfiguration = ManagedBass.Configuration;
 
 namespace Wobble.Audio
 {
@@ -20,6 +21,17 @@ namespace Wobble.Audio
         private static double LastOutputDeviceCheckTime = 0;
 
         public static Func<bool> ShouldSkipLostOutputDeviceCheck { get; set; }
+
+        /// <summary>
+        ///     The average delay, in milliseconds, for stream playback to start and be heard on the current device.
+        /// </summary>
+        public static int OutputLatency { get; private set; }
+
+        /// <summary>
+        ///     The minimum device buffer length recommended by BASS for the current output device.
+        /// </summary>
+        public static int MinimumBufferLength { get; private set; }
+
         /// <summary>
         ///     The audio tracks that are currently loaded and available.
         /// </summary>
@@ -39,24 +51,26 @@ namespace Wobble.Audio
         {
             Dispose();
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 // Do not stop the output device to ensure consistent latency.
                 //
-                // Without this setting samples are played with lower latency when there's nothing else playing,
-                // resulting in inconsistent hitsound and keysound latency.
-                Bass.Configure(Configuration.DevNonStop, true);
+                // Without this setting playback can have different latency when the device was idle, or it can be
+                // delayed while a sleeping device starts again. BASS fills the idle output with silence when this
+                // option is enabled.
+                Bass.Configure(BassConfiguration.DevNonStop, true);
             }
 
             // Follow system default audio source
-            Bass.Configure(Configuration.IncludeDefaultDevice, true);
+            Bass.Configure(BassConfiguration.IncludeDefaultDevice, true);
 
             if (devicePeriod.HasValue)
-                Bass.Configure(Configuration.DevicePeriod, devicePeriod.Value);
+                Bass.Configure(BassConfiguration.DevicePeriod, devicePeriod.Value);
             if (deviceBufferLength.HasValue)
-                Bass.Configure(Configuration.DeviceBufferLength, deviceBufferLength.Value);
+                Bass.Configure(BassConfiguration.DeviceBufferLength, deviceBufferLength.Value);
 
-            Logger.Debug($"BASS options: DevicePeriod = {Bass.GetConfig(Configuration.DevicePeriod)}, DeviceBufferLength = {Bass.GetConfig(Configuration.DeviceBufferLength)}", LogType.Runtime);
+            Logger.Debug($"BASS options: DevicePeriod = {Bass.GetConfig(BassConfiguration.DevicePeriod)}, DeviceBufferLength = {Bass.GetConfig(BassConfiguration.DeviceBufferLength)}", LogType.Runtime);
 
             if (!Bass.Init(device.Value))
             {
@@ -66,7 +80,13 @@ namespace Wobble.Audio
                 throw new AudioEngineException("Quaver could not find an audio output device. Please connect or enable an audio output device and restart the game.");
             }
 
+            var deviceInfo = Bass.Info;
+            OutputLatency = deviceInfo.Latency;
+            MinimumBufferLength = deviceInfo.MinBufferLength;
+
             Logger.Debug($"BASS version: {Bass.Version}", LogType.Runtime);
+            Logger.Debug($"BASS device info: Latency = {OutputLatency}, MinimumBufferLength = {MinimumBufferLength}",
+                LogType.Runtime);
 
             Tracks = new List<IAudioTrack>();
         }
@@ -87,7 +107,25 @@ namespace Wobble.Audio
                 }
             }
 
-            Bass.Free();
+            FreeAllInitializedDevices();
+            OutputLatency = 0;
+            MinimumBufferLength = 0;
+        }
+
+        /// <summary>
+        ///     Frees every initialized BASS device, not just the current one, so a leftover device from the
+        ///     lost-device fallback can't block re-initializing it later.
+        /// </summary>
+        private static void FreeAllInitializedDevices()
+        {
+            for (var i = 0; i < Bass.DeviceCount; i++)
+            {
+                if (!Bass.GetDeviceInfo(i).IsInitialized)
+                    continue;
+
+                Bass.CurrentDevice = i;
+                Bass.Free();
+            }
         }
 
         /// <summary>

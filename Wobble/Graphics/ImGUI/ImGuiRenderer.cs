@@ -7,11 +7,28 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Platform;
 
 namespace Wobble.Graphics.ImGUI
 {
     public sealed class ImGuiRenderer : IDisposable
     {
+        /// <summary>
+        ///     ImGui renderers use separate contexts, so ImGui cannot arbitrate input between overlapping windows itself.
+        ///     This list is populated in draw order and used on the next frame to give input to the topmost hovered context.
+        /// </summary>
+        private static readonly List<ImGuiRenderer> InputCandidates = new List<ImGuiRenderer>();
+
+        private static TimeSpan InputFrameTime { get; set; } = TimeSpan.MinValue;
+
+        private static ImGuiRenderer MouseInputOwner { get; set; }
+
+        private static ImGuiRenderer KeyboardInputOwner { get; set; }
+
+        private static bool WasAnyMouseButtonDown { get; set; }
+
+        private static bool WasMouseButtonPressedThisFrame { get; set; }
+
         /// <summary>
         /// </summary>
         public IntPtr Context { get; }
@@ -88,11 +105,46 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         private SharedFontAtlas FontAtlas { get; }
 
+        /// <summary>
+        ///     Whether this renderer had a hovered ImGui window on its most recently completed frame.
+        /// </summary>
+        public bool IsMouseHovered { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested mouse input for the most recently completed frame.
+        /// </summary>
+        public bool WantsMouseInput { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested keyboard input for the most recently completed frame.
+        /// </summary>
+        public bool WantsKeyboardInput { get; private set; }
+
+        /// <summary>
+        ///     Whether ImGui requested text input for the most recently completed frame.
+        /// </summary>
+        public bool WantsTextInput { get; private set; }
+
+        /// <summary>
+        ///     Whether this renderer currently owns mouse input.
+        /// </summary>
+        public bool IsMouseInputOwner => MouseInputOwner == this;
+
+        /// <summary>
+        ///     Whether this renderer currently owns keyboard input.
+        /// </summary>
+        public bool IsKeyboardInputOwner => KeyboardInputOwner == this;
+
         public float Scale { get; }
 
         public int LastVertexCount { get; private set; }
 
         public int LastIndexCount { get; private set; }
+
+        /// <summary>
+        ///     Whether this renderer received the mouse press that started on the current frame.
+        /// </summary>
+        public bool WasActivatedByMouse { get; private set; }
 
         /// <summary>
         /// </summary>
@@ -211,7 +263,7 @@ namespace Wobble.Graphics.ImGUI
         {
             ImGui.GetIO().DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            UpdateInput();
+            UpdateInput(gameTime);
 
             ImGui.NewFrame();
         }
@@ -221,6 +273,15 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void AfterLayout()
         {
+            var io = ImGui.GetIO();
+            IsMouseHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow);
+            WantsMouseInput = io.WantCaptureMouse;
+            WantsTextInput = io.WantTextInput;
+            WantsKeyboardInput = io.WantCaptureKeyboard || WantsTextInput;
+            TextInputManager.SetActive(this, WantsTextInput);
+            InputCandidates.Remove(this);
+            InputCandidates.Add(this);
+
             ImGui.Render();
             RenderDrawData(ImGui.GetDrawData());
         }
@@ -231,7 +292,7 @@ namespace Wobble.Graphics.ImGUI
 
         private void OnWindowOnTextInput(object s, TextInputEventArgs a)
         {
-            if (a.Character == '\t') return;
+            if (a.Character == '\t' || KeyboardInputOwner != this || (!IsMouseHovered && !WantsKeyboardInput)) return;
 
             var previousContext = ImGui.GetCurrentContext();
 
@@ -334,12 +395,22 @@ namespace Wobble.Graphics.ImGUI
         /// <summary>
         ///     Sends XNA input state to ImGui
         /// </summary>
-        private void UpdateInput()
+        private void UpdateInput(GameTime gameTime)
         {
             var io = ImGui.GetIO();
 
             var mouse = Mouse.GetState();
-            var keyboard = Keyboard.GetState();
+            UpdateInputOwners(gameTime, mouse);
+
+            var keyboard = KeyboardInputOwner == this && (IsMouseHovered || WantsKeyboardInput)
+                ? Keyboard.GetState()
+                : new KeyboardState();
+            // Contexts the cursor is outside still need to see the mouse state. ImGui uses an
+            // outside click to dismiss open popups and combos, and forwarding it is safe because
+            // none of the context's windows can be activated at that position. Input remains
+            // exclusive when windows from multiple contexts overlap.
+            var receivesMouseInput = MouseInputOwner == this || !IsMouseHovered;
+            WasActivatedByMouse = MouseInputOwner == this && WasMouseButtonPressedThisFrame;
 
             io.AddKeyEvent(ImGuiKey.Tab, keyboard.IsKeyDown(Keys.Tab));
             io.AddKeyEvent(ImGuiKey.LeftArrow, keyboard.IsKeyDown(Keys.Left));
@@ -373,14 +444,49 @@ namespace Wobble.Graphics.ImGUI
             io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
             io.AddMousePosEvent(mouse.X, mouse.Y);
-            io.AddMouseButtonEvent(0, mouse.LeftButton == ButtonState.Pressed);
-            io.AddMouseButtonEvent(1, mouse.RightButton == ButtonState.Pressed);
-            io.AddMouseButtonEvent(2, mouse.MiddleButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(0, receivesMouseInput && mouse.LeftButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(1, receivesMouseInput && mouse.RightButton == ButtonState.Pressed);
+            io.AddMouseButtonEvent(2, receivesMouseInput && mouse.MiddleButton == ButtonState.Pressed);
             var scrollDelta = mouse.ScrollWheelValue - ScrollWheelValue;
-            io.AddMouseWheelEvent(0, scrollDelta > 0 ? 1 :
+            io.AddMouseWheelEvent(0, !receivesMouseInput ? 0 : scrollDelta > 0 ? 1 :
                 scrollDelta < 0 ? -1 : 0);
 
             ScrollWheelValue = mouse.ScrollWheelValue;
+        }
+
+        /// <summary>
+        ///     Selects the last-drawn hovered renderer and keeps mouse ownership locked for the duration of a drag.
+        /// </summary>
+        private void UpdateInputOwners(GameTime gameTime, MouseState mouse)
+        {
+            if (InputFrameTime == gameTime.TotalGameTime)
+                return;
+
+            var isAnyMouseButtonDown = mouse.LeftButton == ButtonState.Pressed
+                                       || mouse.RightButton == ButtonState.Pressed
+                                       || mouse.MiddleButton == ButtonState.Pressed;
+            WasMouseButtonPressedThisFrame = !WasAnyMouseButtonDown && isAnyMouseButtonDown;
+
+            if (!WasAnyMouseButtonDown)
+            {
+                MouseInputOwner = null;
+
+                for (var i = InputCandidates.Count - 1; i >= 0; i--)
+                {
+                    if (!InputCandidates[i].IsMouseHovered)
+                        continue;
+
+                    MouseInputOwner = InputCandidates[i];
+                    break;
+                }
+
+                if (isAnyMouseButtonDown)
+                    KeyboardInputOwner = MouseInputOwner;
+            }
+
+            WasAnyMouseButtonDown = isAnyMouseButtonDown;
+            InputCandidates.Clear();
+            InputFrameTime = gameTime.TotalGameTime;
         }
 
 #endregion Setup & Update
@@ -583,6 +689,15 @@ namespace Wobble.Graphics.ImGUI
         /// </summary>
         public void Dispose()
         {
+            TextInputManager.SetActive(this, false);
+            InputCandidates.Remove(this);
+
+            if (MouseInputOwner == this)
+                MouseInputOwner = null;
+
+            if (KeyboardInputOwner == this)
+                KeyboardInputOwner = null;
+
             if (DestroyContext)
                 ImGui.DestroyContext(Context);
 

@@ -24,8 +24,76 @@ namespace Wobble.Graphics.Sprites
                     return;
 
                 _image = value;
+                _sourceRectangle = null;
 
-                Origin = new Vector2(Image.Width * Pivot.X, Image.Height * Pivot.Y);
+                Origin = new Vector2(ImageWidth * Pivot.X, Image.Height * Pivot.Y);
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     The width of the region in the source image used by this sprite
+        /// </summary>
+        public int ImageWidth => SourceRectangle?.Width ?? Image.Width;
+        /// <summary>
+        ///     The height of the region in the source image used by this sprite
+        /// </summary>
+        public int ImageHeight => SourceRectangle?.Height ?? Image.Height;
+
+        /// <summary>
+        ///     The X offset of the region in the source image used by this sprite
+        /// </summary>
+        public int ImageOffsetX => SourceRectangle?.X ?? 0;
+        /// <summary>
+        ///     The Y offset of the region in the source image used by this sprite
+        /// </summary>
+        public int ImageOffsetY => SourceRectangle?.Y ?? 0;
+
+        private Rectangle? _sourceRectangle;
+
+        /// <summary>
+        ///     The portion of <see cref="Image"/> to draw. A null value draws the full texture.
+        /// </summary>
+        public Rectangle? SourceRectangle
+        {
+            get => _sourceRectangle;
+            set
+            {
+                if (value != null)
+                {
+                    var rectangle = value.Value;
+
+                    if (Image == null || rectangle.Width <= 0 || rectangle.Height <= 0 ||
+                        !Image.Bounds.Contains(rectangle))
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value), value,
+                            "The source rectangle must be a non-empty rectangle inside the sprite texture.");
+                    }
+                }
+
+                _sourceRectangle = value;
+                RecalculateRectangles();
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the atlas region rendered by this sprite.
+        /// </summary>
+        public TextureRegion? Region
+        {
+            get => Image == null || SourceRectangle == null
+                ? (TextureRegion?)null
+                : new TextureRegion(Image, SourceRectangle.Value);
+            set
+            {
+                if (value == null)
+                {
+                    SourceRectangle = null;
+                    return;
+                }
+
+                _image = value.Value.Texture;
+                _sourceRectangle = value.Value.SourceRectangle;
                 RecalculateRectangles();
             }
         }
@@ -195,7 +263,7 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, null, _color, SpriteOverallRotation, Origin, SpriteEffect, 0f);
+            GameBase.Game.SpriteBatch.Draw(Image, RenderRectangle, SourceRectangle, _color, SpriteOverallRotation, Origin, SpriteEffect, 0f);
         }
 
         /// <inheritdoc />
@@ -238,7 +306,8 @@ namespace Wobble.Graphics.Sprites
             var pivot = Pivot;
             var screenRectangleSize = ScreenRectangle.Size;
 
-            Origin = new Vector2(pivot.X * Image.Width, pivot.Y * Image.Height);
+            var sourceSize = SourceRectangle?.Size.ToVector2() ?? new Vector2(Image.Width, Image.Height);
+            Origin = sourceSize * pivot;
 
             // The render rectangle's position will rotate around the screen rectangle's position
             var rotatedScreenOrigin = (ScreenRectangle.Size * Pivot).Rotate(Parent?.AbsoluteRotation ?? 0);

@@ -99,6 +99,11 @@ namespace Wobble.Graphics.Sprites.Text
             TextSprite.X = 0;
         }
 
+        /// <summary>
+        ///     Resets the marquee position and delay after its text or available width changes.
+        /// </summary>
+        public void ResetPosition() => Reset();
+
         private enum MarqueeState
         {
             WaitingStart,
