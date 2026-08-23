@@ -38,7 +38,7 @@ namespace Wobble.Tests.Screens.Tests.AnimationTiming
 
         private static readonly List<string> RateOptions = new List<string>
         {
-            "Unlimited", "60", "120", "180", "240", "500", "1000"
+            "Unlimited", "1", "5", "15", "30", "60", "120", "180", "240", "500", "1000"
         };
 
         private WobbleTestsGame TestGame => GameBase.Game as WobbleTestsGame;
