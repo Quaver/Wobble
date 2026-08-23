@@ -1,5 +1,5 @@
 ﻿using System;
-using ImGuiNET;
+using Hexa.NET.ImGui;
 using Microsoft.Xna.Framework;
 using Wobble.Graphics.ImGUI;
 using Wobble.Graphics.UI.Buttons;
@@ -45,7 +45,7 @@ namespace Wobble.Tests.Screens.Tests.Imgui
             {
                 if (ImGui.BeginMenu("File"))
                 {
-                    ImGui.MenuItem("Open", null, ref Opened);
+                    ImGui.MenuItem("Open", (string)null, ref Opened);
                     ImGui.Separator();
                     ImGui.MenuItem("Save");
                     ImGui.MenuItem("Exit");
@@ -54,12 +54,12 @@ namespace Wobble.Tests.Screens.Tests.Imgui
 
                 if (ImGui.BeginMenu("Effects"))
                 {
-                    ImGui.MenuItem("Rotation", null, ref Rotation);
-                    ImGui.MenuItem("Lightshow", null, ref Lightshow);
+                    ImGui.MenuItem("Rotation", (string)null, ref Rotation);
+                    ImGui.MenuItem("Lightshow", (string)null, ref Lightshow);
                     ImGui.EndMenu();
                 }
 
-                ImGui.EndMenuBar();
+                ImGui.EndMainMenuBar();
                 Button.IsGloballyClickable = !ImGui.IsAnyItemHovered();
             }
         }

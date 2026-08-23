@@ -1,5 +1,5 @@
 ﻿using System;
-using ImGuiNET;
+using Hexa.NET.ImGui;
 using Microsoft.Xna.Framework;
 
 namespace Wobble.Graphics.ImGUI
