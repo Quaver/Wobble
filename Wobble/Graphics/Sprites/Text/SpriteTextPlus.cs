@@ -18,7 +18,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         private readonly bool _subscribesToFontChanges;
 
-        public WobbleFontStore Font
+        public virtual WobbleFontStore Font
         {
             get => _font;
             set
@@ -49,19 +49,29 @@ namespace Wobble.Graphics.Sprites.Text
         private float _renderScale;
 
         /// <summary>
-        ///     Applies the shared font baseline offset to uncached text.
+        ///     Applies the shared vertical draw-origin offset to uncached text.
         /// </summary>
         private float _verticalDrawOffset;
 
         /// <summary>
+        ///     Applies the shared vertical draw-origin offset to uncached text.
+        /// </summary>
+        protected float VerticalDrawOffset => _verticalDrawOffset;
+
+        /// <summary>
+        ///     Whether construction has completed and derived text-layout hooks can safely run.
+        /// </summary>
+        private bool IsInitialized { get; set; }
+
+        /// <summary>
         ///     Height of the font's representative capital glyph.
         /// </summary>
-        public float CapHeight { get; private set; }
+        public float CapHeight { get; protected set; }
 
         /// <summary>
         ///     Distance from the text bounds to the top of the capital glyph area.
         /// </summary>
-        public float CapTopOffset { get; private set; }
+        public float CapTopOffset { get; protected set; }
 
         public int FontSize
         {
@@ -80,7 +90,7 @@ namespace Wobble.Graphics.Sprites.Text
         ///     The text displayed for the font.
         /// </summary>
         private string _text = "";
-        public string Text
+        public virtual string Text
         {
             get => _text;
             set
@@ -175,8 +185,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="size"></param>
         /// <param name="cache"></param>
         /// <param name="subscribeToFontChanges"></param>
-        public SpriteTextPlus(WobbleFontStore font, string text, int size = 0, bool cache = true,
-            bool subscribeToFontChanges = true)
+        public SpriteTextPlus(WobbleFontStore font, string text, int size = 0, bool cache = true, bool subscribeToFontChanges = true)
         {
             _subscribesToFontChanges = subscribeToFontChanges;
             _font = font;
@@ -192,6 +201,7 @@ namespace Wobble.Graphics.Sprites.Text
             SetChildrenAlpha = true;
 
             RefreshText();
+            IsInitialized = true;
 
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.SpriteTextPlusDebugRegistry.Register(this);
@@ -216,7 +226,7 @@ namespace Wobble.Graphics.Sprites.Text
 
         /// <summary>
         /// </summary>
-        private void RefreshText(bool reuseUnchangedLines = false)
+        protected void RefreshText(bool reuseUnchangedLines = false)
         {
 #if DEBUG
             global::Wobble.Graphics.UI.Debugging.PerformanceStats.RecordSpriteTextPlusRefresh();
@@ -229,12 +239,21 @@ namespace Wobble.Graphics.Sprites.Text
                     Children[i].Destroy();
 
                 SetSize();
+
+                if (IsInitialized)
+                    OnTextLayoutRefreshed();
+
                 return;
             }
 
             var lines = BuildWrappedLines();
             if (reuseUnchangedLines && LinesMatch(lines))
+            {
+                if (IsInitialized)
+                    OnTextLayoutRefreshed();
+
                 return;
+            }
 
             for (var i = Children.Count - 1; i >= 0; i--)
                 Children[i].Destroy();
@@ -271,6 +290,16 @@ namespace Wobble.Graphics.Sprites.Text
                 lineSprite.Alignment = Alignment.TopLeft;
                 lineSprite.X = GetLineX(width, lineSprite.LayoutWidth);
             }
+
+            if (IsInitialized)
+                OnTextLayoutRefreshed();
+        }
+
+        /// <summary>
+        ///     Called after the text's cached line layout has been recreated.
+        /// </summary>
+        protected virtual void OnTextLayoutRefreshed()
+        {
         }
 
         private List<string> BuildWrappedLines() => BuildWrappedLayout().Select(x => x.Text).ToList();
@@ -302,7 +331,7 @@ namespace Wobble.Graphics.Sprites.Text
         {
             var scale = SpriteTextPlusLine.GetRenderScale();
             Font.FontSize = FontSize * scale;
-            return (float) Math.Ceiling(Font.Store.MeasureString(line).X) / scale;
+            return (float)Math.Ceiling(Font.Store.MeasureString(line).X) / scale;
         }
 
         /// <summary>
@@ -369,12 +398,11 @@ namespace Wobble.Graphics.Sprites.Text
             base.Destroy();
         }
 
-        private void SetSize()
+        protected void SetSize()
         {
             Font.FontSize = FontSize;
             var (x, y) = Font.Store.MeasureString(Text);
-            SpriteTextPlusLineRaw.GetVerticalLayout(Font, out var layoutHeight, out _verticalDrawOffset,
-                out var capHeight);
+            SpriteTextPlusLineRaw.GetVerticalLayout(Font, out var layoutHeight, out _verticalDrawOffset, out var capHeight);
             CapHeight = capHeight;
             CapTopOffset = (layoutHeight - capHeight) / 2f;
             Size = new ScalableVector2(x, Math.Max(y, layoutHeight));
@@ -384,7 +412,7 @@ namespace Wobble.Graphics.Sprites.Text
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private float GetLineX(float availableWidth, float lineWidth)
+        protected float GetLineX(float availableWidth, float lineWidth)
         {
             switch (TextAlignment)
             {

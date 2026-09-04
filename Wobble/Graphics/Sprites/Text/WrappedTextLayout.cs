@@ -28,6 +28,9 @@ namespace Wobble.Graphics.Sprites.Text
     internal static class WrappedTextLayout
     {
         public static List<WrappedTextLine> Build(string text, float? maxWidth, Func<string, float> measure)
+            => Build(text, maxWidth, (value, _) => measure(value));
+
+        public static List<WrappedTextLine> Build(string text, float? maxWidth, Func<string, int, float> measure)
         {
             text = text ?? "";
             var result = new List<WrappedTextLine>();
@@ -39,18 +42,16 @@ namespace Wobble.Graphics.Sprites.Text
                     continue;
 
                 var hasHardBreak = i < text.Length;
-                AddLogicalLine(result, text.Substring(logicalLineStart, i - logicalLineStart),
-                    logicalLineStart, hasHardBreak, maxWidth, measure);
+                AddLogicalLine(result, text.Substring(logicalLineStart, i - logicalLineStart), logicalLineStart, hasHardBreak, maxWidth, measure);
                 logicalLineStart = i + 1;
             }
 
             return result;
         }
 
-        private static void AddLogicalLine(List<WrappedTextLine> result, string line, int rawStart,
-            bool hasHardBreak, float? maxWidth, Func<string, float> measure)
+        private static void AddLogicalLine(List<WrappedTextLine> result, string line, int rawStart, bool hasHardBreak, float? maxWidth, Func<string, int, float> measure)
         {
-            if (maxWidth == null || line.Length == 0 || measure(line) <= maxWidth)
+            if (maxWidth == null || line.Length == 0 || measure(line, rawStart) <= maxWidth)
             {
                 result.Add(new WrappedTextLine(line, rawStart, line.Length, hasHardBreak ? 1 : 0, hasHardBreak));
                 return;
@@ -59,7 +60,7 @@ namespace Wobble.Graphics.Sprites.Text
             var remaining = line;
             var remainingStart = rawStart;
 
-            while (remaining.Length > 0 && measure(remaining) > maxWidth)
+            while (remaining.Length > 0 && measure(remaining, remainingStart) > maxWidth)
             {
                 var spaces = new List<int>();
                 for (var i = 0; i < remaining.Length; i++)
@@ -68,14 +69,14 @@ namespace Wobble.Graphics.Sprites.Text
                         spaces.Add(i);
                 }
 
-                var splitOnIndex = FindLastFittingIndex(spaces, remaining, maxWidth.Value, measure);
+                var splitOnIndex = FindLastFittingIndex(spaces, remaining, remainingStart, maxWidth.Value, measure);
                 int displayedLength;
                 int consumedLength;
 
                 if (splitOnIndex == -1)
                 {
                     var lastIndex = spaces.Count > 0 ? spaces[0] : remaining.Length;
-                    displayedLength = FindLastFittingCharacterIndex(remaining, lastIndex, maxWidth.Value, measure);
+                    displayedLength = FindLastFittingCharacterIndex(remaining, remainingStart, lastIndex, maxWidth.Value, measure);
                     consumedLength = displayedLength;
                 }
                 else
@@ -84,27 +85,23 @@ namespace Wobble.Graphics.Sprites.Text
                     consumedLength = displayedLength + 1;
                 }
 
-                result.Add(new WrappedTextLine(remaining.Substring(0, displayedLength), remainingStart,
-                    displayedLength, consumedLength - displayedLength, false));
+                result.Add(new WrappedTextLine(remaining.Substring(0, displayedLength), remainingStart, displayedLength, consumedLength - displayedLength, false));
                 remaining = remaining.Substring(consumedLength);
                 remainingStart += consumedLength;
             }
 
             if (remaining.Length > 0)
             {
-                result.Add(new WrappedTextLine(remaining, remainingStart, remaining.Length,
-                    hasHardBreak ? 1 : 0, hasHardBreak));
+                result.Add(new WrappedTextLine(remaining, remainingStart, remaining.Length, hasHardBreak ? 1 : 0, hasHardBreak));
             }
             else if (hasHardBreak && result.Count > 0)
             {
                 var previous = result[result.Count - 1];
-                result[result.Count - 1] = new WrappedTextLine(previous.Text, previous.Start, previous.Length,
-                    previous.BreakLength + 1, true);
+                result[result.Count - 1] = new WrappedTextLine(previous.Text, previous.Start, previous.Length, previous.BreakLength + 1, true);
             }
         }
 
-        private static int FindLastFittingIndex(IReadOnlyList<int> indexes, string line, float maxWidth,
-            Func<string, float> measure)
+        private static int FindLastFittingIndex(IReadOnlyList<int> indexes, string line, int rawStart, float maxWidth, Func<string, int, float> measure)
         {
             var result = -1;
             var lo = 0;
@@ -115,7 +112,7 @@ namespace Wobble.Graphics.Sprites.Text
                 var mid = lo + (hi - lo) / 2;
                 var index = indexes[mid];
 
-                if (measure(line.Substring(0, index)) <= maxWidth)
+                if (measure(line.Substring(0, index), rawStart) <= maxWidth)
                 {
                     result = mid;
                     lo = mid + 1;
@@ -127,8 +124,7 @@ namespace Wobble.Graphics.Sprites.Text
             return result;
         }
 
-        private static int FindLastFittingCharacterIndex(string line, int lastIndex, float maxWidth,
-            Func<string, float> measure)
+        private static int FindLastFittingCharacterIndex(string line, int rawStart, int lastIndex, float maxWidth, Func<string, int, float> measure)
         {
             var starts = StringInfo.ParseCombiningCharacters(line);
             var boundaries = new List<int>(starts.Length + 1);
@@ -152,7 +148,7 @@ namespace Wobble.Graphics.Sprites.Text
                 var mid = lo + (hi - lo) / 2;
                 var boundary = boundaries[mid];
 
-                if (measure(line.Substring(0, boundary)) <= maxWidth)
+                if (measure(line.Substring(0, boundary), rawStart) <= maxWidth)
                 {
                     result = boundary;
                     lo = mid + 1;

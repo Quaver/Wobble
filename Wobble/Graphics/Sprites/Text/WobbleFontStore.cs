@@ -15,13 +15,17 @@ namespace Wobble.Graphics.Sprites.Text
 
         public bool EnableTabularNumbers { get; }
 
+        public bool EnableSyntheticItalic { get; }
+
         public WobbleFontFace(byte[] data, int index = 0,
-            int weight = FontWeight.Regular, bool enableTabularNumbers = false)
+            int weight = FontWeight.Regular, bool enableTabularNumbers = false,
+            bool enableSyntheticItalic = false)
         {
             Data = data ?? throw new ArgumentNullException(nameof(data));
             Index = index;
             Weight = weight;
             EnableTabularNumbers = enableTabularNumbers;
+            EnableSyntheticItalic = enableSyntheticItalic;
         }
     }
 
@@ -116,9 +120,10 @@ namespace Wobble.Graphics.Sprites.Text
         /// <param name="font"></param>
         public void AddFont(string name, byte[] font, int index = 0,
             int weight = FontWeight.Regular, int implicitFontSizeReduction = 0,
-            bool enableTabularNumbers = false)
+            bool enableTabularNumbers = false, bool enableSyntheticItalic = false)
         {
-            _fontLoader.Register(font, index, weight, implicitFontSizeReduction, enableTabularNumbers);
+            _fontLoader.Register(font, index, weight, implicitFontSizeReduction, enableTabularNumbers,
+                enableSyntheticItalic);
             _fontSystem.AddFont(font);
         }
 
@@ -136,13 +141,13 @@ namespace Wobble.Graphics.Sprites.Text
             _fontSystem = new FontSystem(new FontSystemSettings { FontLoader = _fontLoader });
 
             AddFont(string.Empty, font.Data, font.Index, font.Weight, implicitFontSizeReduction,
-                font.EnableTabularNumbers);
+                font.EnableTabularNumbers, font.EnableSyntheticItalic);
 
             if (addedFonts != null)
             {
                 foreach (var f in addedFonts)
                     AddFont(f.Key, f.Value.Data, f.Value.Index, f.Value.Weight, implicitFontSizeReduction,
-                        f.Value.EnableTabularNumbers);
+                        f.Value.EnableTabularNumbers, f.Value.EnableSyntheticItalic);
             }
 
             FontSize = _fontSize == 0 ? DefaultSize : _fontSize;
