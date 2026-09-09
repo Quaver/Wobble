@@ -57,6 +57,9 @@
     <data name="Screen_EasingAnimations" xml:space="preserve">
         <value>Анимации за ускоряване</value>
     </data>
+    <data name="Screen_AnimationTiming" xml:space="preserve">
+        <value>Време на анимациите</value>
+    </data>
   <data name="Screen_ImGui" xml:space="preserve">
     <value>Imgui</value>
   </data>

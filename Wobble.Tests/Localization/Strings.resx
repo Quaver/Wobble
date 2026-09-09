@@ -84,6 +84,9 @@
   <data name="Screen_EasingAnimations" xml:space="preserve">
     <value>Easing Animations</value>
   </data>
+  <data name="Screen_AnimationTiming" xml:space="preserve">
+    <value>Animation Timing</value>
+  </data>
   <data name="Screen_ImGui" xml:space="preserve">
     <value>Imgui</value>
   </data>

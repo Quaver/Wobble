@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites;
 using Wobble.Input;
 
@@ -61,6 +62,10 @@ namespace Wobble.Graphics.UI
         /// </summary>
         private double CurrentAnimationTime { get; set; }
 
+        private float AnimationStartAlpha { get; set; }
+
+        private bool IsVisibilityAnimationActive { get; set; }
+
         /// <inheritdoc />
         /// <summary>
         /// </summary>
@@ -83,19 +88,12 @@ namespace Wobble.Graphics.UI
         public override void Update(GameTime gameTime)
         {
             var baseSize = OriginalSize * SizeScale;
-            
-            if (MouseManager.CurrentState.LeftButton == ButtonState.Pressed)
-            {
-                // Calculate the new size that the cursor will be when pressed.
-                var newSize = MathHelper.Lerp(Width, baseSize * ExpandScale, (float)Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
-                Size = new ScalableVector2(newSize, newSize);
-            }
-            else
-            {
-                // Calculate new size when not pressed.
-                var newSize = MathHelper.Lerp(Width, baseSize, (float)Math.Min(GameBase.Game.TimeSinceLastFrame / 60, 1));
-                Size = new ScalableVector2(newSize, newSize);
-            }
+            var targetSize = MouseManager.CurrentState.LeftButton == ButtonState.Pressed
+                ? baseSize * ExpandScale
+                : baseSize;
+            var newSize = AnimationMath.Damp(Width, targetSize,
+                gameTime.ElapsedGameTime.TotalMilliseconds, 60);
+            Size = new ScalableVector2(newSize, newSize);
 
             X = MouseManager.CurrentState.X;
             Y = MouseManager.CurrentState.Y;
@@ -118,8 +116,7 @@ namespace Wobble.Graphics.UI
         public void Show(int time)
         {
             IsShown = true;
-            AnimationCompletionTime = time;
-            CurrentAnimationTime = 0;
+            StartVisibilityAnimation(time);
         }
 
         /// <summary>
@@ -129,16 +126,37 @@ namespace Wobble.Graphics.UI
         public void Hide(int time)
         {
             IsShown = false;
-            AnimationCompletionTime = time;
-            CurrentAnimationTime = 0;
+            StartVisibilityAnimation(time);
         }
 
         private void PerformShowAndHideAnimations(GameTime gameTime)
         {
-            CurrentAnimationTime += gameTime.ElapsedGameTime.TotalMilliseconds;
-            var lerpTime = CurrentAnimationTime / AnimationCompletionTime;
+            if (!IsVisibilityAnimationActive)
+                return;
 
-            Alpha = MathHelper.Lerp(Alpha, IsShown ? 1 : 0, (float)lerpTime);
+            CurrentAnimationTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+            var progress = MathHelper.Clamp((float) (CurrentAnimationTime / AnimationCompletionTime), 0, 1);
+
+            Alpha = MathHelper.Lerp(AnimationStartAlpha, IsShown ? 1 : 0, progress);
+
+            if (progress >= 1)
+                IsVisibilityAnimationActive = false;
+        }
+
+        private void StartVisibilityAnimation(int time)
+        {
+            AnimationCompletionTime = Math.Max(0, time);
+            CurrentAnimationTime = 0;
+            AnimationStartAlpha = Alpha;
+
+            if (AnimationCompletionTime == 0)
+            {
+                Alpha = IsShown ? 1 : 0;
+                IsVisibilityAnimationActive = false;
+                return;
+            }
+
+            IsVisibilityAnimationActive = true;
         }
     }
 }
