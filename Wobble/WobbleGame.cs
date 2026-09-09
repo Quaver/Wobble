@@ -127,6 +127,8 @@ namespace Wobble
 
         private double DebugGlobalUiDrawMs { get; set; }
 
+        private double DebugGameDrawMs { get; set; }
+
         private int DebugDrawnDrawableCount { get; set; }
 #endif
 
@@ -218,6 +220,32 @@ namespace Wobble
         }
 
         /// <summary>
+        ///     Begins the shared sprite batch and records the transition for the performance debugger.
+        /// </summary>
+        public void BeginBatch(SpriteSortMode sortMode = SpriteSortMode.Deferred, BlendState blendState = null,
+            SamplerState samplerState = null, DepthStencilState depthStencilState = null,
+            RasterizerState rasterizerState = null, Effect effect = null, Matrix? transformMatrix = null)
+        {
+            SpriteBatch.Begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, transformMatrix);
+
+#if DEBUG
+            PerformanceStats.RecordSpriteBatchBegin();
+#endif
+        }
+
+        /// <summary>
+        ///     Ends the shared sprite batch and records the transition for the performance debugger.
+        /// </summary>
+        public void EndBatch()
+        {
+            SpriteBatch.End();
+
+#if DEBUG
+            PerformanceStats.RecordSpriteBatchEnd();
+#endif
+        }
+
+        /// <summary>
         ///     Attempts to initialize a new sprite, if <see cref="SpriteBatch.End"/> had been called.
         /// </summary>
         /// <returns>Whether <see cref="SpriteBatch.Begin"/> had been called.</returns>
@@ -226,7 +254,7 @@ namespace Wobble
             var ret = _beginCalled(SpriteBatch);
 
             if (!ret)
-                SpriteBatch.Begin();
+                BeginBatch();
 
             return ret;
         }
@@ -241,7 +269,7 @@ namespace Wobble
 
             if (ret)
             {
-                SpriteBatch.End();
+                EndBatch();
                 GameBase.DefaultSpriteBatchInUse = false;
             }
 
@@ -400,7 +428,8 @@ namespace Wobble
             var scheduledRenderTargetDrawCount = ScheduledRenderTargetDrawsToRun.Count;
 
 #if DEBUG
-            PerformanceStats.BeginDraw(scheduledRenderTargetDrawCount, ScreenManager.CurrentScreenName);
+            PerformanceStats.BeginDraw(scheduledRenderTargetDrawCount, ScreenManager.CurrentScreenName,
+                GraphicsDevice.Metrics);
 #endif
 
             for (var i = scheduledRenderTargetDrawCount - 1; i >= 0; i--)
@@ -436,6 +465,11 @@ namespace Wobble
 #endif
 
             TryEndBatch();
+
+#if DEBUG
+            DebugGameDrawMs = ElapsedMilliseconds(DebugDrawStartedTimestamp);
+            PerformanceStats.RecordGraphicsMetrics(GraphicsDevice.Metrics);
+#endif
         }
 
 #if DEBUG
@@ -443,12 +477,18 @@ namespace Wobble
         {
             if (IsReadyToUpdate)
             {
-                var overlayStartedTimestamp = Stopwatch.GetTimestamp();
-                DebugOverlay?.Draw(DebugDrawGameTime);
-                var overlayDrawMs = ElapsedMilliseconds(overlayStartedTimestamp);
+                var overlayDrawMs = 0d;
+
+                if (DebugOverlay?.Visible == true)
+                {
+                    var overlayStartedTimestamp = Stopwatch.GetTimestamp();
+                    DebugOverlay.Draw(DebugDrawGameTime);
+                    TryEndBatch();
+                    overlayDrawMs = ElapsedMilliseconds(overlayStartedTimestamp);
+                }
 
                 PerformanceStats.RecordDrawTimings(DebugScheduledRenderTargetDrawMs, DebugScreenDrawMs, DebugGlobalUiDrawMs, overlayDrawMs,
-                    ElapsedMilliseconds(DebugDrawStartedTimestamp), DebugDrawnDrawableCount);
+                    DebugGameDrawMs, ElapsedMilliseconds(DebugDrawStartedTimestamp), DebugDrawnDrawableCount);
             }
 
             if (SpriteBatch != null)
