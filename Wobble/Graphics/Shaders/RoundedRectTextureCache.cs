@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -33,8 +34,31 @@ namespace Wobble.Graphics.Shaders
         public static Texture2D Get(float width, float height, RoundedRectCornerRadii radii,
             bool antiAliased = true)
         {
-            lock (SyncRoot)
-                return GetCached(width, height, radii, antiAliased);
+            if (Thread.CurrentThread.ManagedThreadId == GameBase.Game.MainThreadId)
+            {
+                lock (SyncRoot)
+                    return GetCached(width, height, radii, antiAliased);
+            }
+            
+            Texture2D result = null;
+
+            using var completed = new ManualResetEventSlim(false);
+
+            GameBase.Game.ScheduleRenderTargetDraw(() =>
+            {
+                try
+                {
+                    lock (SyncRoot)
+                        result = GetCached(width, height, radii, antiAliased);
+                }
+                finally
+                {
+                    completed.Set();
+                }
+            });
+
+            completed.Wait();
+            return result;
         }
 
         private static Texture2D GetCached(float width, float height, RoundedRectCornerRadii radii,

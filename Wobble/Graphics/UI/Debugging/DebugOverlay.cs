@@ -59,7 +59,7 @@ namespace Wobble.Graphics.UI.Debugging
             ImGui.GetIO().MouseDrawCursor = true;
 
             ImGui.SetNextWindowPos(new Vector2(12, 12), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSize(new Vector2(640, 720), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSize(new Vector2(660, 720), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(360, 240), new Vector2(float.MaxValue, float.MaxValue));
 
             var open = Visible;
@@ -67,6 +67,8 @@ namespace Wobble.Graphics.UI.Debugging
                 ImGuiWindowFlags.HorizontalScrollbar))
             {
                 RenderTiming();
+                ImGui.Separator();
+                RenderGraphicsStats();
                 ImGui.Separator();
                 RenderScene();
                 ImGui.Separator();
@@ -108,7 +110,7 @@ namespace Wobble.Graphics.UI.Debugging
             ImGui.Text($"FPS / UPS: {PerformanceStats.FrameRate} / {PerformanceStats.UpdateRate}");
             ImGui.Text($"Frame: {PerformanceStats.FrameTimeMs:0.00} ms avg {PerformanceStats.AverageFrameTimeMs:0.00} ms");
             ImGui.Text($"Update: {PerformanceStats.UpdateTimeMs:0.00} ms avg {PerformanceStats.AverageUpdateTimeMs:0.00} ms");
-            ImGui.Text($"Draw: {PerformanceStats.DrawTimeMs:0.00} ms avg {PerformanceStats.AverageDrawTimeMs:0.00} ms");
+            ImGui.Text($"Game draw: {PerformanceStats.GameDrawTimeMs:0.00} ms avg {PerformanceStats.AverageGameDrawTimeMs:0.00} ms");
 
             if (ImGui.TreeNode("Phase timings"))
             {
@@ -119,16 +121,50 @@ namespace Wobble.Graphics.UI.Debugging
                 ImGui.Text($"Render targets: {PerformanceStats.ScheduledRenderTargetDrawTimeMs:0.00} ms");
                 ImGui.Text($"Screen draw: {PerformanceStats.ScreenDrawTimeMs:0.00} ms");
                 ImGui.Text($"Global UI draw: {PerformanceStats.GlobalUiDrawTimeMs:0.00} ms");
-                ImGui.Text($"Overlay draw: {PerformanceStats.OverlayDrawTimeMs:0.00} ms");
+                ImGui.Text($"F3 overlay: {PerformanceStats.OverlayDrawTimeMs:0.00} ms");
+                ImGui.Text($"Total draw including F3: {PerformanceStats.DrawTimeMs:0.00} ms");
                 ImGui.TreePop();
             }
         }
 
         private void RenderScene()
         {
+            ImGui.Text("Scene");
             ImGui.Text($"Screen: {PerformanceStats.CurrentScreenName}");
             ImGui.Text($"Drawables drawn: {PerformanceStats.DrawnDrawableCount}");
             ImGui.Text($"Scheduled render targets: {PerformanceStats.ScheduledRenderTargetDrawCount}");
+        }
+
+        private void RenderGraphicsStats()
+        {
+            ImGui.Text("Rendering per frame");
+            ImGui.TextColored(new Vector4(0.55f, 0.65f, 0.75f, 1), "Game rendering only; F3 overlay excluded");
+
+            if (!ImGui.BeginTable("GraphicsMetrics", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.BordersInnerV))
+                return;
+
+            RenderGraphicsMetric("Draw calls", PerformanceStats.GraphicsDrawCallCount.ToString());
+            RenderGraphicsMetric("Sprites submitted", PerformanceStats.GraphicsSpriteCount.ToString());
+            RenderGraphicsMetric("Sprites / draw call", PerformanceStats.GraphicsSpritesPerDrawCall.ToString("0.0"));
+            RenderGraphicsMetric("Primitives", PerformanceStats.GraphicsPrimitiveCount.ToString());
+            RenderGraphicsMetric("Texture changes", PerformanceStats.GraphicsTextureChangeCount.ToString());
+            RenderGraphicsMetric("Render-target changes", PerformanceStats.GraphicsRenderTargetChangeCount.ToString());
+            RenderGraphicsMetric("Clears", PerformanceStats.GraphicsClearCount.ToString());
+            RenderGraphicsMetric("Pixel-shader changes", PerformanceStats.GraphicsPixelShaderChangeCount.ToString());
+            RenderGraphicsMetric("Vertex-shader changes", PerformanceStats.GraphicsVertexShaderChangeCount.ToString());
+            RenderGraphicsMetric("SpriteBatch begins / ends",
+                $"{PerformanceStats.SpriteBatchBeginCount} / {PerformanceStats.SpriteBatchEndCount}");
+
+            ImGui.EndTable();
+        }
+
+        private static void RenderGraphicsMetric(string label, string value)
+        {
+            ImGui.TableNextRow();
+            ImGui.TableNextColumn();
+            ImGui.TextUnformatted(label);
+            ImGui.TableNextColumn();
+            ImGui.TextUnformatted(value);
         }
 
         private void RenderTextStats()

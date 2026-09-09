@@ -93,7 +93,7 @@ namespace Wobble.Graphics
             var options = GameBase.DefaultSpriteBatchOptions;
             var transform = options.DoNotScale ? (Matrix?)null : WindowManager.Scale;
 
-            GameBase.Game.SpriteBatch.Begin(options.SortMode, options.BlendState, options.SamplerState,
+            GameBase.Game.BeginBatch(options.SortMode, options.BlendState, options.SamplerState,
                 options.DepthStencilState, ScissorRasterizer, options.Shader?.ShaderEffect, transform);
             GameBase.DefaultSpriteBatchInUse = false;
         }
