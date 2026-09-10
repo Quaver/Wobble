@@ -82,7 +82,7 @@ namespace Wobble.Graphics.Sprites
         public AnimatableSprite(List<Texture2D> frames) : this(frames.Select(f =>
             new TextureRegion(f, f.Bounds)).ToList())
         {
-            
+
         }
 
         /// <inheritdoc />
