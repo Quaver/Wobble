@@ -448,6 +448,7 @@ namespace Wobble.Graphics
             get => _visible;
             set
             {
+                var wasVisible = _visible;
                 _visible = value;
 
                 // Set children visibility if specified.
@@ -456,6 +457,9 @@ namespace Wobble.Graphics
                     for (var i = 0; i < Children.Count; i++)
                         Children[i].Visible = value;
                 }
+
+                if (value && !wasVisible && _childRectanglesDeferred)
+                    RecalculateRectangles();
             }
         }
 
@@ -473,6 +477,18 @@ namespace Wobble.Graphics
         ///     Whether this drawable and its subtree should continue updating while hidden.
         /// </summary>
         public bool UpdateWhenInvisible { get; set; } = true;
+
+        /// <summary>
+        ///     Whether the children skip <see cref="RecalculateRectangles"/> while this drawable is hidden
+        ///     and <see cref="UpdateWhenInvisible"/> is off so a scrolling list does not lay out hidden rows.
+        ///     Only for list rows: while hidden, the children's screen rectangles are out of date.
+        /// </summary>
+        public bool DeferChildRectangleRecalculationWhileHidden { get; set; }
+
+        /// <summary>
+        ///     Whether the children still need a recalculation before they are shown.
+        /// </summary>
+        private bool _childRectanglesDeferred;
 
         /// <summary>
         ///     If the drawable will still draw even if it is off-screen
@@ -745,8 +761,17 @@ namespace Wobble.Graphics
                     _childPositionTransform.Translation + relativeBoundingRectangle.Position,
                     relativeBoundingRectangle.Size);
 
-            for (var i = 0; i < Children.Count; i++)
-                Children[i].RecalculateRectangles();
+            if (DeferChildRectangleRecalculationWhileHidden && !Visible && !UpdateWhenInvisible)
+            {
+                _childRectanglesDeferred = true;
+            }
+            else
+            {
+                _childRectanglesDeferred = false;
+
+                for (var i = 0; i < Children.Count; i++)
+                    Children[i].RecalculateRectangles();
+            }
 
             // Raise recalculated event.
             OnRectangleRecalculated();
