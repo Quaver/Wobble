@@ -47,7 +47,7 @@ namespace Wobble.Graphics
                 matrix = null;
 
             _ = GameBase.Game.TryEndBatch();
-            GameBase.Game.SpriteBatch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix);
+            GameBase.Game.BeginBatch(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Shader?.ShaderEffect, matrix);
         }
     }
 }

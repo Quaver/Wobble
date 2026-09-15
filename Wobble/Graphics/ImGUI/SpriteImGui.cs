@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Threading;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 
@@ -51,13 +52,40 @@ namespace Wobble.Graphics.ImGUI
         public bool WantsTextInput => Renderer.WantsTextInput;
 
         /// <summary>
+        ///     Context/font atlas creation touches the GraphicsDevice, so it must happen on the
+        ///     main thread - hop onto it and block if we're not already there.
         /// </summary>
         protected SpriteImGui(bool destroyContext = true, ImGuiOptions options = null, float scale = 1.0f)
         {
             Options = options;
 
-            Renderer = new ImGuiRenderer(destroyContext, options, scale);
-            Renderer.RebuildFontAtlas();
+            if (Thread.CurrentThread.ManagedThreadId == GameBase.Game.MainThreadId)
+            {
+                Renderer = new ImGuiRenderer(destroyContext, options, scale);
+                Renderer.RebuildFontAtlas();
+            }
+            else
+            {
+                // Renderer is get-only, so assign it here rather than inside the lambda below.
+                ImGuiRenderer renderer = null;
+                using var completed = new ManualResetEventSlim(false);
+
+                GameBase.Game.ScheduleRenderTargetDraw(() =>
+                {
+                    try
+                    {
+                        renderer = new ImGuiRenderer(destroyContext, options, scale);
+                        renderer.RebuildFontAtlas();
+                    }
+                    finally
+                    {
+                        completed.Set();
+                    }
+                });
+
+                completed.Wait();
+                Renderer = renderer;
+            }
         }
 
         /// <inheritdoc />

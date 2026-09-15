@@ -37,10 +37,10 @@ namespace Wobble.Graphics.Sprites
             // Attempt to end the spritebatch
             _ = GameBase.Game.TryEndBatch();
 
-            GameBase.Game.SpriteBatch.Begin(blendState: blend);
+            GameBase.Game.BeginBatch(blendState: blend);
             GameBase.Game.SpriteBatch.Draw(srcMask, srcTexture.Bounds, Color.White);
             GameBase.Game.SpriteBatch.Draw(srcTexture, srcTexture.Bounds, Color.White);
-            GameBase.Game.SpriteBatch.End();
+            GameBase.Game.EndBatch();
 
             GameBase.Game.GraphicsDevice.SetRenderTarget(null);
             GameBase.Game.GraphicsDevice.Clear(Color.Black);

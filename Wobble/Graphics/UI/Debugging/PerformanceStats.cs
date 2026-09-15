@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Wobble.Window;
 
 namespace Wobble.Graphics.UI.Debugging
@@ -9,6 +10,7 @@ namespace Wobble.Graphics.UI.Debugging
         public static double FrameTimeMs { get; private set; }
         public static double UpdateTimeMs { get; private set; }
         public static double DrawTimeMs { get; private set; }
+        public static double GameDrawTimeMs { get; private set; }
         public static double InputUpdateTimeMs { get; private set; }
         public static double ScreenUpdateTimeMs { get; private set; }
         public static double GlobalUiUpdateTimeMs { get; private set; }
@@ -21,6 +23,7 @@ namespace Wobble.Graphics.UI.Debugging
         public static double AverageFrameTimeMs { get; private set; }
         public static double AverageUpdateTimeMs { get; private set; }
         public static double AverageDrawTimeMs { get; private set; }
+        public static double AverageGameDrawTimeMs { get; private set; }
 
         public static int FrameRate { get; private set; }
         public static int UpdateRate { get; private set; }
@@ -45,6 +48,21 @@ namespace Wobble.Graphics.UI.Debugging
         public static int ImGuiVertexCount { get; private set; }
         public static int ImGuiIndexCount { get; private set; }
 
+        public static long GraphicsDrawCallCount { get; private set; }
+        public static long GraphicsSpriteCount { get; private set; }
+        public static long GraphicsPrimitiveCount { get; private set; }
+        public static long GraphicsTextureChangeCount { get; private set; }
+        public static long GraphicsRenderTargetChangeCount { get; private set; }
+        public static long GraphicsClearCount { get; private set; }
+        public static long GraphicsPixelShaderChangeCount { get; private set; }
+        public static long GraphicsVertexShaderChangeCount { get; private set; }
+        public static int SpriteBatchBeginCount { get; private set; }
+        public static int SpriteBatchEndCount { get; private set; }
+
+        public static double GraphicsSpritesPerDrawCall => GraphicsDrawCallCount == 0
+            ? 0
+            : (double)GraphicsSpriteCount / GraphicsDrawCallCount;
+
         private static double elapsedSampleMs;
         private static int frameCounter;
         private static int updateCounter;
@@ -58,6 +76,10 @@ namespace Wobble.Graphics.UI.Debugging
         private static int lastGen0Collections;
         private static int lastGen1Collections;
         private static int lastGen2Collections;
+
+        private static GraphicsMetrics graphicsMetricsAtDrawStart;
+        private static int spriteBatchBeginsThisFrame;
+        private static int spriteBatchEndsThisFrame;
 
         public static void BeginUpdate(GameTime gameTime)
         {
@@ -105,21 +127,44 @@ namespace Wobble.Graphics.UI.Debugging
             AverageUpdateTimeMs = Smooth(AverageUpdateTimeMs, updateMs);
         }
 
-        public static void BeginDraw(int scheduledRenderTargetDrawCount, string currentScreenName)
+        public static void BeginDraw(int scheduledRenderTargetDrawCount, string currentScreenName, GraphicsMetrics graphicsMetrics)
         {
             ScheduledRenderTargetDrawCount = scheduledRenderTargetDrawCount;
             CurrentScreenName = currentScreenName ?? "None";
+            graphicsMetricsAtDrawStart = graphicsMetrics;
+            spriteBatchBeginsThisFrame = 0;
+            spriteBatchEndsThisFrame = 0;
+        }
+
+        public static void RecordSpriteBatchBegin() => spriteBatchBeginsThisFrame++;
+
+        public static void RecordSpriteBatchEnd() => spriteBatchEndsThisFrame++;
+
+        public static void RecordGraphicsMetrics(GraphicsMetrics graphicsMetrics)
+        {
+            GraphicsDrawCallCount = graphicsMetrics.DrawCount - graphicsMetricsAtDrawStart.DrawCount;
+            GraphicsSpriteCount = graphicsMetrics.SpriteCount - graphicsMetricsAtDrawStart.SpriteCount;
+            GraphicsPrimitiveCount = graphicsMetrics.PrimitiveCount - graphicsMetricsAtDrawStart.PrimitiveCount;
+            GraphicsTextureChangeCount = graphicsMetrics.TextureCount - graphicsMetricsAtDrawStart.TextureCount;
+            GraphicsRenderTargetChangeCount = graphicsMetrics.TargetCount - graphicsMetricsAtDrawStart.TargetCount;
+            GraphicsClearCount = graphicsMetrics.ClearCount - graphicsMetricsAtDrawStart.ClearCount;
+            GraphicsPixelShaderChangeCount = graphicsMetrics.PixelShaderCount - graphicsMetricsAtDrawStart.PixelShaderCount;
+            GraphicsVertexShaderChangeCount = graphicsMetrics.VertexShaderCount - graphicsMetricsAtDrawStart.VertexShaderCount;
+            SpriteBatchBeginCount = spriteBatchBeginsThisFrame;
+            SpriteBatchEndCount = spriteBatchEndsThisFrame;
         }
 
         public static void RecordDrawTimings(double scheduledRenderTargetDrawMs, double screenDrawMs, double globalUiDrawMs,
-            double overlayDrawMs, double drawMs, int drawnDrawableCount)
+            double overlayDrawMs, double gameDrawMs, double drawMs, int drawnDrawableCount)
         {
             ScheduledRenderTargetDrawTimeMs = scheduledRenderTargetDrawMs;
             ScreenDrawTimeMs = screenDrawMs;
             GlobalUiDrawTimeMs = globalUiDrawMs;
             OverlayDrawTimeMs = overlayDrawMs;
+            GameDrawTimeMs = gameDrawMs;
             DrawTimeMs = drawMs;
             DrawnDrawableCount = drawnDrawableCount;
+            AverageGameDrawTimeMs = Smooth(AverageGameDrawTimeMs, gameDrawMs);
             AverageDrawTimeMs = Smooth(AverageDrawTimeMs, drawMs);
             frameCounter++;
         }
