@@ -87,6 +87,12 @@ namespace Wobble.Graphics.Animations
         /// <param name="gameTime"></param>
         public float PerformInterpolation(GameTime gameTime)
         {
+            if (Time <= 0)
+            {
+                Done = true;
+                return End;
+            }
+
             CurrentAnimationTime += gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (CurrentAnimationTime > Time)
@@ -110,6 +116,12 @@ namespace Wobble.Graphics.Animations
         /// <returns></returns>
         public Color PerformColorInterpolation(GameTime gameTime)
         {
+            if (Time <= 0)
+            {
+                Done = true;
+                return EndColor;
+            }
+
             CurrentAnimationTime += gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (CurrentAnimationTime > Time)
