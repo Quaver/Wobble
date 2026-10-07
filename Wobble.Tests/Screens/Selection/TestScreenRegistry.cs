@@ -8,14 +8,14 @@ using Wobble.Tests.Screens.Tests.BlurredBgImage;
 using Wobble.Tests.Screens.Tests.ButtonPerformance;
 using Wobble.Tests.Screens.Tests.ButtonsGallery;
 using Wobble.Tests.Screens.Tests.CursorScaling;
-using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DialogInput;
+using Wobble.Tests.Screens.Tests.Discord;
 using Wobble.Tests.Screens.Tests.DrawableScaling;
 using Wobble.Tests.Screens.Tests.DrawingSprites;
 using Wobble.Tests.Screens.Tests.EasingAnimations;
-using Wobble.Tests.Screens.Tests.FormControls;
 using Wobble.Tests.Screens.Tests.FlexContainer;
 using Wobble.Tests.Screens.Tests.FlexSongSelect;
+using Wobble.Tests.Screens.Tests.FormControls;
 using Wobble.Tests.Screens.Tests.HorizontalClipping;
 using Wobble.Tests.Screens.Tests.Imgui;
 using Wobble.Tests.Screens.Tests.Joystick;
@@ -24,14 +24,15 @@ using Wobble.Tests.Screens.Tests.NavigationBars;
 using Wobble.Tests.Screens.Tests.NineSliceSprite;
 using Wobble.Tests.Screens.Tests.PersistentElements;
 using Wobble.Tests.Screens.Tests.Primitives;
-using Wobble.Tests.Screens.Tests.Rotation;
 using Wobble.Tests.Screens.Tests.RenderTarget;
-using Wobble.Tests.Screens.Tests.ScreenLifecycle;
+using Wobble.Tests.Screens.Tests.Rotation;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.ScheduledUpdates;
+using Wobble.Tests.Screens.Tests.ScreenLifecycle;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteAlphaMaskingBlend;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
+using Wobble.Tests.Screens.Tests.SpriteTextPlusFormattable;
 using Wobble.Tests.Screens.Tests.SpriteTextPlusNew;
 using Wobble.Tests.Screens.Tests.TaskHandler;
 using Wobble.Tests.Screens.Tests.TextInput;
@@ -49,8 +50,7 @@ namespace Wobble.Tests.Screens.Selection
         public Func<Screen> CreateScreen { get; }
         public bool Isolated { get; }
 
-        public TestScreenDescriptor(string categoryKey, string labelKey, Func<Screen> createScreen,
-            bool isolated = false)
+        public TestScreenDescriptor(string categoryKey, string labelKey, Func<Screen> createScreen, bool isolated = false)
         {
             CategoryKey = categoryKey;
             LabelKey = labelKey;
@@ -96,6 +96,7 @@ namespace Wobble.Tests.Screens.Selection
 
             new TestScreenDescriptor(TextControls, "Screen_TextSizes", () => new TestTextSizesScreen()),
             new TestScreenDescriptor(TextControls, "Screen_SpriteTextPlus", () => new TestSpriteTextPlusScreen()),
+            new TestScreenDescriptor(TextControls, "Screen_SpriteTextPlusFormattable", () => new TestSpriteTextPlusFormattableScreen()),
             new TestScreenDescriptor(TextControls, "Screen_TextVerticalLayout", () => new TestTextVerticalLayoutScreen()),
             new TestScreenDescriptor(TextControls, "Screen_TextInput", () => new TestTextInputScreen()),
             new TestScreenDescriptor(TextControls, "Screen_FormControls", () => new TestFormControlsScreen()),

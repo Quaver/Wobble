@@ -18,6 +18,7 @@ using Wobble.Tests.Screens.Tests.Primitives;
 using Wobble.Tests.Screens.Tests.Scaling;
 using Wobble.Tests.Screens.Tests.Scrolling;
 using Wobble.Tests.Screens.Tests.SpriteMasking;
+using Wobble.Tests.Screens.Tests.SpriteTextPlusFormattable;
 using Wobble.Tests.Screens.Tests.TextSizes;
 using Wobble.Tests.Screens.Tests.Tooltips;
 using Wobble.Window;
@@ -76,6 +77,7 @@ namespace Wobble.Tests.Hotload
             {"Scaling", typeof(TestScalingScreen)},
             {"Scrolling", typeof(TestScrollContainerScreen)},
             {"Sprite Masking", typeof(TestSpriteMaskingScreen)},
+            {"SpriteTextPlusFormattable", typeof(TestSpriteTextPlusFormattableScreen)},
             {"TextSizes", typeof(TestTextSizesScreen)},
             {"Tooltips", typeof(TestTooltipsScreen)}
         });

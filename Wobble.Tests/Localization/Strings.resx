@@ -114,6 +114,9 @@
   <data name="Screen_SpriteTextPlus" xml:space="preserve">
     <value>SpriteTextPlus</value>
   </data>
+  <data name="Screen_SpriteTextPlusFormattable" xml:space="preserve">
+    <value>SpriteTextPlusFormattable</value>
+  </data>
   <data name="Screen_TaskHandler" xml:space="preserve">
     <value>Task Handler</value>
   </data>

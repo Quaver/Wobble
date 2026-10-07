@@ -13,17 +13,17 @@ namespace Wobble.Graphics.Sprites.Text
         private readonly Dictionary<byte[], IndexedFontSettings> _settings = new Dictionary<byte[], IndexedFontSettings>();
 
         public void Register(byte[] data, int index, int weight, int implicitFontSizeReduction,
-            bool enableTabularNumbers)
+            bool enableTabularNumbers, bool enableSyntheticItalic)
         {
             _settings[data] = new IndexedFontSettings(index, weight, implicitFontSizeReduction,
-                enableTabularNumbers);
+                enableTabularNumbers, enableSyntheticItalic);
         }
 
         public IFontSource Load(byte[] data)
         {
             IndexedFontSettings settings;
             if (!_settings.TryGetValue(data, out settings))
-                settings = new IndexedFontSettings(0, FontWeight.Regular, 0, false);
+                settings = new IndexedFontSettings(0, FontWeight.Regular, 0, false, false);
 
             return new FreeTypeFontSource(data, settings);
         }
@@ -39,13 +39,16 @@ namespace Wobble.Graphics.Sprites.Text
 
         public bool EnableTabularNumbers { get; }
 
+        public bool EnableSyntheticItalic { get; }
+
         public IndexedFontSettings(int index, int weight, int implicitFontSizeReduction,
-            bool enableTabularNumbers)
+            bool enableTabularNumbers, bool enableSyntheticItalic)
         {
             Index = index;
             Weight = weight;
             ImplicitFontSizeReduction = implicitFontSizeReduction;
             EnableTabularNumbers = enableTabularNumbers;
+            EnableSyntheticItalic = enableSyntheticItalic;
         }
     }
 
@@ -64,6 +67,7 @@ namespace Wobble.Graphics.Sprites.Text
         private readonly int _ascent;
         private readonly int _descent;
         private readonly int _height;
+        private readonly bool _enableSyntheticItalic;
         private bool _disposed;
 
         public FreeTypeFontSource(byte[] data, IndexedFontSettings settings)
@@ -87,6 +91,7 @@ namespace Wobble.Graphics.Sprites.Text
             _descent = _face->descender;
             _height = _face->height;
             _implicitFontSizeReduction = settings.ImplicitFontSizeReduction;
+            _enableSyntheticItalic = settings.EnableSyntheticItalic;
         }
 
         ~FreeTypeFontSource()
@@ -132,6 +137,9 @@ namespace Wobble.Graphics.Sprites.Text
                 y0 = -CeilToPixels(metrics.horiBearingY);
                 x1 = CeilToPixels(metrics.horiBearingX + metrics.width);
                 y1 = -FloorToPixels(metrics.horiBearingY - metrics.height);
+
+                if (_enableSyntheticItalic)
+                    x1 += Math.Max(1, (int)Math.Ceiling((y1 - y0) * 0.22f));
             }
         }
 
@@ -443,6 +451,9 @@ namespace Wobble.Graphics.Sprites.Text
         {
             SetSize(fontSize);
             ThrowOnError(FT_Load_Glyph(_face, (uint)glyphId, FT_LOAD.FT_LOAD_NO_BITMAP), "Unable to load glyph.");
+
+            if (_enableSyntheticItalic)
+                FT_GlyphSlot_Oblique(_face->glyph);
         }
 
         private void SetSize(float fontSize)
