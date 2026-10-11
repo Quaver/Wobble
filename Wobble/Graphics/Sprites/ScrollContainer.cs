@@ -330,31 +330,50 @@ namespace Wobble.Graphics.Sprites
         ///  <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            // Get the current scissor rectangle and save it so that we can reset it back.
-            // to its original.
-            var currentRect = GameBase.Game.GraphicsDevice.ScissorRectangle;
+            var game = GameBase.Game;
+            var graphicsDevice = game.GraphicsDevice;
 
-            // Find the width and height scale of the window.
-            var widthScale = GameBase.Game.Graphics.PreferredBackBufferWidth / WindowManager.Width;
-            var heightScale = GameBase.Game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
+            // Flush the parent batch before changing its scissor rectangle.
+            _ = game.TryEndBatch();
 
-            // Calculate the new rectangle taking into account the scaling of the window.
-            var rect = new Rectangle()
+            var currentRect = graphicsDevice.ScissorRectangle;
+            var currentRasterizerState = graphicsDevice.RasterizerState;
+            var previousDrawClip = SpriteBatchOptions.PushClip(ScreenRectangle);
+
+            try
             {
-                X = (int)(ScreenRectangle.X * widthScale),
-                Y = (int)(ScreenRectangle.Y * heightScale),
-                Width = (int)(ScreenRectangle.Width * widthScale),
-                Height = (int)(ScreenRectangle.Height * heightScale),
-            };
+                // Find the width and height scale of the window.
+                var widthScale = game.Graphics.PreferredBackBufferWidth / WindowManager.Width;
+                var heightScale = game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
 
-            // Set new scissor rect to the scaled rect.
-            GameBase.Game.GraphicsDevice.ScissorRectangle = rect;
+                // Calculate the new rectangle taking into account the scaling of the window.
+                var rect = new Rectangle
+                {
+                    X = (int)(ScreenRectangle.X * widthScale),
+                    Y = (int)(ScreenRectangle.Y * heightScale),
+                    Width = (int)(ScreenRectangle.Width * widthScale),
+                    Height = (int)(ScreenRectangle.Height * heightScale)
+                };
 
-            // Draw sprite + children.
-            base.Draw(gameTime);
+                if (currentRasterizerState?.ScissorTestEnable == true)
+                    rect = Rectangle.Intersect(rect, currentRect);
 
-            // Reset scissor rect back to original
-            GameBase.Game.GraphicsDevice.ScissorRectangle = currentRect;
+                // Set new scissor rect to the scaled rect.
+                graphicsDevice.ScissorRectangle = Rectangle.Intersect(rect, graphicsDevice.Viewport.Bounds);
+
+                // Draw sprite + children.
+                base.Draw(gameTime);
+            }
+            finally
+            {
+                // Flush this container before restoring the parent clip.
+                _ = game.TryEndBatch();
+                SpriteBatchOptions.RestoreClip(previousDrawClip);
+                graphicsDevice.ScissorRectangle = currentRect;
+
+                GameBase.DefaultSpriteBatchOptions.Begin();
+                GameBase.DefaultSpriteBatchInUse = true;
+            }
         }
 
         /// <summary>

@@ -57,6 +57,8 @@ namespace Wobble.Graphics
                 return;
             }
 
+            var previousDrawClip = SpriteBatchOptions.PushClip(ScreenRectangle);
+
             try
             {
                 graphicsDevice.ScissorRectangle = scissorRectangle;
@@ -70,6 +72,7 @@ namespace Wobble.Graphics
                 ActiveClipDepth--;
                 _ = game.TryEndBatch();
                 graphicsDevice.ScissorRectangle = oldScissorRectangle;
+                SpriteBatchOptions.RestoreClip(previousDrawClip);
 
                 ResumePreviousBatch(wasNestedScissor);
             }
