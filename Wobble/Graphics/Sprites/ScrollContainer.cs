@@ -4,8 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using Wobble.Assets;
 using Wobble.Bindables;
 using Wobble.Graphics.Animations;
+using Wobble.Graphics.Shaders;
 using Wobble.Input;
 using Wobble.Window;
 
@@ -17,6 +19,18 @@ namespace Wobble.Graphics.Sprites
             new List<ScrollContainer>();
 
         private bool _capturesMouseWheelInput;
+
+        private Dictionary<Drawable, ContainedDrawableWidthOptions> ContainedDrawableWidths { get; } = new Dictionary<Drawable, ContainedDrawableWidthOptions>();
+
+        private float PreviousScrollbarTextureWidth { get; set; } = float.NaN;
+        private float PreviousScrollbarTextureHeight { get; set; } = float.NaN;
+        private float PreviousScrollbarTrackTextureHeight { get; set; } = float.NaN;
+        private float PreviousScrollbarCornerRadius { get; set; }
+
+        /// <summary>
+        ///     The fixed viewport that clips scrolling content before the scrollbar lane.
+        /// </summary>
+        public HorizontalClippingContainer ContentViewport { get; }
 
         /// <summary>
         ///     The content that holds and is a parent of all sprites
@@ -37,6 +51,47 @@ namespace Wobble.Graphics.Sprites
         ///     The scroll bar
         /// </summary>
         public Sprite Scrollbar { get; }
+
+        /// <summary>
+        ///     The background displayed behind the scroll bar
+        /// </summary>
+        public Sprite ScrollbarBackground { get; }
+
+        /// <summary>
+        ///     Whether the scroll bar background is displayed while the content can be scrolled
+        /// </summary>
+        public bool ShowScrollbarBackground { get; set; }
+
+        /// <summary>
+        ///     Whether the scrollbar width is reserved outside of the content viewport.
+        /// </summary>
+        public bool ReserveScrollbarSpace { get; set; }
+
+        /// <summary>
+        ///     Additional spacing between the content viewport and the scrollbar.
+        /// </summary>
+        public float ScrollbarContentGap { get; set; }
+
+        /// <summary>
+        ///     Spacing between the scrollbar and the right edge of the scroll container.
+        /// </summary>
+        public float ScrollbarRightGap { get; set; }
+
+        /// <summary>
+        ///     Whether the scrollbar is currently rendered for overflowing content.
+        /// </summary>
+        public bool IsScrollbarDisplayed => Scrollbar.Visible && ContentContainer.Height > Height;
+
+        /// <summary>
+        ///     The horizontal space available to scrolling content.
+        /// </summary>
+        public float ContentViewportWidth => Math.Max(1, Width -
+            (ReserveScrollbarSpace && IsScrollbarDisplayed ? Scrollbar.Width + ScrollbarContentGap + ScrollbarRightGap : 0));
+
+        /// <summary>
+        ///     The corner radius used by both the scroll bar and its track. A value of zero keeps square corners.
+        /// </summary>
+        public float ScrollbarCornerRadius { get; set; }
 
         /// <summary>
         ///     If the container allows scrolling by dragging the scrollbar
@@ -166,15 +221,32 @@ namespace Wobble.Graphics.Sprites
                 },
             };
 
+            ContentViewport = new HorizontalClippingContainer
+            {
+                Parent = this,
+                Size = size
+            };
+
             // Create container in which all scrolling contents will be children of.
             ContentContainer = new Container(contentSize, new ScalableVector2(0, 0))
             {
-                Parent = this,
+                Parent = ContentViewport,
                 UsePreviousSpriteBatchOptions = true
             };
 
             // Choose starting location of the scroll container
             ContentContainer.Y = startFromBottom ? -ContentContainer.Height : 0;
+
+            ScrollbarBackground = new Sprite
+            {
+                Parent = this,
+                Alignment = Alignment.BotRight,
+                Width = 15,
+                Height = Height,
+                Tint = Color.Transparent,
+                X = 0,
+                Visible = false
+            };
 
             // Create the scroll bar.
             Scrollbar = new Sprite
@@ -197,7 +269,15 @@ namespace Wobble.Graphics.Sprites
         ///  <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            RefreshContentLayout();
+
             var contentFits = ContentContainer.Height <= Height;
+
+            ScrollbarBackground.Width = Scrollbar.Width;
+            ScrollbarBackground.Height = Height;
+            Scrollbar.X = ReserveScrollbarSpace && IsScrollbarDisplayed ? -ScrollbarRightGap : 0;
+            ScrollbarBackground.X = Scrollbar.X;
+            ScrollbarBackground.Visible = ShowScrollbarBackground && Scrollbar.Visible && !contentFits;
 
             // Content that fits the viewport cannot be scrolled, so it should not produce scrollbar geometry.
             Scrollbar.Height = contentFits ? 0 : Height / ContentContainer.Height * Height;
@@ -205,6 +285,9 @@ namespace Wobble.Graphics.Sprites
             // Set min scroll height to 30.
             if (!contentFits && Scrollbar.Height < 30)
                 Scrollbar.Height = 30;
+
+            if (!contentFits)
+                UpdateScrollbarTextures();
 
             // Scrollbar Dragging
             if (AllowScrollbarDragging && !IsMiddleMouseDragging)
@@ -285,6 +368,34 @@ namespace Wobble.Graphics.Sprites
             PreviousTargetY = TargetY;
             PreviousY = ContentContainer.Y;
             base.Update(gameTime);
+        }
+
+        private void UpdateScrollbarTextures()
+        {
+            if (ScrollbarCornerRadius <= 0)
+            {
+                if (PreviousScrollbarCornerRadius > 0)
+                {
+                    Scrollbar.Image = WobbleAssets.WhiteBox;
+                    ScrollbarBackground.Image = WobbleAssets.WhiteBox;
+                }
+
+                PreviousScrollbarCornerRadius = 0;
+                return;
+            }
+
+            if (Scrollbar.Width.Equals(PreviousScrollbarTextureWidth) &&
+                Scrollbar.Height.Equals(PreviousScrollbarTextureHeight) &&
+                ScrollbarBackground.Height.Equals(PreviousScrollbarTrackTextureHeight) &&
+                ScrollbarCornerRadius.Equals(PreviousScrollbarCornerRadius))
+                return;
+
+            Scrollbar.Image = RoundedRectTextureCache.Get(Scrollbar.Width, Scrollbar.Height, ScrollbarCornerRadius);
+            ScrollbarBackground.Image = RoundedRectTextureCache.Get(ScrollbarBackground.Width, ScrollbarBackground.Height, ScrollbarCornerRadius);
+            PreviousScrollbarTextureWidth = Scrollbar.Width;
+            PreviousScrollbarTextureHeight = Scrollbar.Height;
+            PreviousScrollbarTrackTextureHeight = ScrollbarBackground.Height;
+            PreviousScrollbarCornerRadius = ScrollbarCornerRadius;
         }
 
         /// <summary>
@@ -381,18 +492,93 @@ namespace Wobble.Graphics.Sprites
         /// </summary>
         public void AddContainedDrawable(Drawable drawable)
         {
+            AddContainedDrawable(drawable, false);
+        }
+
+        /// <summary>
+        ///     Adds a drawable and optionally keeps it within the width available beside the scrollbar.
+        /// </summary>
+        public void AddContainedDrawable(Drawable drawable, bool fillAvailableWidth,
+            float leftPadding = 0, float minimumRightPadding = 0, float contentRightPadding = 0)
+        {
             drawable.Parent = ContentContainer;
 
             // Set drawable and children to use the same SpriteBatch
             drawable.UsePreviousSpriteBatchOptions = true;
             drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = true);
+
+            if (!fillAvailableWidth)
+                return;
+
+            ContainedDrawableWidths[drawable] = new ContainedDrawableWidthOptions(leftPadding, minimumRightPadding, contentRightPadding);
+            ApplyContainedDrawableWidth(drawable, ContainedDrawableWidths[drawable]);
         }
 
         public void RemoveContainedDrawable(Drawable drawable)
         {
+            ContainedDrawableWidths.Remove(drawable);
             drawable.Parent = null;
             drawable.UsePreviousSpriteBatchOptions = false;
             drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = false);
+        }
+
+        /// <summary>
+        ///     Refreshes the content viewport and the widths of contained fill-width drawables.
+        /// </summary>
+        public void RefreshContentLayout()
+        {
+            var width = ContentViewportWidth;
+            if (Math.Abs(ContentViewport.Width - width) > 0.001f || Math.Abs(ContentViewport.Height - Height) > 0.001f)
+                ContentViewport.Size = new ScalableVector2(width, Height);
+
+            if (Math.Abs(ContentContainer.Width - width) > 0.001f)
+                ContentContainer.Width = width;
+
+            List<Drawable> staleDrawables = null;
+            foreach (var pair in ContainedDrawableWidths)
+            {
+                if (pair.Key.IsDisposed || pair.Key.Parent != ContentContainer)
+                {
+                    staleDrawables ??= new List<Drawable>();
+                    staleDrawables.Add(pair.Key);
+                    continue;
+                }
+
+                ApplyContainedDrawableWidth(pair.Key, pair.Value);
+            }
+
+            if (staleDrawables == null)
+                return;
+
+            foreach (var drawable in staleDrawables)
+                ContainedDrawableWidths.Remove(drawable);
+        }
+
+        private void ApplyContainedDrawableWidth(Drawable drawable, ContainedDrawableWidthOptions options)
+        {
+            if (Math.Abs(drawable.X - options.LeftPadding) > 0.001f)
+                drawable.X = options.LeftPadding;
+
+            var right = Math.Min(ContentViewportWidth - options.ContentRightPadding, Width - options.MinimumRightPadding);
+            var width = Math.Max(1, right - options.LeftPadding);
+            if (Math.Abs(drawable.Width - width) > 0.001f)
+                drawable.Width = width;
+        }
+
+        private readonly struct ContainedDrawableWidthOptions
+        {
+            public float LeftPadding { get; }
+
+            public float MinimumRightPadding { get; }
+
+            public float ContentRightPadding { get; }
+
+            public ContainedDrawableWidthOptions(float leftPadding, float minimumRightPadding, float contentRightPadding)
+            {
+                LeftPadding = leftPadding;
+                MinimumRightPadding = minimumRightPadding;
+                ContentRightPadding = contentRightPadding;
+            }
         }
 
         /// <summary>
