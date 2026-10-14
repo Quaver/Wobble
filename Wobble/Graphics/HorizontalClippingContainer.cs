@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Wobble.Window;
@@ -30,11 +31,11 @@ namespace Wobble.Graphics
                 return;
 
             var viewport = graphicsDevice.Viewport;
-            var scissorRectangle = new Rectangle(
-                (int)(ScreenRectangle.X * WindowManager.ScreenScale.X),
-                (int)(ScreenRectangle.Y * WindowManager.ScreenScale.Y),
-                (int)(ScreenRectangle.Width * WindowManager.ScreenScale.X),
-                (int)(ScreenRectangle.Height * WindowManager.ScreenScale.Y));
+            var left = (int)Math.Floor(ScreenRectangle.Left * WindowManager.ScreenScale.X);
+            var top = (int)Math.Floor(ScreenRectangle.Top * WindowManager.ScreenScale.Y);
+            var right = (int)Math.Ceiling(ScreenRectangle.Right * WindowManager.ScreenScale.X);
+            var bottom = (int)Math.Ceiling(ScreenRectangle.Bottom * WindowManager.ScreenScale.Y);
+            var scissorRectangle = new Rectangle(left, top, right - left, bottom - top);
 
             scissorRectangle = Rectangle.Intersect(scissorRectangle, viewport.Bounds);
             if (scissorRectangle.Width <= 0 || scissorRectangle.Height <= 0)

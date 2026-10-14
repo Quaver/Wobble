@@ -101,11 +101,14 @@ namespace Wobble.Graphics
                 Shader?.ShaderEffect, matrix);
         }
 
-        private static Rectangle ToBackBufferRectangle(Rectangle rectangle) => new Rectangle(
-            (int) Math.Floor(rectangle.X * WindowManager.ScreenScale.X),
-            (int) Math.Floor(rectangle.Y * WindowManager.ScreenScale.Y),
-            (int) Math.Ceiling(rectangle.Width * WindowManager.ScreenScale.X),
-            (int) Math.Ceiling(rectangle.Height * WindowManager.ScreenScale.Y));
+        private static Rectangle ToBackBufferRectangle(Rectangle rectangle)
+        {
+            var left = (int) Math.Floor(rectangle.Left * WindowManager.ScreenScale.X);
+            var top = (int) Math.Floor(rectangle.Top * WindowManager.ScreenScale.Y);
+            var right = (int) Math.Ceiling(rectangle.Right * WindowManager.ScreenScale.X);
+            var bottom = (int) Math.Ceiling(rectangle.Bottom * WindowManager.ScreenScale.Y);
+            return new Rectangle(left, top, right - left, bottom - top);
+        }
 
         private static RasterizerState GetScissorRasterizerState(RasterizerState rasterizerState)
         {

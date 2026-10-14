@@ -81,8 +81,14 @@ namespace Wobble.Graphics.Sprites
             if (!Visible)
                 return;
 
-            var width = Math.Max(0, (int)ScreenRectangle.Width);
-            var height = Math.Max(0, (int)ScreenRectangle.Height);
+            // Derive the size from the rounded outer edges instead of truncating the position and size independently
+            // With a scaled parent, not doing this can leave the a pixel on the right or bottom uncovered
+            var x0 = (int)Math.Floor(ScreenRectangle.Left);
+            var y0 = (int)Math.Floor(ScreenRectangle.Top);
+            var x3 = (int)Math.Ceiling(ScreenRectangle.Right);
+            var y3 = (int)Math.Ceiling(ScreenRectangle.Bottom);
+            var width = Math.Max(0, x3 - x0);
+            var height = Math.Max(0, y3 - y0);
             var leftWidth = Math.Min(Math.Max(0, _margins.Left), width);
             var rightWidth = Math.Min(Math.Max(0, _margins.Right), width - leftWidth);
             var centerWidth = width - leftWidth - rightWidth;
@@ -90,10 +96,8 @@ namespace Wobble.Graphics.Sprites
             var bottomHeight = Math.Min(Math.Max(0, _margins.Bottom), height - topHeight);
             var centerHeight = height - topHeight - bottomHeight;
 
-            var x0 = (int)ScreenRectangle.X;
             var x1 = x0 + leftWidth;
             var x2 = x1 + centerWidth;
-            var y0 = (int)ScreenRectangle.Y;
             var y1 = y0 + topHeight;
             var y2 = y1 + centerHeight;
             var spriteBatch = GameBase.Game.SpriteBatch;

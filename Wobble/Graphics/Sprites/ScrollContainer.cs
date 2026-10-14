@@ -458,13 +458,11 @@ namespace Wobble.Graphics.Sprites
                 var heightScale = game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
 
                 // Calculate the new rectangle taking into account the scaling of the window.
-                var rect = new Rectangle
-                {
-                    X = (int)(ScreenRectangle.X * widthScale),
-                    Y = (int)(ScreenRectangle.Y * heightScale),
-                    Width = (int)(ScreenRectangle.Width * widthScale),
-                    Height = (int)(ScreenRectangle.Height * heightScale)
-                };
+                var left = (int)Math.Floor(ScreenRectangle.Left * widthScale);
+                var top = (int)Math.Floor(ScreenRectangle.Top * heightScale);
+                var right = (int)Math.Ceiling(ScreenRectangle.Right * widthScale);
+                var bottom = (int)Math.Ceiling(ScreenRectangle.Bottom * heightScale);
+                var rect = new Rectangle(left, top, right - left, bottom - top);
 
                 if (currentRasterizerState?.ScissorTestEnable == true)
                     rect = Rectangle.Intersect(rect, currentRect);
