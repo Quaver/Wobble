@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using Wobble.Assets;
@@ -9,7 +8,6 @@ using Wobble.Bindables;
 using Wobble.Graphics.Animations;
 using Wobble.Graphics.Shaders;
 using Wobble.Input;
-using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -20,15 +18,13 @@ namespace Wobble.Graphics.Sprites
 
         private bool _capturesMouseWheelInput;
 
-        private Dictionary<Drawable, ContainedDrawableWidthOptions> ContainedDrawableWidths { get; } = new Dictionary<Drawable, ContainedDrawableWidthOptions>();
-
         private float PreviousScrollbarTextureWidth { get; set; } = float.NaN;
         private float PreviousScrollbarTextureHeight { get; set; } = float.NaN;
         private float PreviousScrollbarTrackTextureHeight { get; set; } = float.NaN;
         private float PreviousScrollbarCornerRadius { get; set; }
 
         /// <summary>
-        ///     The fixed viewport that clips scrolling content before the scrollbar lane.
+        ///     The viewport that clips scrolling content to the scroll container's horizontal bounds.
         /// </summary>
         public HorizontalClippingContainer ContentViewport { get; }
 
@@ -63,30 +59,9 @@ namespace Wobble.Graphics.Sprites
         public bool ShowScrollbarBackground { get; set; }
 
         /// <summary>
-        ///     Whether the scrollbar width is reserved outside of the content viewport.
+        ///     Whether the scrollbar track remains visible when all content fits.
         /// </summary>
-        public bool ReserveScrollbarSpace { get; set; }
-
-        /// <summary>
-        ///     Additional spacing between the content viewport and the scrollbar.
-        /// </summary>
-        public float ScrollbarContentGap { get; set; }
-
-        /// <summary>
-        ///     Spacing between the scrollbar and the right edge of the scroll container.
-        /// </summary>
-        public float ScrollbarRightGap { get; set; }
-
-        /// <summary>
-        ///     Whether the scrollbar is currently rendered for overflowing content.
-        /// </summary>
-        public bool IsScrollbarDisplayed => Scrollbar.Visible && ContentContainer.Height > Height;
-
-        /// <summary>
-        ///     The horizontal space available to scrolling content.
-        /// </summary>
-        public float ContentViewportWidth => Math.Max(1, Width -
-            (ReserveScrollbarSpace && IsScrollbarDisplayed ? Scrollbar.Width + ScrollbarContentGap + ScrollbarRightGap : 0));
+        public bool ShowScrollbarBackgroundWhenContentFits { get; set; }
 
         /// <summary>
         ///     The corner radius used by both the scroll bar and its track. A value of zero keeps square corners.
@@ -210,16 +185,9 @@ namespace Wobble.Graphics.Sprites
         {
             Size = size;
 
-            // Create the SpriteBatchOptions with scissor rect enabled.
-            SpriteBatchOptions = new SpriteBatchOptions
-            {
-                SortMode = SpriteSortMode.Deferred,
-                BlendState = BlendState.NonPremultiplied,
-                RasterizerState = new RasterizerState
-                {
-                    ScissorTestEnable = true,
-                },
-            };
+            // Keep an owned batch configuration so callers can customize how the container is
+            // rendered. Clipping is handled by ContentViewport rather than this root batch.
+            SpriteBatchOptions = new SpriteBatchOptions();
 
             ContentViewport = new HorizontalClippingContainer
             {
@@ -269,24 +237,24 @@ namespace Wobble.Graphics.Sprites
         ///  <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            RefreshContentLayout();
+            RefreshContentViewport();
 
             var contentFits = ContentContainer.Height <= Height;
 
             ScrollbarBackground.Width = Scrollbar.Width;
             ScrollbarBackground.Height = Height;
-            Scrollbar.X = ReserveScrollbarSpace && IsScrollbarDisplayed ? -ScrollbarRightGap : 0;
             ScrollbarBackground.X = Scrollbar.X;
-            ScrollbarBackground.Visible = ShowScrollbarBackground && Scrollbar.Visible && !contentFits;
+            ScrollbarBackground.Visible = ShowScrollbarBackground && Scrollbar.Visible && (!contentFits || ShowScrollbarBackgroundWhenContentFits);
 
-            // Content that fits the viewport cannot be scrolled, so it should not produce scrollbar geometry.
-            Scrollbar.Height = contentFits ? 0 : Height / ContentContainer.Height * Height;
+            Scrollbar.Height = contentFits
+                ? 0
+                : Height / ContentContainer.Height * Height;
 
             // Set min scroll height to 30.
             if (!contentFits && Scrollbar.Height < 30)
                 Scrollbar.Height = 30;
 
-            if (!contentFits)
+            if (!contentFits || ShowScrollbarBackgroundWhenContentFits)
                 UpdateScrollbarTextures();
 
             // Scrollbar Dragging
@@ -435,148 +403,31 @@ namespace Wobble.Graphics.Sprites
             base.Dispose();
         }
 
-        /// <inheritdoc />
-        ///  <summary>
-        ///  </summary>
-        ///  <param name="gameTime"></param>
-        public override void Draw(GameTime gameTime)
-        {
-            var game = GameBase.Game;
-            var graphicsDevice = game.GraphicsDevice;
-
-            // Flush the parent batch before changing its scissor rectangle.
-            _ = game.TryEndBatch();
-
-            var currentRect = graphicsDevice.ScissorRectangle;
-            var currentRasterizerState = graphicsDevice.RasterizerState;
-            var previousDrawClip = SpriteBatchOptions.PushClip(ScreenRectangle);
-
-            try
-            {
-                // Find the width and height scale of the window.
-                var widthScale = game.Graphics.PreferredBackBufferWidth / WindowManager.Width;
-                var heightScale = game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
-
-                // Calculate the new rectangle taking into account the scaling of the window.
-                var left = (int)Math.Floor(ScreenRectangle.Left * widthScale);
-                var top = (int)Math.Floor(ScreenRectangle.Top * heightScale);
-                var right = (int)Math.Ceiling(ScreenRectangle.Right * widthScale);
-                var bottom = (int)Math.Ceiling(ScreenRectangle.Bottom * heightScale);
-                var rect = new Rectangle(left, top, right - left, bottom - top);
-
-                if (currentRasterizerState?.ScissorTestEnable == true)
-                    rect = Rectangle.Intersect(rect, currentRect);
-
-                // Set new scissor rect to the scaled rect.
-                graphicsDevice.ScissorRectangle = Rectangle.Intersect(rect, graphicsDevice.Viewport.Bounds);
-
-                // Draw sprite + children.
-                base.Draw(gameTime);
-            }
-            finally
-            {
-                // Flush this container before restoring the parent clip.
-                _ = game.TryEndBatch();
-                SpriteBatchOptions.RestoreClip(previousDrawClip);
-                graphicsDevice.ScissorRectangle = currentRect;
-
-                GameBase.DefaultSpriteBatchOptions.Begin();
-                GameBase.DefaultSpriteBatchInUse = true;
-            }
-        }
-
         /// <summary>
         ///     Adds a drawable that'll be contained in the ScrollContainer.
         /// </summary>
         public void AddContainedDrawable(Drawable drawable)
-        {
-            AddContainedDrawable(drawable, false);
-        }
-
-        /// <summary>
-        ///     Adds a drawable and optionally keeps it within the width available beside the scrollbar.
-        /// </summary>
-        public void AddContainedDrawable(Drawable drawable, bool fillAvailableWidth,
-            float leftPadding = 0, float minimumRightPadding = 0, float contentRightPadding = 0)
         {
             drawable.Parent = ContentContainer;
 
             // Set drawable and children to use the same SpriteBatch
             drawable.UsePreviousSpriteBatchOptions = true;
             drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = true);
-
-            if (!fillAvailableWidth)
-                return;
-
-            ContainedDrawableWidths[drawable] = new ContainedDrawableWidthOptions(leftPadding, minimumRightPadding, contentRightPadding);
-            ApplyContainedDrawableWidth(drawable, ContainedDrawableWidths[drawable]);
         }
 
         public void RemoveContainedDrawable(Drawable drawable)
         {
-            ContainedDrawableWidths.Remove(drawable);
             drawable.Parent = null;
             drawable.UsePreviousSpriteBatchOptions = false;
             drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = false);
         }
 
-        /// <summary>
-        ///     Refreshes the content viewport and the widths of contained fill-width drawables.
-        /// </summary>
-        public void RefreshContentLayout()
+        private void RefreshContentViewport()
         {
-            var width = ContentViewportWidth;
-            if (Math.Abs(ContentViewport.Width - width) > 0.001f || Math.Abs(ContentViewport.Height - Height) > 0.001f)
-                ContentViewport.Size = new ScalableVector2(width, Height);
-
-            if (Math.Abs(ContentContainer.Width - width) > 0.001f)
-                ContentContainer.Width = width;
-
-            List<Drawable> staleDrawables = null;
-            foreach (var pair in ContainedDrawableWidths)
-            {
-                if (pair.Key.IsDisposed || pair.Key.Parent != ContentContainer)
-                {
-                    staleDrawables ??= new List<Drawable>();
-                    staleDrawables.Add(pair.Key);
-                    continue;
-                }
-
-                ApplyContainedDrawableWidth(pair.Key, pair.Value);
-            }
-
-            if (staleDrawables == null)
-                return;
-
-            foreach (var drawable in staleDrawables)
-                ContainedDrawableWidths.Remove(drawable);
-        }
-
-        private void ApplyContainedDrawableWidth(Drawable drawable, ContainedDrawableWidthOptions options)
-        {
-            if (Math.Abs(drawable.X - options.LeftPadding) > 0.001f)
-                drawable.X = options.LeftPadding;
-
-            var right = Math.Min(ContentViewportWidth - options.ContentRightPadding, Width - options.MinimumRightPadding);
-            var width = Math.Max(1, right - options.LeftPadding);
-            if (Math.Abs(drawable.Width - width) > 0.001f)
-                drawable.Width = width;
-        }
-
-        private readonly struct ContainedDrawableWidthOptions
-        {
-            public float LeftPadding { get; }
-
-            public float MinimumRightPadding { get; }
-
-            public float ContentRightPadding { get; }
-
-            public ContainedDrawableWidthOptions(float leftPadding, float minimumRightPadding, float contentRightPadding)
-            {
-                LeftPadding = leftPadding;
-                MinimumRightPadding = minimumRightPadding;
-                ContentRightPadding = contentRightPadding;
-            }
+            var viewportWidthChanged = Math.Abs(ContentViewport.Width - Width) > 0.001f;
+            var viewportHeightChanged = Math.Abs(ContentViewport.Height - Height) > 0.001f;
+            if (viewportWidthChanged || viewportHeightChanged)
+                ContentViewport.Size = Size;
         }
 
         /// <summary>
