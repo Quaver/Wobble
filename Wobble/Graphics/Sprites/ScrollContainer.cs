@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using Wobble.Assets;
 using Wobble.Bindables;
 using Wobble.Graphics.Animations;
+using Wobble.Graphics.Shaders;
 using Wobble.Input;
-using Wobble.Window;
 
 namespace Wobble.Graphics.Sprites
 {
@@ -17,6 +17,16 @@ namespace Wobble.Graphics.Sprites
             new List<ScrollContainer>();
 
         private bool _capturesMouseWheelInput;
+
+        private float PreviousScrollbarTextureWidth { get; set; } = float.NaN;
+        private float PreviousScrollbarTextureHeight { get; set; } = float.NaN;
+        private float PreviousScrollbarTrackTextureHeight { get; set; } = float.NaN;
+        private float PreviousScrollbarCornerRadius { get; set; }
+
+        /// <summary>
+        ///     The viewport that clips scrolling content to the scroll container's horizontal bounds.
+        /// </summary>
+        public HorizontalClippingContainer ContentViewport { get; }
 
         /// <summary>
         ///     The content that holds and is a parent of all sprites
@@ -37,6 +47,26 @@ namespace Wobble.Graphics.Sprites
         ///     The scroll bar
         /// </summary>
         public Sprite Scrollbar { get; }
+
+        /// <summary>
+        ///     The background displayed behind the scroll bar
+        /// </summary>
+        public Sprite ScrollbarBackground { get; }
+
+        /// <summary>
+        ///     Whether the scroll bar background is displayed while the content can be scrolled
+        /// </summary>
+        public bool ShowScrollbarBackground { get; set; }
+
+        /// <summary>
+        ///     Whether the scrollbar track remains visible when all content fits.
+        /// </summary>
+        public bool ShowScrollbarBackgroundWhenContentFits { get; set; }
+
+        /// <summary>
+        ///     The corner radius used by both the scroll bar and its track. A value of zero keeps square corners.
+        /// </summary>
+        public float ScrollbarCornerRadius { get; set; }
 
         /// <summary>
         ///     If the container allows scrolling by dragging the scrollbar
@@ -155,26 +185,36 @@ namespace Wobble.Graphics.Sprites
         {
             Size = size;
 
-            // Create the SpriteBatchOptions with scissor rect enabled.
-            SpriteBatchOptions = new SpriteBatchOptions
+            // Keep an owned batch configuration so callers can customize how the container is
+            // rendered. Clipping is handled by ContentViewport rather than this root batch.
+            SpriteBatchOptions = new SpriteBatchOptions();
+
+            ContentViewport = new HorizontalClippingContainer
             {
-                SortMode = SpriteSortMode.Deferred,
-                BlendState = BlendState.NonPremultiplied,
-                RasterizerState = new RasterizerState
-                {
-                    ScissorTestEnable = true,
-                },
+                Parent = this,
+                Size = size
             };
 
             // Create container in which all scrolling contents will be children of.
             ContentContainer = new Container(contentSize, new ScalableVector2(0, 0))
             {
-                Parent = this,
+                Parent = ContentViewport,
                 UsePreviousSpriteBatchOptions = true
             };
 
             // Choose starting location of the scroll container
             ContentContainer.Y = startFromBottom ? -ContentContainer.Height : 0;
+
+            ScrollbarBackground = new Sprite
+            {
+                Parent = this,
+                Alignment = Alignment.BotRight,
+                Width = 15,
+                Height = Height,
+                Tint = Color.Transparent,
+                X = 0,
+                Visible = false
+            };
 
             // Create the scroll bar.
             Scrollbar = new Sprite
@@ -197,14 +237,25 @@ namespace Wobble.Graphics.Sprites
         ///  <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            RefreshContentViewport();
+
             var contentFits = ContentContainer.Height <= Height;
 
-            // Content that fits the viewport cannot be scrolled, so it should not produce scrollbar geometry.
-            Scrollbar.Height = contentFits ? 0 : Height / ContentContainer.Height * Height;
+            ScrollbarBackground.Width = Scrollbar.Width;
+            ScrollbarBackground.Height = Height;
+            ScrollbarBackground.X = Scrollbar.X;
+            ScrollbarBackground.Visible = ShowScrollbarBackground && Scrollbar.Visible && (!contentFits || ShowScrollbarBackgroundWhenContentFits);
+
+            Scrollbar.Height = contentFits
+                ? 0
+                : Height / ContentContainer.Height * Height;
 
             // Set min scroll height to 30.
             if (!contentFits && Scrollbar.Height < 30)
                 Scrollbar.Height = 30;
+
+            if (!contentFits || ShowScrollbarBackgroundWhenContentFits)
+                UpdateScrollbarTextures();
 
             // Scrollbar Dragging
             if (AllowScrollbarDragging && !IsMiddleMouseDragging)
@@ -287,6 +338,34 @@ namespace Wobble.Graphics.Sprites
             base.Update(gameTime);
         }
 
+        private void UpdateScrollbarTextures()
+        {
+            if (ScrollbarCornerRadius <= 0)
+            {
+                if (PreviousScrollbarCornerRadius > 0)
+                {
+                    Scrollbar.Image = WobbleAssets.WhiteBox;
+                    ScrollbarBackground.Image = WobbleAssets.WhiteBox;
+                }
+
+                PreviousScrollbarCornerRadius = 0;
+                return;
+            }
+
+            if (Scrollbar.Width.Equals(PreviousScrollbarTextureWidth) &&
+                Scrollbar.Height.Equals(PreviousScrollbarTextureHeight) &&
+                ScrollbarBackground.Height.Equals(PreviousScrollbarTrackTextureHeight) &&
+                ScrollbarCornerRadius.Equals(PreviousScrollbarCornerRadius))
+                return;
+
+            Scrollbar.Image = RoundedRectTextureCache.Get(Scrollbar.Width, Scrollbar.Height, ScrollbarCornerRadius);
+            ScrollbarBackground.Image = RoundedRectTextureCache.Get(ScrollbarBackground.Width, ScrollbarBackground.Height, ScrollbarCornerRadius);
+            PreviousScrollbarTextureWidth = Scrollbar.Width;
+            PreviousScrollbarTextureHeight = Scrollbar.Height;
+            PreviousScrollbarTrackTextureHeight = ScrollbarBackground.Height;
+            PreviousScrollbarCornerRadius = ScrollbarCornerRadius;
+        }
+
         /// <summary>
         ///     Returns whether this container currently owns mouse wheel input. Derived overlay
         ///     containers can evaluate their input gate here so capture does not depend on update order.
@@ -324,39 +403,6 @@ namespace Wobble.Graphics.Sprites
             base.Dispose();
         }
 
-        /// <inheritdoc />
-        ///  <summary>
-        ///  </summary>
-        ///  <param name="gameTime"></param>
-        public override void Draw(GameTime gameTime)
-        {
-            // Get the current scissor rectangle and save it so that we can reset it back.
-            // to its original.
-            var currentRect = GameBase.Game.GraphicsDevice.ScissorRectangle;
-
-            // Find the width and height scale of the window.
-            var widthScale = GameBase.Game.Graphics.PreferredBackBufferWidth / WindowManager.Width;
-            var heightScale = GameBase.Game.Graphics.PreferredBackBufferHeight / WindowManager.Height;
-
-            // Calculate the new rectangle taking into account the scaling of the window.
-            var rect = new Rectangle()
-            {
-                X = (int)(ScreenRectangle.X * widthScale),
-                Y = (int)(ScreenRectangle.Y * heightScale),
-                Width = (int)(ScreenRectangle.Width * widthScale),
-                Height = (int)(ScreenRectangle.Height * heightScale),
-            };
-
-            // Set new scissor rect to the scaled rect.
-            GameBase.Game.GraphicsDevice.ScissorRectangle = rect;
-
-            // Draw sprite + children.
-            base.Draw(gameTime);
-
-            // Reset scissor rect back to original
-            GameBase.Game.GraphicsDevice.ScissorRectangle = currentRect;
-        }
-
         /// <summary>
         ///     Adds a drawable that'll be contained in the ScrollContainer.
         /// </summary>
@@ -374,6 +420,14 @@ namespace Wobble.Graphics.Sprites
             drawable.Parent = null;
             drawable.UsePreviousSpriteBatchOptions = false;
             drawable.Children.ForEach(x => x.UsePreviousSpriteBatchOptions = false);
+        }
+
+        private void RefreshContentViewport()
+        {
+            var viewportWidthChanged = Math.Abs(ContentViewport.Width - Width) > 0.001f;
+            var viewportHeightChanged = Math.Abs(ContentViewport.Height - Height) > 0.001f;
+            if (viewportWidthChanged || viewportHeightChanged)
+                ContentViewport.Size = Size;
         }
 
         /// <summary>

@@ -930,18 +930,17 @@ namespace Wobble.Graphics.UI.Form
                 return;
             }
 
-            var absOffsetFromLeft = Cursor.AbsolutePosition.X - AbsolutePosition.X;
-            var absOffsetFromRight = (Cursor.AbsolutePosition.X + Cursor.AbsoluteSize.X) - (AbsolutePosition.X + AbsoluteSize.X);
-            var offsetFromLeft = Cursor.X - X;
-            var offsetFromRight = (Cursor.X + Cursor.Width) - (X + Width);
+            const float cursorPadding = 5;
+            var cursorLeft = ContentContainer.X + Cursor.X;
+            var cursorRight = cursorLeft + Cursor.Width;
 
-            if (absOffsetFromLeft < 5)
+            if (cursorLeft < cursorPadding)
             {
-                ContentContainer.X = Math.Min(0, -offsetFromLeft + 5);
+                ContentContainer.X = Math.Min(0, ContentContainer.X + cursorPadding - cursorLeft);
             }
-            else if (absOffsetFromRight > -5)
+            else if (cursorRight > Width - cursorPadding)
             {
-                ContentContainer.X = -offsetFromRight - 5;
+                ContentContainer.X -= cursorRight - (Width - cursorPadding);
             }
         }
 
