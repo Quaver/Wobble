@@ -26,6 +26,7 @@ namespace Wobble.Configuration
         private readonly bool optionalMain;
         private readonly bool restrictMainToEditable;
         private readonly ISerializer serializer;
+        private readonly ISerializer cloneSerializer;
         private readonly IDeserializer deserializer;
 
         private T mainValue;
@@ -48,6 +49,10 @@ namespace Wobble.Configuration
             this.optionalMain = optionalMain;
             this.restrictMainToEditable = restrictMainToEditable;
             serializer = new SerializerBuilder().WithNamingConvention(NamingConvention).Build();
+            cloneSerializer = new SerializerBuilder()
+                .WithNamingConvention(NamingConvention)
+                .EmitDefaults()
+                .Build();
             deserializer = new DeserializerBuilder().WithNamingConvention(NamingConvention).Build();
             mainValue = new T();
             currentValue = Clone(mainValue);
@@ -587,7 +592,7 @@ namespace Wobble.Configuration
 
         private T Clone(T value)
         {
-            using (var reader = new StringReader(serializer.Serialize(value)))
+            using (var reader = new StringReader(cloneSerializer.Serialize(value)))
                 return deserializer.Deserialize<T>(reader);
         }
 

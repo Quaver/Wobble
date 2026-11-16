@@ -31,6 +31,8 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
 
     public sealed class DemoSkinPanel
     {
+        public bool ShowBorder { get; set; } = true;
+
         [RegularExpression("^#[0-9A-Fa-f]{6}$")]
         public string AccentColor { get; set; } = "#0FBAE5";
 
@@ -199,11 +201,12 @@ namespace Wobble.Tests.Screens.Tests.YamlConfiguration
                 "FormatVersion: 2\n" +
                 "SkinId: author-hacked\n" +
                 "Identity:\n  Version: 9.9\n" +
-                "Panel:\n  AccentColor: '#334455'\n  Opacity: 4\n" +
+                "Panel:\n  ShowBorder: false\n  AccentColor: '#334455'\n  Opacity: 4\n" +
                 "UnknownMain: true\n");
             Check("MAIN RESTRICTION + FIELD VALIDATION", () => optional.Reload() &&
                                                   optional.GetSnapshot().SkinId == "wobble-default" &&
                                                   optional.GetSnapshot().Identity.Version == "1.0" &&
+                                                  !optional.GetSnapshot().Panel.ShowBorder &&
                                                   optional.GetSnapshot().Panel.AccentColor == "#334455" &&
                                                   Math.Abs(optional.GetSnapshot().Panel.Opacity - MainOpacity) < 0.001 &&
                                                   optional.Warnings.Any(x => x.Contains("Opacity")) &&
