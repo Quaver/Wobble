@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Wobble.Bindables;
+using Wobble.Graphics.Animations;
 using Wobble.Graphics.Sprites;
 
 namespace Wobble.Graphics.UI
@@ -94,7 +95,8 @@ namespace Wobble.Graphics.UI
         public override void Update(GameTime gameTime)
         {
             var dt = gameTime.ElapsedGameTime.TotalMilliseconds;
-            ActiveBar.Width = MathHelper.Lerp((float)(Width * (Percentage / 100f)), ActiveBar.Width, (float)Math.Min(dt / 30, 1));
+            var targetWidth = (float) (Width * (Percentage / 100f));
+            ActiveBar.Width = AnimationMath.Damp(ActiveBar.Width, targetWidth, dt, 30);
 
             base.Update(gameTime);
         }

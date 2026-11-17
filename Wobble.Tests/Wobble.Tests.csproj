@@ -19,4 +19,27 @@
       <LogicalName>$(RootNamespace).Localization.%(Filename).resources</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>..\MonoGame.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Keep localized resources in the main assembly instead of culture subfolders. -->
+    <EmbeddedResource Update="Localization/Strings.*.resx">
+      <WithCulture>false</WithCulture>
+      <LogicalName>$(RootNamespace).Localization.%(Filename).resources</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- Temporary: deploy the locally built MonoGame Vulkan runtime for testing. -->
+<!--  <PropertyGroup>-->
+<!--    <PatchedMgRuntime>/Users/aiae/Downloads/mg-vulkan-mac-test/external/MonoGame/Artifacts/native/mgruntime/desktopvk/macosx/Release/libmgruntime.dylib</PatchedMgRuntime>-->
+<!--  </PropertyGroup>-->
+
+<!--  <Target Name="CopyPatchedMgRuntime" AfterTargets="Build" Condition="Exists('$(PatchedMgRuntime)')">-->
+<!--    <MakeDir Directories="$(TargetDir)runtimes/osx/native" />-->
+<!--    <Copy SourceFiles="$(PatchedMgRuntime)" DestinationFiles="$(TargetDir)libmgruntime.dylib" />-->
+<!--    <Copy SourceFiles="$(PatchedMgRuntime)" DestinationFiles="$(TargetDir)runtimes/osx/native/libmgruntime.dylib" />-->
+<!--  </Target>-->
 </Project>
